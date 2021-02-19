@@ -14,3 +14,8 @@ results = asf.granule_search('ALPSRS279162400')
 print(f'Granule search check: {json.dumps(results, indent=2)}')
 results = asf.granule_search(['ALPSRS279162400','ALPSRS279162200'])
 print(f'Granule search check: {json.dumps(results, indent=2)}')
+
+results = asf.product_search('ALAV2A279152900')
+print(f'Product search check: {json.dumps(results, indent=2)}')
+results = asf.granule_search(['ALAV2A279102730','ALAV2A279133150'])
+print(f'Product search check: {json.dumps(results, indent=2)}')
