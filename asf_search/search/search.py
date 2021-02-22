@@ -57,7 +57,7 @@ def search(
     """
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
-    host = data.pop('host', default=asf_search.INTERNAL.HOST)
+    host = data.pop('host', asf_search.INTERNAL.HOST)
 
     data['output'] = 'geojson'
     response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data)
