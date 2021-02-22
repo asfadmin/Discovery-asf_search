@@ -29,7 +29,7 @@ def search(
         host: str = None
 ) -> dict:
     """
-    Performs a generic search using the public ASF Search API
+    Performs a generic search using the ASF SearchAPI
 
     :param absoluteorbit: For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B this value corresponds to the orbit count within the orbit cycle. For UAVSAR it is the Flight ID.
     :param asfframe: This is primarily an ASF / JAXA frame reference. However, some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
@@ -52,7 +52,7 @@ def search(
     :param product_list: List of specific products. Guaranteed to be at most one product per product name.
     :param relativeorbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
-    :param host: REST SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
+    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
     :return: Dictionary of search results. Always includes 'results', may also include 'errors' and/or 'warnings'
     """
     kwargs = locals()

@@ -6,10 +6,10 @@ def product_search(
         host: str = None
 ) -> dict:
     """
-    Performs a product ID search using the public ASF Search API
+    Performs a product ID search using the ASF SearchAPI
 
     :param product_list: List of specific products. Guaranteed to be at most one product per product name.
-    :param host: REST SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
+    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
     :return: Dictionary of search results. Always includes 'results', may also include 'errors' and/or 'warnings'
     """
     if host is None:

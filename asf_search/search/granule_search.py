@@ -6,10 +6,10 @@ def granule_search(
         host: str = None
 ) -> dict:
     """
-    Performs a granule name search using the public ASF Search API
+    Performs a granule name search using the ASF SearchAPI
 
     :param granule_list: List of specific granules. Search results may include several products per granule name.
-    :param host: REST SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
+    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
     :return: Dictionary of search results. Always includes 'results', may also include 'errors' and/or 'warnings'
     """
     if host is None:
