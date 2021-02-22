@@ -30,14 +30,14 @@ def search(
     """
     Performs a generic search using the public ASF Search API
 
-    :param int absoluteorbit: For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B this value corresponds to the orbit count within the orbit cycle. For UAVSAR it is the Flight ID.
+    :param absoluteorbit: For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B this value corresponds to the orbit count within the orbit cycle. For UAVSAR it is the Flight ID.
     :param asfframe: This is primarily an ASF / JAXA frame reference. However, some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
     :param beammode: The beam mode used to acquire the data.
     :param collectionname: For UAVSAR and AIRSAR data collections only. Search by general location, site description, or data grouping as supplied by flight agency or project.
     :param dataset: A shorthand identifier for a platform, instrument pair. See also: platform, instrument
     :param end: End date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
-    :param flightdirection: Satellite orbit direction during data acquisition. Expected "ascending" or "descending"
-    :param frame: ESA-referenced frames are offered to give users a universal framing convention. Each ESA frame has a corresponding ASF frame assigned. See also ‘asfframe’.
+    :param flightdirection: Satellite orbit direction during data acquisition
+    :param frame: ESA-referenced frames are offered to give users a universal framing convention. Each ESA frame has a corresponding ASF frame assigned. See also: asfframe
     :param granule_list: List of specific granules. Search results may include several products per granule name.
     :param groupid: Identifier used to find products considered to be of the same scene but having different granule names
     :param instrument: The instrument used to acquire the data. See also: platform, dataset
