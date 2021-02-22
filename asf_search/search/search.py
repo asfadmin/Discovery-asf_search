@@ -25,7 +25,8 @@ def search(
         processinglevel: Union[str, Iterable[str]] = None,
         product_list: Union[str, Iterable[str]] = None,
         relativeorbit: Union[int, range, Iterable[Union[int, range]]] = None,
-        start: datetime = None
+        start: datetime = None,
+        host: str = None
 ) -> dict:
     """
     Performs a generic search using the public ASF Search API
@@ -42,7 +43,7 @@ def search(
     :param groupid: Identifier used to find products considered to be of the same scene but having different granule names
     :param instrument: The instrument used to acquire the data. See also: platform, dataset
     :param intersectswith: Search by polygon, linestring, or point defined in 2D Well-Known Text (WKT)
-    :param lookdirection: Left or right direction of data acquisition
+    :param lookdirection: Left or right look direction during data acquisition
     :param maxresults: The maximum number of results to be returned by the search
     :param platform: Remote sensing platform that acquired the data. Datasets that work together, such as Sentinel-1A/1B and ERS-1/2 have multi-platform aliases available. See also: dataset, instrument
     :param polarization: A property of SAR electromagnetic waves that can be used to extract meaningful information about surface properties of the earth.
@@ -51,10 +52,13 @@ def search(
     :param product_list: List of specific products. Guaranteed to be at most one product per product name.
     :param relativeorbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
+    :param host: REST SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
     :return: Dictionary of search results. Always includes 'results', may also include 'errors' and/or 'warnings'
     """
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
-    data['output'] = 'jsonlite'
-    response = requests.post(f'https://{asf_search.INTERNAL.HOST}{asf_search.INTERNAL.SEARCH_PATH}', data=data)
-    return json.loads(requests.post(f'https://{asf_search.INTERNAL.HOST}{asf_search.INTERNAL.SEARCH_PATH}', data=data).text)
+    host = data.pop('host', default=asf_search.INTERNAL.HOST)
+
+    data['output'] = 'geojson'
+    response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data)
+    return json.loads(response.text)

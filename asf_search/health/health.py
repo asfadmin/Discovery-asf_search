@@ -2,10 +2,14 @@ import requests
 import json
 import asf_search.constants
 
-def health() -> dict:
+def health(host: str = None) -> dict:
     """
     Checks basic connectivity to and health of the public ASF Search API.
 
+    :param host: REST SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
     :return: Current configuration and status of subsystems
     """
-    return json.loads(requests.get(f'https://{asf_search.INTERNAL.HOST}{asf_search.INTERNAL.HEALTH_PATH}').text)
+
+    if host is None:
+        host = asf_search.INTERNAL.HOST
+    return json.loads(requests.get(f'https://{host}{asf_search.INTERNAL.HEALTH_PATH}').text)
