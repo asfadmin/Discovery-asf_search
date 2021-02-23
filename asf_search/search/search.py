@@ -9,7 +9,7 @@ def search(
         asfFrame: Iterable[Union[int, range]] = None,
         beamMode: Iterable[str] = None,
         collectionName: Iterable[str] = None,
-        end: datetime = None,
+        end: Union[datetime, str] = None,
         flightDirection: Iterable[str] = None,
         frame: Iterable[Union[int, range]] = None,
         granule_list: Iterable[str] = None,
@@ -20,11 +20,11 @@ def search(
         maxResults: int = None,
         platform: Iterable[str] = None,
         polarization: Iterable[str] = None,
-        processingDate: datetime = None,
+        processingDate: Union[datetime, str] = None,
         processingLevel: Iterable[str] = None,
         product_list: Iterable[str] = None,
         relativeOrbit: Iterable[Union[int, range]] = None,
-        start: datetime = None,
+        start: Union[datetime, str] = None,
         host: str = asf_search.INTERNAL.HOST,
         output: str = 'geojson'
 ) -> dict:
@@ -46,7 +46,7 @@ def search(
     :param maxResults: The maximum number of results to be returned by the search
     :param platform: Remote sensing platform that acquired the data. Platforms that work together, such as Sentinel-1A/1B and ERS-1/2 have multi-platform aliases available. See also: instrument
     :param polarization: A property of SAR electromagnetic waves that can be used to extract meaningful information about surface properties of the earth.
-    :param processingDate: Used to find data that has been processed at ASF since a given time and date
+    :param processingDate: Used to find data that has been processed at ASF since a given time and date. Supports timestamps as well as natural language such as "3 weeks ago"
     :param processingLevel: Level to which the data has been processed
     :param product_list: List of specific products. Guaranteed to be at most one product per product name.
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
