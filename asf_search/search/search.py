@@ -102,7 +102,7 @@ def flatten_list(items: Iterable[Union[int, range]]) -> str:
 
     :return: String containing comma-separated representation of input, ranges converted to 'start-stop' format
 
-    :raises ValueError: if input list contains non-int or non-range values, or if a range in the input list has a Step
+    :raises ValueError: if input list contains non-int and non-range values, or if a range in the input list has a Step
     != 1, or if a range in the input list is descending
     """
 
