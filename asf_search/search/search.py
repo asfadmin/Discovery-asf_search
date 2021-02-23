@@ -9,7 +9,7 @@ def search(
         asfFrame: Iterable[Union[int, range]] = None,
         beamMode: Iterable[str] = None,
         collectionName: Iterable[str] = None,
-        end: Union[datetime, str] = None,
+        end: Union[datetime.datetime, str] = None,
         flightDirection: Iterable[str] = None,
         frame: Iterable[Union[int, range]] = None,
         granule_list: Iterable[str] = None,
@@ -20,11 +20,11 @@ def search(
         maxResults: int = None,
         platform: Iterable[str] = None,
         polarization: Iterable[str] = None,
-        processingDate: Union[datetime, str] = None,
+        processingDate: Union[datetime.datetime, str] = None,
         processingLevel: Iterable[str] = None,
         product_list: Iterable[str] = None,
         relativeOrbit: Iterable[Union[int, range]] = None,
-        start: Union[datetime, str] = None,
+        start: Union[datetime.datetime, str] = None,
         host: str = asf_search.INTERNAL.HOST,
         output: str = 'geojson'
 ) -> dict:
