@@ -25,7 +25,8 @@ def search(
         product_list: Iterable[str] = None,
         relativeOrbit: Iterable[Union[int, range]] = None,
         start: datetime = None,
-        host: str = None
+        host: str = asf_search.INTERNAL.HOST,
+        output: str = 'geojson'
 ) -> dict:
     """
     Performs a generic search using the ASF SearchAPI
@@ -51,14 +52,56 @@ def search(
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
+    :param output: SearchAPI output format, can be used to alter what metadata is returned and the structure of the results.
 
-    :return: Dictionary of search results. Always includes 'results', may also include 'errors' and/or 'warnings'
+    :return: Dictionary of search results
     """
 
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
-    host = data.pop('host', asf_search.INTERNAL.HOST)
+    host = data.pop('host')
 
-    data['output'] = 'geojson'
+    flatten_fields = [
+        'absoluteOrbit',
+        'asfFrame',
+        'frame',
+        'relativeOrbit']
+    for key in flatten_fields:
+        if key in data:
+            data[key] = flatten_list(data[key])
+
+    join_fields = [
+        'beamMode',
+        'collectionName',
+        'flightDirection',
+        'granule_list',
+        'groupID',
+        'instrument',
+        'lookDirection',
+        'platform',
+        'polarization',
+        'processingLevel',
+        'product_list']
+    for key in join_fields:
+        if key in data:
+            data[key] = ','.join(data[key])
+
     response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data)
     return json.loads(response.text)
+
+
+def flatten_list(items: Iterable[Union[int, range]]) -> str:
+    """
+    Converts a list of ints and/or ranges to a string of comma-separated ints and/or ranges.
+    Example: [1,2,3,range(4,10)] -> '1,2,3,4-10'
+
+    :param items: The list of ints and/or ranges to flatten
+
+    :return: String containing comma-separated representation of input
+    """
+
+    for item in items:
+        if isinstance(item, range) and item.step != 1:
+            raise ValueError('Step must be 1 when using ranges to search')
+
+    return ','.join([f'{item.start}-{item.stop}' if isinstance(item, range) else f'{item}' for item in items])
