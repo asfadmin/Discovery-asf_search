@@ -87,6 +87,9 @@ def search(
             data[key] = ','.join(data[key])
 
     response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data)
+
+    if data['output'] == 'count':
+        return {'count': int(response.text)}
     return json.loads(response.text)
 
 
