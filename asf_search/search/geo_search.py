@@ -20,7 +20,8 @@ def geo_search(
         processingLevel: Iterable[str] = None,
         relativeOrbit: Iterable[Union[int, range]] = None,
         start: datetime = None,
-        host: str = asf_search.INTERNAL.HOST
+        host: str = asf_search.INTERNAL.HOST,
+        output: str = 'geojson'
 ) -> dict:
     """
     Performs a geographic search using the ASF SearchAPI
@@ -43,8 +44,9 @@ def geo_search(
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
+    :param output: SearchAPI output format, can be used to alter what metadata is returned and the structure of the results.
 
-    :return: Dictionary of search results. Always includes 'results', may also include 'errors' and/or 'warnings'
+    :return: Dictionary of search results
     """
 
     kwargs = locals()
