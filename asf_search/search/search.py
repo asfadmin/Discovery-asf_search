@@ -100,11 +100,19 @@ def flatten_list(items: Iterable[Union[int, range]]) -> str:
 
     :param items: The list of ints and/or ranges to flatten
 
-    :return: String containing comma-separated representation of input
+    :return: String containing comma-separated representation of input, ranges converted to 'start-stop' format
+
+    :raises ValueError: if input list contains non-int or non-range values, or if a range in the input list has a Step
+    != 1, or if a range in the input list is descending
     """
 
     for item in items:
-        if isinstance(item, range) and item.step != 1:
-            raise ValueError('Step must be 1 when using ranges to search')
+        if isinstance(item, range):
+            if item.step != 1:
+                raise ValueError(f'Step must be 1 when using ranges to search: {item}')
+            if item.start > item.stop:
+                raise ValueError(f'Start must be less than Stop when using ranges to search: {item}')
+        elif not isinstance(item, int):
+            raise ValueError(f'Expected int or range, got {type(item)}')
 
     return ','.join([f'{item.start}-{item.stop}' if isinstance(item, range) else f'{item}' for item in items])
