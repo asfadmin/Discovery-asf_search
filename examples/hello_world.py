@@ -16,7 +16,7 @@ print('='*80)
 print(f'Health check: {json.dumps(asf.health(), indent=2)}')
 
 print('='*80)
-results = asf.search(platform='S1', maxResults=2)
+results = asf.search(platform=[asf.PLATFORM.SENTINEL1], maxResults=2)
 print(f'Basic search check: {json.dumps(results, indent=2)}')
 
 print('='*80)
@@ -29,5 +29,5 @@ print(f'Product search check: {json.dumps(results, indent=2)}')
 
 print('='*80)
 wkt = 'POLYGON((-135.7843 58.2625,-136.6521 58.1589,-135.8928 56.9884,-134.6724 56.1857,-134.9571 58.0335,-135.7843 58.2625))'
-results = asf.geo_search(platform=asf.PLATFORM.SENTINEL1, intersectsWith=wkt, maxResults=2)
+results = asf.geo_search(platform=[asf.PLATFORM.SENTINEL1], intersectsWith=wkt, maxResults=2)
 print(f'Geographic search check: {json.dumps(results, indent=2)}')
