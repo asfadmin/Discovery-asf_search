@@ -2,7 +2,8 @@ import requests
 import datetime
 import json
 from typing import Union, Iterable
-import asf_search.constants
+import asf_search
+
 
 def search(
         absoluteOrbit: Iterable[Union[int, range]] = None,
@@ -90,7 +91,9 @@ def search(
         if key in data:
             data[key] = ','.join(data[key])
 
-    response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data)
+    headers = {'User-Agent': f'{asf_search.__name__}.{asf_search.__version__}'}
+
+    response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data, headers=headers)
 
     if data['output'] == 'count':
         return {'count': int(response.text)}
