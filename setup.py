@@ -2,7 +2,7 @@
 """asf_search distutils configuration"""
 from setuptools import setup
 
-version = "0.1.1"
+version = "0.1.2"
 
 requirements = [
         "requests==2.25.1"
