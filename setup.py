@@ -2,7 +2,8 @@
 """asf_search distutils configuration"""
 from setuptools import setup
 
-version = "0.1.2"
+# Loads version number into __version__
+exec(open('asf_search/version.py').read())
 
 requirements = [
         "requests==2.25.1"
@@ -13,7 +14,7 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="asf_search",
-    version=version,
+    version=__version__,
     author="Alaska Satellite Facility Discovery Team",
     author_email="uaf-asf-discovery@alaska.edu",
     description="Python wrapper for ASF's SearchAPI",
