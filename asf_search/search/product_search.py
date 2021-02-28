@@ -1,6 +1,7 @@
 from typing import Union, Iterable
 import asf_search.search
 
+
 def product_search(
         product_list: Iterable[str],
         host: str = asf_search.INTERNAL.HOST,

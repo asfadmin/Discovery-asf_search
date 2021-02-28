@@ -1,6 +1,7 @@
 from typing import Union, Iterable
 import asf_search.search
 
+
 def granule_search(
         granule_list: Iterable[str],
         host: str = asf_search.INTERNAL.HOST,
