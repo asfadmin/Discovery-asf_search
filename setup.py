@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="asf_search",
-    version="0.1.0",
+    version="0.1.1",
     author="Alaska Satellite Facility Discovery Team",
     author_email="uaf-asf-discovery@alaska.edu",
     description="Python wrapper for ASF's SearchAPI",
