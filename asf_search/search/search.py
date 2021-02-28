@@ -26,7 +26,9 @@ def search(
         relativeOrbit: Iterable[Union[int, range]] = None,
         start: Union[datetime.datetime, str] = None,
         host: str = asf_search.INTERNAL.HOST,
-        output: str = 'geojson'
+        output: str = 'geojson',
+        cmr_token: str = None,
+        cmr_provider: str = None
 ) -> dict:
     """
     Performs a generic search using the ASF SearchAPI
@@ -53,6 +55,8 @@ def search(
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
     :param output: SearchAPI output format, can be used to alter what metadata is returned and the structure of the results.
+    :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
+    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
     :return: Dictionary of search results
     """
