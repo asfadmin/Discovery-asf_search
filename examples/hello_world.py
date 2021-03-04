@@ -31,3 +31,8 @@ print('='*80)
 wkt = 'POLYGON((-135.7843 58.2625,-136.6521 58.1589,-135.8928 56.9884,-134.6724 56.1857,-134.9571 58.0335,-135.7843 58.2625))'
 results = asf.geo_search(platform=[asf.PLATFORM.SENTINEL1], intersectsWith=wkt, maxResults=2)
 print(f'Geographic search check: {json.dumps(results, indent=2)}')
+
+print('='*80)
+results = asf.stack('S1B_WV_SLC__1SSV_20210126T234925_20210126T235632_025332_030462_C733-SLC')
+print(f'Baseline stack check: {json.dumps(results, indent=2)}')
+
