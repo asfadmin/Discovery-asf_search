@@ -6,7 +6,8 @@ from setuptools import setup
 exec(open('asf_search/version.py').read())
 
 requirements = [
-        "requests==2.25.1"
+        "requests==2.25.1",
+        "numpy==1.20.1"
     ]
 
 with open("README.md", "r") as readme_file:
