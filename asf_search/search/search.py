@@ -1,7 +1,7 @@
+from typing import Union, Iterable
 import requests
 import datetime
 import json
-from typing import Union, Iterable
 import asf_search
 
 
