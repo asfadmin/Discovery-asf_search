@@ -27,6 +27,7 @@ setup(
     python_requires='>=3.6',
     install_requires=requirements,
     license='BSD',
+    license_files = ('LICENSE',),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "License :: OSI Approved :: BSD License",
