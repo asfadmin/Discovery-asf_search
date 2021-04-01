@@ -34,7 +34,7 @@ jobs:
       uses: zendesk/action-create-release@v1
       env:
         # NOT built in token, so this can trigger other actions:
-        GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.DISCO_GITHUB_MACHINE_USER }}
       with:
         # version_type populated with the last job just above ^^
         auto_increment_type: "${{ env.version_type }}"
