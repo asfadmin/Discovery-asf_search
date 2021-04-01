@@ -20,11 +20,11 @@ results = asf.search(platform=[asf.PLATFORM.SENTINEL1], maxResults=2)
 print(f'Basic search check: {json.dumps(results, indent=2)}')
 
 print('='*80)
-results = asf.granule_search(['ALPSRS279162400','ALPSRS279162200'])
+results = asf.granule_search(['ALPSRS279162400', 'ALPSRS279162200'])
 print(f'Granule search check: {json.dumps(results, indent=2)}')
 
 print('='*80)
-results = asf.product_search(['ALAV2A279102730','ALAV2A279133150'])
+results = asf.product_search(['ALAV2A279102730', 'ALAV2A279133150'])
 print(f'Product search check: {json.dumps(results, indent=2)}')
 
 print('='*80)
@@ -35,4 +35,3 @@ print(f'Geographic search check: {json.dumps(results, indent=2)}')
 print('='*80)
 results = asf.stack('S1B_WV_SLC__1SSV_20210126T234925_20210126T235632_025332_030462_C733-SLC')
 print(f'Baseline stack check: {json.dumps(results, indent=2)}')
-
