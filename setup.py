@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-"""asf_search distutils configuration"""
-from setuptools import setup
+"""asf_search setuptools configuration"""
+from setuptools import find_packages, setup
 
 # Loads version number into __version__
 exec(open('asf_search/version.py').read())
@@ -22,11 +21,12 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/asfadmin/Discovery-asf_search.git",
-    packages=['asf_search'],
+    packages=find_packages(),
     package_dir={'asf_search': 'asf_search'},
     python_requires='>=3.6',
     install_requires=requirements,
     license='BSD',
+    license_files=('LICENSE',),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "License :: OSI Approved :: BSD License",
