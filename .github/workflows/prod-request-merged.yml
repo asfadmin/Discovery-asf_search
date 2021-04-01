@@ -1,0 +1,71 @@
+name: Merged to Prod
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - prod
+
+jobs:
+  OpenRequest:
+    runs-on: ubuntu-latest
+    # If a merge request triggered the push, and that request DOESN'T contain the 'bumpless' label.
+    # (Need to check all three, instead of 'not bumpless', because if and admin overrides the tests,
+    #   it might not have ANY labels at that point.).
+    if: >
+      github.event.pull_request.merged &&
+      (
+        contains(github.event.pull_request.labels.*.name, 'patch') ||
+        contains(github.event.pull_request.labels.*.name, 'minor') ||
+        contains(github.event.pull_request.labels.*.name, 'major')
+      )
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Save version type
+      # Whichever one return's true, will let their 'echo' statement run:
+      # Must wrap in "(*) || true" to prevent it from exiting on failure, until
+      #     'allow-failure' is finished getting added: https://github.com/actions/toolkit/issues/399
+      run: |
+        (${{ contains(github.event.pull_request.labels.*.name, 'patch') }} && echo "version_type=major" >> $GITHUB_ENV) || true
+        (${{ contains(github.event.pull_request.labels.*.name, 'minor') }} && echo "version_type=minor" >> $GITHUB_ENV) || true
+        (${{ contains(github.event.pull_request.labels.*.name, 'major') }} && echo "version_type=patch" >> $GITHUB_ENV) || true
+    - name: Create a Release
+      uses: zendesk/action-create-release@v1
+      env:
+        # NOT built in token, so this can trigger other actions:
+        GITHUB_TOKEN: ${{ secrets.DISCO_GITHUB_MACHINE_USER }}
+      with:
+        # version_type populated with the last job just above ^^
+        auto_increment_type: "${{ env.version_type }}"
+        tag_schema: semantic
+        draft: false
+        prerelease: false
+
+
+  # Tell devel that the merge happened:
+  UpdateDevel:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Attempt fast-forward devel from prod
+      run: |
+        git fetch --prune
+        git checkout devel && git pull --ff-only
+        git merge --ff-only origin/prod
+        git push
+    # Open a PR, if the vanilla pull failed
+    - name: Open PR to bring main back to devel
+      if: ${{ failure() }}
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: prod
+        destination_branch: devel
+        pr_title: Pulling ${{ github.ref }} into devel
+        pr_body: Fast-forward of prod to devel failed!
+        pr_assignee: ${{ github.actor }}
+        pr_label: bot created
+        pr_draft: false
+        pr_allow_empty: true
+        github_token: ${{ secrets.GITHUB_TOKEN }} # Built in token
