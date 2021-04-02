@@ -28,10 +28,17 @@ results = asf.product_search(['ALAV2A279102730', 'ALAV2A279133150'])
 print(f'Product search check: {json.dumps(results, indent=2)}')
 
 print('='*80)
-wkt = 'POLYGON((-135.7843 58.2625,-136.6521 58.1589,-135.8928 56.9884,-134.6724 56.1857,-134.9571 58.0335,-135.7843 58.2625))'
+wkt = 'POLYGON((-135.7 58.2,-136.6 58.1,-135.8 56.9,-134.6 56.1,-134.9 58.0,-135.7 58.2))'
 results = asf.geo_search(platform=[asf.PLATFORM.SENTINEL1], intersectsWith=wkt, maxResults=2)
 print(f'Geographic search check: {json.dumps(results, indent=2)}')
 
 print('='*80)
 results = asf.stack('S1B_WV_SLC__1SSV_20210126T234925_20210126T235632_025332_030462_C733-SLC')
 print(f'Baseline stack check: {json.dumps(results, indent=2)}')
+
+print('='*80)
+wkt = 'POLYGON((-160 65,-150 65,-160 60,-150 60,-160 65))' # Self-intersecting bowtie
+try:
+    results = asf.geo_search(platform=[asf.PLATFORM.SENTINEL1], intersectsWith=wkt)
+except asf.ASFSearch4xxError as e:
+    print(f'Exception check: {e}')
