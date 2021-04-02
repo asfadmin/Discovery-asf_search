@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.0...v0.2.2)
+## [0.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.0...v0.2.4)
 
 ### Added
 - product_search(): search using a list of Product IDs (CMR's GranuleUR)
@@ -9,6 +9,7 @@
 - search(): a generic search function, allowing any combination of the above search features
 - stack(): provides basic Baseline stacking functionality (does not yet provide perpendicular/temporal baseline values)
 - Numerous constants available, covering common BEAMMODE, DATASET, FLIGHT_DIRECTION, PLATFORM, POLARIZATION, and PRODUCT_TYPE values
+- Basic exception classes and error handling for search parameter and server errors
 
 ### Changed
 - Improved packaging/build process
