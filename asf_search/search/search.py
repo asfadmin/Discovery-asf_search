@@ -1,7 +1,7 @@
 from typing import Union, Iterable
 import requests
+from requests.exceptions import HTTPError
 import datetime
-import json
 import asf_search
 
 
@@ -95,9 +95,18 @@ def search(
 
     response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data, headers=headers)
 
+    try:
+        response.raise_for_status()
+    except HTTPError:
+        if 400 <= response.status_code <= 499:
+            raise asf_search.ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+        if 500 <= response.status_code <= 599:
+            raise asf_search.ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+        raise asf_search.ServerError
+
     if data['output'] == 'count':
         return {'count': int(response.text)}
-    return json.loads(response.text)
+    return response.json()
 
 
 def flatten_list(items: Iterable[Union[int, range]]) -> str:
