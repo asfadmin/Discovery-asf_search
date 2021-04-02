@@ -1,8 +1,6 @@
 """asf_search setuptools configuration"""
 from setuptools import find_packages, setup
-
-# Loads version number into __version__
-exec(open('asf_search/version.py').read())
+import subprocess
 
 requirements = [
         "requests",
@@ -14,7 +12,7 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="asf_search",
-    version=__version__,
+    use_scm_version=True,
     author="Alaska Satellite Facility Discovery Team",
     author_email="uaf-asf-discovery@alaska.edu",
     description="Python wrapper for ASF's SearchAPI",
