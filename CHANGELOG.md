@@ -3,7 +3,7 @@
 ## [0.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.1...v0.2.2)
 
 ### Fixed
-- Pushing null change to test builds
+- Removed hard-coded version string
 
 ## [0.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.1...v0.2.1)
 
