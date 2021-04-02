@@ -1,5 +1,6 @@
 """asf_search setuptools configuration"""
 from setuptools import find_packages, setup
+import subprocess
 
 # Loads version number into __version__
 exec(open('asf_search/version.py').read())
@@ -9,8 +10,10 @@ requirements = [
         "numpy"
     ]
 
-with open("README.md", "r") as readme_file:
-    readme = readme_file.read()
+tag = subprocess.run(['git', 'describe', '--tags'], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+__version__ = f'{tag}-devel'
+if "." not in __version__:
+    __version__ = "0.0.0-dev"
 
 setup(
     name="asf_search",
