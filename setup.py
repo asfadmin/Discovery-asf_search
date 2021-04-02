@@ -2,22 +2,18 @@
 from setuptools import find_packages, setup
 import subprocess
 
-# Loads version number into __version__
-exec(open('asf_search/version.py').read())
-
 requirements = [
         "requests",
         "numpy"
     ]
 
-tag = subprocess.run(['git', 'describe', '--tags'], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-__version__ = f'{tag}-devel'
-if "." not in __version__:
-    __version__ = "0.0.0-dev"
+version = subprocess.run(['git', 'describe', '--tags'], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+if "." not in version:
+    version = "0.0.0"
 
 setup(
     name="asf_search",
-    version=__version__,
+    version=version,
     author="Alaska Satellite Facility Discovery Team",
     author_email="uaf-asf-discovery@alaska.edu",
     description="Python wrapper for ASF's SearchAPI",
