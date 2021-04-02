@@ -1,10 +1,10 @@
-name: Merged to Prod
+name: Merged to Stable
 
 on:
   pull_request:
     types: [closed]
     branches:
-      - prod
+      - stable
 
 jobs:
   OpenRequest:
@@ -43,27 +43,27 @@ jobs:
         prerelease: false
 
 
-  # Tell devel that the merge happened:
-  UpdateDevel:
+  # Tell master that the merge happened:
+  UpdateMaster:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
-    - name: Attempt fast-forward devel from prod
+    - name: Attempt fast-forward master from stable
       run: |
         git fetch --prune
-        git checkout devel && git pull --ff-only
-        git merge --ff-only origin/prod
+        git checkout master && git pull --ff-only
+        git merge --ff-only origin/stable
         git push
     # Open a PR, if the vanilla pull failed
-    - name: Open PR to bring main back to devel
+    - name: Open PR to bring main back to master
       if: ${{ failure() }}
       uses: repo-sync/pull-request@v2
       with:
-        source_branch: prod
-        destination_branch: devel
-        pr_title: Pulling ${{ github.ref }} into devel
-        pr_body: Fast-forward of prod to devel failed!
+        source_branch: stable
+        destination_branch: master
+        pr_title: Pulling ${{ github.ref }} into master
+        pr_body: Fast-forward of stable to master failed!
         pr_assignee: ${{ github.actor }}
         pr_label: bot created
         pr_draft: false

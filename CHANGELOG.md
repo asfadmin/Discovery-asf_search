@@ -12,6 +12,7 @@
 
 ### Changed
 - Improved packaging/build process
+- Restructured branch layout according to https://gist.github.com/digitaljhelms/4287848
 
 ### Fixed
 - Removed hard-coded version string
