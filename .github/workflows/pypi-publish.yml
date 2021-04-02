@@ -7,7 +7,7 @@ on:
   release:
     types: [created]
     branches:
-      - prod
+      - stable
 
 jobs:
 
