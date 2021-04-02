@@ -1,5 +1,6 @@
 from importlib.metadata import PackageNotFoundError, version
 
+from .exceptions import *
 from .constants import *
 from .health import *
 from .search import *

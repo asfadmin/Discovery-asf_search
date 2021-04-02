@@ -9,6 +9,7 @@
 - search(): a generic search function, allowing any combination of the above search features
 - stack(): provides basic Baseline stacking functionality (does not yet provide perpendicular/temporal baseline values)
 - Numerous constants available, covering common BEAMMODE, DATASET, FLIGHT_DIRECTION, PLATFORM, POLARIZATION, and PRODUCT_TYPE values
+- Basic exception classes and error handling for search parameter and server errors
 - Populated readme with instructions, examples, and badges
 
 ### Changed

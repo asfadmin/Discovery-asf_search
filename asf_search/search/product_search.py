@@ -1,4 +1,4 @@
-from typing import Union, Iterable
+from typing import Iterable
 import asf_search.search
 
 
