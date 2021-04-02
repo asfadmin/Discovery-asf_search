@@ -46,7 +46,6 @@ def search(
     :param instrument: The instrument used to acquire the data. See also: platform
     :param intersectsWith: Search by polygon, linestring, or point defined in 2D Well-Known Text (WKT)
     :param lookDirection: Left or right look direction during data acquisition
-    :param maxResults: The maximum number of results to be returned by the search
     :param platform: Remote sensing platform that acquired the data. Platforms that work together, such as Sentinel-1A/1B and ERS-1/2 have multi-platform aliases available. See also: instrument
     :param polarization: A property of SAR electromagnetic waves that can be used to extract meaningful information about surface properties of the earth.
     :param processingDate: Used to find data that has been processed at ASF since a given time and date. Supports timestamps as well as natural language such as "3 weeks ago"
@@ -54,6 +53,7 @@ def search(
     :param product_list: List of specific products. Guaranteed to be at most one product per product name.
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
+    :param maxResults: The maximum number of results to be returned by the search
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
     :param output: SearchAPI output format, can be used to alter what metadata is returned and the structure of the results.
     :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
