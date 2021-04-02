@@ -1,15 +1,15 @@
+from importlib.metadata import PackageNotFoundError, version
+
 from .constants import *
 from .health import *
 from .search import *
 from .baseline import *
 
 try:
-    # If we're an installed package, just use the provided version number
-    __version__
-except NameError:
-    # Otherwise, figure it out from github since we're not in a packaged context
-    import subprocess
-    tag = subprocess.run(['git', 'describe', '--tags'], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
-    __version__ = f'{tag}-devel'
-    if "." not in __version__:
-        __version__ = "0.0.0-devel"
+    __version__ = version(__name__)
+except PackageNotFoundError:
+    print('package is not installed!\n'
+          'Install in editable/develop mode via (from the top of this repo):\n'
+          '   python -m pip install -e .\n'
+          'Or, to just get the version number use:\n'
+          '   python setup.py --version')
