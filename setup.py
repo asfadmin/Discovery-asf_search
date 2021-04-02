@@ -7,6 +7,9 @@ requirements = [
         "numpy"
     ]
 
+with open("README.md", "r") as readme_file:
+    readme = readme_file.read()
+
 setup(
     name="asf_search",
     use_scm_version=True,
