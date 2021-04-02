@@ -15,3 +15,4 @@
 
 ### Fixed
 - Removed hard-coded version string
+- Install setuptools_scm in pypi publish action
