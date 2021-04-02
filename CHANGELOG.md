@@ -1,11 +1,6 @@
 # Changelog
 
-## [0.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.1...v0.2.2)
-
-### Fixed
-- Removed hard-coded version string
-
-## [0.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.1...v0.2.1)
+## [0.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.0...v0.2.2)
 
 ### Added
 - product_search(): search using a list of Product IDs (CMR's GranuleUR)
@@ -19,4 +14,4 @@
 - Improved packaging/build process
 
 ### Fixed
-- None
+- Removed hard-coded version string
