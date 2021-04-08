@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.0)
+
+### Changed
+- No longer uses range type for parameters that accept lists of values and/or ranges. Now expects a 2-value tuple.
+
 ## [0.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.0...v0.2.4)
 
 ### Added
