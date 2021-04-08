@@ -37,6 +37,9 @@ results = asf.stack('S1B_WV_SLC__1SSV_20210126T234925_20210126T235632_025332_030
 print(f'Baseline stack check: {json.dumps(results, indent=2)}')
 
 print('='*80)
+results = asf.search(platform=[asf.PLATFORM.SENTINEL1], frame=[100, 200, (300-310)], maxResults=100)
+
+print('='*80)
 wkt = 'POLYGON((-160 65,-150 65,-160 60,-150 60,-160 65))' # Self-intersecting bowtie
 try:
     results = asf.geo_search(platform=[asf.PLATFORM.SENTINEL1], intersectsWith=wkt)
