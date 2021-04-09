@@ -1,4 +1,4 @@
-from typing import Union, Iterable
+from typing import Iterable
 import numpy as np
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
 import asf_search
@@ -83,9 +83,10 @@ def get_stack_params(
 
     raise ASFBaselineError(f'Reference scene is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference_id}')
 
-def centroid(geometry: Iterable) -> (float, float):
+
+def centroid(geometry: Iterable[tuple]) -> (Iterable[float]):
     """
-    Convenience function to find the centroid of a geometry
+    Convenience function to find the centroid of an n-dimensional geometry
     Shamelessly lifted from https://stackoverflow.com/a/23021198 and https://stackoverflow.com/a/57183264
     """
     arr = np.array(geometry)
