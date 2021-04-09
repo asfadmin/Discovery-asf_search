@@ -3,7 +3,6 @@ import requests
 from requests.exceptions import HTTPError
 import datetime
 import math
-import json
 import asf_search
 
 
