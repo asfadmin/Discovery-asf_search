@@ -104,7 +104,7 @@ def search(
             raise asf_search.ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
         if 500 <= response.status_code <= 599:
             raise asf_search.ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
-        raise asf_search.ServerError
+        raise asf_search.ASFServerError
 
     if data['output'] == 'count':
         return {'count': int(response.text)}
@@ -120,7 +120,8 @@ def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
 
     :return: String containing comma-separated representation of input, min/max tuples converted to 'min-max' format
 
-    :raises ValueError: if input list contains non-numeric values, tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
+    :raises ValueError: if input list contains tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
+    :raises TypeError: if input list contains non-numeric values
     """
 
     for item in items:

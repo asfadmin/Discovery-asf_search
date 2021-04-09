@@ -1,5 +1,6 @@
 from typing import Union, Iterable
 import numpy as np
+from asf_search.exceptions import ASFSearchError, ASFBaselineError
 import asf_search
 
 
@@ -50,10 +51,10 @@ def get_stack_params(
 
     try:
         if len(reference_results['features']) <= 0:
-            raise ValueError(f'Reference scene not found: {reference_id}')
+            raise ASFSearchError(f'Reference scene not found: {reference_id}')
         ref_scene = reference_results['features'][0]
     except KeyError as e:
-        raise ValueError(f'Error when looking up reference scene: {reference_id}')
+        raise ASFSearchError(f'Reference scene not found: {reference_id}')
 
     stack_params = {
         'processingLevel': [ref_scene['properties']['processingLevel']]
@@ -64,7 +65,7 @@ def get_stack_params(
             stack_params['insarstackid'] = ref_scene['properties']['insarGrouping']
             return stack_params
         else:
-            raise ValueError(f'Requested reference scene needs a baseline stack ID but does not have one: {reference_id}')
+            raise ASFBaselineError(f'Requested reference scene needs a baseline stack ID but does not have one: {reference_id}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if ref_scene['properties']['platform'] in [asf_search.PLATFORM.SENTINEL1A, asf_search.PLATFORM.SENTINEL1B]:
@@ -78,11 +79,9 @@ def get_stack_params(
         else: stack_params['polarization'] = [ref_scene['properties']['polarization']]
         ref_centroid = centroid(ref_scene['geometry']['coordinates'][0]) # centroid of the outer ring
         stack_params['intersectsWith'] = f'POINT({ref_centroid[0]} {ref_centroid[1]})'
-    else:
-        raise ValueError(f'Reference granule is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference_id}')
+        return stack_params
 
-    return stack_params
-
+    raise ASFBaselineError(f'Reference scene is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference_id}')
 
 def centroid(geometry: Iterable) -> (float, float):
     """
