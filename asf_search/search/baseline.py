@@ -52,32 +52,32 @@ def get_stack_params(
     try:
         if len(reference_results['features']) <= 0:
             raise ASFSearchError(f'Reference scene not found: {reference_id}')
-        ref_scene = reference_results['features'][0]
+        ref_product = reference_results['features'][0]
     except KeyError as e:
         raise ASFSearchError(f'Reference scene not found: {reference_id}')
 
     stack_params = {
-        'processingLevel': [ref_scene['properties']['processingLevel']]
+        'processingLevel': [ref_product['properties']['processingLevel']]
     }
 
-    if ref_scene['properties']['platform'] in precalc_platforms:
-        if ref_scene['properties']['insarGrouping'] not in [None, 'NA', 0, '0']:
-            stack_params['insarstackid'] = ref_scene['properties']['insarGrouping']
+    if ref_product['properties']['platform'] in precalc_platforms:
+        if ref_product['properties']['insarGrouping'] not in [None, 'NA', 0, '0']:
+            stack_params['insarstackid'] = ref_product['properties']['insarGrouping']
             return stack_params
         else:
             raise ASFBaselineError(f'Requested reference scene needs a baseline stack ID but does not have one: {reference_id}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
-    if ref_scene['properties']['platform'] in [asf_search.PLATFORM.SENTINEL1A, asf_search.PLATFORM.SENTINEL1B]:
-        stack_params['platform'] = [ref_scene['properties']['platform']]
-        stack_params['beamMode'] = [ref_scene['properties']['beamModeType']]
-        stack_params['flightDirection'] = [ref_scene['properties']['flightDirection']]
+    if ref_product['properties']['platform'] in [asf_search.PLATFORM.SENTINEL1A, asf_search.PLATFORM.SENTINEL1B]:
+        stack_params['platform'] = [ref_product['properties']['platform']]
+        stack_params['beamMode'] = [ref_product['properties']['beamModeType']]
+        stack_params['flightDirection'] = [ref_product['properties']['flightDirection']]
         #stack_params['lookDirection'] = [ref_scene['properties']['lookDirection']]
-        stack_params['relativeOrbit'] = [int(ref_scene['properties']['pathNumber'])]  # path
-        if ref_scene['properties']['polarization'] in ['HH', 'HH+HV']: stack_params['polarization'] = ['HH','HH+HV']
-        elif ref_scene['properties']['polarization'] in ['VV', 'VV+VH']: stack_params['polarization'] = ['VV','VV+VH']
-        else: stack_params['polarization'] = [ref_scene['properties']['polarization']]
-        ref_centroid = centroid(ref_scene['geometry']['coordinates'][0]) # centroid of the outer ring
+        stack_params['relativeOrbit'] = [int(ref_product['properties']['pathNumber'])]  # path
+        if ref_product['properties']['polarization'] in ['HH', 'HH+HV']: stack_params['polarization'] = ['HH','HH+HV']
+        elif ref_product['properties']['polarization'] in ['VV', 'VV+VH']: stack_params['polarization'] = ['VV','VV+VH']
+        else: stack_params['polarization'] = [ref_product['properties']['polarization']]
+        ref_centroid = centroid(ref_product['geometry']['coordinates'][0]) # centroid of the outer ring
         stack_params['intersectsWith'] = f'POINT({ref_centroid[0]} {ref_centroid[1]})'
         return stack_params
 
