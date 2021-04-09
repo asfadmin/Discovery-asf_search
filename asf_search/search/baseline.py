@@ -19,7 +19,7 @@ def stack(
         cmr_token: str = None,
         cmr_provider: str = None) -> dict:
     """
-    Builds a baseline stack from a reference scene
+    Finds a baseline stack from a reference scene
 
     :param reference: Reference scene to base the stack from, and from which to calculate perpendicular/temporal baselines
     :param strategy: If the requested reference can not be used to calculate perpendicular baselines, this sort function will be used to pick an alternative reference from the stack. 'None' implies that no attempt will be made to find an alternative reference.
