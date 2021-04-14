@@ -19,6 +19,7 @@ def search(
         frame: Iterable[Union[int, Tuple[int, int]]] = None,
         granule_list: Iterable[str] = None,
         groupID: Iterable[str] = None,
+        insarStackId: str = None,
         instrument: Iterable[str] = None,
         intersectsWith: str = None,
         lookDirection: Iterable[str] = None,
