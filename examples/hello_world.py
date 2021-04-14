@@ -41,7 +41,7 @@ results = asf.search(
 print(f'Path/frame/platform/product type example: {json.dumps(results, indent=2)}')
 
 print('='*80)
-results = asf.stack('S1B_WV_SLC__1SSV_20210126T234925_20210126T235632_025332_030462_C733-SLC')
+results = asf.stack_from_id('S1B_WV_SLC__1SSV_20210126T234925_20210126T235632_025332_030462_C733-SLC')
 print(f'Baseline stack search example: {json.dumps(results, indent=2)}')
 
 print('='*80)
