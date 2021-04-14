@@ -3,8 +3,10 @@ import requests
 from requests.exceptions import HTTPError
 import datetime
 import math
-import json
-import asf_search
+from .results import ASFSearchResults
+from ..exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
+from ..constants import INTERNAL
+from importlib.metadata import PackageNotFoundError, version
 
 
 def search(
@@ -17,6 +19,7 @@ def search(
         frame: Iterable[Union[int, Tuple[int, int]]] = None,
         granule_list: Iterable[str] = None,
         groupID: Iterable[str] = None,
+        insarStackId: str = None,
         instrument: Iterable[str] = None,
         intersectsWith: str = None,
         lookDirection: Iterable[str] = None,
@@ -28,11 +31,10 @@ def search(
         relativeOrbit: Iterable[Union[int, Tuple[int, int]]] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        host: str = asf_search.INTERNAL.HOST,
-        output: str = 'geojson',
+        host: str = INTERNAL.HOST,
         cmr_token: str = None,
         cmr_provider: str = None
-) -> dict:
+) -> ASFSearchResults:
     """
     Performs a generic search using the ASF SearchAPI
 
@@ -45,6 +47,7 @@ def search(
     :param frame: ESA-referenced frames are offered to give users a universal framing convention. Each ESA frame has a corresponding ASF frame assigned. See also: asfframe
     :param granule_list: List of specific granules. Search results may include several products per granule name.
     :param groupID: Identifier used to find products considered to be of the same scene but having different granule names
+    :param insarStackId: Identifier used to find products of the same InSAR stack
     :param instrument: The instrument used to acquire the data. See also: platform
     :param intersectsWith: Search by polygon, linestring, or point defined in 2D Well-Known Text (WKT)
     :param lookDirection: Left or right look direction during data acquisition
@@ -57,11 +60,10 @@ def search(
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param output: SearchAPI output format, can be used to alter what metadata is returned and the structure of the results.
-    :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
+    :param cmr_token: EDL authentication token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
-    :return: Dictionary of search results
+    :return: ASFSearchResults(dict) of search results
     """
 
     kwargs = locals()
@@ -93,22 +95,26 @@ def search(
         if key in data:
             data[key] = ','.join(data[key])
 
-    headers = {'User-Agent': f'{asf_search.__name__}.{asf_search.__version__}'}
+    data['output'] = 'geojson'
 
-    response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data, headers=headers)
+    try:
+        pkg_version = version(__name__)
+    except PackageNotFoundError:
+        pkg_version = '0.0.0'
+    headers = {'User-Agent': f'{__name__}.{pkg_version}'}
+
+    response = requests.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data, headers=headers)
 
     try:
         response.raise_for_status()
     except HTTPError:
         if 400 <= response.status_code <= 499:
-            raise asf_search.ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
         if 500 <= response.status_code <= 599:
-            raise asf_search.ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
-        raise asf_search.ServerError
+            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+        raise ASFServerError
 
-    if data['output'] == 'count':
-        return {'count': int(response.text)}
-    return response.json()
+    return ASFSearchResults(response.json())
 
 
 def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
@@ -120,7 +126,8 @@ def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
 
     :return: String containing comma-separated representation of input, min/max tuples converted to 'min-max' format
 
-    :raises ValueError: if input list contains non-numeric values, tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
+    :raises ValueError: if input list contains tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
+    :raises TypeError: if input list contains non-numeric values
     """
 
     for item in items:
