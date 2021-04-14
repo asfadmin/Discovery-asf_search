@@ -31,8 +31,7 @@ def search(
         relativeOrbit: Iterable[Union[int, Tuple[int, int]]] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        host: str = asf_search.INTERNAL.HOST,
-        output: str = 'geojson',
+        host: str = INTERNAL.HOST,
         cmr_token: str = None,
         cmr_provider: str = None
 ) -> ASFSearchResults:
@@ -48,6 +47,7 @@ def search(
     :param frame: ESA-referenced frames are offered to give users a universal framing convention. Each ESA frame has a corresponding ASF frame assigned. See also: asfframe
     :param granule_list: List of specific granules. Search results may include several products per granule name.
     :param groupID: Identifier used to find products considered to be of the same scene but having different granule names
+    :param insarStackId: Identifier used to find products of the same InSAR stack
     :param instrument: The instrument used to acquire the data. See also: platform
     :param intersectsWith: Search by polygon, linestring, or point defined in 2D Well-Known Text (WKT)
     :param lookDirection: Left or right look direction during data acquisition
@@ -60,8 +60,7 @@ def search(
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param output: SearchAPI output format, can be used to alter what metadata is returned and the structure of the results.
-    :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
+    :param cmr_token: EDL authentication token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
     :return: ASFSearchResults(dict) of search results
