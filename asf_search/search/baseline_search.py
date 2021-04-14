@@ -118,6 +118,13 @@ def calc_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults) -> N
     :param stack: The stack to operate on.
     :return: None, as the operation occurs in-place on the stack provided.
     """
-    pass
+    reference_time = parse(reference.properties['startTime'])
+    if reference_time.tzinfo is None:
+        reference_time = pytz.utc.localize(reference_time)
 
+    for secondary in stack:
+        secondary_time = parse(secondary.properties['startTime'])
+        if secondary_time.tzinfo is None:
+            secondary_time = pytz.utc.localize(secondary_time)
+        secondary.properties['temporal_baseline'] = (secondary_time - reference_time).days
 
