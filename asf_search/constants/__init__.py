@@ -2,6 +2,7 @@
 
 from .BEAMMODE import *
 from .FLIGHT_DIRECTION import *
+from .INSTRUMENT import *
 from .PLATFORM import *
 from .POLARIZATION import *
 from .PRODUCT_TYPE import *
