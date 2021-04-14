@@ -3,7 +3,10 @@ import requests
 from requests.exceptions import HTTPError
 import datetime
 import math
-import asf_search
+from .results import ASFSearchResults
+from ..exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
+from ..constants import INTERNAL
+from importlib.metadata import PackageNotFoundError, version
 
 
 def search(
@@ -31,7 +34,7 @@ def search(
         output: str = 'geojson',
         cmr_token: str = None,
         cmr_provider: str = None
-) -> dict:
+) -> ASFSearchResults:
     """
     Performs a generic search using the ASF SearchAPI
 
@@ -60,7 +63,7 @@ def search(
     :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
-    :return: Dictionary of search results
+    :return: ASFSearchResults(dict) of search results
     """
 
     kwargs = locals()
@@ -94,20 +97,18 @@ def search(
 
     headers = {'User-Agent': f'{asf_search.__name__}.{asf_search.__version__}'}
 
-    response = requests.post(f'https://{host}{asf_search.INTERNAL.SEARCH_PATH}', data=data, headers=headers)
+    response = requests.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data, headers=headers)
 
     try:
         response.raise_for_status()
     except HTTPError:
         if 400 <= response.status_code <= 499:
-            raise asf_search.ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
         if 500 <= response.status_code <= 599:
-            raise asf_search.ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
-        raise asf_search.ASFServerError
+            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+        raise ASFServerError
 
-    if data['output'] == 'count':
-        return {'count': int(response.text)}
-    return response.json()
+    return ASFSearchResults(response.json())
 
 
 def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
