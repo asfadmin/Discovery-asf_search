@@ -3,10 +3,11 @@ import requests
 from requests.exceptions import HTTPError
 import datetime
 import math
-from .results import ASFSearchResults
-from ..exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
-from ..constants import INTERNAL
 from importlib.metadata import PackageNotFoundError, version
+
+from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
+from asf_search.constants import INTERNAL
 
 
 def search(

@@ -1,7 +1,8 @@
 from typing import Iterable
-from .search import search
-from .results import ASFSearchResults
-from ..constants import INTERNAL
+
+from asf_search.search import search
+from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.constants import INTERNAL
 
 
 def granule_search(

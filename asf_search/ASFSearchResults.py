@@ -1,5 +1,7 @@
 import json
-from .product import ASFProduct
+
+from asf_search.ASFProduct import ASFProduct
+
 
 class ASFSearchResults(list):
     def __init__(self, results: dict):

@@ -1,11 +1,12 @@
-from typing import Iterable
-import numpy as np
-from .search import search
-from .results import ASFSearchResults
-from .product import ASFProduct
-from .product_search import product_search
-from ..constants import INTERNAL, PLATFORM
-from ..exceptions import ASFSearchError, ASFBaselineError
+from dateutil.parser import parse
+import pytz
+
+from asf_search.search import search
+from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.ASFProduct import ASFProduct
+from asf_search.search.product_search import product_search
+from asf_search.constants import INTERNAL, PLATFORM
+from asf_search.exceptions import ASFSearchError, ASFBaselineError
 
 
 precalc_platforms = [
@@ -35,14 +36,15 @@ def stack_from_product(
     """
 
     stack_params = get_stack_params(reference)
-    stack_results = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
-    calc_temporal_baselines(reference, stack_results)
+    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    calc_temporal_baselines(reference, stack)
+
 
     #TODO: Calculate temporal baselines
     #TODO: Calculate perpendicular baselines
     #TODO: Add nearest neighbor finder
 
-    return stack_results
+    return stack
 
 
 def stack_from_id(

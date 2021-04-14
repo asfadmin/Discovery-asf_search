@@ -1,7 +1,8 @@
 from typing import Iterable
 import numpy as np
 import json
-from ..download import download_url
+
+from asf_search.download import download_url
 
 
 class ASFProduct:
@@ -12,7 +13,7 @@ class ASFProduct:
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
-    def geojson(self):
+    def geojson(self) -> dict:
         return {
             'type': 'Feature',
             'geometry': self.geometry,
@@ -40,7 +41,7 @@ class ASFProduct:
 
         :return: ASFSearchResults(list) of the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
-        from .baseline_search import stack_from_product
+        from .search.baseline_search import stack_from_product
 
         return stack_from_product(self)
 
