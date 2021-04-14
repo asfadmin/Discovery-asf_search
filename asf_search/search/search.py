@@ -96,7 +96,11 @@ def search(
         if key in data:
             data[key] = ','.join(data[key])
 
-    headers = {'User-Agent': f'{asf_search.__name__}.{asf_search.__version__}'}
+    try:
+        pkg_version = version(__name__)
+    except PackageNotFoundError:
+        pkg_version = '0.0.0'
+    headers = {'User-Agent': f'{__name__}.{pkg_version}'}
 
     response = requests.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data, headers=headers)
 
