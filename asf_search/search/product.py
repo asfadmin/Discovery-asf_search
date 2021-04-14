@@ -1,9 +1,24 @@
 from typing import Iterable
 import numpy as np
+import json
 from ..download import download_url
 
 
-class ASFProduct(dict):
+class ASFProduct:
+    def __init__(self, args):
+        self.properties = args['properties']
+        self.geometry = args['geometry']
+
+    def __str__(self):
+        return json.dumps(self.geojson(), indent=2, sort_keys=True)
+
+    def geojson(self):
+        return {
+            'type': 'Feature',
+            'geometry': self.geometry,
+            'properties': self.properties
+        }
+
     def download(self, dir: str, filename: str = None, token: str = None) -> None:
         """
         Downloads this product to the specified path and optional filename.
@@ -15,15 +30,15 @@ class ASFProduct(dict):
         :return: None
         """
         if filename is None:
-            filename = self['properties']['fileName']
+            filename = self.properties['fileName']
 
-        download_url(url=self['properties']['url'], dir=dir, filename=filename, token=token)
+        download_url(url=self.properties['url'], dir=dir, filename=filename, token=token)
 
-    def stack(self):
+    def stack(self) -> list:
         """
         Builds a baseline stack from this product.
 
-        :return: ASFSearchResults(dict) of the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
+        :return: ASFSearchResults(list) of the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .baseline_search import stack_from_product
 
@@ -34,7 +49,7 @@ class ASFProduct(dict):
         Finds the centroid of a product
         Shamelessly lifted from https://stackoverflow.com/a/23021198 and https://stackoverflow.com/a/57183264
         """
-        arr = np.array(self['geometry']['coordinates'][0])
+        arr = np.array(self.geometry['coordinates'][0])
         length, dim = arr.shape
         return [np.sum(arr[:, i]) / length for i in range(dim)]
 
