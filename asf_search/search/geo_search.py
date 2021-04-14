@@ -1,6 +1,8 @@
 from typing import Union, Iterable
 import datetime
-import asf_search.search
+from .search import search
+from .results import ASFSearchResults
+from ..constants import INTERNAL
 
 
 def geo_search(
@@ -25,7 +27,7 @@ def geo_search(
         output: str = 'geojson',
         cmr_token: str = None,
         cmr_provider: str = None
-) -> dict:
+) -> ASFSearchResults:
     """
     Performs a geographic search using the ASF SearchAPI
 
@@ -51,10 +53,10 @@ def geo_search(
     :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
-    :return: Dictionary of search results
+    :return: ASFSearchResults(dict) of search results
     """
 
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
 
-    return asf_search.search(**data)
+    return search(**data)

@@ -1,4 +1,4 @@
-from .products import ASFProduct
+from .product import ASFProduct
 
 class ASFSearchResults(dict):
     def __init__(self, results: dict):
