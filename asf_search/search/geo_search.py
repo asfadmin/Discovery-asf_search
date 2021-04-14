@@ -1,6 +1,8 @@
 from typing import Union, Iterable
 import datetime
-import asf_search.search
+from .search import search
+from .results import ASFSearchResults
+from ..constants import INTERNAL
 
 
 def geo_search(
@@ -21,11 +23,10 @@ def geo_search(
         relativeOrbit: Iterable[Union[int, range]] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        host: str = asf_search.INTERNAL.HOST,
-        output: str = 'geojson',
+        host: str = INTERNAL.HOST,
         cmr_token: str = None,
         cmr_provider: str = None
-) -> dict:
+) -> ASFSearchResults:
     """
     Performs a geographic search using the ASF SearchAPI
 
@@ -39,22 +40,21 @@ def geo_search(
     :param instrument: The instrument used to acquire the data. See also: platform
     :param intersectsWith: Search by polygon, linestring, or point defined in 2D Well-Known Text (WKT)
     :param lookDirection: Left or right look direction during data acquisition
-    :param maxResults: The maximum number of results to be returned by the search
     :param platform: Remote sensing platform that acquired the data. Platforms that work together, such as Sentinel-1A/1B and ERS-1/2 have multi-platform aliases available. See also: instrument
     :param polarization: A property of SAR electromagnetic waves that can be used to extract meaningful information about surface properties of the earth.
     :param processingDate: Used to find data that has been processed at ASF since a given time and date.  Supports timestamps as well as natural language such as "3 weeks ago"
     :param processingLevel: Level to which the data has been processed
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
+    :param maxResults: The maximum number of results to be returned by the search
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param output: SearchAPI output format, can be used to alter what metadata is returned and the structure of the results.
     :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
-    :return: Dictionary of search results
+    :return: ASFSearchResults(dict) of search results
     """
 
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
 
-    return asf_search.search(**data)
+    return search(**data)

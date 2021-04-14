@@ -1,11 +1,11 @@
 """Various constants to be used in search and related functions, provided as a convenience to help ensure sensible values."""
 
-from .DATASET import DATASET
-from .PLATFORM import PLATFORM
-from .POLARIZATION import POLARIZATION
-from .BEAMMODE import BEAMMODE
-from .FLIGHT_DIRECTION import FLIGHT_DIRECTION
-from .PRODUCT_TYPE import PRODUCT_TYPE
-from .INTERNAL import INTERNAL
+from .BEAMMODE import *
+from .FLIGHT_DIRECTION import *
+from .INSTRUMENT import *
+from .PLATFORM import *
+from .POLARIZATION import *
+from .PRODUCT_TYPE import *
+from .INTERNAL import *
 
 #TODO: add INSTRUMENT constants
