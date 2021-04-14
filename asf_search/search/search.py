@@ -95,6 +95,8 @@ def search(
         if key in data:
             data[key] = ','.join(data[key])
 
+    data['output'] = 'geojson'
+
     try:
         pkg_version = version(__name__)
     except PackageNotFoundError:
