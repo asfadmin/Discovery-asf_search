@@ -7,7 +7,6 @@ import asf_search as asf
 
 print('='*80)
 print('Constants')
-print(f'asf.DATASET.AVNIR: {asf.DATASET.SENTINEL1}')
 print(f'asf.BEAMMODE.IW: {asf.BEAMMODE.IW}')
 print(f'asf.POLARIZATION.HH_HV: {asf.POLARIZATION.HH_HV}')
 print(f'asf.PLATFORM.SENTINEL1: {asf.PLATFORM.SENTINEL1}')
