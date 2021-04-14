@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.0)
+## [0.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.1)
 
 ### Added
 - Layed out framework for INSTRUMENT constants (needs to be populated)
@@ -11,6 +11,9 @@
 - ASFDownloadError exception class
 - ASFBaselineError exception class
 - Better path/frame/platform/product example
+- ASFSearchResults now has a geojson() method which returns a data structure that matches the geojson specification
+- ASFProduct now has a geojson() method that produces a data structure matching a geojson feature snippet
+- ASFSearchResults and ASFProduct both have a __str__() methods that serializes the output of their geojson() methods
 
 ### Changed
 - No longer uses range type for parameters that accept lists of values and/or ranges. Now expects a 2-value tuple.
@@ -20,6 +23,8 @@
 - insarStackID now a search option (needed for baseline stacking of pre-calculated datasets)
 - Flatter structure for constants
 - baseline functionality moved into search group (file restructuring)
+- ASFProduct is no longer a subclass of dict. Instead, metadata has been moved to .properties and .geometry
+- ASFSearchResults is now a subclass of list, for list-like operations
 
 ### Fixed
 - Corrected handling of version number in user agent string
