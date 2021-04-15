@@ -2,11 +2,11 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/asf_search.svg)](https://pypi.python.org/pypi/asf_search/)
 [![Conda version](https://img.shields.io/conda/vn/conda-forge/asf_search)](https://anaconda.org/conda-forge/asf_search)
-[![Conda platforms](https://img.shields.io/conda/pn/conda-forge/asf_search)](https://anaconda.org/conda-forge/asf_search)
 
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/asf_search.svg)](https://pypi.python.org/pypi/asf_search/)
 [![PyPI license](https://img.shields.io/pypi/l/asf_search.svg)](https://pypi.python.org/pypi/asf_search/)
 
+[![CodeFactor](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search/badge)](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search)
 [![Github workflow](https://github.com/asfadmin/asf_search/actions/workflows/run-pytest.yml/badge.svg)](https://github.com/asfadmin/Discovery-asf_search/actions/workflows/run-pytest.yml)
 
 Python wrapper for the ASF SearchAPI
