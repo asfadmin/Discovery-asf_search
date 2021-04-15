@@ -5,7 +5,7 @@ import datetime
 import math
 from importlib.metadata import PackageNotFoundError, version
 
-from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.ASFSearchResults import ASFSearchResults, ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
 
@@ -131,7 +131,8 @@ def search(
             raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
         raise ASFServerError
 
-    return ASFSearchResults(response.json())
+    products = [ASFProduct(f) for f in response.json()['features']]
+    return ASFSearchResults(products)
 
 
 def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:

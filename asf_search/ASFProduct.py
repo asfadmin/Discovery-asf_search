@@ -8,8 +8,14 @@ from asf_search.download import download_url
 
 class ASFProduct:
     def __init__(self, args):
-        self.properties = args['properties']
-        self.geometry = args['geometry']
+        if isinstance(args, dict):
+            self.properties = args['properties']
+            self.geometry = args['geometry']
+        elif isinstance(args, ASFProduct):
+            self.properties = args.properties.copy()
+            self.geometry = args.geometry.copy()
+        else:
+            raise TypeError(f'Expected geojson feature dict or ASFProduct, got {type(args)}')
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
