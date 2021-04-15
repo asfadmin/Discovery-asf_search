@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.2)
+## [0.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.1)
 
 ### Added
 - Layed out framework for INSTRUMENT constants (needs to be populated)
