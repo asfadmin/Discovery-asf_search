@@ -2,7 +2,8 @@ import os.path
 import urllib.parse
 import requests
 from importlib.metadata import PackageNotFoundError, version
-from ..exceptions import ASFDownloadError
+
+from asf_search.exceptions import ASFDownloadError
 
 
 def download_url(url: str, dir: str, filename: str = None, token: str = None) -> None:

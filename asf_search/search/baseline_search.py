@@ -1,11 +1,12 @@
-from typing import Iterable
-import numpy as np
-from .search import search
-from .results import ASFSearchResults
-from .product import ASFProduct
-from .product_search import product_search
-from ..constants import INTERNAL, PLATFORM
-from ..exceptions import ASFSearchError, ASFBaselineError
+from dateutil.parser import parse
+import pytz
+
+from asf_search.search import search
+from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.ASFProduct import ASFProduct
+from asf_search.search.product_search import product_search
+from asf_search.constants import INTERNAL, PLATFORM
+from asf_search.exceptions import ASFSearchError, ASFBaselineError
 
 
 precalc_platforms = [
@@ -35,14 +36,16 @@ def stack_from_product(
     """
 
     stack_params = get_stack_params(reference)
-    stack_results = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
-    calc_temporal_baselines(reference, stack_results)
+    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    calc_temporal_baselines(reference, stack)
+    stack.sort(key=lambda product: product.properties['temporalBaseline'])
+
 
     #TODO: Calculate temporal baselines
     #TODO: Calculate perpendicular baselines
     #TODO: Add nearest neighbor finder
 
-    return stack_results
+    return stack
 
 
 def stack_from_id(
@@ -68,12 +71,9 @@ def stack_from_id(
         cmr_token=cmr_token,
         cmr_provider=cmr_provider)
 
-    try:
-        if len(reference_results) <= 0:
-            raise ASFSearchError(f'Reference product not found: {reference_id}')
-        reference = reference_results[0]
-    except KeyError as e:
+    if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
+    reference = reference_results[0]
 
     return stack_from_product(reference, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
 
@@ -116,6 +116,13 @@ def calc_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults) -> N
     :param stack: The stack to operate on.
     :return: None, as the operation occurs in-place on the stack provided.
     """
-    pass
+    reference_time = parse(reference.properties['startTime'])
+    if reference_time.tzinfo is None:
+        reference_time = pytz.utc.localize(reference_time)
 
+    for secondary in stack:
+        secondary_time = parse(secondary.properties['startTime'])
+        if secondary_time.tzinfo is None:
+            secondary_time = pytz.utc.localize(secondary_time)
+        secondary.properties['temporalBaseline'] = (secondary_time - reference_time).days
 

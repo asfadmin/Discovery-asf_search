@@ -1,18 +1,20 @@
 from typing import Iterable
 import numpy as np
 import json
-from ..download import download_url
+from collections import UserList
+
+from asf_search.download import download_url
 
 
 class ASFProduct:
-    def __init__(self, args):
+    def __init__(self, args: dict):
         self.properties = args['properties']
         self.geometry = args['geometry']
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
-    def geojson(self):
+    def geojson(self) -> dict:
         return {
             'type': 'Feature',
             'geometry': self.geometry,
@@ -34,13 +36,13 @@ class ASFProduct:
 
         download_url(url=self.properties['url'], dir=dir, filename=filename, token=token)
 
-    def stack(self) -> list:
+    def stack(self) -> UserList:
         """
         Builds a baseline stack from this product.
 
         :return: ASFSearchResults(list) of the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
-        from .baseline_search import stack_from_product
+        from .search.baseline_search import stack_from_product
 
         return stack_from_product(self)
 
