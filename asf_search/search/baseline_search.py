@@ -71,12 +71,9 @@ def stack_from_id(
         cmr_token=cmr_token,
         cmr_provider=cmr_provider)
 
-    try:
-        if len(reference_results) <= 0:
-            raise ASFSearchError(f'Reference product not found: {reference_id}')
-        reference = reference_results[0]
-    except KeyError as e:
+    if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
+    reference = reference_results[0]
 
     return stack_from_product(reference, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
 
