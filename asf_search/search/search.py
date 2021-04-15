@@ -91,6 +91,7 @@ def search(
         'absoluteOrbit',
         'asfFrame',
         'frame',
+        'offNadirAngle',
         'relativeOrbit']
     for key in flatten_fields:
         if key in data:
