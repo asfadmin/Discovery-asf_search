@@ -38,6 +38,7 @@ def stack_from_product(
     stack_params = get_stack_params(reference)
     stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
     calc_temporal_baselines(reference, stack)
+    stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
 
     #TODO: Calculate temporal baselines
@@ -126,5 +127,5 @@ def calc_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults) -> N
         secondary_time = parse(secondary.properties['startTime'])
         if secondary_time.tzinfo is None:
             secondary_time = pytz.utc.localize(secondary_time)
-        secondary.properties['temporal_baseline'] = (secondary_time - reference_time).days
+        secondary.properties['temporalBaseline'] = (secondary_time - reference_time).days
 
