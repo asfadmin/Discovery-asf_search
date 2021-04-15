@@ -130,7 +130,7 @@ def search(
             raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
-        raise ASFServerError
+        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
 
     products = [ASFProduct(f) for f in response.json()['features']]
     return ASFSearchResults(products)
