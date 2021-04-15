@@ -1,6 +1,7 @@
 from typing import Iterable
 import numpy as np
 import json
+from collections import UserList
 
 from asf_search.download import download_url
 
@@ -35,7 +36,7 @@ class ASFProduct:
 
         download_url(url=self.properties['url'], dir=dir, filename=filename, token=token)
 
-    def stack(self) -> list:
+    def stack(self) -> UserList:
         """
         Builds a baseline stack from this product.
 

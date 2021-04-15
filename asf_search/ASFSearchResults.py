@@ -1,14 +1,10 @@
+from collections import UserList
 import json
 
 from asf_search.ASFProduct import ASFProduct
 
 
-class ASFSearchResults(list):
-    def __init__(self, results: dict):
-        super(ASFSearchResults, self).__init__()
-        for product in results['features']:
-            self.append(ASFProduct(product))
-
+class ASFSearchResults(UserList):
     def geojson(self):
         return {
             'type': 'FeatureCollection',
