@@ -1,6 +1,16 @@
 # Changelog
 
-## [0.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.3.0...v0.3.0)
+## [0.4.1](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v0.4.1)
+### Added
+- Parallel downloads now supported by ASFSearchResults. Defaults to 1 (sequential download)
+
+### Changed
+- Import download functionality in asf_search (for `download_url()`)
+
+### Fixed
+- Fixed ASFProduct import in search.py
+
+## [0.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.3.0...v0.4.0)
 ### Added
 - ASFSearchResults now has a geojson() method which returns a data structure that matches the geojson specification
 - ASFProduct now has a geojson() method that produces a data structure matching a geojson feature snippet
