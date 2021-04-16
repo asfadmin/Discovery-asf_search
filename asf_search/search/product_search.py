@@ -1,7 +1,8 @@
 from typing import Iterable
-from .search import search
-from .results import ASFSearchResults
-from ..constants import INTERNAL
+
+from asf_search.search import search
+from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.constants import INTERNAL
 
 
 def product_search(
@@ -18,7 +19,7 @@ def product_search(
     :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
-    :return: ASFSearchResults(dict) of search results
+    :return: ASFSearchResults(list) of search results
     """
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')

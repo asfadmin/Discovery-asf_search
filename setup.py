@@ -4,7 +4,9 @@ import subprocess
 
 requirements = [
         "requests",
-        "numpy"
+        "numpy",
+        "python-dateutil",
+        "pytz"
     ]
 
 with open("README.md", "r") as readme_file:

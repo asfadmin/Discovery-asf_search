@@ -1,10 +1,18 @@
-from .product import ASFProduct
+from collections import UserList
+import json
 
-class ASFSearchResults(dict):
-    def __init__(self, results: dict):
-        super(ASFSearchResults, self).__init__(results)
-        for index, product in enumerate(self['features']):
-            self['features'][index] = ASFProduct(self['features'][index])
+from asf_search.ASFProduct import ASFProduct
+
+
+class ASFSearchResults(UserList):
+    def geojson(self):
+        return {
+            'type': 'FeatureCollection',
+            'features': [product.geojson() for product in self]
+        }
+
+    def __str__(self):
+        return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
     def download(self, dir: str, token: str = None) -> None:
         """
@@ -16,5 +24,5 @@ class ASFSearchResults(dict):
         :return: None
         """
 
-        for product in self['features']:
+        for product in self:
             product.download(dir=dir, token=token)

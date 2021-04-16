@@ -1,5 +1,7 @@
 from importlib.metadata import PackageNotFoundError, version
 
+from .ASFProduct import ASFProduct
+from .ASFSearchResults import ASFSearchResults
 from .exceptions import *
 from .constants import *
 from .health import *
