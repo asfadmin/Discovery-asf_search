@@ -5,7 +5,8 @@ import datetime
 import math
 from importlib.metadata import PackageNotFoundError, version
 
-from asf_search.ASFSearchResults import ASFSearchResults, ASFProduct
+from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
 
