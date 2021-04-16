@@ -6,6 +6,7 @@
 
 ### Changed
 - Import download functionality in asf_search (for `download_url()`)
+- "parallel" is now "processes" in download functionality
 
 ### Fixed
 - Fixed ASFProduct import in search.py
