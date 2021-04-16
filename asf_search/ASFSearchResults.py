@@ -38,4 +38,3 @@ class ASFSearchResults(UserList):
 def _download_product(args):
     product, dir, token = args
     product.download(dir=dir, token=token)
-
