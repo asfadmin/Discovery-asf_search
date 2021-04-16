@@ -6,6 +6,7 @@ from .exceptions import *
 from .constants import *
 from .health import *
 from .search import *
+from .download import *
 
 try:
     __version__ = version(__name__)
