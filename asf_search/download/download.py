@@ -1,9 +1,27 @@
+from typing import Iterable
+from multiprocessing import Pool
 import os.path
 import urllib.parse
 import requests
 from importlib.metadata import PackageNotFoundError, version
 
 from asf_search.exceptions import ASFDownloadError
+
+
+def _download_url(arg):
+    url, dir, token = arg
+    download_url(
+        url=url,
+        dir=dir,
+        token=token)
+
+
+def download_urls(urls: Iterable[str], dir: str, token: str, processes: int = 1):
+    pool = Pool(processes=processes)
+    args = [(url, dir, token) for url in urls]
+    pool.map(_download_url, args)
+    pool.close()
+    pool.join()
 
 
 def download_url(url: str, dir: str, filename: str = None, token: str = None) -> None:
