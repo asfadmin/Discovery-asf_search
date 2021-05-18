@@ -1,8 +1,8 @@
 import os.path
 import urllib.parse
 import requests
-from importlib.metadata import PackageNotFoundError, version
 
+from asf_search import __version__
 from asf_search.exceptions import ASFDownloadError
 
 
@@ -25,11 +25,7 @@ def download_url(url: str, dir: str, filename: str = None, token: str = None) ->
     if os.path.isfile(os.path.join(dir, filename)):
         raise ASFDownloadError(f'File already exists: {os.path.join(dir, filename)}')
 
-    try:
-        pkg_version = version(__name__)
-    except PackageNotFoundError:
-        pkg_version = '0.0.0'
-    headers = {'User-Agent': f'{__name__}.{pkg_version}'}
+    headers = {'User-Agent': f'{__name__}.{__version__}'}
     if token is not None:
         headers['Authorization'] = f'Bearer {token}'
 
