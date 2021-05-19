@@ -1,4 +1,5 @@
-from importlib.metadata import PackageNotFoundError, version
+# backport of importlib.metadata for python < 3.8
+from importlib_metadata import PackageNotFoundError, version
 
 from .ASFProduct import ASFProduct
 from .ASFSearchResults import ASFSearchResults

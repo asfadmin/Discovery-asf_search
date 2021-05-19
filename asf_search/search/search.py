@@ -3,8 +3,8 @@ import requests
 from requests.exceptions import HTTPError
 import datetime
 import math
-from importlib.metadata import PackageNotFoundError, version
 
+from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
@@ -116,12 +116,7 @@ def search(
 
     data['output'] = 'geojson'
 
-    try:
-        pkg_version = version(__name__)
-    except PackageNotFoundError:
-        pkg_version = '0.0.0'
-    headers = {'User-Agent': f'{__name__}.{pkg_version}'}
-
+    headers = {'User-Agent': f'{__name__}.{__version__}'}
     response = requests.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data, headers=headers)
 
     try:
