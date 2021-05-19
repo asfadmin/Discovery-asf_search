@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.4.1](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v0.4.1)
+## [0.4.2](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v0.4.2)
 ### Added
 - Parallel downloads now supported by ASFSearchResults. Defaults to 1 (sequential download)
 
@@ -10,6 +10,7 @@
 
 ### Fixed
 - Fixed ASFProduct import in search.py
+- importlib metadata fix for python <3.8
 
 ## [0.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.3.0...v0.4.0)
 ### Added
