@@ -12,10 +12,10 @@ from asf_search.constants import INTERNAL
 
 
 def search(
-        absoluteOrbit: Iterable[Union[int, Tuple[int, int]]] = None,
-        asfFrame: Iterable[Union[int, Tuple[int, int]]] = None,
-        beamMode: Iterable[str] = None,
-        collectionName: Iterable[str] = None,
+        absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        beamMode: Union[str, Iterable[str]] = None,
+        collectionName: Union[str, Iterable[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
@@ -23,20 +23,20 @@ def search(
         minFaradayRotation: float = None,
         flightDirection: str = None,
         flightLine: str = None,
-        frame: Iterable[Union[int, Tuple[int, int]]] = None,
-        granule_list: Iterable[str] = None,
-        groupID: Iterable[str] = None,
+        frame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        granule_list: Union[str, Iterable[str]] = None,
+        groupID: Union[str, Iterable[str]] = None,
         insarStackId: str = None,
-        instrument: Iterable[str] = None,
+        instrument: Union[str, Iterable[str]] = None,
         intersectsWith: str = None,
-        lookDirection: Iterable[str] = None,
-        offNadirAngle: Iterable[Union[float, Tuple[float, float]]] = None,
-        platform: Iterable[str] = None,
-        polarization: Iterable[str] = None,
+        lookDirection: Union[str, Iterable[str]] = None,
+        offNadirAngle: Union[float, Tuple[float, float], Iterable[Union[float, Tuple[float, float]]]] = None,
+        platform: Union[str, Iterable[str]] = None,
+        polarization: Union[str, Iterable[str]] = None,
         processingDate: Union[datetime.datetime, str] = None,
-        processingLevel: Iterable[str] = None,
-        product_list: Iterable[str] = None,
-        relativeOrbit: Iterable[Union[int, Tuple[int, int]]] = None,
+        processingLevel: Union[str, Iterable[str]] = None,
+        product_list: Union[str, Iterable[str]] = None,
+        relativeOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
@@ -87,6 +87,27 @@ def search(
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
     host = data.pop('host')
+
+    listify_fields = [
+        'absoluteOrbit',
+        'asfFrame',
+        'beamMode',
+        'collectionName',
+        'frame',
+        'granule_list',
+        'groupID',
+        'instrument',
+        'lookDirection',
+        'offNadirAngle',
+        'platform',
+        'polarization',
+        'processingLevel',
+        'product_list',
+        'relativeOrbit'
+    ]
+    for key in listify_fields:
+        if key in data and type(data[key]) != list:
+            data[key] = [data[key]]
 
     flatten_fields = [
         'absoluteOrbit',
