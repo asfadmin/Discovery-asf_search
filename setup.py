@@ -6,7 +6,8 @@ requirements = [
         "requests",
         "numpy",
         "python-dateutil",
-        "pytz"
+        "pytz",
+        "importlib_metadata",
     ]
 
 with open("README.md", "r") as readme_file:
