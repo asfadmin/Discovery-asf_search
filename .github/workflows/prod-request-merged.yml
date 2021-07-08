@@ -27,9 +27,9 @@ jobs:
       # Must wrap in "(*) || true" to prevent it from exiting on failure, until
       #     'allow-failure' is finished getting added: https://github.com/actions/toolkit/issues/399
       run: |
-        (${{ contains(github.event.pull_request.labels.*.name, 'patch') }} && echo "version_type=major" >> $GITHUB_ENV) || true
+        (${{ contains(github.event.pull_request.labels.*.name, 'patch') }} && echo "version_type=patch" >> $GITHUB_ENV) || true
         (${{ contains(github.event.pull_request.labels.*.name, 'minor') }} && echo "version_type=minor" >> $GITHUB_ENV) || true
-        (${{ contains(github.event.pull_request.labels.*.name, 'major') }} && echo "version_type=patch" >> $GITHUB_ENV) || true
+        (${{ contains(github.event.pull_request.labels.*.name, 'major') }} && echo "version_type=major" >> $GITHUB_ENV) || true
     - name: Create a Release
       uses: zendesk/action-create-release@v1
       env:
