@@ -1,6 +1,10 @@
 # Changelog
 
-## [0.4.2](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v0.4.2)
+## [1.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v1.1.0...v1.1.1)
+### Fixed
+- Fixed import order of operations bug
+
+## [1.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v1.1.0)
 ### Added
 - Parallel downloads now supported by ASFSearchResults. Defaults to 1 (sequential download)
 - For `search()`-based functions that take an argument as a list, single values are now also allowed
