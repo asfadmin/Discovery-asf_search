@@ -3,6 +3,7 @@
 ## [1.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v1.1.0...v1.1.1)
 ### Fixed
 - Fixed import order of operations bug
+- Updated ASFProduct and ASFSearchResults to use path arg in download methods
 
 ## [1.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v1.1.0)
 ### Added
