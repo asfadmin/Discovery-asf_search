@@ -104,7 +104,7 @@ def search(
         'relativeOrbit'
     ]
     for key in listify_fields:
-        if key in data and type(data[key]) != list:
+        if key in data and not isinstance(data[key], list):
             data[key] = [data[key]]
 
     flatten_fields = [
