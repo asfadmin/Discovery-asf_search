@@ -21,11 +21,11 @@ class ASFProduct:
             'properties': self.properties
         }
 
-    def download(self, dir: str, filename: str = None, token: str = None) -> None:
+    def download(self, path: str, filename: str = None, token: str = None) -> None:
         """
         Downloads this product to the specified path and optional filename.
 
-        :param dir: The directory into which this product should be downloaded.
+        :param path: The directory into which this product should be downloaded.
         :param filename: Optional filename to use instead of the original filename of this product.
         :param token: EDL authentication token for authenticated downloads, see https://urs.earthdata.nasa.gov/user_tokens
 
@@ -34,7 +34,7 @@ class ASFProduct:
         if filename is None:
             filename = self.properties['fileName']
 
-        download_url(url=self.properties['url'], dir=dir, filename=filename, token=token)
+        download_url(url=self.properties['url'], path=path, filename=filename, token=token)
 
     def stack(self) -> UserList:
         """
@@ -54,4 +54,3 @@ class ASFProduct:
         arr = np.array(self.geometry['coordinates'][0])
         length, dim = arr.shape
         return [np.sum(arr[:, i]) / length for i in range(dim)]
-
