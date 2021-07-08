@@ -3,12 +3,15 @@
 ## [0.4.1](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v0.4.1)
 ### Added
 - Parallel downloads now supported by ASFSearchResults. Defaults to 1 (sequential download)
+- For `search()`-based functions that take an argument as a list, single values are now also allowed
 
 ### Changed
-- Import download functionality in asf_search (for `download_url()`)
+- Import download functionality in asf_search (for `download_url()` and `download_urls()`)
+- "parallel" is now "processes" in download functionality
 
 ### Fixed
 - Fixed ASFProduct import in search.py
+- importlib metadata fix for python <3.8
 
 ## [0.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.3.0...v0.4.0)
 ### Added

@@ -13,14 +13,13 @@ Python wrapper for the ASF SearchAPI
 
 ```python
 import asf_search as asf
-import json
 
 results = asf.granule_search(['ALPSRS279162400', 'ALPSRS279162200'])
-print(f'Granule search results: {json.dumps(results, indent=2)}')
+print(results)
 
 wkt = 'POLYGON((-135.7 58.2,-136.6 58.1,-135.8 56.9,-134.6 56.1,-134.9 58.0,-135.7 58.2))'
 results = asf.geo_search(platform=[asf.PLATFORM.SENTINEL1], intersectsWith=wkt, maxResults=10)
-print(f'Geographic search results: {json.dumps(results, indent=2)}')
+print(results)
 ```
 
 ## Install
