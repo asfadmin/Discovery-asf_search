@@ -81,8 +81,6 @@ def search(
 
     :return: ASFSearchResults(list) of search results
     """
-    #TODO: Add more params now that ranges are refigured
-    #TODO: Make sure Ziyi's search case is covered
 
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
