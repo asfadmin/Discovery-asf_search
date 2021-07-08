@@ -54,4 +54,3 @@ class ASFProduct:
         arr = np.array(self.geometry['coordinates'][0])
         length, dim = arr.shape
         return [np.sum(arr[:, i]) / length for i in range(dim)]
-
