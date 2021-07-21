@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.1...v2.0.2)
+### Added
+- INSTRUMENT constants for C-SAR, PALSAR, and ANVIR-2
+
 ## [2.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.0...v2.0.1)
 ### Fixed
 - Versioning workflow corrected for proper versioning, stop bumping major instead of patch!
