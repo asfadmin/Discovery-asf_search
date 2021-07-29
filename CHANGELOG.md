@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.2...v3.0.0)
+### Added
+- Auth support for cookiejars, and user/pass combos. Create them as sessions, then pass the session to the appropeate method.
+    - Added `get_session_creds`, `get_session_token`, and `get_session_cookies`.
+
+### Changed
+- Switched from accepting the param `token`, to `session` (for `download_url()` and `download_urls()`)
+- Sends auth headers to everywhere (now including AWS)
+
 ## [2.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.1...v2.0.2)
 ### Added
 - INSTRUMENT constants for C-SAR, PALSAR, and ANVIR-2
