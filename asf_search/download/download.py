@@ -7,31 +7,74 @@ import requests
 from asf_search import __version__
 from asf_search.exceptions import ASFDownloadError
 
+def get_asf_session() -> requests.Session:
+    session = requests.Session()
+    session.headers.update({'User-Agent': f'{__name__}.{__version__}'})
+    return session
+
+def get_session_creds(username: str = "", password: str = "") -> requests.Session:
+    """
+    Gives a session, with username/password added to the headers.
+
+    :param username: The username to EDL
+    :param password: The password to EDL
+    :return: session object
+    """
+    session = get_asf_session()
+    login_url = "https://urs.earthdata.nasa.gov/oauth/authorize?client_id=BO_n7nTIlMljdvU6kRRB3g&response_type=code&redirect_uri=https://auth.asf.alaska.edu/login"
+
+    session.auth = (username, password)
+    session.get(login_url)
+    return session
+
+def get_session_token(token: str = "") -> requests.Session:
+    """
+    Gives a session, with the token pre-added.
+
+    :param token: EDL Auth Token for authenticating downloads, see https://urs.earthdata.nasa.gov/user_tokens
+    :return: session object
+    """
+    session = get_asf_session()
+    session.headers.update({'Authorization': 'Bearer {0}'.format(token)})
+    return session
+
+def get_session_cookies(cookies = None) -> requests.Session:
+    """
+    Gives a session, with cookes added.
+
+    :param cookies: Any cookielib.CookieJar compatible object (Default RequestsCookieJar)
+    :return: session object
+    """
+    # With using cookies: https://stackoverflow.com/questions/29200357/requests-session-load-cookies-from-cookiejar
+    session = requests.Session()
+    if cookies is not None:
+        session.cookies = cookies
+    return session
 
 def _download_url(arg):
-    url, path, token = arg
+    url, path, session = arg
     download_url(
         url=url,
         path=path,
-        token=token)
+        session=session)
 
 
-def download_urls(urls: Iterable[str], path: str, token: str, processes: int = 1):
+def download_urls(urls: Iterable[str], path: str, session: requests.Session, processes: int = 1):
     pool = Pool(processes=processes)
-    args = [(url, path, token) for url in urls]
+    args = [(url, path, session) for url in urls]
     pool.map(_download_url, args)
     pool.close()
     pool.join()
 
 
-def download_url(url: str, path: str, filename: str = None, token: str = None) -> None:
+def download_url(url: str, path: str, filename: str = None, session: requests.Session = None) -> None:
     """
     Downloads a product from the specified URL to the specified location and (optional) filename.
 
     :param url: URL from which to download
     :param path: Local path in which to save the product
     :param filename: Optional filename to be used, extracted from the URL by default
-    :param token: EDL Auth Token for authenticating downloads, see https://urs.earthdata.nasa.gov/user_tokens
+    :param session: The session to use, with headers attached. Defaults to get_asf_session().
     :return:
     """
     if filename is None:
@@ -43,20 +86,16 @@ def download_url(url: str, path: str, filename: str = None, token: str = None) -
     if os.path.isfile(os.path.join(path, filename)):
         raise ASFDownloadError(f'File already exists: {os.path.join(path, filename)}')
 
-    headers = {'User-Agent': f'{__name__}.{__version__}'}
-    if token is not None:
-        headers['Authorization'] = f'Bearer {token}'
+    if session is None:
+        session = get_asf_session()
 
     print(f'Following {url}')
-    response = requests.get(url, stream=True, allow_redirects=False)
+    response = session.get(url, stream=True, allow_redirects=False)
     print(f'response: {response.status_code}')
     while 300 <= response.status_code <= 399:
         new_url = response.headers['location']
         print(f'Redirect to {new_url}')
-        if 'aws.amazon.com' in urllib.parse.urlparse(new_url).netloc:
-            response = requests.get(new_url, stream=True, allow_redirects=False)  # S3 detests auth headers
-        else:
-            response = requests.get(new_url, stream=True, headers=headers, allow_redirects=False)
+        response = session.get(new_url, stream=True, allow_redirects=False)
         print(f'response: {response.status_code}')
     response.raise_for_status()
     with open(os.path.join(path, filename), 'wb') as f:
