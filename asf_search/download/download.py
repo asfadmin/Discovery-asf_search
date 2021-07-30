@@ -3,6 +3,7 @@ from multiprocessing import Pool
 import os.path
 import urllib.parse
 import requests
+import http.cookiejar
 
 from asf_search import __version__
 from asf_search.exceptions import ASFDownloadError
@@ -38,17 +39,18 @@ def get_session_token(token: str) -> requests.Session:
     session.headers.update({'Authorization': 'Bearer {0}'.format(token)})
     return session
 
-def get_session_cookies(cookies: Requests) -> requests.Session:
+
+def get_session_cookies(cookies: http.cookiejar) -> requests.Session:
     """
     Gives a session, with cookies added.
 
-    :param cookies: Any cookielib.CookieJar compatible object (Default RequestsCookieJar)
+    :param cookies: Any http.cookiejar compatible object
     :return: session object
     """
-    # With using cookies: https://stackoverflow.com/questions/29200357/requests-session-load-cookies-from-cookiejar
     session = requests.Session()
     session.cookies = cookies
     return session
+
 
 def _download_url(arg):
     url, path, session = arg
