@@ -6,7 +6,7 @@ import requests
 import http.cookiejar
 
 from asf_search import __version__
-from asf_search.exceptions import ASFDownloadError
+from asf_search.exceptions import ASFDownloadError, ASFAuthenticationError
 from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
 
 
@@ -29,6 +29,10 @@ def get_session_creds(username: str, password: str) -> requests.Session:
 
     session.auth = (username, password)
     session.get(login_url)
+
+    if "urs_user_already_logged" not in session.cookies.get_dict():
+        raise ASFAuthenticationError("Username password combo is incorrect")
+
     return session
 
 
