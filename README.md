@@ -49,7 +49,27 @@ Programmatically searching for ASF data is made simple with asf_search. Several 
 - `stack()` Find a baseline stack of products using a reference scene
 - Additionally, numerous constants are provided to ease the search process
 
-Examples of all of the above can be found in `examples/`
+Additionally, asf_search support downloading data, both from search results as provided by the above search functions, and directly on product URLs. An authenticated session is generally required. This is provided by the `ASFSession` class, and use of one of its three authentication methods:
+- `auth_with_creds('user', 'pass)`
+- `auth_with_token('EDL token')`
+- `auth_with_cookiejar(http.cookiejar)`
+
+That session should be passed to whichever download method is being called, can be re-used, and is thread safe. Examples:
+```python
+results = asf_search.granule_search([...])
+session = asf_search.ASFSession()
+session.auth_with_creds('user', 'pass')
+results.download(path='/Users/SARGuru/data', session=session)
+```
+Alternately, downloading a list of URLs contained in `urls` and creating the session inline:
+```python
+urls = [...]
+asf_search.download_urls(urls=urls, path='/Users/SARGuru/data', session=ASFSession().auth_with_token('EDL token'))
+```
+
+Also note that `ASFSearchResults.download()` and the generic `download_urls()` function both accept a `processes` parameter which allows for parallel downloads.
+
+Further examples of all of the above can be found in `examples/`
 
 
 ## Development

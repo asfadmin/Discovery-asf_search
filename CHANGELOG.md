@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.2...v3.0.0)
+### Added
+- Auth support for username/password and cookiejars, in addition to the previously available token-based approach. Create a session, authenticate it with the method of choice, then pass the session to whichever download method is being used.
+    - Sessions can be created using the `ASFSession` class, a subclass of `requests.Session`
+    - Once a session is created, call one of its authentication methods:
+      - `auth_with_creds('user', 'pass)`
+      - `auth_with_token(`EDL token`)
+      - `auth_with_cookiejar(http.cookiejar)`
+    - If you were previously using the `token` argument, such as:
+      - `results.download(path='...', token='EDL token')`
+    - Updating can be as simple as:
+      - `results.download(path='...', session=ASFSession().auth_with_token('EDL token'))`
+    - Sessions can be re-used and are thread-safe
+
+### Changed
+- `download_url()`, `download_urls()`, `ASFProduct.download()` and `ASFSearchResults.download()` now expect a `session` argument instead of `token`
+- Send auth headers to every step along a download redirect chain (including final AWS S3 buckets)
+
 ## [2.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.1...v2.0.2)
 ### Added
 - INSTRUMENT constants for C-SAR, PALSAR, and ANVIR-2

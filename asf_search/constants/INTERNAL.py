@@ -1,7 +1,5 @@
-HOST = 'api.daac.asf.alaska.edu'
-HOST_TEST = 'api-test.asf.alaska.edu'
-HOST_DEV = 'api-dev.asf.alaska.edu'
-HOST_LOCAL = 'local.asf.alaska.edu:5000'
+SEARCH_API_HOST = 'api.daac.asf.alaska.edu'
+ASF_AUTH_HOST = 'auth.asf.alaska.edu'
 
 HEALTH_PATH = '/health'
 SEARCH_PATH = '/services/search/param'
@@ -10,4 +8,5 @@ MISSION_PATH = '/services/utils/mission_list'
 DATE_PATH = '/services/utils/date'
 
 CMR_HOST = 'cmr.earthdata.nasa.gov'
-CMR_HOST_UAT = 'cmr.uat.earthdata.nasa.gov'
+EDL_HOST = 'urs.earthdata.nasa.gov'
+EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'

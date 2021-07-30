@@ -18,3 +18,6 @@ class ASFBaselineError(ASFSearchError):
 
 class ASFDownloadError(ASFError):
     """Base download-related Exception"""
+
+class ASFAuthenticationError(ASFError):
+    """Base download-related Exception"""

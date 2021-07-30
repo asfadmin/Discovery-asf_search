@@ -40,7 +40,7 @@ def search(
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        host: str = INTERNAL.HOST,
+        host: str = INTERNAL.SEARCH_API_HOST,
         cmr_token: str = None,
         cmr_provider: str = None
 ) -> ASFSearchResults:
