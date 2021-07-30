@@ -1,7 +1,7 @@
 from collections import UserList
 from multiprocessing import Pool
 import json
-import requests
+from asf_search import ASFSession
 
 
 class ASFSearchResults(UserList):
@@ -14,12 +14,12 @@ class ASFSearchResults(UserList):
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
-    def download(self, path: str, session: requests.Session = None, processes=1) -> None:
+    def download(self, path: str, session: ASFSession = None, processes=1) -> None:
         """
         Iterates over each ASFProduct and downloads them to the specified path.
 
         :param path: The directory into which the products should be downloaded.
-        :param session: The session to use when downloading. This session should already be authenticated if that is required for the product in question. A blank session will be created if none is provided.
+        :param session: The session to use, in most cases should be authenticated beforehand
         :param processes: Number of download processes to use. Defaults to 1 (i.e. sequential download)
 
         :return: None

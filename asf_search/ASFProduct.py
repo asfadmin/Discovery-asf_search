@@ -5,6 +5,7 @@ from collections import UserList
 import requests
 
 from asf_search.download import download_url
+from asf_search import ASFSession
 
 
 class ASFProduct:
@@ -22,13 +23,13 @@ class ASFProduct:
             'properties': self.properties
         }
 
-    def download(self, path: str, filename: str = None, session: requests.Session = None) -> None:
+    def download(self, path: str, filename: str = None, session: ASFSession = None) -> None:
         """
         Downloads this product to the specified path and optional filename.
 
         :param path: The directory into which this product should be downloaded.
         :param filename: Optional filename to use instead of the original filename of this product.
-        :param session: The session to use when downloading. This session should already be authenticated if that is required for the product in question. A blank session will be created if none is provided.
+        :param session: The session to use, in most cases should be authenticated beforehand
 
         :return: None
         """

@@ -12,6 +12,7 @@ except PackageNotFoundError:
 
 from .ASFProduct import ASFProduct
 from .ASFSearchResults import ASFSearchResults
+from .ASFSession import ASFSession
 from .exceptions import *
 from .constants import *
 from .health import *
