@@ -31,7 +31,7 @@ def get_session_token(token: str = "") -> requests.Session:
     """
     Gives a session, with the token pre-added.
 
-    :param token: EDL Auth Token for authenticating downloads, see https://urs.earthdata.nasa.gov/user_tokens
+    :param token: EDL Auth Token for authenticated downloads, see https://urs.earthdata.nasa.gov/user_tokens
     :return: session object
     """
     session = get_asf_session()
