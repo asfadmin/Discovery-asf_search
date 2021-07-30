@@ -37,7 +37,6 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
-        # TODO: See if we can establish this session more completely so it works with non-token-supporting venues
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
         return self

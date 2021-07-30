@@ -40,10 +40,6 @@ def stack_from_product(
     calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
-
-    #TODO: Calculate perpendicular baselines
-    #TODO: Add nearest neighbor finder
-
     return stack
 
 
