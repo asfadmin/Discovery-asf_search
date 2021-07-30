@@ -41,7 +41,6 @@ def stack_from_product(
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
 
-    #TODO: Calculate temporal baselines
     #TODO: Calculate perpendicular baselines
     #TODO: Add nearest neighbor finder
 
@@ -88,8 +87,7 @@ def get_stack_params(reference: ASFProduct) -> dict:
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
             stack_params['insarStackId'] = reference.properties['insarStackId']
             return stack_params
-        else:
-            raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference["properties"]["fileID"]}')
+        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference["properties"]["fileID"]}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:
@@ -98,9 +96,12 @@ def get_stack_params(reference: ASFProduct) -> dict:
         stack_params['flightDirection'] = [reference.properties['flightDirection']]
         #stack_params['lookDirection'] = [ref_scene.properties['lookDirection']]
         stack_params['relativeOrbit'] = [int(reference.properties['pathNumber'])]  # path
-        if reference.properties['polarization'] in ['HH', 'HH+HV']: stack_params['polarization'] = ['HH','HH+HV']
-        elif reference.properties['polarization'] in ['VV', 'VV+VH']: stack_params['polarization'] = ['VV','VV+VH']
-        else: stack_params['polarization'] = [reference.properties['polarization']]
+        if reference.properties['polarization'] in ['HH', 'HH+HV']:
+            stack_params['polarization'] = ['HH','HH+HV']
+        elif reference.properties['polarization'] in ['VV', 'VV+VH']:
+            stack_params['polarization'] = ['VV','VV+VH']
+        else:
+            stack_params['polarization'] = [reference.properties['polarization']]
         ref_centroid = reference.centroid()
         stack_params['intersectsWith'] = f'POINT({ref_centroid[0]} {ref_centroid[1]})'
         return stack_params
@@ -125,4 +126,3 @@ def calc_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults) -> N
         if secondary_time.tzinfo is None:
             secondary_time = pytz.utc.localize(secondary_time)
         secondary.properties['temporalBaseline'] = (secondary_time - reference_time).days
-
