@@ -47,8 +47,7 @@ def get_session_cookies(cookies: Requests) -> requests.Session:
     """
     # With using cookies: https://stackoverflow.com/questions/29200357/requests-session-load-cookies-from-cookiejar
     session = requests.Session()
-    if cookies is not None:
-        session.cookies = cookies
+    session.cookies = cookies
     return session
 
 def _download_url(arg):
