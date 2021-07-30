@@ -10,9 +10,9 @@ except PackageNotFoundError:
           'Or, to just get the version number use:\n'
           '   python setup.py --version')
 
+from .ASFSession import ASFSession
 from .ASFProduct import ASFProduct
 from .ASFSearchResults import ASFSearchResults
-from .ASFSession import ASFSession
 from .exceptions import *
 from .constants import *
 from .health import *
