@@ -20,7 +20,7 @@ precalc_platforms = [
 def stack_from_product(
         reference: ASFProduct,
         strategy = None,
-        host: str = INTERNAL.HOST,
+        host: str = INTERNAL.SEARCH_API_HOST,
         cmr_token: str = None,
         cmr_provider: str = None) -> ASFSearchResults:
     """
@@ -51,7 +51,7 @@ def stack_from_product(
 def stack_from_id(
         reference_id: str,
         strategy = None,
-        host: str = INTERNAL.HOST,
+        host: str = INTERNAL.SEARCH_API_HOST,
         cmr_token: str = None,
         cmr_provider: str = None) -> ASFSearchResults:
     """
