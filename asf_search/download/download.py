@@ -59,7 +59,7 @@ def _download_url(arg):
         session=session)
 
 
-def download_urls(urls: Iterable[str], path: str, session: requests.Session, processes: int = 1):
+def download_urls(urls: Iterable[str], path: str, session: requests.Session = None, processes: int = 1):
     pool = Pool(processes=processes)
     args = [(url, path, session) for url in urls]
     pool.map(_download_url, args)
