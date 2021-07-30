@@ -51,7 +51,7 @@ def get_session_cookies(cookies: http.cookiejar) -> requests.Session:
     :param cookies: Any http.cookiejar compatible object
     :return: requests.Session object
     """
-    session = requests.Session()
+    session = get_asf_session()
     session.cookies = cookies
     return session
 
