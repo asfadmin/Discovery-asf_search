@@ -25,6 +25,9 @@ def download_urls(urls: Iterable[str], path: str, session: ASFSession = None, pr
     :param processes: Number of download processes to use. Defaults to 1 (i.e. sequential download)
     :return:
     """
+    if session is None:
+        session = ASFSession()
+
     if processes <= 1:
         for url in urls:
             download_url(url=url, path=path, session=session)

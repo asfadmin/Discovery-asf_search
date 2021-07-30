@@ -24,6 +24,8 @@ class ASFSearchResults(UserList):
 
         :return: None
         """
+        if session is None:
+            session = ASFSession()
 
         if processes == 1:
             for product in self:
