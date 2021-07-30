@@ -7,6 +7,7 @@ import http.cookiejar
 
 from asf_search import __version__
 from asf_search.exceptions import ASFDownloadError
+from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
 
 
 def get_asf_session() -> requests.Session:
@@ -24,7 +25,7 @@ def get_session_creds(username: str, password: str) -> requests.Session:
     :return: requests.Session object
     """
     session = get_asf_session()
-    login_url = "https://urs.earthdata.nasa.gov/oauth/authorize?client_id=BO_n7nTIlMljdvU6kRRB3g&response_type=code&redirect_uri=https://auth.asf.alaska.edu/login"
+    login_url = f'https://{EDL_HOST}/oauth/authorize?client_id={EDL_CLIENT_ID}&response_type=code&redirect_uri=https://{ASF_AUTH_HOST}/login'
 
     session.auth = (username, password)
     session.get(login_url)
