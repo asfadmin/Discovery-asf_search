@@ -12,7 +12,7 @@ def get_asf_session() -> requests.Session:
     session.headers.update({'User-Agent': f'{__name__}.{__version__}'})
     return session
 
-def get_session_creds(username: str = "", password: str = "") -> requests.Session:
+def get_session_creds(username: str, password: str) -> requests.Session:
     """
     Gives a session, with username/password added to the headers.
 
@@ -27,7 +27,7 @@ def get_session_creds(username: str = "", password: str = "") -> requests.Sessio
     session.get(login_url)
     return session
 
-def get_session_token(token: str = "") -> requests.Session:
+def get_session_token(token: str) -> requests.Session:
     """
     Gives a session, with the token pre-added.
 
@@ -38,7 +38,7 @@ def get_session_token(token: str = "") -> requests.Session:
     session.headers.update({'Authorization': 'Bearer {0}'.format(token)})
     return session
 
-def get_session_cookies(cookies = None) -> requests.Session:
+def get_session_cookies(cookies: Requests) -> requests.Session:
     """
     Gives a session, with cookes added.
 
