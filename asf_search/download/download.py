@@ -40,7 +40,7 @@ def get_session_token(token: str) -> requests.Session:
 
 def get_session_cookies(cookies: Requests) -> requests.Session:
     """
-    Gives a session, with cookes added.
+    Gives a session, with cookies added.
 
     :param cookies: Any cookielib.CookieJar compatible object (Default RequestsCookieJar)
     :return: session object
