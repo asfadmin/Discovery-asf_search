@@ -8,10 +8,12 @@ import http.cookiejar
 from asf_search import __version__
 from asf_search.exceptions import ASFDownloadError
 
+
 def get_asf_session() -> requests.Session:
     session = requests.Session()
     session.headers.update({'User-Agent': f'{__name__}.{__version__}'})
     return session
+
 
 def get_session_creds(username: str, password: str) -> requests.Session:
     """
@@ -27,6 +29,7 @@ def get_session_creds(username: str, password: str) -> requests.Session:
     session.auth = (username, password)
     session.get(login_url)
     return session
+
 
 def get_session_token(token: str) -> requests.Session:
     """
