@@ -17,11 +17,11 @@ def get_asf_session() -> requests.Session:
 
 def get_session_creds(username: str, password: str) -> requests.Session:
     """
-    Gives a session, with username/password added to the headers.
+    Builds a session using EDL username/password credentials
 
-    :param username: The username to EDL
-    :param password: The password to EDL
-    :return: session object
+    :param username: EDL username, see https://urs.earthdata.nasa.gov/
+    :param password: EDL password, see https://urs.earthdata.nasa.gov/
+    :return: requests.Session object
     """
     session = get_asf_session()
     login_url = "https://urs.earthdata.nasa.gov/oauth/authorize?client_id=BO_n7nTIlMljdvU6kRRB3g&response_type=code&redirect_uri=https://auth.asf.alaska.edu/login"
@@ -33,10 +33,10 @@ def get_session_creds(username: str, password: str) -> requests.Session:
 
 def get_session_token(token: str) -> requests.Session:
     """
-    Gives a session, with the token pre-added.
+    Builds a session using an EDL Authorization: Bearer token
 
     :param token: EDL Auth Token for authenticated downloads, see https://urs.earthdata.nasa.gov/user_tokens
-    :return: session object
+    :return: requests.Session object
     """
     session = get_asf_session()
     session.headers.update({'Authorization': 'Bearer {0}'.format(token)})
@@ -45,10 +45,10 @@ def get_session_token(token: str) -> requests.Session:
 
 def get_session_cookies(cookies: http.cookiejar) -> requests.Session:
     """
-    Gives a session, with cookies added.
+    Builds a session using a pre-existing cookiejar
 
     :param cookies: Any http.cookiejar compatible object
-    :return: session object
+    :return: requests.Session object
     """
     session = requests.Session()
     session.cookies = cookies
