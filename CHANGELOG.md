@@ -5,7 +5,7 @@
 - Feature and Bug Report github issue templates
 
 ### Fixed
-- Fix download authentication header issue during direct S3 redirects
+- Fix download authentication header issue during direct-to-S3 redirects
 
 ## [3.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.2...v3.0.0)
 ### Added
