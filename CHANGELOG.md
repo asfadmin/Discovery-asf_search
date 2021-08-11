@@ -1,6 +1,9 @@
 # Changelog
 
 ## [3.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.0...v3.0.1)
+### Added
+- Feature and Bug Report github issue templates
+
 ### Fixed
 - Fix download authentication header issue during direct S3 redirects
 
