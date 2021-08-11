@@ -2,6 +2,7 @@ from typing import Iterable
 from multiprocessing import Pool
 import os.path
 import urllib.parse
+import requests
 
 from asf_search.exceptions import ASFDownloadError
 from asf_search import ASFSession
@@ -67,7 +68,11 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     while 300 <= response.status_code <= 399:
         new_url = response.headers['location']
         print(f'Redirect to {new_url}')
-        response = session.get(new_url, stream=True, allow_redirects=False)
+        if 'aws.amazon.com' in urllib.parse.urlparse(new_url).netloc:
+            # S3 detests the auth headers, don't use the established session
+            response = requests.get(new_url, stream=True, allow_redirects=False)
+        else:
+            response = session.get(new_url, stream=True, allow_redirects=False)
         print(f'response: {response.status_code}')
     response.raise_for_status()
     with open(os.path.join(path, filename), 'wb') as f:

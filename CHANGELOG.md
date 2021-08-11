@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.0...v3.0.1)
+### Fixed
+- Fix download authentication header issue during direct S3 redirects
+
 ## [3.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.2...v3.0.0)
 ### Added
 - Auth support for username/password and cookiejars, in addition to the previously available token-based approach. Create a session, authenticate it with the method of choice, then pass the session to whichever download method is being used.
