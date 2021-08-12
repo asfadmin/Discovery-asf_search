@@ -98,8 +98,7 @@ def get_stack_params(reference: ASFProduct) -> dict:
             stack_params['polarization'] = ['VV','VV+VH']
         else:
             stack_params['polarization'] = [reference.properties['polarization']]
-        ref_centroid = reference.centroid()
-        stack_params['intersectsWith'] = f'POINT({ref_centroid[0]} {ref_centroid[1]})'
+        stack_params['intersectsWith'] = reference.centroid().wkt
         return stack_params
 
     raise ASFBaselineError(f'Reference product is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference.properties["fileID"]}')

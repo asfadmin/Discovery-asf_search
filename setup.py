@@ -4,7 +4,7 @@ import subprocess
 
 requirements = [
         "requests",
-        "numpy",
+        "shapely",
         "python-dateutil",
         "pytz",
         "importlib_metadata",
