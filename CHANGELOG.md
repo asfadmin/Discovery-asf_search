@@ -1,11 +1,12 @@
 # Changelog
 
-## [3.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.0...v3.0.1)
+## [3.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.0...v3.0.2)
 ### Added
 - Feature and Bug Report github issue templates
 
 ### Fixed
 - Fix download authentication header issue during direct-to-S3 redirects
+- Fix Sentinel-1 stacking to include both A and B in stacks
 
 ## [3.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.2...v3.0.0)
 ### Added
