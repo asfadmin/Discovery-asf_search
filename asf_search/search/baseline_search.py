@@ -87,7 +87,7 @@ def get_stack_params(reference: ASFProduct) -> dict:
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:
-        stack_params['platform'] = [reference.properties['platform']]
+        stack_params['platform'] = [PLATFORM.SENTINEL1]
         stack_params['beamMode'] = [reference.properties['beamModeType']]
         stack_params['flightDirection'] = [reference.properties['flightDirection']]
         #stack_params['lookDirection'] = [ref_scene.properties['lookDirection']]
