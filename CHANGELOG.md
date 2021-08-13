@@ -2,7 +2,7 @@
 
 ## [3.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.2...v3.0.3)
 ### Fixed
-- Replace ASFProduct.centroid() calculation with shapely-based calculation
+- Replace `ASFProduct.centroid()` calculation with shapely-based calculation
   - See: https://github.com/asfadmin/Discovery-asf_search/pull/53
   - Removes numpy requirement
   - Adds shapely requirement
