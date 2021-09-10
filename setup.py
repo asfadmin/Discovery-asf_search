@@ -8,6 +8,8 @@ requirements = [
         "python-dateutil",
         "pytz",
         "importlib_metadata",
+        "dateparser",
+        "WKTUtils==1.1.0",
     ]
 
 with open("README.md", "r") as readme_file:
