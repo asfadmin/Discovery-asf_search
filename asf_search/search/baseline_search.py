@@ -36,7 +36,7 @@ def stack_from_product(
     """
 
     stack_params = get_stack_params(reference)
-    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    stack = search(stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
     calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
