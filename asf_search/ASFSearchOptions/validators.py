@@ -195,29 +195,15 @@ def parse_session(*args, **kwargs):
         raise ValueError()
 
     ## 2) Parse kwargs to see which session to call:
-    # User / Pass:
-    if set(["username", "password"]).issubset(kwargs):
-        # Make sure you have ONLY one auth method:
-        if len(kwargs) == 2:
-            return ASFSession().auth_with_creds(kwargs["username"], kwargs["password"])
-        else:
-            raise ValueError()
-    # Token:
-    if "token" in kwargs:
-        if len(kwargs) == 1:
+    if len(kwargs) == 1:
+        if "token" in kwargs:
             return ASFSession().auth_with_token(kwargs["token"])
-        else:
-            raise ValueError()
-    # Cookes:
-    if "cookies" in kwargs:
-        if len(kwargs) == 1:
+        if "cookies" in kwargs:
             return ASFSession().auth_with_cookiejar(kwargs["cookies"])
-        else:
-            raise ValueError()
-    # Existing session:
-    if "asf_session" in kwargs:
-        if len(kwargs) == 1:
+        if "asf_session" in kwargs:
             return kwargs["asf_session"]
-        else:
-            raise ValueError()
-    raise ValueError("No known auth method found.")
+    elif len(kwargs) == 2:
+        if set(["username", "password"]).issubset(kwargs):
+            return ASFSession().auth_with_creds(kwargs["username"], kwargs["password"])
+    raise ValueError(f"No known auth method found. {kwargs}")
+
