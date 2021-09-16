@@ -1,6 +1,8 @@
 import dateparser
 import re
 from WKTUtils.Input import parse_wkt_util
+from asf_search import ASFSession
+import http.cookiejar
 
 ## List of changes (Added since there's no dif with pulling from SearchAPI):
 # Re-wrote parse_string, to always give good error output. Swapped len check to after str cast
@@ -152,3 +154,70 @@ def parse_point_string(v: str) -> str:
 def parse_wkt(v: str) -> str:
     # The utils library needs this function for repairWKT.
     return parse_wkt_util(v)
+
+def parse_session(*args, **kwargs):
+
+    ## 1) Turn all args into kwargs:
+    if len(args) == 0:
+        pass
+    if len(args) == 1:
+        # Check if cookejar:
+        if type(args[0]) == http.cookiejar.CookieJar:
+            if "cookies" not in kwargs:
+                kwargs["cookies"] = args[0]
+            else:
+                raise ValueError("Passed multiple 'cookies' objects.")
+        # Check if session:
+        elif type(args[0]) == ASFSession:
+            if "asf_session" not in kwargs:
+                kwargs["asf_session"] = args[0]
+            else:
+                raise ValueError("Passed multiple 'asf_session' objects.")
+        # Check if token:
+        elif type(args[0]) == str:
+            if "token" not in kwargs:
+                kwargs["token"] = args[0]
+            else:
+                raise ValueError("Passed multiple 'token' objects.")
+        # Else got no clue:
+        else:
+            raise ValueError(f"Unknown arg: '{args[0]}'.")
+    elif len(args) == 2:
+        # Check if user/pass:
+        if type(args[0]) == str and type(args[1]) == str:
+            # This means you can't do half, i.e. parse_session("user", password="password"). Is this okay?
+            if "username" not in kwargs and "password" not in kwargs:
+                kwargs["username"] = args[0]
+                kwargs["password"] = args[1]
+        else:
+            raise ValueError(f"Unknown args: '{args}'.")
+    else: # len(args) > 2:
+        raise ValueError()
+
+    ## 2) Parse kwargs to see which session to call:
+    # User / Pass:
+    if set(["username", "password"]).issubset(kwargs):
+        # Make sure you have ONLY one auth method:
+        if len(kwargs) == 2:
+            return ASFSession().auth_with_creds(kwargs["username"], kwargs["password"])
+        else:
+            raise ValueError()
+    # Token:
+    if "token" in kwargs:
+        if len(kwargs) == 1:
+            return ASFSession().auth_with_token(kwargs["token"])
+        else:
+            raise ValueError()
+    # Cookes:
+    if "cookies" in kwargs:
+        if len(kwargs) == 1:
+            return ASFSession().auth_with_cookiejar(kwargs["cookies"])
+        else:
+            raise ValueError()
+    # Existing session:
+    if "asf_session" in kwargs:
+        if len(kwargs) == 1:
+            return kwargs["asf_session"]
+        else:
+            raise ValueError()
+    raise ValueError("No known auth method found.")

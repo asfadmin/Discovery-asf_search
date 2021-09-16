@@ -3,7 +3,8 @@ from .validators import (
     parse_int, parse_float, parse_string, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
     parse_float_or_range_list,
-    parse_coord_string, parse_bbox_string, parse_point_string
+    parse_coord_string, parse_bbox_string, parse_point_string,
+    parse_session
 )
 
 ## Not included in map:
@@ -12,7 +13,7 @@ from .validators import (
 # cmr_provider
 
 validator_map = {
-#   API parameter             Parser
+#   API parameters            Parser
     'maxResults':             parse_int,
     'absoluteOrbit':          parse_int_or_range_list,
     'asfFrame':               parse_int_or_range_list,
@@ -41,6 +42,8 @@ validator_map = {
     'groupID':                parse_string_list,
     'insarStackId':           parse_string,
     'instrument':             parse_string,
+#   Internal parameters       Parser
+    'asf_session':            parse_session,
 }
 
 
