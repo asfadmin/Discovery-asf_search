@@ -12,6 +12,11 @@ from .validators import (
 # cmr_token
 # cmr_provider
 
+
+def validate(key, value):
+    return validator_map[key](value)
+
+
 validator_map = {
 #   API parameters            Parser
     'maxResults':             parse_int,
@@ -34,6 +39,7 @@ validator_map = {
     'platform':               parse_string_list,
     'polarization':           parse_string_list,
     'processingLevel':        parse_string_list,
+    'provider':               parse_string,
     'relativeOrbit':          parse_int_or_range_list,
     'processingDate':         parse_date,
     'start':                  parse_date,

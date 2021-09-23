@@ -22,7 +22,10 @@ def search(data: ASFSearchOptions,
     """
     # Incase they passed a dict, run it through ASFSearchOptions again:
     # (Does nothing if already one anyways)
-    data = ASFSearchOptions(data)
+    if type(data) is not ASFSearchOptions:
+        data = ASFSearchOptions(data)
+
+    data = dict(data)
 
     listify_fields = [
         'absoluteOrbit',
