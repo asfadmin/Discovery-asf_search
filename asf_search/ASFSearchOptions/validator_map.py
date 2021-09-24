@@ -1,28 +1,42 @@
 
 from .validators import (
-    parse_int, parse_float, parse_string, parse_wkt, parse_date,
+    parse_string, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
     parse_float_or_range_list,
     parse_coord_string, parse_bbox_string, parse_point_string,
     parse_session
 )
 
+import dateparser
+
+
 ## Not included in map:
 # host
 # cmr_token
-# cmr_provider
+
+def validate(key, value):
+    if key not in validator_map:
+        error_msg = f"Key '{key}' is not a valid search option."
+        ## See if they just missed up case sensitivity:
+        for valid_key in validator_map:
+            if key.lower() == valid_key.lower():
+                error_msg += f" (Did you mean '{valid_key}'?)"
+                break
+        raise KeyError(error_msg)
+    validator_map[key](value)
 
 validator_map = {
 #   API parameters            Parser
-    'maxResults':             parse_int,
+    'maxResults':             int,
     'absoluteOrbit':          parse_int_or_range_list,
     'asfFrame':               parse_int_or_range_list,
     'beamMode':               parse_string_list,
+    'cmr_provider':           parse_string,
     'collectionName':         parse_string,
-    'maxDoppler':             parse_float,
-    'minDoppler':             parse_float,
-    'maxFaradayRotation':     parse_float,
-    'minFaradayRotation':     parse_float,
+    'maxDoppler':             float,
+    'minDoppler':             float,
+    'maxFaradayRotation':     float,
+    'minFaradayRotation':     float,
     'flightDirection':        parse_string,
     'flightLine':             parse_string,
     'frame':                  parse_int_or_range_list,
