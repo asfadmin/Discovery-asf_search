@@ -1,17 +1,12 @@
-import dateparser
+import dateparser, datetime
 import re
 from WKTUtils.Input import parse_wkt_util
 from asf_search import ASFSession
 import http.cookiejar
 
-## List of changes (Added since there's no dif with pulling from SearchAPI):
-# Re-wrote parse_string, to always give good error output. Swapped len check to after str cast
-# Added type hints
-# Rewrote errors in parse_range, to stop nested "Invalid int date: Invalid date: Invalid date: "
-# Switched types passed to parse_range, from i.e. parse_int to int. Mainly for error message mentioned up one ^^
-# Same changes to 'list' functions as 'range'
 
-# Parse and validate a string: "abc"
+# Parse and validate a string: "abc".
+# Needs to throw on empty strings, so can't use "str()"
 def parse_string(v: str) -> str:
     # Convert to string first, so length is checked against only str types:
     try:
@@ -22,26 +17,15 @@ def parse_string(v: str) -> str:
         raise ValueError(f'Invalid string: Empty string: {v}')
     return v
 
-# Parse and validate an int: "10"
-def parse_int(v: int) -> int:
-    try:
-        return int(v)
-    except ValueError as e:
-        raise ValueError(f'Invalid int: {v}') from e
-
-# Parse and validate a float: "1.2"
-def parse_float(v: float) -> float:
-    try:
-        return float(v)
-    except ValueError as e:
-        raise ValueError(f'Invalid number: {v}') from e
-
 # Parse and validate a date: "1991-10-01T00:00:00Z"
+# Needs to throw if parser returns None, so can't use vanilla parser:
 def parse_date(v: str) -> str:
+    if type(v) == datetime.datetime:
+        return v
     d = dateparser.parse(v)
     if d is None:
         raise ValueError(f'Invalid date: {v}')
-    return dateparser.parse(v).strftime('%Y-%m-%dT%H:%M:%SZ')
+    return d.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 # Parse and validate a date range: "1991-10-01T00:00:00Z,1991-10-02T00:00:00Z"
 def parse_date_range(v: str) -> str:
