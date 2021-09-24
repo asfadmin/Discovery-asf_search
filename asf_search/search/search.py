@@ -7,22 +7,28 @@ import math
 from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
 
 
 def search(data: ASFSearchOptions, 
-        host: str = INTERNAL.SEARCH_API_HOST, cmr_token: str = None, cmr_provider: str = None
+        host: str = INTERNAL.SEARCH_API_HOST,
         ) -> ASFSearchResults:
     """
     Performs a generic search using the ASF SearchAPI
 
     :return: ASFSearchResults(list) of search results
     """
-    # Incase they passed a dict, run it through ASFSearchOptions again:
-    # (Does nothing if already one anyways)
-    data = ASFSearchOptions(data)
+    # Make sure data is a ASFSearchOptions 'dict', to get the params verified:
+    if type(data) is not ASFSearchOptions:
+        data = ASFSearchOptions(**data)
+    # Set some defaults:
+    if data.cmr_provider is None:
+        data.cmr_provider = "ASF"
+    if data.asf_session is None:
+        data.asf_session = ASFSession()
 
     listify_fields = [
         'absoluteOrbit',
@@ -71,10 +77,10 @@ def search(data: ASFSearchOptions,
         if key in data:
             data[key] = ','.join(data[key])
 
+    data = dict(data)
     data['output'] = 'geojson'
 
-    headers = {'User-Agent': f'{__name__}.{__version__}'}
-    response = requests.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data, headers=headers)
+    response = data.asf_session.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data)
 
     try:
         response.raise_for_status()
