@@ -2,9 +2,11 @@ from dateutil.parser import parse
 import pytz
 
 from asf_search.search import search
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFProduct import ASFProduct
 from asf_search.search.product_search import product_search
+from asf_search.ASFSession import ASFSession
 from asf_search.constants import INTERNAL, PLATFORM
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
 
@@ -21,7 +23,7 @@ def stack_from_product(
         reference: ASFProduct,
         strategy = None,
         host: str = INTERNAL.SEARCH_API_HOST,
-        cmr_token: str = None,
+        asf_session: ASFSession = None,
         cmr_provider: str = None) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference ASFProduct
@@ -33,10 +35,14 @@ def stack_from_product(
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 
     :return: ASFSearchResults(dict) of search results
-    """
-
+    """        
     stack_params = get_stack_params(reference)
-    stack = search(stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    data = ASFSearchOptions(**stack_params)
+    if asf_session is not None:
+        data.asf_session = asf_session
+    if cmr_provider is not None:
+        data.cmr_provider = cmr_provider
+    stack = search(stack_params, host=host)
     calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
@@ -47,7 +53,7 @@ def stack_from_id(
         reference_id: str,
         strategy = None,
         host: str = INTERNAL.SEARCH_API_HOST,
-        cmr_token: str = None,
+        asf_session: ASFSession = None,
         cmr_provider: str = None) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
@@ -63,14 +69,14 @@ def stack_from_id(
     reference_results = product_search(
         [reference_id],
         host=host,
-        cmr_token=cmr_token,
+        asf_session=asf_session,
         cmr_provider=cmr_provider)
 
     if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
     reference = reference_results[0]
 
-    return stack_from_product(reference, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    return stack_from_product(reference, host=host, asf_session=asf_session, cmr_provider=cmr_provider)
 
 
 def get_stack_params(reference: ASFProduct) -> dict:
