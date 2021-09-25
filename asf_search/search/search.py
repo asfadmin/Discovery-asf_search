@@ -80,7 +80,7 @@ def search(data: ASFSearchOptions,
     data = dict(data)
     data['output'] = 'geojson'
 
-    response = data.asf_session.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data)
+    response = data["asf_session"].post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data)
 
     try:
         response.raise_for_status()
