@@ -7,6 +7,7 @@ from .validator_map import validator_map, validate
 # mydict = dict(ASFSearchOption)
 # mydict["output"] = "geojson"
 # Have both versions below just in case, worth a design dive on:
+# Need to edit search.search, line 80ish with whichever we go with
 
 class ASFSearchOptions():
     def __init__(self, **kwargs):
