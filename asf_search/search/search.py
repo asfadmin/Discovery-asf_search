@@ -1,4 +1,5 @@
 from typing import Union, Iterable, Tuple
+from copy import copy
 import requests
 from requests.exceptions import HTTPError
 import datetime
@@ -13,7 +14,7 @@ from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServe
 from asf_search.constants import INTERNAL
 
 
-def search(data: ASFSearchOptions, 
+def search(data: Union[ASFSearchOptions, dict], 
         host: str = INTERNAL.SEARCH_API_HOST,
         ) -> ASFSearchResults:
     """
@@ -24,6 +25,9 @@ def search(data: ASFSearchOptions,
     # Make sure data is a ASFSearchOptions 'dict', to get the params verified:
     if type(data) is not ASFSearchOptions:
         data = ASFSearchOptions(**data)
+    else:
+        # Don't add defaults to the original object:
+        data = copy(data)
     # Set some defaults:
     if data.cmr_provider is None:
         data.cmr_provider = "ASF"
@@ -77,10 +81,14 @@ def search(data: ASFSearchOptions,
         if key in data:
             data[key] = ','.join(data[key])
 
+    # Remove the auth from the search object, before searching:
+    session = data.asf_session
+    del data.asf_session
     data = dict(data)
     data['output'] = 'geojson'
-
-    response = data["asf_session"].post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data)
+    # Join the url, to guantee *exatly* one '/' between each url fragment:
+    host = '/'.join(s.strip('/') for s in [f'http://{host}', f'{INTERNAL.SEARCH_PATH}'])
+    response = session.post(host, data=data)
 
     try:
         response.raise_for_status()
