@@ -1,11 +1,58 @@
 # Changelog
 
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [PEP 440](https://www.python.org/dev/peps/pep-0440/) 
+and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+
+<!--
+## Example template!!
+
+## [version](https://github.com/asfadmin/Discovery-PytestAutomation/compare/vOLD...vNEW)
+
+### Added:
+-
+
+### Changed:
+-
+
+### Fixed:
+- 
+
+### Removed:
+-
+
+-->
+
+------
+
+## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.3...v4.0.0)
+### Added
+- `ASFSearchOptions`, which validates each of the parameters as they're added
+
+- `ASFSession` will now figure out which auth method to use, based on what's passed into it's constructor. Can still add creds manually with each `.auth_with_*` method
+
+### Changed
+- asf_search.search accepts a single `dict` or `ASFSearchOptions` object, instead of having an argument for each search parameter
+
+- Replaced all `cmr_token` key arguments with `asf_session`, that takes an `ASFSession` object
+
+### Removed
+- Old GitHub actions
+
+------
+
 ## [3.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.2...v3.0.3)
 ### Fixed
 - Replace `ASFProduct.centroid()` calculation with shapely-based calculation
   - See: https://github.com/asfadmin/Discovery-asf_search/pull/53
   - Removes numpy requirement
   - Adds shapely requirement
+
+------
 
 ## [3.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.0...v3.0.2)
 ### Added
@@ -14,6 +61,8 @@
 ### Fixed
 - Fix download authentication header issue during direct-to-S3 redirects
 - Fix Sentinel-1 stacking to include both A and B in stacks
+
+------
 
 ## [3.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.2...v3.0.0)
 ### Added
@@ -33,18 +82,26 @@
 - `download_url()`, `download_urls()`, `ASFProduct.download()` and `ASFSearchResults.download()` now expect a `session` argument instead of `token`
 - Send auth headers to every step along a download redirect chain (including final AWS S3 buckets)
 
+------
+
 ## [2.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.1...v2.0.2)
 ### Added
 - INSTRUMENT constants for C-SAR, PALSAR, and ANVIR-2
+
+------
 
 ## [2.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.0...v2.0.1)
 ### Fixed
 - Versioning workflow corrected for proper versioning, stop bumping major instead of patch!
 
+------
+
 ## [2.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v1.1.0...v2.0.0)
 ### Fixed
 - Fixed import order of operations bug
 - Updated ASFProduct and ASFSearchResults to use path arg in download methods
+
+------
 
 ## [1.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v1.1.0)
 ### Added
@@ -58,6 +115,8 @@
 ### Fixed
 - Fixed ASFProduct import in search.py
 - importlib metadata fix for python <3.8
+
+------
 
 ## [0.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.3.0...v0.4.0)
 ### Added
@@ -81,6 +140,7 @@
 ### Fixed
 - Cleaned up cruft from various refactors
 
+------
 
 ## [0.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.0)
 
@@ -109,6 +169,8 @@
 - unused import cleanup
 - better type hinting on centroid() function
 
+------
+
 ## [0.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.0...v0.2.4)
 
 ### Added
@@ -128,3 +190,5 @@
 ### Fixed
 - Removed hard-coded version string
 - Install setuptools_scm in pypi publish action
+
+------
