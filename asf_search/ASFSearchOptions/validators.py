@@ -97,19 +97,10 @@ def parse_int_or_range_list(v: list) -> list:
 def parse_float_or_range_list(v: list) -> list:
     return parse_number_or_range_list(v, float)
 
-
-
-
-
-
-
-
-
-
-
-# Parse and validate a coordinate string
-def parse_coord_string(v: str) -> str:
-    v = v.split(',')
+# Parse and validate a coordinate list
+def parse_coord_list(v: List[float]) -> List[float]:
+    if not isinstance(v, list):
+        raise ValueError(f'Invalid coord list list: Must pass in a list. Got {type(v)}.')
     for c in v:
         try:
             float(c)
@@ -117,25 +108,27 @@ def parse_coord_string(v: str) -> str:
             raise ValueError(f'Invalid coordinate: {c}') from e
     if len(v) % 2 != 0:
         raise ValueError(f'Invalid coordinate list, odd number of values provided: {v}')
-    return ','.join(v)
+    return v
 
-# Parse and validate a bbox coordinate string
-def parse_bbox_string(v: str) -> str:
+# Parse and validate a bbox coordinate list
+def parse_bbox_list(v: List[float]) -> List[float]:
     try:
-        v = parse_coord_string(v)
+        # This also makes sure v is a list:
+        v = parse_coord_list(v)
     except ValueError as e:
         raise ValueError(f'Invalid bbox: {e}') from e
-    if len(v.split(',')) != 4:
+    if len(v) != 4:
         raise ValueError(f'Invalid bbox, must be 4 values: {v}')
     return v
 
-# Parse and validate a point coordinate string
-def parse_point_string(v: str) -> str:
+# Parse and validate a point coordinate list
+def parse_point_list(v: List[float]) -> List[float]:
     try:
-        v = parse_coord_string(v)
+        # This also makes sure v is a list:
+        v = parse_coord_list(v)
     except ValueError as e:
         raise ValueError(f'Invalid point: {e}') from e
-    if len(v.split(',')) != 2:
+    if len(v) != 2:
         raise ValueError(f'Invalid point, must be 2 values: {v}')
     return v
 
@@ -146,4 +139,9 @@ def parse_wkt(v: str) -> str:
     return parse_wkt_util(v)
 
 def parse_session(*args, **kwargs):
+    if len(args) + len(kwargs) == 1:
+        if len(args) == 1 and isinstance(args[0], ASFSession):
+            return args[0]
+        if len(kwargs) == 1 and "asf_session" in kwargs and isinstance(kwargs["asf_session"], ASFSession):
+            return kwargs["asf_session"]
     return ASFSession(*args, **kwargs)
