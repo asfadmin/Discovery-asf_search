@@ -85,7 +85,7 @@ def search(data: Union[ASFSearchOptions, dict],
     data = dict(data)
     data['output'] = 'geojson'
     # Join the url, to guantee *exatly* one '/' between each url fragment:
-    host = '/'.join(s.strip('/') for s in [f'http://{host}', f'{INTERNAL.SEARCH_PATH}'])
+    host = '/'.join(s.strip('/') for s in [f'https://{host}', f'{INTERNAL.SEARCH_PATH}'])
     response = session.post(host, data=data)
 
     try:
