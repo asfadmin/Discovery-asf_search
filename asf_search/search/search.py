@@ -29,8 +29,6 @@ def search(data: Union[ASFSearchOptions, dict],
         # Don't add defaults to the original object:
         data = copy(data)
     # Set some defaults:
-    if data.cmr_provider is None:
-        data.cmr_provider = "ASF"
     if data.asf_session is None:
         data.asf_session = ASFSession()
 
