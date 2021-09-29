@@ -17,7 +17,6 @@ class ASFSession(requests.Session):
         #   (user, pass) or (username=user, password=pass) -> auth with creds session
         #   (cookiejar) or (cookies=cookiejar) -> auth with cookiejar session
         #   (myToken) or (token=myToken) -> auth with token session
-        #   (session) or (asf_session=session) -> itself, does nothing.
 
         def add_if_new(key, val, main_dict):
             if key not in main_dict:
@@ -32,9 +31,6 @@ class ASFSession(requests.Session):
             # Check if cookejar:
             if isinstance(args[0], http.cookiejar.CookieJar):
                 add_if_new("cookies", args[0], kwargs)
-            # Check if session:
-            elif isinstance(args[0], ASFSession):
-                add_if_new("asf_session", args[0], kwargs)
             # Check if token:
             elif isinstance(args[0], str):
                 add_if_new("token", args[0], kwargs)
@@ -61,10 +57,6 @@ class ASFSession(requests.Session):
                 return
             if "cookies" in kwargs and isinstance(kwargs["cookies"], http.cookiejar.CookieJar):
                 self.auth_with_cookiejar(kwargs["cookies"])
-                return
-            if "asf_session" in kwargs and isinstance(kwargs["asf_session"], ASFSession):
-                # TODO: This doesn't save info from previous session. Figure out how:
-                self = kwargs["asf_session"]
                 return
         elif len(kwargs) == 2:
             if set(["username", "password"]).issubset(kwargs) and isinstance(kwargs["username"], str) and isinstance(kwargs["password"], str):
