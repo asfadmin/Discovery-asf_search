@@ -3,7 +3,7 @@ from .validators import (
     parse_string, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
     parse_float_or_range_list,
-    parse_coord_string, parse_bbox_string, parse_point_string,
+    parse_coord_list, parse_bbox_list, parse_point_list,
     parse_session
 )
 
@@ -23,7 +23,7 @@ def validate(key, value):
                 error_msg += f" (Did you mean '{valid_key}'?)"
                 break
         raise KeyError(error_msg)
-    validator_map[key](value)
+    return validator_map[key](value)
 
 validator_map = {
 #   API parameters            Parser
