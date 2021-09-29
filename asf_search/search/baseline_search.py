@@ -16,7 +16,8 @@ precalc_platforms = [
     PLATFORM.RADARSAT,
     PLATFORM.ERS1,
     PLATFORM.ERS2,
-    PLATFORM.JERS]
+    PLATFORM.JERS,
+]
 
 
 def stack_from_product(
@@ -24,7 +25,8 @@ def stack_from_product(
         strategy = None,
         host: str = INTERNAL.SEARCH_API_HOST,
         asf_session: ASFSession = None,
-        cmr_provider: str = None) -> ASFSearchResults:
+        cmr_provider: str = None
+    ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference ASFProduct
 
@@ -54,7 +56,8 @@ def stack_from_id(
         strategy = None,
         host: str = INTERNAL.SEARCH_API_HOST,
         asf_session: ASFSession = None,
-        cmr_provider: str = None) -> ASFSearchResults:
+        cmr_provider: str = None
+    ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
 
