@@ -9,6 +9,7 @@ except PackageNotFoundError:
           '   python -m pip install -e .\n'
           'Or, to just get the version number use:\n'
           '   python setup.py --version')
+    __version__ = "0.0.0"
 
 from .ASFSession import ASFSession
 from .ASFProduct import ASFProduct
