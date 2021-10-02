@@ -41,31 +41,3 @@ jobs:
         tag_schema: semantic
         draft: false
         prerelease: false
-
-
-  # Tell master that the merge happened:
-  UpdateMaster:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Attempt fast-forward master from stable
-      run: |
-        git fetch --prune
-        git checkout master && git pull --ff-only
-        git merge --ff-only origin/stable
-        git push
-    # Open a PR, if the vanilla pull failed
-    - name: Open PR to bring main back to master
-      if: ${{ failure() }}
-      uses: repo-sync/pull-request@v2
-      with:
-        source_branch: stable
-        destination_branch: master
-        pr_title: Pulling ${{ github.ref }} into master
-        pr_body: Fast-forward of stable to master failed!
-        pr_assignee: ${{ github.actor }}
-        pr_label: bot created
-        pr_draft: false
-        pr_allow_empty: true
-        github_token: ${{ secrets.GITHUB_TOKEN }} # Built in token
