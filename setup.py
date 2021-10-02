@@ -1,6 +1,5 @@
 """asf_search setuptools configuration"""
 from setuptools import find_packages, setup
-import subprocess
 
 requirements = [
         "requests",
@@ -15,7 +14,6 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="asf_search",
-    use_scm_version=True,
     author="Alaska Satellite Facility Discovery Team",
     author_email="uaf-asf-discovery@alaska.edu",
     description="Python wrapper for ASF's SearchAPI",
