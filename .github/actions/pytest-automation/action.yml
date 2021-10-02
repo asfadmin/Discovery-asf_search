@@ -1,0 +1,34 @@
+name: Run Pytest Suite
+description: Run the pytest Suite
+
+inputs:
+  PYTEST_OPTIONS:
+    description: "Arguments passed onto the 'pyest' param."
+    required: false
+    default: ""
+  AUTO_OPTIONS:
+    description: "Arguments passed to PytestAutomation."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    # Pytest auto packages: pytest pytest-xdist PyYAML
+    # Pip install dir packages: setuptools wheel
+    # Then pip install local WKTUtils, with it's requirements
+    - name: Install dependencies
+      shell: bash
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install pytest pytest-xdist PyYAML setuptools wheel
+        python3 -m pip install .
+    - name: Clone PytestAuto
+      shell: bash
+      run: |
+        git clone --branch prod https://github.com/asfadmin/Discovery-PytestAutomation
+    - name: Run the Suite
+      shell: bash
+      run: echo "Skipping tests" # |
+        # cd Discovery-PytestAutomation
+        # python3 -m pytest ${{ inputs.PYTEST_OPTIONS }} . ${{ inputs.AUTO_OPTIONS }}

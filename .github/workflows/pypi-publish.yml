@@ -16,16 +16,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    # Run the local test suite action:
+    - uses: ./.github/actions/pytest-automation
+      with:
+        PYTEST_OPTIONS: -n auto
+
+    # Actually push the package now:
     - name: Install dependencies
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install setuptools wheel twine "setuptools-scm[toml]"
-
-    ## Removing until test suite is added:
-    # - name: Run the test suite
-    #   run: |
-    #     pytest -n auto .
-
     - name: Build and publish
       env:
         TWINE_USERNAME: __token__

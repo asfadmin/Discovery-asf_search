@@ -8,8 +8,7 @@ jobs:
     steps:
       # Get the code:
       - uses: actions/checkout@v2
-      ## Removing until test suite is added:
-      # - name: Run the test suite
-      #   run: |
-      #    python3 -m pip install .
-      #    pytest -n auto .
+      # Run the local action:
+      - uses: ./.github/actions/pytest-automation
+        with:
+          PYTEST_OPTIONS: -n auto
