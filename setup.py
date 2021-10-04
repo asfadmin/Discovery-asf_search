@@ -14,6 +14,7 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="asf_search",
+    # version=Declared in pyproject.toml, through "[tool.setuptools_scm]"
     author="Alaska Satellite Facility Discovery Team",
     author_email="uaf-asf-discovery@alaska.edu",
     description="Python wrapper for ASF's SearchAPI",
