@@ -17,12 +17,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip build
+        run: python3 -m pip install --upgrade pip build
 
       - name: Build package
-        run: |
-          python3 -m build .
+        run: python3 -m build .
 
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@bea5cda687c2b79989126d589ef4411bedce0195
