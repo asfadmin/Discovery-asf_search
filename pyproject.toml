@@ -5,3 +5,8 @@ requires = [
     "setuptools_scm[toml]>=3.4"
 ]
 build-backend = "setuptools.build_meta"
+
+# Same as declaring use_scm_version in setup.py, but avoids
+# "UserWarning: Unknown distribution option: 'use_scm_version'"
+# if setuptools_scm isn't installed when setup.py is called:
+[tool.setuptools_scm]
