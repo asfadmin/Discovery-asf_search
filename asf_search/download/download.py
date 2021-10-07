@@ -70,9 +70,7 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
             r.headers.clear()
             r.headers['location'] = location
 
-    print(f'Following {url}')
     response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
-    print(f'response: {response.status_code}')
 
     response.raise_for_status()
     with open(os.path.join(path, filename), 'wb') as f:
