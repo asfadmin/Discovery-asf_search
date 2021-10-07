@@ -50,7 +50,6 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     :param session: The session to use, in most cases should be authenticated beforehand
     :return:
     """
-    url = urllib.parse.urlparse(url)
 
     if filename is None:
         filename = os.path.split(urllib.parse.urlparse(url).path)[1]
