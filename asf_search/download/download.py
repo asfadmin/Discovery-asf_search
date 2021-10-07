@@ -50,8 +50,10 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     :param session: The session to use, in most cases should be authenticated beforehand
     :return:
     """
+    url = urllib.parse.urlparse(url)
+
     if filename is None:
-        filename = os.path.split(urllib.parse.urlparse(url).path)[1]
+        filename = os.path.split(url.path)[1]
 
     if not os.path.isdir(path):
         raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
@@ -62,17 +64,24 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     if session is None:
         session = ASFSession()
 
-    print(f'Following {url}')
-    response = session.get(url, stream=True, allow_redirects=False)
+    print(f'Following {url.geturl()}')
+    response = session.get(url.geturl(), stream=True, allow_redirects=False)
     print(f'response: {response.status_code}')
     while 300 <= response.status_code <= 399:
-        new_url = response.headers['location']
-        print(f'Redirect to {new_url}')
-        if 'aws.amazon.com' in urllib.parse.urlparse(new_url).netloc:
-            # S3 detests the auth headers, don't use the established session
-            response = requests.get(new_url, stream=True, allow_redirects=False)
+        # If they just return a path, netloc will be empty:
+        if urllib.parse.urlparse(response.headers['location']).netloc == "":
+            # Only update the path, keep the original url:
+            url._replace(path=response.headers['location'])
         else:
-            response = session.get(new_url, stream=True, allow_redirects=False)
+            # The redirect is somewhere else completely:
+            url = urllib.parse.urlparse(response.headers['location'])
+
+        print(f'Redirect to {url}')
+        if 'amazonaws.com' in url.netloc:
+            # S3 detests the auth headers, don't use the established session
+            response = requests.get(url.geturl(), stream=True, allow_redirects=False)
+        else:
+            response = session.get(url.geturl(), stream=True, allow_redirects=False)
         print(f'response: {response.status_code}')
     response.raise_for_status()
     with open(os.path.join(path, filename), 'wb') as f:
