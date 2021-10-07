@@ -14,22 +14,16 @@ jobs:
   DeployToPypi:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    # Run the local test suite action:
-    - uses: ./.github/actions/pytest-automation
-      with:
-        PYTEST_OPTIONS: -n auto
+      - name: Install dependencies
+        run: python3 -m pip install --upgrade pip build
 
-    # Actually push the package now:
-    - name: Install dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install setuptools wheel twine "setuptools-scm[toml]"
-    - name: Build and publish
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-      run: |
-        python3 setup.py sdist bdist_wheel
-        python3 -m twine upload dist/*
+      - name: Build package
+        run: python3 -m build .
+
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@bea5cda687c2b79989126d589ef4411bedce0195
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
