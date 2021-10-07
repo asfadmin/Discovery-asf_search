@@ -67,7 +67,9 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
 
     def strip_auth_if_aws(r, *args, **kwargs):
         if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc :
+            location = r.headers['location']
             r.headers.clear()
+            r.headers['location'] = location
 
     print(f'Following {url.geturl()}')
     response = session.get(url.geturl(), stream=True, hooks={'response': strip_auth_if_aws})
