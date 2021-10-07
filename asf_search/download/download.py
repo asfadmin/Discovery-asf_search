@@ -50,6 +50,7 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     :param session: The session to use, in most cases should be authenticated beforehand
     :return:
     """
+
     if filename is None:
         filename = os.path.split(urllib.parse.urlparse(url).path)[1]
 
@@ -62,18 +63,15 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     if session is None:
         session = ASFSession()
 
-    print(f'Following {url}')
-    response = session.get(url, stream=True, allow_redirects=False)
-    print(f'response: {response.status_code}')
-    while 300 <= response.status_code <= 399:
-        new_url = response.headers['location']
-        print(f'Redirect to {new_url}')
-        if 'aws.amazon.com' in urllib.parse.urlparse(new_url).netloc:
-            # S3 detests the auth headers, don't use the established session
-            response = requests.get(new_url, stream=True, allow_redirects=False)
-        else:
-            response = session.get(new_url, stream=True, allow_redirects=False)
-        print(f'response: {response.status_code}')
+
+    def strip_auth_if_aws(r, *args, **kwargs):
+        if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc:
+            location = r.headers['location']
+            r.headers.clear()
+            r.headers['location'] = location
+
+    response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
+
     response.raise_for_status()
     with open(os.path.join(path, filename), 'wb') as f:
         for chunk in response.iter_content(chunk_size=8192):
