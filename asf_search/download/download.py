@@ -53,7 +53,7 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     url = urllib.parse.urlparse(url)
 
     if filename is None:
-        filename = os.path.split(url.path)[1]
+        filename = os.path.split(urllib.parse.urlparse(url).path)[1]
 
     if not os.path.isdir(path):
         raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
@@ -69,8 +69,8 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
         if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc :
             r.headers.clear()
 
-    print(f'Following {url.geturl()}')
-    response = session.get(url.geturl(), stream=True, hooks={'response': strip_auth_if_aws})
+    print(f'Following {url}')
+    response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
     print(f'response: {response.status_code}')
 
     response.raise_for_status()
