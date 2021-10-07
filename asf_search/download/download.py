@@ -64,25 +64,15 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     if session is None:
         session = ASFSession()
 
-    print(f'Following {url.geturl()}')
-    response = session.get(url.geturl(), stream=True, allow_redirects=False)
-    print(f'response: {response.status_code}')
-    while 300 <= response.status_code <= 399:
-        # If they just return a path, netloc will be empty:
-        if urllib.parse.urlparse(response.headers['location']).netloc == "":
-            # Only update the path, keep the original url:
-            url._replace(path=response.headers['location'])
-        else:
-            # The redirect is somewhere else completely:
-            url = urllib.parse.urlparse(response.headers['location'])
 
-        print(f'Redirect to {url}')
-        if 'amazonaws.com' in url.netloc:
-            # S3 detests the auth headers, don't use the established session
-            response = requests.get(url.geturl(), stream=True, allow_redirects=False)
-        else:
-            response = session.get(url.geturl(), stream=True, allow_redirects=False)
-        print(f'response: {response.status_code}')
+    def strip_auth_if_aws(r, *args, **kwargs):
+        if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc :
+            r.headers.clear()
+
+    print(f'Following {url.geturl()}')
+    response = session.get(url.geturl(), stream=True, allow_redirects=True, hooks={'response': strip_auth_if_aws})
+    print(f'response: {response.status_code}')
+
     response.raise_for_status()
     with open(os.path.join(path, filename), 'wb') as f:
         for chunk in response.iter_content(chunk_size=8192):
