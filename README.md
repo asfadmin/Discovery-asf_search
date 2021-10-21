@@ -9,6 +9,9 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search/badge)](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search)
 [![Github workflow](https://github.com/asfadmin/asf_search/actions/workflows/run-pytest.yml/badge.svg)](https://github.com/asfadmin/Discovery-asf_search/actions/workflows/run-pytest.yml)
 
+[![Documentation](https://img.shields.io/badge/docs-at_ASF-green)](https://docs.asf.alaska.edu/asf_search/basics/)
+
+
 Python wrapper for the ASF SearchAPI
 
 ```python
@@ -40,6 +43,8 @@ or into a virtual environment with
 python -m pip install asf_search
 ```
 ## Usage
+
+_Full documentation is available at https://docs.asf.alaska.edu/asf_search/basics/_
 
 Programmatically searching for ASF data is made simple with asf_search. Several search functions are provided:
 - `geo_search()` Find product info over an area of interest using a WKT string
