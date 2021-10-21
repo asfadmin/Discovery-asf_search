@@ -22,6 +22,9 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/asfadmin/Discovery-asf_search.git",
+    project_urls={
+        'Documentation': 'https://docs.asf.alaska.edu/asf_search/basics/'
+    },
     packages=find_packages(),
     package_dir={'asf_search': 'asf_search'},
     python_requires='>=3.6',
