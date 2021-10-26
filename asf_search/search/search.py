@@ -139,7 +139,6 @@ def search(
     join_fields = [
         'beamMode',
         'collectionName',
-        'flightDirection',
         'granule_list',
         'groupID',
         'instrument',
