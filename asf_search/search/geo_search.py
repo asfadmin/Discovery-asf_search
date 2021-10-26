@@ -1,11 +1,11 @@
 from typing import Union, Iterable
 import datetime
+from copy import copy
 
 from asf_search.search import search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSession import ASFSession
-from asf_search.constants import INTERNAL
 
 
 def geo_search(
@@ -26,9 +26,10 @@ def geo_search(
         relativeOrbit: Iterable[Union[int, range]] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        host: str = INTERNAL.SEARCH_API_HOST,
-        asf_session: ASFSession = None,
-        cmr_provider: str = None
+        cmr_provider: str = None,
+        session: ASFSession = None,
+        opts: ASFSearchOptions = None,
+        host: str = None
 ) -> ASFSearchResults:
     """
     Performs a geographic search using the ASF SearchAPI
@@ -50,15 +51,19 @@ def geo_search(
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
+    :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
+    :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
+    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
 
     :return: ASFSearchResults(list) of search results
     """
 
     kwargs = locals()
-    data = dict((k,v) for k,v in kwargs.items() if k != "host" and v is not None)
-    data = ASFSearchOptions(**data)
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts'] and v is not None)
 
-    return search(data, host=host)
+    opts = (ASFSearchOptions() if opts is None else copy(opts))
+    for p in data:
+        setattr(opts, p, data[p])
+
+    return search(opts=opts, host=host)
