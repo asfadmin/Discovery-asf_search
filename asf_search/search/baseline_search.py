@@ -7,7 +7,7 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFProduct import ASFProduct
 from asf_search.ASFSession import ASFSession
-from asf_search.constants import INTERNAL, PLATFORM
+from asf_search.constants import PLATFORM
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
 
 
