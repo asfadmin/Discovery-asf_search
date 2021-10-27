@@ -9,6 +9,7 @@ from asf_search.ASFSession import ASFSession
 
 
 def geo_search(
+        intersectsWith: str,
         absoluteOrbit: Iterable[Union[int, range]] = None,
         asfFrame: Iterable[Union[int, range]] = None,
         beamMode: Iterable[str] = None,
@@ -17,7 +18,6 @@ def geo_search(
         flightDirection: Iterable[str] = None,
         frame: Iterable[Union[int, range]] = None,
         instrument: Iterable[str] = None,
-        intersectsWith: str = None,
         lookDirection: Iterable[str] = None,
         platform: Iterable[str] = None,
         polarization: Iterable[str] = None,
