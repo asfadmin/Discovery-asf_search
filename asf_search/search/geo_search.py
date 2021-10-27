@@ -26,10 +26,7 @@ def geo_search(
         relativeOrbit: Iterable[Union[int, range]] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        cmr_provider: str = None,
-        session: ASFSession = None,
-        opts: ASFSearchOptions = None,
-        host: str = None
+        opts: ASFSearchOptions = None
 ) -> ASFSearchResults:
     """
     Performs a geographic search using the ASF SearchAPI
@@ -51,10 +48,7 @@ def geo_search(
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
-    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
-    :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
 
     :return: ASFSearchResults(list) of search results
     """

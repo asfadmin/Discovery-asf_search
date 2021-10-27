@@ -43,8 +43,8 @@ def search(
         maxResults: int = None,
         cmr_provider: str = None,
         session: ASFSession = None,
-        opts: ASFSearchOptions = None,
         host: str = None,
+        opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
     Performs a generic search using the ASF SearchAPI. Accepts a number of search parameters, and/or an ASFSearchOptions object. If an ASFSearchOptions object is provided as well as other specific parameters, the two sets of options will be merged, preferring the specific keyword arguments.
@@ -79,25 +79,18 @@ def search(
     :param maxResults: The maximum number of results to be returned by the search
     :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
     :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
-    :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
     :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
+    :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
     :return: ASFSearchResults(list) of search results
     """
 
     kwargs = locals()
-    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts'] and v is not None)
-
-    if host is None:
-        host = INTERNAL.SEARCH_API_HOST
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
     for p in data:
         setattr(opts, p, data[p])
-
-    # Set some defaults:
-    if opts.session is None:
-        opts.session = ASFSession()
 
     # store the final search opts object for attaching to the results later
     saved_opts = copy(opts)

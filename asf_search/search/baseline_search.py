@@ -22,33 +22,22 @@ precalc_platforms = [
 
 def stack_from_product(
         reference: ASFProduct,
-        cmr_provider: str = None,
-        session: ASFSession = None,
-        opts: ASFSearchOptions = None,
-        host: str = None
+        opts: ASFSearchOptions = None
     ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference ASFProduct
 
     :param reference: Reference scene to base the stack on, and from which to calculate perpendicular/temporal baselines
-    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
-    :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
 
     :return: ASFSearchResults(dict) of search results
     """
 
-    kwargs = locals()
-    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts', 'reference'] and v is not None)
-
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-    for p in data:
-        setattr(opts, p, data[p])
 
     stack_opts = get_stack_opts(reference, opts=opts)
 
-    stack = search(opts=stack_opts, host=host)
+    stack = search(opts=stack_opts)
     calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
@@ -57,36 +46,26 @@ def stack_from_product(
 
 def stack_from_id(
         reference_id: str,
-        cmr_provider: str = None,
-        session: ASFSession = None,
-        opts: ASFSearchOptions = None,
-        host: str = None
+        opts: ASFSearchOptions = None
     ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
 
     :param reference_id: Reference product to base the stack from, and from which to calculate perpendicular/temporal baselines
-    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
-    :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
 
     :return: ASFSearchResults(list) of search results
     """
-    kwargs = locals()
-    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts', 'reference_id'] and v is not None)
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-    for p in data:
-        setattr(opts, p, data[p])
 
-    reference_results = product_search(product_list=reference_id, opts=opts, host=host)
+    reference_results = product_search(product_list=reference_id, opts=opts)
 
     if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
     reference = reference_results[0]
 
-    return stack_from_product(reference, host=host, session=session, cmr_provider=cmr_provider)
+    return stack_from_product(reference, opts=opts)
 
 
 def get_stack_opts(reference: ASFProduct, opts: ASFSearchOptions = None) -> ASFSearchOptions:
