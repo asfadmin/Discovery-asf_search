@@ -92,12 +92,6 @@ def search(
     for p in data:
         setattr(opts, p, data[p])
 
-    # store the final search opts object for attaching to the results later
-    saved_opts = copy(opts)
-
-    # Remove the auth from the search object before searching:
-    session = opts.session
-    del opts.session
     data = dict(opts)
 
     listify_fields = [
@@ -153,9 +147,9 @@ def search(
         data[shapeType] = shape
 
     data['output'] = 'geojson'
-    # Join the url, to guantee *exatly* one '/' between each url fragment:
-    host = '/'.join(s.strip('/') for s in [f'https://{host}', f'{INTERNAL.SEARCH_PATH}'])
-    response = session.post(host, data=data)
+    # Join the url, to guarantee *exactly* one '/' between each url fragment:
+    url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.SEARCH_PATH}'])
+    response = opts.session.post(url=url, data=data)
 
     try:
         response.raise_for_status()
@@ -167,7 +161,7 @@ def search(
         raise ASFServerError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
 
     products = [ASFProduct(f) for f in response.json()['features']]
-    return ASFSearchResults(products,opts=saved_opts)
+    return ASFSearchResults(products, opts=opts)
 
 
 def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
