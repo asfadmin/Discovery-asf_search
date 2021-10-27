@@ -1,7 +1,6 @@
 from shapely.geometry import shape, Point
 import json
 from collections import UserList
-import requests
 
 from asf_search.download import download_url
 from asf_search import ASFSession
