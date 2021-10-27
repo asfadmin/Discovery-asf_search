@@ -5,6 +5,10 @@ from asf_search import ASFSession
 
 
 class ASFSearchResults(UserList):
+    def __init__(self, *args, opts=None):
+        super().__init__(*args)
+        self.searchOptions = opts
+
     def geojson(self):
         return {
             'type': 'FeatureCollection',

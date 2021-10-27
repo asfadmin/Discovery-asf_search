@@ -99,6 +99,9 @@ def search(
     if opts.session is None:
         opts.session = ASFSession()
 
+    # store the final search opts object for attaching to the results later
+    saved_opts = copy(opts)
+
     # Remove the auth from the search object before searching:
     session = opts.session
     del opts.session
@@ -171,7 +174,7 @@ def search(
         raise ASFServerError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
 
     products = [ASFProduct(f) for f in response.json()['features']]
-    return ASFSearchResults(products)
+    return ASFSearchResults(products,opts=saved_opts)
 
 
 def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
