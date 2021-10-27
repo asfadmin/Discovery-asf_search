@@ -30,7 +30,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v4.0.0)
 ### Added
-
 - `ASFSearchOptions`: This class provides a number of useful ways to develop search results
   - Search parameters are immediately validated upon object creation/edit instead of at search time, which should lead to fewer errors at search time
   - All search functions allow both the previous style of keyword arguments, as well as simply passing in an ASFSearchOptions object using the `opts` keyword arg.

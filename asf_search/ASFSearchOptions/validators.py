@@ -72,8 +72,7 @@ def parse_range(value: Tuple[number, number], h: Callable[[number], number]) -> 
         if value[0] > value[1]:
             raise ValueError(f'Min must be less than max when using min/max tuples to search: {value}')
         return value
-    else:
-        raise ValueError(f'Invalid range. Expected 2-value numeric tuple, got {type(value)}: {value}')
+    raise ValueError(f'Invalid range. Expected 2-value numeric tuple, got {type(value)}: {value}')
 
 
 # Parse and validate a date range: "1991-10-01T00:00:00Z,1991-10-02T00:00:00Z"
@@ -119,8 +118,7 @@ def parse_number_or_range(value: Union[list, Tuple[number, number]], h):
     try:
         if isinstance(value, tuple):
             return parse_range(value, h)
-        else:
-            return h(value)
+        return h(value)
     except ValueError as e:
         raise ValueError(f'Invalid {h.__name__} or range: {e}') from e
 

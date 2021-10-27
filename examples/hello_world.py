@@ -119,4 +119,3 @@ try:
     asf.search(offNadirAngle=['a'])
 except ValueError as e:
     print(f'Bare value non-numeric: {e}')
-
