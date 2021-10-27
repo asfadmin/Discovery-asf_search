@@ -26,7 +26,7 @@ def validate(key, value):
 
 
 validator_map = {
-    # API parameters          Parser
+    # Search parameters       Parser
     'maxResults':             int,
     'absoluteOrbit':          parse_int_or_range_list,
     'asfFrame':               parse_int_or_range_list,
@@ -56,8 +56,9 @@ validator_map = {
     'groupID':                parse_string_list,
     'insarStackId':           parse_string,
     'instrument':             parse_string,
-    # Internal parameters     Parser
+    # Config parameters       Parser
     'session':                parse_session,
+    'host':                   parse_string
 }
 
 
