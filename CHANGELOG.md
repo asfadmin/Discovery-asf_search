@@ -48,9 +48,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - All search functions now accepts the optional `opts=` argument, see `ASFSearchOptions` notes above.
 - Replaced all `cmr_token` key arguments with `session`, which takes a `Session`-compatible object. See https://docs.asf.alaska.edu/asf_search/ASFSession/ for more details.
-
-### Removed
-- Old GitHub actions
+- Removed old GitHub actions
 
 ------
 
