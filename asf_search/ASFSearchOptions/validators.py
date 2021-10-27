@@ -142,6 +142,6 @@ def parse_session(*args, **kwargs):
     if len(args) + len(kwargs) == 1:
         if len(args) == 1 and isinstance(args[0], ASFSession):
             return args[0]
-        if len(kwargs) == 1 and "asf_session" in kwargs and isinstance(kwargs["asf_session"], ASFSession):
-            return kwargs["asf_session"]
+        if len(kwargs) == 1 and "session" in kwargs and isinstance(kwargs["session"], ASFSession):
+            return kwargs["session"]
     return ASFSession(*args, **kwargs)
