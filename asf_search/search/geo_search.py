@@ -60,4 +60,4 @@ def geo_search(
     for p in data:
         setattr(opts, p, data[p])
 
-    return search(opts=opts, host=host)
+    return search(opts=opts)
