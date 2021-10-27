@@ -47,7 +47,7 @@ def stack_from_product(
 def stack_from_id(
         reference_id: str,
         opts: ASFSearchOptions = None
-    ) -> ASFSearchResults:
+) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
 
@@ -68,7 +68,10 @@ def stack_from_id(
     return stack_from_product(reference, opts=opts)
 
 
-def get_stack_opts(reference: ASFProduct, opts: ASFSearchOptions = None) -> ASFSearchOptions:
+def get_stack_opts(
+        reference: ASFProduct,
+        opts: ASFSearchOptions = None
+) -> ASFSearchOptions:
 
     stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
     stack_opts.processingLevel = reference.properties['processingLevel']
@@ -97,7 +100,10 @@ def get_stack_opts(reference: ASFProduct, opts: ASFSearchOptions = None) -> ASFS
     raise ASFBaselineError(f'Reference product is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference.properties["fileID"]}')
 
 
-def calc_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults) -> None:
+def calc_temporal_baselines(
+        reference: ASFProduct,
+        stack: ASFSearchResults
+) -> None:
     """
     Calculates temporal baselines for a stack of products based on a reference scene and injects those values into the stack.
 
