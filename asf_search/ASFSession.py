@@ -4,8 +4,6 @@ from asf_search import __version__
 from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
 from asf_search.exceptions import ASFAuthenticationError
 
-import copy
-
 class ASFSession(requests.Session):
     def __init__(self, *args, **kwargs):
         super().__init__()
