@@ -1,8 +1,7 @@
 from .validator_map import validator_map, validate
 
 
-
-class ASFSearchOptions():
+class ASFSearchOptions:
     def __init__(self, **kwargs):
         # init the built in attrs:
         for key in validator_map.keys():
