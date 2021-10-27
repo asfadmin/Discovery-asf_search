@@ -18,7 +18,7 @@ class ASFSearchOptions():
         # Apply any ones passsed in:
         for key, value in kwargs.items():
             self.__setattr__(key, value)
-    
+
     def __setattr__(self, key, value):
         # self.* calls custom __setattr__ method, creating inf loop. Use super().*
         # Let values always be None, even if their validator doesn't agree. Used to delete them too:
@@ -58,5 +58,3 @@ class ASFSearchOptions():
         #             yield key, value
         #     else:
         #         yield key, self.__getattribute__(key)
-
-
