@@ -57,7 +57,7 @@ class ASFSearchOptions:
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-        no_export = ['host', 'session']
+        no_export = ['host', 'session', 'provider']  # TODO: remove 'provider' from this list once we're hitting CMR directly
         for key in validator_map:
             if key not in no_export:
                 value = self.__getattribute__(key)
