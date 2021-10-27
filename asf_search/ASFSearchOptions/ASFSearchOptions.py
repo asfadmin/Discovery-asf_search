@@ -15,7 +15,7 @@ class ASFSearchOptions():
         for key in validator_map.keys():
             self.__setattr__(key, None)
         
-        # Apply any ones passsed in:
+        # Apply any parameters passed in:
         for key, value in kwargs.items():
             self.__setattr__(key, value)
 
