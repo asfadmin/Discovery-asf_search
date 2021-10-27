@@ -1,4 +1,6 @@
 from .validator_map import validator_map, validate
+from asf_search import ASFSession
+from asf_search.constants import INTERNAL
 
 
 class ASFSearchOptions:
@@ -25,10 +27,18 @@ class ASFSearchOptions:
         """
         # self.* calls custom __setattr__ method, creating inf loop. Use super().*
         # Let values always be None, even if their validator doesn't agree. Used to delete them too:
-        if value is None:
-            super().__setattr__(key, None)
-        elif key in validator_map:
-            super().__setattr__(key, validate(key, value))
+        if key in validator_map:
+            if value is None:  # always maintain defaults on required fields
+                if key == 'cmr_provider':
+                    super().__setattr__(key, INTERNAL.DEFAULT_PROVIDER)
+                elif key == 'host':
+                    super().__setattr__(key, INTERNAL.SEARCH_API_HOST)
+                elif key == 'session':
+                    super().__setattr__(key, ASFSession)
+                else:
+                    super().__setattr__(key, None)
+            else:
+                super().__setattr__(key, validate(key, value))
         else:
             raise KeyError(f"key '{key}' is not a valid search option (setattr)")
 
