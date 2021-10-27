@@ -1,6 +1,5 @@
 # Changelog
 
-
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -29,7 +28,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ------
 
-## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.3...v4.0.0)
+## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v4.0.0)
 ### Added
 
 - `ASFSearchOptions`: This class provides a number of useful ways to develop search results
@@ -51,6 +50,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Removed
 - Old GitHub actions
+
+------
+
+## [3.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.3...v3.0.4)
+### Changed
+- When working with source, package **must** be installed directly:
+  - `python3 -m pip install -e .`
+### Fixed
+- In-region S3 downloads should now function without issue
 
 ------
 
