@@ -93,11 +93,11 @@ except ValueError as e:
     print(f'Tuple too long: {e}')
 try:
     asf.search(offNadirAngle=[('a', 2)])
-except TypeError as e:
+except ValueError as e:
     print(f'Tuple non-numeric min: {e}')
 try:
     asf.search(offNadirAngle=[(1, 'b')])
-except TypeError as e:
+except ValueError as e:
     print(f'Tuple non-numeric max: {e}')
 try:
     asf.search(offNadirAngle=[(float("NaN"), 2)])
@@ -117,5 +117,6 @@ except ValueError as e:
     print(f'Bare value non-finite: {e}')
 try:
     asf.search(offNadirAngle=['a'])
-except TypeError as e:
+except ValueError as e:
     print(f'Bare value non-numeric: {e}')
+
