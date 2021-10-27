@@ -1,4 +1,3 @@
-from collections import UserDict
 from .validator_map import validator_map, validate
 
 # NOTE: Keep going back and forth on if to accept custom attr's. (i.e. output=geojson)
@@ -8,6 +7,7 @@ from .validator_map import validator_map, validate
 # mydict["output"] = "geojson"
 # Have both versions below just in case, worth a design dive on:
 # Need to edit search.search, line 80ish with whichever we go with
+
 
 class ASFSearchOptions():
     def __init__(self, **kwargs):
@@ -32,7 +32,7 @@ class ASFSearchOptions():
             # super().__setattr__(key, value)
 
     def __delattr__(self, item):
-        # If the atter is one of ours, just set it to None. Else remove whatever the user did:
+        # If the attr is one of ours, just set it to None. Else remove whatever the user did:
         if item in validator_map:
             self.__setattr__(item, None)
         else:
