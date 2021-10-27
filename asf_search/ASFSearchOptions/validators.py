@@ -1,5 +1,5 @@
-import dateparser, datetime
-import re
+import dateparser
+import datetime
 from WKTUtils.Input import parse_wkt_util
 from asf_search import ASFSession
 import http.cookiejar
