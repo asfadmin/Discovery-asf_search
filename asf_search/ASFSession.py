@@ -4,13 +4,14 @@ from asf_search import __version__
 from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
 from asf_search.exceptions import ASFAuthenticationError
 
+
 class ASFSession(requests.Session):
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.headers.update({'User-Agent': f'{__name__}.{__version__}'})
 
-        ### Figure out what auth method to use ###
-        ## Possible params:
+        # Figure out what auth method to use ###
+        # Possible params:
         #   Nothing -> Generic session
         #   (user, pass) or (username=user, password=pass) -> auth with creds session
         #   (cookiejar) or (cookies=cookiejar) -> auth with cookiejar session
@@ -22,7 +23,7 @@ class ASFSession(requests.Session):
             else:
                 raise ValueError(f"Passed multiple '{key}' objects.")
 
-        ## 1) Turn all args into kwargs:
+        # 1) Turn all args into kwargs:
         if len(args) == 0:
             pass
         elif len(args) == 1:
@@ -46,7 +47,7 @@ class ASFSession(requests.Session):
         else: # len(args) > 2:
             raise ValueError(f"Too many args passed: '{args}'.")
         
-        ## 2) Parse kwargs to see which session to call:
+        # 2) Parse kwargs to see which session to call:
         if len(kwargs) == 0:
             return
         elif len(kwargs) == 1:
@@ -57,11 +58,10 @@ class ASFSession(requests.Session):
                 self.auth_with_cookiejar(kwargs["cookies"])
                 return
         elif len(kwargs) == 2:
-            if set(["username", "password"]).issubset(kwargs) and isinstance(kwargs["username"], str) and isinstance(kwargs["password"], str):
+            if {"username", "password"}.issubset(kwargs) and isinstance(kwargs["username"], str) and isinstance(kwargs["password"], str):
                 self.auth_with_creds(kwargs["username"], kwargs["password"])
                 return
         raise ValueError(f"No known auth method found. {kwargs}")
-
 
     def auth_with_creds(self, username: str, password: str):
         """
