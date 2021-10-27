@@ -30,18 +30,20 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v4.0.0)
 ### Added
-- `ASFSearchOptions`: This class provides a number of useful ways to develop search results
+- `ASFSearchOptions`: This class provides a number of useful ways to build search results
   - Search parameters are immediately validated upon object creation/edit instead of at search time, which should lead to fewer errors at search time
-  - All search functions allow both the previous style of keyword arguments, as well as simply passing in an ASFSearchOptions object using the `opts` keyword arg.
+  - All search functions allow both the previous style of keyword arguments, as well as simply passing in an ASFSearchOptions object using the `opts` keyword arg. `opts` is always optional.
     - If both approaches are used, the two are merged, with specific keyword args superseding the options in the object
-    - _In the future, some of the "configuration"-type search parameters such as `session`, `host`, and `cmr_provider` may be removed from search function signatures with the expectation that they will only be altered via an ASFSearchOptions object._
-  - Various search types that make use of the base `search()` function (such as `geo_search()`, `granule_search()`, etc.) all operate internally by simply passing ASFSearchOptions objects for a simpler flow.
+    - Most search functions now expect only their specific parameters, and an optional `opts` parameter. This allows simple usage in most cases, while the `opts` parameter provides access to advanced behavior or alternate workflows.
+  - Internally, all search functions work by passing ASFSearchOptions objects. This allows consistency when working with differently-configured search environments, such as in development.
   - `ASFSearchResults` objects now include a `searchOptions` property, which describes the search used to create those results. This object can be copied, altered, used for subsequent searches, etc.
-- `ASFSession` will now figure out which auth method to use, based on what's passed into it's constructor. Can still authenticate manually with the various `ASFSession.auth_with_*` methods.
 - Exposed `stack_from_product()` and `get_stack_opts()` to support more approaches for building insar stacks.
   - `stack_from_product()` accepts an `ASFProduct` as a stack reference and returns ASFSearchResults for that stack
   - `get_stack_opts()` accepts an `ASFProduct` as a stack reference and returns the ASFSearchOptions object that would be used to build a corresponding insar stack
     - A matching convenience method has been added to `ASFProduct`
+  - Both functions support the new `opts` argument described above.
+- `ASFSession` will now figure out which auth method to use, based on what's passed into it's constructor. Can still authenticate manually with the various `ASFSession.auth_with_*` methods.
+
 
 ### Changed
 - All search functions now accepts the optional `opts=` argument, see `ASFSearchOptions` notes above.
