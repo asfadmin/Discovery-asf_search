@@ -34,7 +34,7 @@ class ASFSearchOptions:
                 elif key == 'host':
                     super().__setattr__(key, INTERNAL.SEARCH_API_HOST)
                 elif key == 'session':
-                    super().__setattr__(key, ASFSession)
+                    super().__setattr__(key, ASFSession())
                 else:
                     super().__setattr__(key, None)
             else:
