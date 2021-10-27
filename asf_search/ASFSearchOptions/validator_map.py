@@ -31,7 +31,7 @@ validator_map = {
     'absoluteOrbit':          parse_int_or_range_list,
     'asfFrame':               parse_int_or_range_list,
     'beamMode':               parse_string_list,
-    'cmr_provider':           parse_string,
+    'provider':           parse_string,
     'collectionName':         parse_string,
     'maxDoppler':             parse_float,
     'minDoppler':             parse_float,
@@ -97,6 +97,5 @@ maxResults: The maximum number of results to be returned by the search
 These keys TBD:
 
 host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-cmr_token: EDL authentication token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
-cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
+provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 """
