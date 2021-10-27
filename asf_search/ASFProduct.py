@@ -56,18 +56,9 @@ class ASFProduct:
 
         return stack_from_product(self, cmr_provider=cmr_provider, session=session, host=host)
 
-    def get_stack_opts(
-            self,
-            cmr_provider: str = None,
-            session: ASFSession = None,
-            host: str = None
-    ) -> ASFSearchOptions:
+    def get_stack_opts(self) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
-
-        :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
-        :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
-        :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
 
         :return: ASFSearchOptions describing appropriate options for building a stack from this product
         """
