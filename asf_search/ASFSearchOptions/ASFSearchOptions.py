@@ -6,7 +6,7 @@ class ASFSearchOptions:
         """
         Initialize the object, creating the list of attributes based on the contents of validator_map, and assign them based on kwargs
 
-        :param kwargs:
+        :param kwargs: any search options to be set immediately
         """
         # init the built in attrs:
         for key in validator_map.keys():
@@ -22,7 +22,6 @@ class ASFSearchOptions:
 
         :param key: the name of the option to be set
         :param value: the value to which to set the named option
-        :return:
         """
         # self.* calls custom __setattr__ method, creating inf loop. Use super().*
         # Let values always be None, even if their validator doesn't agree. Used to delete them too:
@@ -38,7 +37,6 @@ class ASFSearchOptions:
         Clear a search option by setting its value to None
 
         :param item: the name of the option to clear
-        :return:
         """
         if item in validator_map:
             self.__setattr__(item, None)
