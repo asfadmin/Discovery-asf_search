@@ -39,22 +39,18 @@ class ASFProduct:
 
     def stack(
             self,
-            cmr_provider: str = None,
-            session: ASFSession = None,
-            host: str = None
+            opts: ASFSearchOptions = None
     ) -> UserList:
         """
         Builds a baseline stack from this product.
 
-        :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
-        :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
-        :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
+        :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
         :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
 
-        return stack_from_product(self, cmr_provider=cmr_provider, session=session, host=host)
+        return stack_from_product(self, opts=opts)
 
     def get_stack_opts(self) -> ASFSearchOptions:
         """
