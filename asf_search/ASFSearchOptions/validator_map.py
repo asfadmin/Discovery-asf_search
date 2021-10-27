@@ -6,12 +6,6 @@ from .validators import (
     parse_session
 )
 
-import dateparser
-
-
-## Not included in map:
-# host
-# cmr_token
 
 def validate(key, value):
     if key not in validator_map:
@@ -93,9 +87,6 @@ relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it
 season: Start and end day of year for desired seasonal range. This option is used in conjunction with start/end to specify a seasonal range within an overall date range.
 start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
 maxResults: The maximum number of results to be returned by the search
-
-These keys TBD:
-
 host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
 provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
 """
