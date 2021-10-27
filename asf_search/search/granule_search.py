@@ -1,6 +1,5 @@
 from typing import Iterable
 from copy import copy
-import logging
 
 from asf_search.search import search
 from asf_search.ASFSearchOptions import ASFSearchOptions

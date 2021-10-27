@@ -3,7 +3,6 @@ from copy import copy
 from requests.exceptions import HTTPError
 import datetime
 import math
-import logging
 
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -157,7 +156,6 @@ def search(
         del data['intersectsWith']
         data[shapeType] = shape
 
-    logging.debug(data)
     data['output'] = 'geojson'
     # Join the url, to guantee *exatly* one '/' between each url fragment:
     host = '/'.join(s.strip('/') for s in [f'https://{host}', f'{INTERNAL.SEARCH_PATH}'])
