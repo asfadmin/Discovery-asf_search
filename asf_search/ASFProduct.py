@@ -3,14 +3,18 @@ import json
 from collections import UserList
 
 from asf_search.download import download_url
-from asf_search import ASFSession
-from asf_search import ASFSearchOptions
+from asf_search.ASFSession import ASFSession
+from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.CMR import translate_product
 
 
 class ASFProduct:
-    def __init__(self, args: dict):
-        self.properties = args['properties']
-        self.geometry = args['geometry']
+    def __init__(self, item: dict):
+        translated = translate_product(item)
+        self.meta = item['meta']
+        self.umm = item['umm']
+        self.properties = translated['properties']
+        self.geometry = translated['geometry']
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)

@@ -5,6 +5,7 @@ import datetime
 
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
@@ -85,117 +86,27 @@ def search(
     """
 
     kwargs = locals()
-    data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
+
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['opts', 'kwargs'] and v is not None)
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
     for p in data:
         setattr(opts, p, data[p])
 
-    data = dict(opts)
+    subqueries = build_subqueries(opts)
+    query = translate_opts(subqueries[0])
 
-    listify_fields = [
-        'absoluteOrbit',
-        'asfFrame',
-        'beamMode',
-        'collectionName',
-        'frame',
-        'granule_list',
-        'groupID',
-        'instrument',
-        'lookDirection',
-        'offNadirAngle',
-        'platform',
-        'polarization',
-        'processingLevel',
-        'product_list',
-        'relativeOrbit'
-    ]
-    for key in listify_fields:
-        if key in data and not isinstance(data[key], list):
-            data[key] = [data[key]]
+    url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}.{INTERNAL.CMR_FORMAT_EXT}'])
 
-    flatten_fields = [
-        'absoluteOrbit',
-        'asfFrame',
-        'frame',
-        'offNadirAngle',
-        'relativeOrbit']
-    for key in flatten_fields:
-        if key in opts:
-            data[key] = flatten_list(data[key])
-
-    join_fields = [
-        'beamMode',
-        'collectionName',
-        'granule_list',
-        'groupID',
-        'instrument',
-        'lookDirection',
-        'platform',
-        'polarization',
-        'processingLevel',
-        'product_list']
-    for key in join_fields:
-        if key in data:
-            data[key] = ','.join(data[key])
-
-    # Special case to unravel WKT field a little for compatibility
-    if data.get('intersectsWith') is not None:
-        (shapeType, shape) = data['intersectsWith'].split(':')
-        del data['intersectsWith']
-        data[shapeType] = shape
-
-    data['output'] = 'geojson'
-    # Join the url, to guarantee *exactly* one '/' between each url fragment:
-    url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.SEARCH_PATH}'])
-    response = opts.session.post(url=url, data=data)
+    response = opts.session.post(url=url, data=query)
 
     try:
         response.raise_for_status()
     except HTTPError:
         if 400 <= response.status_code <= 499:
-            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
         if 500 <= response.status_code <= 599:
-            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
-        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
 
-    products = [ASFProduct(f) for f in response.json()['features']]
-    return ASFSearchResults(products, opts=opts)
-
-
-def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
-    """
-    Converts a list of numbers and/or min/max tuples to a string of comma-separated numbers and/or ranges.
-    Example: [1,2,3,(10,20)] -> '1,2,3,10-20'
-
-    :param items: The list of numbers and/or min/max tuples to flatten
-
-    :return: String containing comma-separated representation of input, min/max tuples converted to 'min-max' format
-
-    :raises ValueError: if input list contains tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
-    :raises TypeError: if input list contains non-numeric values
-    """
-
-    for item in items:
-        if isinstance(item, tuple):
-            if len(item) < 2:
-                raise ValueError(f'Not enough values in min/max tuple: {item}')
-            if len(item) > 2:
-                raise ValueError(f'Too many values in min/max tuple: {item}')
-            if not isinstance(item[0], (int, float, complex)) and not isinstance(item[0], bool):
-                raise TypeError(f'Expected numeric min in tuple, got {type(item[0])}: {item}')
-            if not isinstance(item[1], (int, float, complex)) and not isinstance(item[1], bool):
-                raise TypeError(f'Expected numeric max in tuple, got {type(item[1])}: {item}')
-            if math.isinf(item[0]) or math.isnan(item[0]):
-                raise ValueError(f'Expected finite numeric min in min/max tuple, got {item[0]}: {item}')
-            if math.isinf(item[1]) or math.isnan(item[1]):
-                raise ValueError(f'Expected finite numeric max in min/max tuple, got {item[1]}: {item}')
-            if item[0] > item[1]:
-                raise ValueError(f'Min must be less than max when using min/max tuples to search: {item}')
-        elif isinstance(item, (int, float, complex)) and not isinstance(item, bool):
-            if math.isinf(item) or math.isnan(item):
-                raise ValueError(f'Expected finite numeric value, got {item}')
-        elif not isinstance(item, (int, float, complex)) and not isinstance(item, bool):
-            raise TypeError(f'Expected number or min/max tuple, got {type(item)}')
-
-    return ','.join([f'{item[0]}-{item[1]}' if isinstance(item, tuple) else f'{item}' for item in items])
+    return ASFSearchResults([ASFProduct(f) for f in response.json()['items']], opts=opts)
