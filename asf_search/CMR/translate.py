@@ -24,48 +24,49 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
 
 def translate_product(item: dict) -> dict:
-    coords = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
-    coords = [[c['Longitude'], c['Latitude']] for c in coords]
-    g = {'coordinates': [coords], 'type': 'Polygon'}
+    coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
+    coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
+    geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
 
     umm = item['umm']
 
-    p = {}
-    p['beamModeType'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0)
-    p['browse'] = get(umm, 'RelatedUrls', ('Type', 'GET RELATED VISUALIZATION'), 'URL')
-    p['bytes'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0))
-    p['centerLat'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0))
-    p['centerLon'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0))
-    p['faradayRotation'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0))
-    p['fileID'] = get(umm, 'GranuleUR')
-    p['flightDirection'] = get(umm, 'AdditionalAttributes', ('Name', 'FLIGHT_DIRECTION'), 'Values', 0)
-    p['groupID'] = get(umm, 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0)
-    p['granuleType'] = get(umm, 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0)
-    p['insarStackId'] = get(umm, 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0)
-    p['md5sum'] = get(umm, 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0)
-    p['offNadirAngle'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0))
-    p['orbit'] = cast(int, get(umm, 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'))
-    p['pathNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0))
-    p['platform'] = get(umm, 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
-    p['pointingAngle'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'POINTING_ANGLE'), 'Values', 0))
-    p['polarization'] = get(umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0)
-    p['processingDate'] = get(umm, 'DataGranule', 'ProductionDateTime')
-    p['processingLevel'] = get(umm, 'AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0)
-    p['sceneName'] = get(umm, 'DataGranule', 'Identifiers', ('IdentifierType', 'ProducerGranuleId'), 'Identifier')
-    p['sensor'] = get(umm, 'Platforms', 0, 'Instruments', 0, 'ShortName')
-    p['startTime'] = get(umm, 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime')
-    p['stopTime'] = get(umm, 'TemporalExtent', 'RangeDateTime', 'EndingDateTime')
-    p['url'] = get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
+    properties = {
+        'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
+        'browse': get(umm, 'RelatedUrls', ('Type', 'GET RELATED VISUALIZATION'), 'URL'),
+        'bytes': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0)),
+        'centerLat': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0)),
+        'centerLon': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0)),
+        'faradayRotation': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0)),
+        'fileID': get(umm, 'GranuleUR'),
+        'flightDirection': get(umm, 'AdditionalAttributes', ('Name', 'FLIGHT_DIRECTION'), 'Values', 0),
+        'groupID': get(umm, 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0),
+        'granuleType': get(umm, 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0),
+        'insarStackId': get(umm, 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0),
+        'md5sum': get(umm, 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0),
+        'offNadirAngle': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0)),
+        'orbit': cast(int, get(umm, 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber')),
+        'pathNumber': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0)),
+        'platform': get(umm, 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0),
+        'pointingAngle': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'POINTING_ANGLE'), 'Values', 0)),
+        'polarization': get(umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0),
+        'processingDate': get(umm, 'DataGranule', 'ProductionDateTime'),
+        'processingLevel': get(umm, 'AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0),
+        'sceneName': get(umm, 'DataGranule', 'Identifiers', ('IdentifierType', 'ProducerGranuleId'), 'Identifier'),
+        'sensor': get(umm, 'Platforms', 0, 'Instruments', 0, 'ShortName'),
+        'startTime': get(umm, 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime'),
+        'stopTime': get(umm, 'TemporalExtent', 'RangeDateTime', 'EndingDateTime'),
+        'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
+    }
 
-    p['fileName'] = p['url'].split('/')[-1]
+    properties['fileName'] = properties['url'].split('/')[-1]
 
     asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS']
-    if p['platform'] in asf_frame_platforms:
-        p['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0)
+    if properties['platform'] in asf_frame_platforms:
+        properties['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0)
     else:
-        p['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0)
+        properties['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0)
 
-    return {'geometry': g, 'properties': p, 'type': 'Feature'}
+    return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
 
 
 def cast(f, v):
