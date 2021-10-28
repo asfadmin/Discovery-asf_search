@@ -7,6 +7,7 @@ import math
 
 number = TypeVar('number', int, float)
 
+
 def parse_string(value: str) -> str:
     """
     Base string validator. Maybe silly, but we can also ensure any constraints needed in the future.

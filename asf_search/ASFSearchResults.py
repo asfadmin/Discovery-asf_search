@@ -1,7 +1,7 @@
 from collections import UserList
 from multiprocessing import Pool
 import json
-from asf_search import ASFSession
+from asf_search.ASFSession import ASFSession
 
 
 class ASFSearchResults(UserList):

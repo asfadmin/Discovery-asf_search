@@ -1,5 +1,6 @@
 from .validator_map import validator_map, validate
-from asf_search import ASFSession
+
+from asf_search.ASFSession import ASFSession
 from asf_search.constants import INTERNAL
 
 

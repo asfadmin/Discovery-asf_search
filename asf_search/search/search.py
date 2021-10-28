@@ -2,7 +2,6 @@ from typing import Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
 import datetime
-import math
 
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
