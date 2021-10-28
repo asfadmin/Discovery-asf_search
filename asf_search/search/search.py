@@ -94,19 +94,23 @@ def search(
         setattr(opts, p, data[p])
 
     subqueries = build_subqueries(opts)
-    query = translate_opts(subqueries[0])
 
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}.{INTERNAL.CMR_FORMAT_EXT}'])
 
-    response = opts.session.post(url=url, data=query)
+    results = ASFSearchResults(opts=opts)
 
-    try:
-        response.raise_for_status()
-    except HTTPError:
-        if 400 <= response.status_code <= 499:
-            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-        if 500 <= response.status_code <= 599:
-            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+    for query in subqueries:
+        response = opts.session.post(url=url, data=translate_opts(query))
 
-    return ASFSearchResults([ASFProduct(f) for f in response.json()['items']], opts=opts)
+        try:
+            response.raise_for_status()
+        except HTTPError:
+            if 400 <= response.status_code <= 499:
+                raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+            if 500 <= response.status_code <= 599:
+                raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+            raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+
+        results.extend([ASFProduct(f) for f in response.json()['items']])
+
+    return results
