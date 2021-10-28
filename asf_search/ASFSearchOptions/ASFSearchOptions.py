@@ -30,7 +30,7 @@ class ASFSearchOptions:
         # Let values always be None, even if their validator doesn't agree. Used to delete them too:
         if key in validator_map:
             if value is None:  # always maintain defaults on required fields
-                if key == 'cmr_provider':
+                if key == 'provider':
                     super().__setattr__(key, INTERNAL.DEFAULT_PROVIDER)
                 elif key == 'host':
                     super().__setattr__(key, INTERNAL.SEARCH_API_HOST)
