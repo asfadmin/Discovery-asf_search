@@ -32,15 +32,13 @@ def translate_product(item: dict) -> dict:
 
     p = {}
     p['beamModeType'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0)
-    #p['browse'] = get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
+    p['browse'] = get(umm, 'RelatedUrls', ('Type', 'GET RELATED VISUALIZATION'), 'URL')
     p['bytes'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0))
     p['centerLat'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0))
     p['centerLon'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0))
     p['faradayRotation'] = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0))
     p['fileID'] = get(umm, 'GranuleUR')
-    #p['fileName'] = 
     p['flightDirection'] = get(umm, 'AdditionalAttributes', ('Name', 'FLIGHT_DIRECTION'), 'Values', 0)
-    #p['frameNumber'] = 
     p['groupID'] = get(umm, 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0)
     p['granuleType'] = get(umm, 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0)
     p['insarStackId'] = get(umm, 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0)
@@ -58,6 +56,14 @@ def translate_product(item: dict) -> dict:
     p['startTime'] = get(umm, 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime')
     p['stopTime'] = get(umm, 'TemporalExtent', 'RangeDateTime', 'EndingDateTime')
     p['url'] = get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
+
+    p['fileName'] = p['url'].split('/')[-1]
+
+    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS']
+    if p['platform'] in asf_frame_platforms:
+        p['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0)
+    else:
+        p['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0)
 
     return {'geometry': g, 'properties': p, 'type': 'Feature'}
 
