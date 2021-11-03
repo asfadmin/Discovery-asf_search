@@ -33,7 +33,7 @@ class ASFSearchOptions:
                 if key == 'provider':
                     super().__setattr__(key, INTERNAL.DEFAULT_PROVIDER)
                 elif key == 'host':
-                    super().__setattr__(key, INTERNAL.SEARCH_API_HOST)
+                    super().__setattr__(key, INTERNAL.CMR_HOST)
                 elif key == 'session':
                     super().__setattr__(key, ASFSession())
                 else:
@@ -58,7 +58,7 @@ class ASFSearchOptions:
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-        no_export = ['host', 'session']
+        no_export = ['host', 'session', 'maxResults']
         for key in validator_map:
             if key not in no_export:
                 value = self.__getattribute__(key)

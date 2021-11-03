@@ -1,7 +1,6 @@
-SEARCH_API_HOST = 'api.daac.asf.alaska.edu'
 ASF_AUTH_HOST = 'auth.asf.alaska.edu'
 
-HEALTH_PATH = '/health'
+HEALTH_PATH = '/search/health'
 SEARCH_PATH = '/services/search/param'
 BASELINE_PATH = '/services/search/baseline'
 MISSION_PATH = '/services/utils/mission_list'
