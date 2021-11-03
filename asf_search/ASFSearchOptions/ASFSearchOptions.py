@@ -2,6 +2,7 @@ from .validator_map import validator_map, validate
 
 from asf_search.ASFSession import ASFSession
 from asf_search.constants import INTERNAL
+from .defaults import defaults
 
 
 class ASFSearchOptions:
@@ -30,12 +31,8 @@ class ASFSearchOptions:
         # Let values always be None, even if their validator doesn't agree. Used to delete them too:
         if key in validator_map:
             if value is None:  # always maintain defaults on required fields
-                if key == 'provider':
-                    super().__setattr__(key, INTERNAL.DEFAULT_PROVIDER)
-                elif key == 'host':
-                    super().__setattr__(key, INTERNAL.CMR_HOST)
-                elif key == 'session':
-                    super().__setattr__(key, ASFSession())
+                if key in defaults:
+                    super().__setattr__(key, defaults[key])
                 else:
                     super().__setattr__(key, None)
             else:
