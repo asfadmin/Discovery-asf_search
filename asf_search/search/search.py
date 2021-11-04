@@ -86,12 +86,10 @@ def search(
     """
 
     kwargs = locals()
-
-    data = dict((k, v) for k, v in kwargs.items() if k not in ['opts', 'kwargs'] and v is not None)
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts'] and v is not None)
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-    for p in data:
-        setattr(opts, p, data[p])
+    opts.merge_args(**data)
 
     subqueries = build_subqueries(opts)
 
