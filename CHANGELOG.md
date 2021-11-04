@@ -1,8 +1,15 @@
 # Changelog
 
+## [3.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v3.0.5)
+### Added
+- Add documentation URL to setup.py
+- Add Gitter badge/link to readme
+### Fixed
+- Change hyphens to underscores in some product type constants
+
 ## [3.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.3...v3.0.4)
 ### Changed
-- When working with source, package must be installed directly:
+- When working with source, package **must** be installed directly:
   - `python3 -m pip install -e .`
 ### Fixed
 - In-region S3 downloads should now function without issue
