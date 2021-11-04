@@ -1,3 +1,4 @@
+import warnings
 from .validator_map import validator_map, validate
 
 from asf_search.ASFSession import ASFSession
@@ -61,3 +62,16 @@ class ASFSearchOptions:
                 value = self.__getattribute__(key)
                 if value is not None:
                     yield key, value
+
+    def merge_args(self, **kwargs) -> None:
+        """
+        Merges all keyword args into this ASFSearchOptions object. Emits a warning for any options that are over-written by the operation.
+
+        :param kwargs: The search options to merge into the object
+        :return: None
+        """
+        for key in kwargs:
+            val = getattr(self, key, None)
+            if val is not None:
+                warnings.warn(f'While merging search options, existing option {key}:{val} overwritten by kwarg with value {kwargs[key]}')
+            self.__setattr__(key, kwargs[key])
