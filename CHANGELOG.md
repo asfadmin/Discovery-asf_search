@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.5...v3.0.6)
+### Changed
+- Skip download if file already exists
+  - In the future we will apply file size and/or checksum checks to ensure the existing file is correct
+
 ## [3.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v3.0.5)
 ### Added
 - Add documentation URL to setup.py
