@@ -35,15 +35,12 @@ def stack_from_product(
     :return: ASFSearchResults(dict) of search results
     """
 
-    stack = get_stack(reference, host, cmr_token, cmr_provider)
+    stack_params = get_stack_params(reference)
+    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
     calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     return stack
-
-def get_stack(reference, host, cmr_token, cmr_provider):
-    stack_params = get_stack_params(reference)
-    return search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
 
 def stack_from_id(
         reference_id: str,

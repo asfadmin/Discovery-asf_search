@@ -77,7 +77,7 @@ class Test_Baseline_Search:
   def test_stack_from_product(self, s1_search_response, s1_baseline_stack):
     reference = ASFProduct(s1_search_response[0])
 
-    with patch('asf_search.baseline_search.get_stack') as search_mock:
+    with patch('asf_search.baseline_search.search') as search_mock:
       search_mock.return_value = ASFSearchResults(map(self.toASFProduct, s1_baseline_stack))    
       
       stack = stack_from_product(reference)
