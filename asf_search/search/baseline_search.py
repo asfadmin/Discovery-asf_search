@@ -35,13 +35,15 @@ def stack_from_product(
     :return: ASFSearchResults(dict) of search results
     """
 
-    stack_params = get_stack_params(reference)
-    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    stack = get_stack(reference, host, cmr_token, cmr_provider)
     calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     return stack
 
+def get_stack(reference, host, cmr_token, cmr_provider):
+    stack_params = get_stack_params(reference)
+    return search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
 
 def stack_from_id(
         reference_id: str,
@@ -83,7 +85,7 @@ def get_stack_params(reference: ASFProduct) -> dict:
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
             stack_params['insarStackId'] = reference.properties['insarStackId']
             return stack_params
-        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference["properties"]["fileID"]}')
+        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:
