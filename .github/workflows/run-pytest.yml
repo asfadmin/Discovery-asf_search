@@ -8,13 +8,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      ## Temp disabled until pytest is ready:
-      # - name: Install Dependancies
-      #   run: |
-      #     python3 -m pip install --upgrade pip
-      #     python3 -m pip install .
+      # Temp disabled until pytest is ready:
+      - name: Install Dependancies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install .
 
-      # - name: Run the Tests
-      #   run: |
-      #     pytest .
+      - name: Run the Tests
+        run: |
+          pytest .
 
