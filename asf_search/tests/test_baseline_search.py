@@ -1,8 +1,8 @@
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.constants import PLATFORM
-from asf_search.exceptions import ASFBaselineError
+from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from ..search.search import ASFProduct
-from ..search.baseline_search import calc_temporal_baselines, get_stack_params, stack_from_product
+from ..search.baseline_search import calc_temporal_baselines, get_stack_params, stack_from_id, stack_from_product
 import pytest
 from .fixtures.baseline_search_fixtures import *
 
@@ -87,5 +87,11 @@ class Test_Baseline_Search:
         assert(secondary.properties['temporalBaseline'] >= 0)
         
         if(idx > 0):
-          assert(secondary.properties['temporalBaseline'] >= 0)
+          assert(secondary.properties['temporalBaseline'] >= stack[idx].properties['temporalBaseline'])
 
+  def test_stack_from_id(self):
+    with patch('asf_search.baseline_search.product_search') as empty_product_search:
+      empty_product_search.return_value = []
+      
+      with pytest.raises(ASFSearchError):
+        stack_from_id('')

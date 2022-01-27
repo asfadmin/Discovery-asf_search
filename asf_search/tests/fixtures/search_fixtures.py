@@ -1,5 +1,43 @@
 import pytest
 
+from asf_search.constants import INTERNAL, PLATFORM
+
+@pytest.fixture
+def empty_search_parameters():
+  return {
+    'absoluteOrbit' : 1,
+    'asfFrame' : 1,
+    'beamMode' : ['1', '1'],
+    'collectionName' : None,
+    'maxDoppler' : '1',
+    'minDoppler' : '1',
+    'end' : '1',
+    'maxFaradayRotation' : '1',
+    'minFaradayRotation' : '1',
+    'flightDirection' : '1',
+    'flightLine' : '1',
+    'frame' : 1,
+    'granule_list' : 'S1_FAKE',
+    'groupID' : 'FAKE_GROUP_ID',
+    'insarStackId' : 'FAKE_INSAR_ID',
+    'instrument' : PLATFORM.SENTINEL1,
+    'intersectsWith' : None,
+    'lookDirection' : None,
+    'offNadirAngle' : None,
+    'platform' : None,
+    'polarization' : None,
+    'processingDate' : None,
+    'processingLevel' : None,
+    'product_list' : None,
+    'relativeOrbit' : None,
+    'season' : None,
+    'start' : None,
+    'maxResults' : None,
+    'host' : INTERNAL.SEARCH_API_HOST,
+    'cmr_token' : None,
+    'cmr_provider' : None,
+  }
+
 @pytest.fixture
 def alos_search_results():
   return [
