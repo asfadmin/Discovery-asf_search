@@ -1,15 +1,9 @@
-from urllib.error import HTTPError
-from urllib.request import HTTPErrorProcessor
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from ..search import search
 from .fixtures.search_fixtures import *
 
 from asf_search.ASFSearchResults import ASFSearchResults
-
-from unittest.mock import Mock, patch
-import requests
-import requests_mock
 
 class Test_Search:
     def test_ASFSearchResults(self, alos_search_results):
