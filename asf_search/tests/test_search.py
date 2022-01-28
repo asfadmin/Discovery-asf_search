@@ -31,8 +31,8 @@ class Test_Search:
         with pytest.raises(ASFSearch5xxError):
             search(**empty_search_parameters)
 
-    def test_search_http_ASF_server_error(self, empty_search_parameters, requests_mock):
-        requests_mock.register_uri('POST', f"https://{empty_search_parameters['host']}{INTERNAL.SEARCH_PATH}", status_code=200, json={'error': {'report': "ASF Server Error"}})
+    # def test_search_http_ASF_server_error(self, empty_search_parameters, requests_mock):
+    #     requests_mock.register_uri('POST', f"https://{empty_search_parameters['host']}{INTERNAL.SEARCH_PATH}", status_code=200, json={'error': {'report': "ASF Server Error"}})
 
-        with pytest.raises(ASFServerError):
-            search(**empty_search_parameters)
+    #     with pytest.raises(ASFServerError):
+    #         search(**empty_search_parameters)
