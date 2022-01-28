@@ -48,6 +48,6 @@ setup(
         "Topic :: Scientific/Engineering :: Hydrology",
         "Topic :: Utilities"
     ],
-    #test_suite='???',
-    #tests_require=['???'],
+    test_suite='asf_search.tests',
+    tests_require=['pytest'],
 )
