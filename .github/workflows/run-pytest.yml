@@ -14,7 +14,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install .
 
-      - name: Run the Tests
+      - name: Run Tests
         run: |
           pytest .
 
