@@ -1,0 +1,14 @@
+# Contents of pytest-config.yml
+test_types:
+
+- For running ASFProduct tests:
+    required_keys: products
+    method: test_ASFProduct
+
+- For running ASFProduct_Stack tests:
+    required_keys: ["product", "baseline_stack"]
+    method: test_ASFProduct_Stack
+
+- For running ASFSession tests:
+    required_keys: ['username', 'password']
+    method: test_ASFSession_Error
