@@ -13,12 +13,12 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install .
-          python3 -m pip install pytest requests-mock coverage pytest-cov
+          python3 -m pip install pytest requests-mock coverage pytest-cov pytest-automation
           python3 -m pip install coverage-badge
 
       - name: Run Tests
         run: |
-          pytest --cov=asf_search asf_search/tests
+          python3 -m pytest
       #     coverage-badge -o asf_search/tests/coverage-badge.svg
 
       # - name: Archive Coverage Badge
