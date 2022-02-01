@@ -420,16 +420,15 @@ S1_Baseline_Stack: &S1_Baseline_Stack [
   ]
 
 tests:
-- Empty ASFProduct pytest-managers test:
+- Test Empty ASFProduct:
     products: {geometry: {}, properties: {}}
 
-- SMAP ASFProduct pytest-managers test:
-    # products: "basic_response"
+- Test SMAP ASFProduct:
     products: *SMAP_Resp
 
-- S1 ASFProduct pytest-managers test:
+- Test S1 ASFProduct:
     products: *S1_Resp
 
-- S1 ASFProduct_Stack pytest-managers test:
+- Test S1 ASFProduct_Stack:
     product: *S1_Resp
     baseline_stack: *S1_Baseline_Stack

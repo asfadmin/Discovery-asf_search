@@ -1,0 +1,4 @@
+tests:
+- Test ASFSession Empty Credentials Raises Error:
+    username: ' '
+    password: ' '

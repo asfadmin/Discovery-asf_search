@@ -12,3 +12,34 @@ test_types:
 - For running ASFSession tests:
     required_keys: ['username', 'password']
     method: test_ASFSession_Error
+
+- For running preprocessed baseline stack params tests:
+    required_keys: product
+    required_in_title: test-preprocessed-product
+    method: test_get_preprocessed_stack_params
+
+- For running unprocessed baseline stack params tests:
+    required_keys: product
+    required_in_title: test-unprocessed-product
+    method: test_get_unprocessed_stack_params
+
+- For running Invalid Stack ID stack params tests:
+    required_keys: product
+    required_in_title: test-invalid-insarStackID
+    method: test_get_stack_params_invalid_insarStackId
+
+- For running Invalid Platform stack params tests:
+    required_keys: product
+    required_in_title: test-invalid-platform
+    method: test_get_stack_params_invalid_platform
+
+
+- For running Invalid Platform stack params tests:
+    required_keys: ["product", "stack"]
+    required_in_title: test-temporal-baseline
+    method: test_temporal_baseline
+
+- For running Invalid Platform stack params tests:
+    required_keys: ["product", "stack"]
+    required_in_title: test-product-stack
+    method: test_stack_from_product

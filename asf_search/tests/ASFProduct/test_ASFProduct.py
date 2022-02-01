@@ -1,5 +1,4 @@
 from asf_search.search.search import ASFProduct, ASFSearchResults
-# from fixtures.baseline_search_fixtures import s1_search_response, s1_baseline_stack
 from unittest.mock import patch
 
 def run_test_ASFProduct_Geo_Search(geographic_response):

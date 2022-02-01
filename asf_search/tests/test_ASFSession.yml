@@ -1,4 +1,0 @@
-tests:
-- Raises Error ASFSession pytest-managers test:
-    username: ' '
-    password: ' '
