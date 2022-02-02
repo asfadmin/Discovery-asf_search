@@ -78,9 +78,9 @@ def run_test_stack_from_product(reference, stack):
             if(idx > 0):
                 assert(secondary.properties['temporalBaseline'] >= stack[idx].properties['temporalBaseline'])
 
-def run_test_stack_from_id():
+def run_test_stack_from_id(stack_id: str):
     with patch('asf_search.baseline_search.product_search') as empty_product_search:
         empty_product_search.return_value = []
         
-        with pytest.raises(ASFSearchError):
-            stack_from_id('')
+
+        stack_from_id(stack_id)

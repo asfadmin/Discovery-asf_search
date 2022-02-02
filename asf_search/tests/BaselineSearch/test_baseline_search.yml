@@ -678,3 +678,6 @@ tests:
 - Test Get test-temporal-baseline test-product-stack Params:
     product: *S1_Product
     stack: *S1_Baseline_Stack
+
+- test-invalid-stack-id empty ID:
+    stack_id: ''

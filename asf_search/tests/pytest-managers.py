@@ -1,4 +1,4 @@
-from asf_search.exceptions import ASFAuthenticationError
+from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError, ASFSearchError
 
 # from fixtures import ASFProduct_fixtures
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
@@ -8,8 +8,9 @@ from BaselineSearch.test_baseline_search import run_get_stack_params_invalid_ins
 from pytest import raises
 from unittest.mock import patch
 
+from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
+
 def test_ASFProduct(**args):
-    # run_add_test(**args)
     test_info = args["test_info"]
     geographic_response = test_info["products"]
     run_test_ASFProduct_Geo_Search(geographic_response)
@@ -67,5 +68,34 @@ def test_stack_from_product(**args):
     
     run_test_stack_from_product(reference, stack)
 
-def test_stack_from_id():
-    run_test_stack_from_id()
+def test_stack_from_id(**args):
+    test_info = args["test_info"]
+    stack_id = test_info["stack_id"]
+
+    if not stack_id:
+        with raises(ASFSearchError):
+            run_test_stack_from_id(stack_id)
+            
+def test_ASFSearchResults(**args):
+    test_info = args["test_info"]
+    search_response = test_info["response"]
+
+    run_test_ASFSearchResults(search_response)
+    
+def test_ASFSearch_Search(**args):
+    test_info = args["test_info"]
+    parameters = test_info["parameters"]
+
+    run_test_search(parameters)
+    
+def test_ASFSearch_Search_Error(**args):
+    test_info = args["test_info"]
+    parameters = test_info["parameters"]
+    report = test_info["report"]
+    error_code = test_info["error_code"]
+    if error_code is "400":
+        with raises(ASFSearch4xxError):
+            run_test_search_http_error(parameters, error_code, report)
+    if error_code is "500":
+        with raises(ASFSearch5xxError):
+            run_test_search_http_error(parameters, error_code, report)
