@@ -6,7 +6,6 @@ from asf_search.ASFSearchResults import ASFSearchResults
 
 import requests_mock
 
-# class Test_Search:
 def run_test_ASFSearchResults(search_resp):
     search_results = ASFSearchResults(search_resp)
 

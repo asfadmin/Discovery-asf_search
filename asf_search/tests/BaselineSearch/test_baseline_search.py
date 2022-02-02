@@ -4,11 +4,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.search.search import ASFProduct
 from asf_search.search.baseline_search import calc_temporal_baselines, get_stack_params, stack_from_id, stack_from_product
 import pytest
-# from fixtures.baseline_search_fixtures import alos_search_response, s1_search_response, s1_baseline_stack
 
-# from unittest.mock import patch
-
-# class Test_Baseline_Search:
 def run_test_get_preprocessed_stack_params(product):
     reference = ASFProduct(product)
     params = get_stack_params(reference)
@@ -37,37 +33,28 @@ def run_get_stack_params_invalid_insarStackId(product):
         get_stack_params(invalid_reference)
     
 def run_test_get_stack_params_invalid_platform_raises_error(product):
-#   search_results = ASFSearchResults(s1_search_response)
-
-#   idx = -1
     invalid_reference = ASFProduct(product)
-    
     invalid_reference.properties['platform'] = None
     
     with pytest.raises(ASFBaselineError):
         get_stack_params(invalid_reference)
     
-def run_test_calc_temporal_baselines(product, stack):
-    reference = ASFProduct(product)
-    stack = ASFSearchResults(map(toASFProduct, stack))
+def run_test_calc_temporal_baselines(reference, stack):
+    reference = ASFProduct(reference)
+    stack = ASFSearchResults(map(lambda product: ASFProduct(product), stack))
+    stackLength = len(stack)
 
     calc_temporal_baselines(reference, stack)
 
-    assert(len(stack) == 4)
+    assert(len(stack) == stackLength)
     for secondary in stack:
         assert(secondary.properties['temporalBaseline'] >= 0)
-    # assert stack
-
-
-def toASFProduct(secondary):
-    return ASFProduct(secondary)
-
 
 def run_test_stack_from_product(reference, stack):
     reference = ASFProduct(reference)
 
     with patch('asf_search.baseline_search.search') as search_mock:
-        search_mock.return_value = ASFSearchResults(map(toASFProduct, stack))    
+        search_mock.return_value = ASFSearchResults(map(lambda product: ASFProduct(product), stack))    
 
         stack = stack_from_product(reference)
 
@@ -81,6 +68,4 @@ def run_test_stack_from_product(reference, stack):
 def run_test_stack_from_id(stack_id: str):
     with patch('asf_search.baseline_search.product_search') as empty_product_search:
         empty_product_search.return_value = []
-        
-
         stack_from_id(stack_id)

@@ -15,9 +15,8 @@ def run_test_stack( reference, s1_baseline_stack):
         search_mock.return_value = ASFSearchResults(map(lambda prod: ASFProduct(prod), s1_baseline_stack))
         stack = product.stack()
         
-        assert(len(stack) == 4)
         for(idx, secondary) in enumerate(stack):
             assert(secondary.properties['temporalBaseline'] >= 0)
             
             if(idx > 0):
-                assert(secondary.properties['temporalBaseline'] >= stack[idx].properties['temporalBaseline'])
+                assert(secondary.properties['temporalBaseline'] >= stack[idx - 1].properties['temporalBaseline'])
