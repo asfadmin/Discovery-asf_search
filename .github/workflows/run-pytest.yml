@@ -17,8 +17,8 @@ jobs:
           python3 -m pip install coverage-badge
 
       - name: Run Tests
-        working-directory: "/home/runner/work/Discovery-asf_search/Discovery-asf_search/asf_search/tests/"
-        run: pytest asf_search/tests/
+        working-directory: "/asf_search/tests/"
+        run: pytest
       #     coverage-badge -o asf_search/tests/coverage-badge.svg
 
       # - name: Archive Coverage Badge
