@@ -93,9 +93,9 @@ def test_ASFSearch_Search_Error(**args):
     parameters = test_info["parameters"]
     report = test_info["report"]
     error_code = test_info["error_code"]
-    if error_code is "400":
+    if error_code == 400:
         with raises(ASFSearch4xxError):
             run_test_search_http_error(parameters, error_code, report)
-    if error_code is "500":
+    if error_code == 500:
         with raises(ASFSearch5xxError):
             run_test_search_http_error(parameters, error_code, report)
