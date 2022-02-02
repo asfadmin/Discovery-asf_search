@@ -44,9 +44,9 @@ test_types:
     required_in_title: test-product-stack
     method: test_stack_from_product
 
-- For running stack from ASFproduct tests:
-    required_keys: stack_id
-    required_in_title: test-invalid-stack-id
+- For running stack_from_id tests:
+    required_keys: ["stack_id", "stack", "stack_reference"]
+    required_in_title: test-stack-id
     method: test_stack_from_id
 
 - For running stack from ASFSearch tests:
@@ -55,11 +55,11 @@ test_types:
     method: test_ASFSearchResults
 
 - For ASFSearch search with parameters tests:
-    required_keys: parameters
-    required_in_title: test-ASFSearch-search
+    required_keys: ["parameters", "answer"]
+    required_in_title: test-ASFSearch-search-valid
     method: test_ASFSearch_Search
 
 - For running ASFSearch search error tests:
-    required_keys: ["parameters", "error_code", "report"]
+    required_keys: ["parameters", "status_code", "report"]
     required_in_title: test-ASFSearch-search-error
     method: test_ASFSearch_Search_Error

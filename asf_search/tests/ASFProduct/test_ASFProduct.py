@@ -16,7 +16,5 @@ def run_test_stack( reference, s1_baseline_stack):
         stack = product.stack()
         
         for(idx, secondary) in enumerate(stack):
-            assert(secondary.properties['temporalBaseline'] >= 0)
-            
             if(idx > 0):
                 assert(secondary.properties['temporalBaseline'] >= stack[idx - 1].properties['temporalBaseline'])

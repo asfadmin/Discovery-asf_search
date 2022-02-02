@@ -1,4 +1,4 @@
-from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError, ASFSearchError
+from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
 from ASFSession.test_ASFSession import run_auth_with_creds
@@ -21,9 +21,7 @@ def test_ASFProduct_Stack(**args) -> None:
     """
     Tests ASFProduct.stack() with reference and corresponding stack
     Checks for temporalBaseline order, 
-    asserting: 
-        \n1. each scene in the stack's temporalBaseline is greater or equal to 0
-        \n2. the stack is ordered by the scene's temporalBaseline (in ascending order)
+    asserting the stack is ordered by the scene's temporalBaseline (in ascending order)
     """
     test_info = args["test_info"]
     reference = test_info["product"]
@@ -89,7 +87,7 @@ def test_get_stack_params_invalid_platform(**args) -> None:
 def test_temporal_baseline(**args) -> None:
     """
     Test asf_search.search.baseline_search.calc_temporal_baselines, asserting mutated baseline stack
-    is still the same length and that temporalBaseline values are 0 or greater
+    is still the same length and that each product's properties contain a temporalBaseline key 
     """
     test_info = args["test_info"]
     reference = test_info["product"]
@@ -97,6 +95,10 @@ def test_temporal_baseline(**args) -> None:
     run_test_calc_temporal_baselines(reference, stack)
     
 def test_stack_from_product(**args) -> None:
+    """
+    Test asf_search.search.baseline_search.stack_from_product, asserting stack returned is ordered
+    by temporalBaseline value in ascending order
+    """
     test_info = args["test_info"]
     reference = test_info["product"]
     stack = test_info["stack"]
@@ -104,31 +106,48 @@ def test_stack_from_product(**args) -> None:
     run_test_stack_from_product(reference, stack)
 
 def test_stack_from_id(**args) -> None:
+    """
+    Test asf_search.search.baseline_search.stack_from_id, asserting stack returned is ordered
+    by temporalBaseline value in ascending order
+    """
     test_info = args["test_info"]
     stack_id = test_info["stack_id"]
+    stack_reference = test_info["stack_reference"]
+    stack = test_info["stack"]
 
-    if not stack_id:
-        with raises(ASFSearchError):
-            run_test_stack_from_id(stack_id)
+    run_test_stack_from_id(stack_id, stack_reference, stack)
 
-# asf_search.search Tests
+# asf_search.ASFSearchResults Tests
 def test_ASFSearchResults(**args) -> None:
+    """
+    Test asf_search.ASFSearchResults, asserting initialized values, 
+    and geojson response returns object with type FeatureCollection
+    """
     test_info = args["test_info"]
     search_response = test_info["response"]
 
     run_test_ASFSearchResults(search_response)
-    
+
+# asf_search.search Tests
 def test_ASFSearch_Search(**args) -> None:
+    """
+    Test asf_search.search, asserting returned value is expected result
+    """
     test_info = args["test_info"]
     parameters = test_info["parameters"]
+    answer = test_info["answer"]
 
-    run_test_search(parameters)
+    run_test_search(parameters, answer)
     
 def test_ASFSearch_Search_Error(**args) -> None:
+    """
+    Test asf_search.search errors,
+    asserting server and client errors are raised
+    """
     test_info = args["test_info"]
     parameters = test_info["parameters"]
     report = test_info["report"]
-    error_code = test_info["error_code"]
+    error_code = test_info["status_code"]
     if error_code == 400:
         with raises(ASFSearch4xxError):
             run_test_search_http_error(parameters, error_code, report)

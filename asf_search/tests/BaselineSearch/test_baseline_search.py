@@ -48,7 +48,7 @@ def run_test_calc_temporal_baselines(reference, stack):
 
     assert(len(stack) == stackLength)
     for secondary in stack:
-        assert(secondary.properties['temporalBaseline'] >= 0)
+        assert('temporalBaseline' in secondary.properties)
 
 def run_test_stack_from_product(reference, stack):
     reference = ASFProduct(reference)
@@ -58,14 +58,25 @@ def run_test_stack_from_product(reference, stack):
 
         stack = stack_from_product(reference)
 
-        assert(len(stack) == 4)
         for (idx, secondary) in enumerate(stack):
-            assert(secondary.properties['temporalBaseline'] >= 0)
-
             if(idx > 0):
-                assert(secondary.properties['temporalBaseline'] >= stack[idx].properties['temporalBaseline'])
+                assert(secondary.properties['temporalBaseline'] >= stack[idx - 1].properties['temporalBaseline'])
 
-def run_test_stack_from_id(stack_id: str):
-    with patch('asf_search.baseline_search.product_search') as empty_product_search:
-        empty_product_search.return_value = []
-        stack_from_id(stack_id)
+def run_test_stack_from_id(stack_id: str, reference, stack):
+    
+        with patch('asf_search.baseline_search.product_search') as mock_product_search:
+            mock_product_search.return_value = ASFSearchResults(map(lambda product: ASFProduct(product), stack))
+        
+            if not stack_id:    
+                with pytest.raises(ASFSearchError):
+                    stack_from_id(stack_id)
+            else:
+                with patch('asf_search.baseline_search.search') as search_mock:
+                    search_mock.return_value = ASFSearchResults(map(lambda product: ASFProduct(product), stack))    
+
+                    returned_stack = stack_from_id(stack_id)
+                    assert(len(returned_stack) == len(stack))
+
+                    for (idx, secondary) in enumerate(returned_stack):
+                        if(idx > 0):
+                            assert(secondary.properties['temporalBaseline'] >= stack[idx - 1]["properties"]['temporalBaseline'])
