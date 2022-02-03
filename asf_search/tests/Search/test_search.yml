@@ -1514,4 +1514,3 @@ tests:
     parameters: *empty_parameters
     status_code: 500
     report: "Server Error"
-    
