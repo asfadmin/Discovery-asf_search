@@ -1,0 +1,65 @@
+# Contents of pytest-config.yml
+test_types:
+
+- For running ASFProduct tests:
+    required_keys: products
+    method: test_ASFProduct
+
+- For running ASFProduct_Stack tests:
+    required_keys: ["product", "baseline_stack"]
+    method: test_ASFProduct_Stack
+
+- For running ASFSession tests:
+    required_keys: ['username', 'password']
+    method: test_ASFSession_Error
+
+- For running preprocessed baseline stack params tests:
+    required_keys: product
+    required_in_title: test-preprocessed-product
+    method: test_get_preprocessed_stack_params
+
+- For running unprocessed baseline stack params tests:
+    required_keys: product
+    required_in_title: test-unprocessed-product
+    method: test_get_unprocessed_stack_params
+
+- For running Invalid Stack ID stack params tests:
+    required_keys: product
+    required_in_title: test-invalid-insarStackID
+    method: test_get_stack_params_invalid_insarStackId
+
+- For running Invalid Platform stack params tests:
+    required_keys: product
+    required_in_title: test-invalid-platform
+    method: test_get_stack_params_invalid_platform
+
+
+- For running Invalid Platform stack params tests:
+    required_keys: ["product", "stack"]
+    required_in_title: test-temporal-baseline
+    method: test_temporal_baseline
+
+- For running Invalid Platform stack params tests:
+    required_keys: ["product", "stack"]
+    required_in_title: test-product-stack
+    method: test_stack_from_product
+
+- For running stack_from_id tests:
+    required_keys: ["stack_id", "stack", "stack_reference"]
+    required_in_title: test-stack-id
+    method: test_stack_from_id
+
+- For running stack from ASFSearch tests:
+    required_keys: response
+    required_in_title: test-ASFSearch
+    method: test_ASFSearchResults
+
+- For ASFSearch search with parameters tests:
+    required_keys: ["parameters", "answer"]
+    required_in_title: test-ASFSearch-search-valid
+    method: test_ASFSearch_Search
+
+- For running ASFSearch search error tests:
+    required_keys: ["parameters", "status_code", "report"]
+    required_in_title: test-ASFSearch-search-error
+    method: test_ASFSearch_Search_Error
