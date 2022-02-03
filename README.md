@@ -8,7 +8,6 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search/badge)](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search)
 [![Github workflow](https://github.com/asfadmin/asf_search/actions/workflows/run-pytest.yml/badge.svg)](https://github.com/asfadmin/Discovery-asf_search/actions/workflows/run-pytest.yml)
-[![Github workflow](https://github.com/SpicyGarlicAlbacoreRoll/Discovery-asf_search/actions/workflows/run-pytest.yml/badge.svg?branch=pytest-integration)](https://github.com/SpicyGarlicAlbacoreRoll/Discovery-asf_search/actions/workflows/run-pytest.yml)
 
 [![Documentation](https://img.shields.io/badge/docs-at_ASF-green)](https://docs.asf.alaska.edu/asf_search/basics/)
 [![Join the chat at https://gitter.im/ASFDiscovery/asf_search](https://badges.gitter.im/ASFDiscovery/asf_search.svg)](https://gitter.im/ASFDiscovery/asf_search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
