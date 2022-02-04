@@ -17,7 +17,19 @@ jobs:
           python3 -m pip install coverage-badge
 
       - name: Run Tests
-        run: python3 -m pytest
+        run: python3 -m pytest --cov=asf_search --cov-report=xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+        with:
+          directory: ./coverage/reports/
+          env_vars: OS,PYTHON
+          fail_ci_if_error: true
+          files: ./coverage1.xml,./coverage2.xml
+          flags: unittests
+          name: asf_admin pytest
+          path_to_write_report: ./coverage/codecov_report.txt
+          verbose: true
       #     coverage-badge -o asf_search/tests/coverage-badge.svg
 
       # - name: Archive Coverage Badge
