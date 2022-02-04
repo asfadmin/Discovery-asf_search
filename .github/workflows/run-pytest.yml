@@ -27,7 +27,6 @@ jobs:
           files: ./coverage.xml
           flags: unittests
           name: asf_admin pytest
-          path_to_write_report: ./codecov_report.txt
           verbose: true
       #     coverage-badge -o asf_search/tests/coverage-badge.svg
 
