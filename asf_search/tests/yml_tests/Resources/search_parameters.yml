@@ -1,0 +1,11 @@
+empty_parameters: {
+    'host' : 'api.daac.asf.alaska.edu',
+    'cmr_token' : None,
+    'cmr_provider' : None,
+}
+
+alos_parameters: {
+  "platform": "ALOS",
+  "maxResults": 3,
+  'host' : 'api.daac.asf.alaska.edu',
+}
