@@ -1496,10 +1496,10 @@ tests:
     response: *alos_response
 
 - test-ASFSearch ALOS Resp:
-    response: *Alos_Stack
+    response: Alos_stack.yml
 
 - test-ASFSearch ALOS Resp:
-    response: *S1_Baseline_Stack
+    response: S1_baseline_stack.yml
 
 - test-ASFSearch-search-valid Alos:
     parameters: *alos_parameters

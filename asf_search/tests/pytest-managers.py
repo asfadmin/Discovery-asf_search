@@ -8,13 +8,17 @@ from Search.test_search import run_test_ASFSearchResults, run_test_search, run_t
 from pytest import raises
 from unittest.mock import patch
 
+import os
+import pathlib
+import yaml
+
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
     """
     Tests Basic ASFProduct with mock searchAPI response
     """
     test_info = args["test_info"]
-    geographic_response = test_info["products"]
+    geographic_response = get_resource(test_info["products"])
     run_test_ASFProduct_Geo_Search(geographic_response)
 
 def test_ASFProduct_Stack(**args) -> None:
@@ -24,8 +28,8 @@ def test_ASFProduct_Stack(**args) -> None:
     asserting the stack is ordered by the scene's temporalBaseline (in ascending order)
     """
     test_info = args["test_info"]
-    reference = test_info["product"]
-    stack = test_info["baseline_stack"]
+    reference = get_resource(test_info["product"])
+    stack = get_resource(test_info["baseline_stack"])
     run_test_stack(reference, stack)
     
 # asf_search.ASFSession Tests
@@ -51,7 +55,7 @@ def test_get_preprocessed_stack_params(**args) -> None:
     \n2. insarStackId
     """
     test_info = args["test_info"]
-    reference = test_info["product"]
+    reference = get_resource(test_info["product"])
 
     run_test_get_preprocessed_stack_params(reference)
 
@@ -61,7 +65,7 @@ def test_get_unprocessed_stack_params(**args) -> None:
     that's not part of a pre-calculated platform, asserting that get_stack_params returns an object with seven parameters
     """
     test_info = args["test_info"]
-    reference = test_info["product"]
+    reference = get_resource(test_info["product"])
 
     run_test_get_unprocessed_stack_params(reference)
 
@@ -71,7 +75,7 @@ def test_get_stack_params_invalid_insarStackId(**args) -> None:
     insarStackID set to an invalid value, and asserting an ASFBaselineError is raised
     """
     test_info = args["test_info"]
-    reference = test_info["product"]
+    reference = get_resource(test_info["product"])
     
     run_get_stack_params_invalid_insarStackId(reference)
     
@@ -81,7 +85,7 @@ def test_get_stack_params_invalid_platform(**args) -> None:
     platform set to an invalid value, and asserting an ASFBaselineError is raised
     """
     test_info = args["test_info"]
-    reference = test_info["product"]    
+    reference = get_resource(test_info["product"])    
     run_test_get_stack_params_invalid_platform_raises_error(reference)
     
 def test_temporal_baseline(**args) -> None:
@@ -90,8 +94,8 @@ def test_temporal_baseline(**args) -> None:
     is still the same length and that each product's properties contain a temporalBaseline key 
     """
     test_info = args["test_info"]
-    reference = test_info["product"]
-    stack = test_info["stack"]
+    reference = get_resource(test_info["product"])
+    stack = get_resource(test_info["stack"])
     run_test_calc_temporal_baselines(reference, stack)
     
 def test_stack_from_product(**args) -> None:
@@ -100,8 +104,8 @@ def test_stack_from_product(**args) -> None:
     by temporalBaseline value in ascending order
     """
     test_info = args["test_info"]
-    reference = test_info["product"]
-    stack = test_info["stack"]
+    reference = get_resource(test_info["product"])
+    stack = get_resource(test_info["stack"])
     
     run_test_stack_from_product(reference, stack)
 
@@ -112,8 +116,14 @@ def test_stack_from_id(**args) -> None:
     """
     test_info = args["test_info"]
     stack_id = test_info["stack_id"]
-    stack_reference = test_info["stack_reference"]
-    stack = test_info["stack"]
+    stack_reference_data = test_info["stack_reference"]
+    stack_data = test_info["stack"]
+
+    stack_reference = get_resource(stack_reference_data)
+    stack = []
+
+    if(stack_data != []):
+        stack = get_resource(stack_data)
 
     run_test_stack_from_id(stack_id, stack_reference, stack)
 
@@ -124,7 +134,7 @@ def test_ASFSearchResults(**args) -> None:
     and geojson response returns object with type FeatureCollection
     """
     test_info = args["test_info"]
-    search_response = test_info["response"]
+    search_response = get_resource(test_info["response"])
 
     run_test_ASFSearchResults(search_response)
 
@@ -134,8 +144,8 @@ def test_ASFSearch_Search(**args) -> None:
     Test asf_search.search, asserting returned value is expected result
     """
     test_info = args["test_info"]
-    parameters = test_info["parameters"]
-    answer = test_info["answer"]
+    parameters = get_resource(test_info["parameters"])
+    answer = get_resource(test_info["answer"])
 
     run_test_search(parameters, answer)
     
@@ -154,3 +164,17 @@ def test_ASFSearch_Search_Error(**args) -> None:
     if error_code == 500:
         with raises(ASFSearch5xxError):
             run_test_search_http_error(parameters, error_code, report)
+
+
+def get_resource(yml_file):
+    
+    if isinstance(yml_file, str):
+        if yml_file.endswith((".yml", ".yaml")):
+            base_path = pathlib.Path(__file__).parent.resolve()
+            with open(os.path.join(base_path, "yml_tests", "Resources", yml_file), "r") as f:
+                try:
+                    return yaml.safe_load(f)
+                except yaml.YAMLError as exc:
+                    print(exc)
+    
+    return yml_file
