@@ -1,5 +1,3 @@
---- # test data
-
 tests:
 - Test Empty ASFProduct:
     products: {geometry: {}, properties: {}}
