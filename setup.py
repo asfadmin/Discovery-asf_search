@@ -24,7 +24,7 @@ setup(
     project_urls={
         'Documentation': 'https://docs.asf.alaska.edu/asf_search/basics/'
     },
-    packages=find_packages(exclude=["tests.*", "tests"]),
+    packages=find_packages(exclude=["tests.*", "tests", "examples.*", "examples"]),
     package_dir={'asf_search': 'asf_search'},
     python_requires='>=3.6',
     install_requires=requirements,
