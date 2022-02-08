@@ -32,19 +32,26 @@ print(results)
 
 In order to easily manage dependencies, we recommend using dedicated project environments
 via [Anaconda/Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
-or [Python virtual environments](https://docs.python.org/3/tutorial/venv.html). 
+or [Python virtual environments](https://docs.python.org/3/tutorial/venv.html).
 
 asf_search can be installed into a conda environment with
 
-```
+```bash
 conda install -c conda-forge asf_search
 ```
 
 or into a virtual environment with
 
+```bash
+python3 -m pip install asf_search
 ```
-python -m pip install asf_search
+
+To install pytest/cov packages for testing, along with the minimal packages:
+
+```bash
+python3 -m pip install asf_search[test]
 ```
+
 ## Usage
 
 _Full documentation is available at https://docs.asf.alaska.edu/asf_search/basics/_
