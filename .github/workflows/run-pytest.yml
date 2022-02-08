@@ -11,8 +11,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install .
-          python3 -m pip install pytest requests-mock coverage pytest-cov pytest-automation
+          python3 -m pip install .[test]
 
       - name: Run Tests
         run: python3 -m pytest --cov=asf_search --cov-report=xml --dont-run-file test_known_bugs .
