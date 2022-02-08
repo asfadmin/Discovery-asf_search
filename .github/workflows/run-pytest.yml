@@ -8,15 +8,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Temp disabled until pytest is ready:
-      - name: Install Dependancies
+      - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install .
           python3 -m pip install pytest requests-mock coverage pytest-cov pytest-automation
 
       - name: Run Tests
-        run: python3 -m pytest --cov=asf_search --cov-report=xml
+        run: python3 -m pytest --cov=asf_search --cov-report=xml --dont-run-file test_known_bugs .
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
