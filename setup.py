@@ -13,6 +13,7 @@ test_requirements = [
     "pytest",
     "pytest-automation",
     "pytest-cov",
+    "pytest-xdist",
     "coverage",
     "requests-mock",
 ]

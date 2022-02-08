@@ -14,7 +14,7 @@ jobs:
           python3 -m pip install .[test]
 
       - name: Run Tests
-        run: python3 -m pytest --cov=asf_search --cov-report=xml --dont-run-file test_known_bugs .
+        run: python3 -m pytest -n auto --cov=asf_search --cov-report=xml --dont-run-file test_known_bugs .
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2
