@@ -1,0 +1,26 @@
+tests:
+- Test Get test-preprocessed-product ALOS Stack Params:
+    product: Alos_response.yml
+
+- Test Get test-unprocessed-product S1 Stack Params:
+    product: S1_response.yml
+
+- Test Get test-invalid-insarStackID Stack Params:
+    product: Alos_response.yml
+
+- Test Get test-invalid-platform Stack Params:
+    product: S1_response.yml
+
+- Test Get test-temporal-baseline test-product-stack Params:
+    product: S1_response.yml
+    stack: S1_baseline_stack.yml
+
+- test-stack-id empty ID:
+    stack_id: ''
+    stack_reference: Alos_response.yml
+    stack: []
+
+- test-stack-id alos stack_id:
+    stack_id: ALPSRP111041130-L1.0
+    stack_reference: Alos_response.yml
+    stack: Alos_stack.yml
