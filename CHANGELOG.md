@@ -1,4 +1,13 @@
 # Changelog
+## [3.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.6...v3.0.7)
+### Changed
+- Re-enable run-pytest workflow
+  - Add tests for `ASFSearch, ASFSession, ASFProduct` as well as baseline, geographic, and search modules
+  - Add Pytest-Automation Plugin integration
+  - Add automated CodeCov badge to readme
+
+### Fixed
+- Fix error while raising ASFBaselineError in `baseline_search.get_stack_params()`
 
 ## [3.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.5...v3.0.6)
 ### Changed

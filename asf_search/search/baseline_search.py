@@ -42,7 +42,6 @@ def stack_from_product(
 
     return stack
 
-
 def stack_from_id(
         reference_id: str,
         strategy = None,
@@ -83,7 +82,7 @@ def get_stack_params(reference: ASFProduct) -> dict:
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
             stack_params['insarStackId'] = reference.properties['insarStackId']
             return stack_params
-        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference["properties"]["fileID"]}')
+        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:

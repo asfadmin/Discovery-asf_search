@@ -1,0 +1,21 @@
+tests:
+- Test Empty ASFProduct:
+    products: {geometry: {}, properties: {}}
+
+- Test SMAP ASFProduct:
+    products: SMAP_response.yml
+
+- Test ALOS ASFProduct:
+    products: Alos_response.yml
+
+
+- Test S1 ASFProduct:
+    products: S1_response.yml
+
+- Test S1 ASFProduct_Stack:
+    product: S1_response.yml
+    baseline_stack: S1_baseline_stack.yml
+
+- Test S1 ASFProduct_Stack:
+    product: Alos_response.yml
+    baseline_stack: Alos_stack.yml
