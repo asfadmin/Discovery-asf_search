@@ -1,5 +1,5 @@
 # Changelog
-## [3.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.6...v3.0.7)
+## [3.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.6...v3.1.0)
 ### Changed
 - Re-enable run-pytest workflow
   - Add tests for `ASFSearch, ASFSession, ASFProduct` as well as baseline, geographic, and search modules
