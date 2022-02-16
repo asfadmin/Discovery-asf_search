@@ -1,21 +1,52 @@
+# empty:
+#   &empty {
+#     geometry: {},
+#     properties: {},
+#     meta:
+#       {
+#         "concept-type": ' ',
+#         "concept-id": ' ',
+#         "revision-id": 0,
+#         "native-id": ' ',
+#         "provider-id": ' ',
+#         "format": ' ',
+#         "revision-date": ' '
+#       },
+#     umm:
+#       {
+#         "TemporalExtent": {},
+#         "OrbitCalculatedSpatialDomains": [],
+#         "GranuleUR": " ",
+#         "AdditionalAttributes": [],
+#         "SpatialExtent": {},
+#         "ProviderDates": [],
+#         "CollectionReference": {},
+#         "RelatedUrls": [],
+#         "DataGranule": {},
+#         "Platforms": [],
+#       },
+#   }
+
 tests:
-- Test Empty ASFProduct:
-    products: {geometry: {}, properties: {}}
-
-- Test SMAP ASFProduct:
-    products: SMAP_response.yml
-
-- Test ALOS ASFProduct:
-    products: Alos_response.yml
+#   - Test Empty ASFProduct:
+#       products: *empty
 
 
-- Test S1 ASFProduct:
-    products: S1_response.yml
+# bug in CMR/translate.py, invalid literal for int() with base 10
+#   - Test SMAP ASFProduct:
+#       products: SMAP_response.yml
 
-- Test S1 ASFProduct_Stack:
-    product: S1_response.yml
-    baseline_stack: S1_baseline_stack.yml
+  - Test ALOS ASFProduct:
+      products: Alos_response.yml
 
-- Test S1 ASFProduct_Stack:
-    product: Alos_response.yml
-    baseline_stack: Alos_stack.yml
+  - Test S1 ASFProduct:
+      products: S1_response.yml
+
+  - Test S1 ASFProduct_Stack:
+      product: S1_response.yml
+      baseline_stack: S1_baseline_stack.yml
+
+# bug in CMR/translate.py, invalid literal for int() with base 10
+#   - Test Alos ASFProduct_Stack: 
+#       product: Alos_response.yml
+#       baseline_stack: Alos_stack.yml

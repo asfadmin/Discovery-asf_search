@@ -1,3 +1,4 @@
+SEARCH_API_HOST = 'api.daac.asf.alaska.edu'
 ASF_AUTH_HOST = 'auth.asf.alaska.edu'
 
 HEALTH_PATH = '/search/health'

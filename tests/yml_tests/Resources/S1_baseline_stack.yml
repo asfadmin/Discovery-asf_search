@@ -1,238 +1,954 @@
 [
   {
-    "geometry": {
-      "coordinates": [
-        [
+    "geometry":
+      {
+        "coordinates":
           [
-            -144.708267,
-            65.925957
+            [
+              [-150.147552, 65.464966],
+              [-149.28215, 63.992535],
+              [-144.129288, 64.43985],
+              [-144.708267, 65.925957],
+              [-150.147552, 65.464966],
+            ],
           ],
+        "type": "Polygon",
+      },
+    "properties":
+      {
+        "beamModeType": "IW",
+        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.jpg",
+        "bytes": 902744581,
+        "centerLat": 64.9795,
+        "centerLon": -147.0829,
+        "faradayRotation": None,
+        "fileID": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335-GRD_HD",
+        "flightDirection": None,
+        "groupID": "S1B_IWDV_0210_0215_030045_094",
+        "granuleType": "SENTINEL_1B_FRAME",
+        "insarStackId": None,
+        "md5sum": "e6051a4f5e00c54444c17458dfae98c3",
+        "offNadirAngle": None,
+        "orbit": 30045,
+        "pathNumber": 94,
+        "platform": "Sentinel-1B",
+        "pointingAngle": None,
+        "polarization": "VV+VH",
+        "processingDate": "2021-12-16T03:20:38.000Z",
+        "processingLevel": "GRD_HD",
+        "sceneName": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335",
+        "sensor": "C-SAR",
+        "startTime": "2021-12-16T03:20:38.000Z",
+        "stopTime": "2021-12-16T03:21:03.000Z",
+        "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.zip",
+        "fileName": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.zip",
+        "frameNumber": "210",
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G2185407924-ASF",
+        "revision-id": 3,
+        "native-id": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335-GRD_HD",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2021-12-17T09:29:15.148Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "2021-12-16T03:20:38.000Z",
+                "EndingDateTime": "2021-12-16T03:21:03.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 30045 }],
+        "GranuleUR": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335-GRD_HD",
+        "AdditionalAttributes":
           [
-            -144.129288,
-            64.43985
+            {
+              "Name": "ACQUISITION_DATE",
+              "Values": ["2021-12-16T03:21:03.000000"],
+            },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["ASCENDING"] },
+            { "Name": "ASF_PLATFORM", "Values": ["Sentinel-1B"] },
+            { "Name": "BEAM_MODE", "Values": ["IW"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values":
+                [
+                  "Interferometric Wide. 250 km swath, 5 m x 20 m spatial resolution and burst synchronization for interferometry. IW is considered to be the standard mode over land masses.",
+                ],
+            },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["IW"] },
+            { "Name": "BYTES", "Values": ["902744581"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["1300"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["213"] },
+            { "Name": "CENTER_LAT", "Values": ["64.9795"] },
+            { "Name": "CENTER_LON", "Values": ["-147.0829"] },
+            { "Name": "DOPPLER", "Values": ["0"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LAT", "Values": ["65.925957"] },
+            { "Name": "FAR_END_LON", "Values": ["-144.708267"] },
+            { "Name": "FAR_START_LAT", "Values": ["64.43985"] },
+            { "Name": "FAR_START_LON", "Values": ["-144.129288"] },
+            { "Name": "FRAME_NUMBER", "Values": ["210"] },
+            { "Name": "GRANULE_TYPE", "Values": ["SENTINEL_1B_FRAME"] },
+            { "Name": "GROUP_ID", "Values": ["S1B_IWDV_0210_0215_030045_094"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["e6051a4f5e00c54444c17458dfae98c3"],
+            },
+            { "Name": "MISSION_NAME", "Values": ["NA"] },
+            { "Name": "NEAR_END_LAT", "Values": ["65.464966"] },
+            { "Name": "NEAR_END_LON", "Values": ["-150.147552"] },
+            { "Name": "NEAR_START_LAT", "Values": ["63.992535"] },
+            { "Name": "NEAR_START_LON", "Values": ["-149.28215"] },
+            { "Name": "PATH_NUMBER", "Values": ["94"] },
+            { "Name": "POLARIZATION", "Values": ["VV+VH"] },
+            {
+              "Name": "PROCESSING_DATE",
+              "Values": ["2021-12-17T09:19:57.455561"],
+            },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values":
+                [
+                  "Sentinel-1B Ground Range High-resolution Dual-polarization detected product",
+                ],
+            },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L1"] },
+            { "Name": "PROCESSING_TYPE", "Values": ["GRD_HD"] },
+            {
+              "Name": "PROCESSING_TYPE_DISPLAY",
+              "Values": ["L1 Detected High-Res Dual-Pol (GRD-HD)"],
+            },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335_thumb.jpg",
+                ],
+            },
           ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -150.147552,
+                                    "Latitude": 65.464966,
+                                  },
+                                  {
+                                    "Longitude": -149.28215,
+                                    "Latitude": 63.992535,
+                                  },
+                                  {
+                                    "Longitude": -144.129288,
+                                    "Latitude": 64.43985,
+                                  },
+                                  {
+                                    "Longitude": -144.708267,
+                                    "Latitude": 65.925957,
+                                  },
+                                  {
+                                    "Longitude": -150.147552,
+                                    "Latitude": 65.464966,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
           [
-            -149.28215,
-            63.992535
+            { "Date": "2021-12-17T09:29:15.000Z", "Type": "Insert" },
+            { "Date": "2021-12-17T09:29:15.000Z", "Type": "Update" },
           ],
+        "CollectionReference":
+          { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        "RelatedUrls":
           [
-            -150.147552,
-            65.464966
+            {
+              "Format": "Not provided",
+              "Description": "This link provides direct download access to the granule.",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 data set landing page",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-data-sets/sentinel-1",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 User Guide and Technical Documentation",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-information/sentinel-1-documents-tools",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.jpg",
+            },
           ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2021-12-16T03:20:38.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 860.9243211746216,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
           [
-            -144.708267,
-            65.925957
-          ]
-        ]
-      ],
-      "type": "Polygon"
-    },
-    "properties": {
-      "beamModeType": "IW",
-      "browse": [
-        "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.jpg"
-      ],
-      "bytes": "902744581",
-      "faradayRotation": None,
-      "fileID": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335-GRD_HD",
-      "fileName": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.zip",
-      "flightDirection": "ASCENDING",
-      "frameNumber": "210",
-      "granuleType": "SENTINEL_1B_FRAME",
-      "groupID": "S1B_IWDV_0210_0215_030045_094",
-      "insarStackId": None,
-      "md5sum": "e6051a4f5e00c54444c17458dfae98c3",
-      "offNadirAngle": None,
-      "orbit": "30045",
-      "pathNumber": "94",
-      "platform": "Sentinel-1B",
-      "pointingAngle": None,
-      "polarization": "VV+VH",
-      "processingDate": "2021-12-16T03:20:38.000000",
-      "processingLevel": "GRD_HD",
-      "sceneName": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335",
-      "sensor": "C-SAR",
-      "startTime": "2021-12-16T03:20:38.000000",
-      "stopTime": "2021-12-16T03:21:03.000000",
-      "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.zip"
-    },
-    "type": "Feature"
+            {
+              "ShortName": "SENTINEL-1B",
+              "Instruments": [{ "ShortName": "C-SAR" }],
+            },
+          ],
+      },
   },
   {
-    "geometry": {
-      "coordinates": [
-        [
+    "geometry":
+      {
+        "coordinates":
           [
-            -144.707596,
-            65.926071
+            [
+              [-150.146927, 65.465103],
+              [-149.281586, 63.992664],
+              [-144.128693, 64.439949],
+              [-144.707596, 65.926071],
+              [-150.146927, 65.465103],
+            ],
           ],
+        "type": "Polygon",
+      },
+    "properties":
+      {
+        "beamModeType": "IW",
+        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.jpg",
+        "bytes": 902676548,
+        "centerLat": 64.9796,
+        "centerLon": -147.0822,
+        "faradayRotation": None,
+        "fileID": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88-GRD_HD",
+        "flightDirection": None,
+        "groupID": "S1B_IWDV_0209_0216_029870_094",
+        "granuleType": "SENTINEL_1B_FRAME",
+        "insarStackId": None,
+        "md5sum": "2da005c282efeb6c9fb3474782ceed2b",
+        "offNadirAngle": None,
+        "orbit": 29870,
+        "pathNumber": 94,
+        "platform": "Sentinel-1B",
+        "pointingAngle": None,
+        "polarization": "VV+VH",
+        "processingDate": "2021-12-04T03:20:38.000Z",
+        "processingLevel": "GRD_HD",
+        "sceneName": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88",
+        "sensor": "C-SAR",
+        "startTime": "2021-12-04T03:20:38.000Z",
+        "stopTime": "2021-12-04T03:21:03.000Z",
+        "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.zip",
+        "fileName": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.zip",
+        "frameNumber": "210",
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G2177936124-ASF",
+        "revision-id": 3,
+        "native-id": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88-GRD_HD",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2021-12-04T10:04:34.582Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "2021-12-04T03:20:38.000Z",
+                "EndingDateTime": "2021-12-04T03:21:03.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 29870 }],
+        "GranuleUR": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88-GRD_HD",
+        "AdditionalAttributes":
           [
-            -144.128693,
-            64.439949
+            {
+              "Name": "ACQUISITION_DATE",
+              "Values": ["2021-12-04T03:21:03.000000"],
+            },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["ASCENDING"] },
+            { "Name": "ASF_PLATFORM", "Values": ["Sentinel-1B"] },
+            { "Name": "BEAM_MODE", "Values": ["IW"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values":
+                [
+                  "Interferometric Wide. 250 km swath, 5 m x 20 m spatial resolution and burst synchronization for interferometry. IW is considered to be the standard mode over land masses.",
+                ],
+            },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["IW"] },
+            { "Name": "BYTES", "Values": ["902676548"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["1300"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["213"] },
+            { "Name": "CENTER_LAT", "Values": ["64.9796"] },
+            { "Name": "CENTER_LON", "Values": ["-147.0822"] },
+            { "Name": "DOPPLER", "Values": ["0"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LAT", "Values": ["65.926071"] },
+            { "Name": "FAR_END_LON", "Values": ["-144.707596"] },
+            { "Name": "FAR_START_LAT", "Values": ["64.439949"] },
+            { "Name": "FAR_START_LON", "Values": ["-144.128693"] },
+            { "Name": "FRAME_NUMBER", "Values": ["210"] },
+            { "Name": "GRANULE_TYPE", "Values": ["SENTINEL_1B_FRAME"] },
+            { "Name": "GROUP_ID", "Values": ["S1B_IWDV_0209_0216_029870_094"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["2da005c282efeb6c9fb3474782ceed2b"],
+            },
+            { "Name": "MISSION_NAME", "Values": ["NA"] },
+            { "Name": "NEAR_END_LAT", "Values": ["65.465103"] },
+            { "Name": "NEAR_END_LON", "Values": ["-150.146927"] },
+            { "Name": "NEAR_START_LAT", "Values": ["63.992664"] },
+            { "Name": "NEAR_START_LON", "Values": ["-149.281586"] },
+            { "Name": "PATH_NUMBER", "Values": ["94"] },
+            { "Name": "POLARIZATION", "Values": ["VV+VH"] },
+            {
+              "Name": "PROCESSING_DATE",
+              "Values": ["2021-12-04T09:56:11.656649"],
+            },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values":
+                [
+                  "Sentinel-1B Ground Range High-resolution Dual-polarization detected product",
+                ],
+            },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L1"] },
+            { "Name": "PROCESSING_TYPE", "Values": ["GRD_HD"] },
+            {
+              "Name": "PROCESSING_TYPE_DISPLAY",
+              "Values": ["L1 Detected High-Res Dual-Pol (GRD-HD)"],
+            },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88_thumb.jpg",
+                ],
+            },
           ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -150.146927,
+                                    "Latitude": 65.465103,
+                                  },
+                                  {
+                                    "Longitude": -149.281586,
+                                    "Latitude": 63.992664,
+                                  },
+                                  {
+                                    "Longitude": -144.128693,
+                                    "Latitude": 64.439949,
+                                  },
+                                  {
+                                    "Longitude": -144.707596,
+                                    "Latitude": 65.926071,
+                                  },
+                                  {
+                                    "Longitude": -150.146927,
+                                    "Latitude": 65.465103,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
           [
-            -149.281586,
-            63.992664
+            { "Date": "2021-12-04T10:04:34.000Z", "Type": "Insert" },
+            { "Date": "2021-12-04T10:04:34.000Z", "Type": "Update" },
           ],
+        "CollectionReference":
+          { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        "RelatedUrls":
           [
-            -150.146927,
-            65.465103
+            {
+              "Format": "Not provided",
+              "Description": "This link provides direct download access to the granule.",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 data set landing page",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-data-sets/sentinel-1",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 User Guide and Technical Documentation",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-information/sentinel-1-documents-tools",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.jpg",
+            },
           ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2021-12-04T03:20:38.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 860.8594398498535,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
           [
-            -144.707596,
-            65.926071
-          ]
-        ]
-      ],
-      "type": "Polygon"
-    },
-    "properties": {
-      "beamModeType": "IW",
-      "browse": [
-        "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.jpg"
-      ],
-      "bytes": "902676548",
-      "faradayRotation": None,
-      "fileID": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88-GRD_HD",
-      "fileName": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.zip",
-      "flightDirection": "ASCENDING",
-      "frameNumber": "210",
-      "granuleType": "SENTINEL_1B_FRAME",
-      "groupID": "S1B_IWDV_0209_0216_029870_094",
-      "insarStackId": None,
-      "md5sum": "2da005c282efeb6c9fb3474782ceed2b",
-      "offNadirAngle": None,
-      "orbit": "29870",
-      "pathNumber": "94",
-      "platform": "Sentinel-1B",
-      "pointingAngle": None,
-      "polarization": "VV+VH",
-      "processingDate": "2021-12-04T03:20:38.000000",
-      "processingLevel": "GRD_HD",
-      "sceneName": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88",
-      "sensor": "C-SAR",
-      "startTime": "2021-12-04T03:20:38.000000",
-      "stopTime": "2021-12-04T03:21:03.000000",
-      "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.zip"
-    },
-    "type": "Feature"
+            {
+              "ShortName": "SENTINEL-1B",
+              "Instruments": [{ "ShortName": "C-SAR" }],
+            },
+          ],
+      },
   },
   {
-    "geometry": {
-      "coordinates": [
-        [
+    "geometry":
+      {
+        "coordinates":
           [
-            -144.70787,
-            65.926094
+            [
+              [-150.147202, 65.465134],
+              [-149.281906, 63.992695],
+              [-144.128998, 64.439972],
+              [-144.70787, 65.926094],
+              [-150.147202, 65.465134],
+            ],
           ],
+        "type": "Polygon",
+      },
+    "properties":
+      {
+        "beamModeType": "IW",
+        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.jpg",
+        "bytes": 897230195,
+        "centerLat": 64.9796,
+        "centerLon": -147.0825,
+        "faradayRotation": None,
+        "fileID": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D-GRD_HD",
+        "flightDirection": None,
+        "groupID": "S1B_IWDV_0209_0216_029695_094",
+        "granuleType": "SENTINEL_1B_FRAME",
+        "insarStackId": None,
+        "md5sum": "4520ce990fc9a4fec74caaa2b652696a",
+        "offNadirAngle": None,
+        "orbit": 29695,
+        "pathNumber": 94,
+        "platform": "Sentinel-1B",
+        "pointingAngle": None,
+        "polarization": "VV+VH",
+        "processingDate": "2021-11-22T03:20:39.000Z",
+        "processingLevel": "GRD_HD",
+        "sceneName": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D",
+        "sensor": "C-SAR",
+        "startTime": "2021-11-22T03:20:39.000Z",
+        "stopTime": "2021-11-22T03:21:04.000Z",
+        "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.zip",
+        "fileName": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.zip",
+        "frameNumber": "210",
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G2170999673-ASF",
+        "revision-id": 3,
+        "native-id": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D-GRD_HD",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2021-11-22T22:36:40.588Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "2021-11-22T03:20:39.000Z",
+                "EndingDateTime": "2021-11-22T03:21:04.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 29695 }],
+        "GranuleUR": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D-GRD_HD",
+        "AdditionalAttributes":
           [
-            -144.128998,
-            64.439972
+            {
+              "Name": "ACQUISITION_DATE",
+              "Values": ["2021-11-22T03:21:04.000000"],
+            },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["ASCENDING"] },
+            { "Name": "ASF_PLATFORM", "Values": ["Sentinel-1B"] },
+            { "Name": "BEAM_MODE", "Values": ["IW"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values":
+                [
+                  "Interferometric Wide. 250 km swath, 5 m x 20 m spatial resolution and burst synchronization for interferometry. IW is considered to be the standard mode over land masses.",
+                ],
+            },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["IW"] },
+            { "Name": "BYTES", "Values": ["897230195"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["1300"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["213"] },
+            { "Name": "CENTER_LAT", "Values": ["64.9796"] },
+            { "Name": "CENTER_LON", "Values": ["-147.0825"] },
+            { "Name": "DOPPLER", "Values": ["0"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LAT", "Values": ["65.926094"] },
+            { "Name": "FAR_END_LON", "Values": ["-144.70787"] },
+            { "Name": "FAR_START_LAT", "Values": ["64.439972"] },
+            { "Name": "FAR_START_LON", "Values": ["-144.128998"] },
+            { "Name": "FRAME_NUMBER", "Values": ["210"] },
+            { "Name": "GRANULE_TYPE", "Values": ["SENTINEL_1B_FRAME"] },
+            { "Name": "GROUP_ID", "Values": ["S1B_IWDV_0209_0216_029695_094"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["4520ce990fc9a4fec74caaa2b652696a"],
+            },
+            { "Name": "MISSION_NAME", "Values": ["NA"] },
+            { "Name": "NEAR_END_LAT", "Values": ["65.465134"] },
+            { "Name": "NEAR_END_LON", "Values": ["-150.147202"] },
+            { "Name": "NEAR_START_LAT", "Values": ["63.992695"] },
+            { "Name": "NEAR_START_LON", "Values": ["-149.281906"] },
+            { "Name": "PATH_NUMBER", "Values": ["94"] },
+            { "Name": "POLARIZATION", "Values": ["VV+VH"] },
+            {
+              "Name": "PROCESSING_DATE",
+              "Values": ["2021-11-22T22:26:56.653291"],
+            },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values":
+                [
+                  "Sentinel-1B Ground Range High-resolution Dual-polarization detected product",
+                ],
+            },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L1"] },
+            { "Name": "PROCESSING_TYPE", "Values": ["GRD_HD"] },
+            {
+              "Name": "PROCESSING_TYPE_DISPLAY",
+              "Values": ["L1 Detected High-Res Dual-Pol (GRD-HD)"],
+            },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D_thumb.jpg",
+                ],
+            },
           ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -150.147202,
+                                    "Latitude": 65.465134,
+                                  },
+                                  {
+                                    "Longitude": -149.281906,
+                                    "Latitude": 63.992695,
+                                  },
+                                  {
+                                    "Longitude": -144.128998,
+                                    "Latitude": 64.439972,
+                                  },
+                                  {
+                                    "Longitude": -144.70787,
+                                    "Latitude": 65.926094,
+                                  },
+                                  {
+                                    "Longitude": -150.147202,
+                                    "Latitude": 65.465134,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
           [
-            -149.281906,
-            63.992695
+            { "Date": "2021-11-22T22:36:40.000Z", "Type": "Insert" },
+            { "Date": "2021-11-22T22:36:40.000Z", "Type": "Update" },
           ],
+        "CollectionReference":
+          { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        "RelatedUrls":
           [
-            -150.147202,
-            65.465134
+            {
+              "Format": "Not provided",
+              "Description": "This link provides direct download access to the granule.",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 data set landing page",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-data-sets/sentinel-1",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 User Guide and Technical Documentation",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-information/sentinel-1-documents-tools",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.jpg",
+            },
           ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2021-11-22T03:20:39.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 855.6653928756714,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
           [
-            -144.70787,
-            65.926094
-          ]
-        ]
-      ],
-      "type": "Polygon"
-    },
-    "properties": {
-      "beamModeType": "IW",
-      "browse": [
-        "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.jpg"
-      ],
-      "bytes": "897230195",
-      "faradayRotation": None,
-      "fileID": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D-GRD_HD",
-      "fileName": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.zip",
-      "flightDirection": "ASCENDING",
-      "frameNumber": "210",
-      "granuleType": "SENTINEL_1B_FRAME",
-      "groupID": "S1B_IWDV_0209_0216_029695_094",
-      "insarStackId": None,
-      "md5sum": "4520ce990fc9a4fec74caaa2b652696a",
-      "offNadirAngle": None,
-      "orbit": "29695",
-      "pathNumber": "94",
-      "platform": "Sentinel-1B",
-      "pointingAngle": None,
-      "polarization": "VV+VH",
-      "processingDate": "2021-11-22T03:20:39.000000",
-      "processingLevel": "GRD_HD",
-      "sceneName": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D",
-      "sensor": "C-SAR",
-      "startTime": "2021-11-22T03:20:39.000000",
-      "stopTime": "2021-11-22T03:21:04.000000",
-      "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.zip"
-    },
-    "type": "Feature"
+            {
+              "ShortName": "SENTINEL-1B",
+              "Instruments": [{ "ShortName": "C-SAR" }],
+            },
+          ],
+      },
   },
   {
-    "geometry": {
-      "coordinates": [
-        [
+    "geometry":
+      {
+        "coordinates":
           [
-            -144.710358,
-            65.926117
+            [
+              [-150.149414, 65.465057],
+              [-149.283875, 63.992542],
+              [-144.131241, 64.439919],
+              [-144.710358, 65.926117],
+              [-150.149414, 65.465057],
+            ],
           ],
+        "type": "Polygon",
+      },
+    "properties":
+      {
+        "beamModeType": "IW",
+        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.jpg",
+        "bytes": 885840896,
+        "centerLat": 64.9796,
+        "centerLon": -147.0848,
+        "faradayRotation": None,
+        "fileID": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB-GRD_HD",
+        "flightDirection": None,
+        "groupID": "S1B_IWDV_0210_0215_029520_094",
+        "granuleType": "SENTINEL_1B_FRAME",
+        "insarStackId": None,
+        "md5sum": "ae94d5f09bb00118e2c1429de067fad4",
+        "offNadirAngle": None,
+        "orbit": 29520,
+        "pathNumber": 94,
+        "platform": "Sentinel-1B",
+        "pointingAngle": None,
+        "polarization": "VV+VH",
+        "processingDate": "2021-11-10T03:20:39.000Z",
+        "processingLevel": "GRD_HD",
+        "sceneName": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB",
+        "sensor": "C-SAR",
+        "startTime": "2021-11-10T03:20:39.000Z",
+        "stopTime": "2021-11-10T03:21:04.000Z",
+        "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
+        "fileName": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
+        "frameNumber": "210",
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G2163310329-ASF",
+        "revision-id": 3,
+        "native-id": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB-GRD_HD",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2021-11-10T08:57:13.428Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "2021-11-10T03:20:39.000Z",
+                "EndingDateTime": "2021-11-10T03:21:04.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 29520 }],
+        "GranuleUR": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB-GRD_HD",
+        "AdditionalAttributes":
           [
-            -144.131241,
-            64.439919
+            {
+              "Name": "ACQUISITION_DATE",
+              "Values": ["2021-11-10T03:21:04.000000"],
+            },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["ASCENDING"] },
+            { "Name": "ASF_PLATFORM", "Values": ["Sentinel-1B"] },
+            { "Name": "BEAM_MODE", "Values": ["IW"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values":
+                [
+                  "Interferometric Wide. 250 km swath, 5 m x 20 m spatial resolution and burst synchronization for interferometry. IW is considered to be the standard mode over land masses.",
+                ],
+            },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["IW"] },
+            { "Name": "BYTES", "Values": ["885840896"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["1300"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["213"] },
+            { "Name": "CENTER_LAT", "Values": ["64.9796"] },
+            { "Name": "CENTER_LON", "Values": ["-147.0848"] },
+            { "Name": "DOPPLER", "Values": ["0"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LAT", "Values": ["65.926117"] },
+            { "Name": "FAR_END_LON", "Values": ["-144.710358"] },
+            { "Name": "FAR_START_LAT", "Values": ["64.439919"] },
+            { "Name": "FAR_START_LON", "Values": ["-144.131241"] },
+            { "Name": "FRAME_NUMBER", "Values": ["210"] },
+            { "Name": "GRANULE_TYPE", "Values": ["SENTINEL_1B_FRAME"] },
+            { "Name": "GROUP_ID", "Values": ["S1B_IWDV_0210_0215_029520_094"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["ae94d5f09bb00118e2c1429de067fad4"],
+            },
+            { "Name": "MISSION_NAME", "Values": ["NA"] },
+            { "Name": "NEAR_END_LAT", "Values": ["65.465057"] },
+            { "Name": "NEAR_END_LON", "Values": ["-150.149414"] },
+            { "Name": "NEAR_START_LAT", "Values": ["63.992542"] },
+            { "Name": "NEAR_START_LON", "Values": ["-149.283875"] },
+            { "Name": "PATH_NUMBER", "Values": ["94"] },
+            { "Name": "POLARIZATION", "Values": ["VV+VH"] },
+            {
+              "Name": "PROCESSING_DATE",
+              "Values": ["2021-11-10T08:46:30.876016"],
+            },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values":
+                [
+                  "Sentinel-1B Ground Range High-resolution Dual-polarization detected product",
+                ],
+            },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L1"] },
+            { "Name": "PROCESSING_TYPE", "Values": ["GRD_HD"] },
+            {
+              "Name": "PROCESSING_TYPE_DISPLAY",
+              "Values": ["L1 Detected High-Res Dual-Pol (GRD-HD)"],
+            },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB_thumb.jpg",
+                ],
+            },
           ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -150.149414,
+                                    "Latitude": 65.465057,
+                                  },
+                                  {
+                                    "Longitude": -149.283875,
+                                    "Latitude": 63.992542,
+                                  },
+                                  {
+                                    "Longitude": -144.131241,
+                                    "Latitude": 64.439919,
+                                  },
+                                  {
+                                    "Longitude": -144.710358,
+                                    "Latitude": 65.926117,
+                                  },
+                                  {
+                                    "Longitude": -150.149414,
+                                    "Latitude": 65.465057,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
           [
-            -149.283875,
-            63.992542
+            { "Date": "2021-11-10T08:57:13.000Z", "Type": "Insert" },
+            { "Date": "2021-11-10T08:57:13.000Z", "Type": "Update" },
           ],
+        "CollectionReference":
+          { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        "RelatedUrls":
           [
-            -150.149414,
-            65.465057
+            {
+              "Format": "Not provided",
+              "Description": "This link provides direct download access to the granule.",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 data set landing page",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-data-sets/sentinel-1",
+            },
+            {
+              "Format": "Not provided",
+              "Description": "ASF DAAC Sentinel-1 User Guide and Technical Documentation",
+              "Type": "VIEW RELATED INFORMATION",
+              "URL": "www.asf.alaska.edu/sar-information/sentinel-1-documents-tools",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.jpg",
+            },
           ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2021-11-10T03:20:39.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 844.8037109375,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
           [
-            -144.710358,
-            65.926117
-          ]
-        ]
-      ],
-      "type": "Polygon"
-    },
-    "properties": {
-      "beamModeType": "IW",
-      "browse": [
-        "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.jpg"
-      ],
-      "bytes": "885840896",
-      "faradayRotation": None,
-      "fileID": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB-GRD_HD",
-      "fileName": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
-      "flightDirection": "ASCENDING",
-      "frameNumber": "210",
-      "granuleType": "SENTINEL_1B_FRAME",
-      "groupID": "S1B_IWDV_0210_0215_029520_094",
-      "insarStackId": None,
-      "md5sum": "ae94d5f09bb00118e2c1429de067fad4",
-      "offNadirAngle": None,
-      "orbit": "29520",
-      "pathNumber": "94",
-      "platform": "Sentinel-1B",
-      "pointingAngle": None,
-      "polarization": "VV+VH",
-      "processingDate": "2021-11-10T03:20:39.000000",
-      "processingLevel": "GRD_HD",
-      "sceneName": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB",
-      "sensor": "C-SAR",
-      "startTime": "2021-11-10T03:20:39.000000",
-      "stopTime": "2021-11-10T03:21:04.000000",
-      "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip"
-    },
-    "type": "Feature"
-  }
+            {
+              "ShortName": "SENTINEL-1B",
+              "Instruments": [{ "ShortName": "C-SAR" }],
+            },
+          ],
+      },
+  },
 ]

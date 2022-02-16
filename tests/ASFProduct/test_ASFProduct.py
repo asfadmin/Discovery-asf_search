@@ -6,7 +6,8 @@ def run_test_ASFProduct_Geo_Search(geographic_response):
 
     geojson = product.geojson()
     assert(geojson['geometry'] == geographic_response['geometry'])
-    assert(geojson['properties'] == geographic_response['properties'])
+    assert(product.umm == geographic_response["umm"])
+    assert(product.meta == geographic_response["meta"])
 
 def run_test_stack( reference, s1_baseline_stack):
     product = ASFProduct(reference)

@@ -1,59 +1,206 @@
 {
-  "geometry": {
-    "coordinates": [
-      [
+  "geometry":
+    {
+      "coordinates":
         [
-          -144.710358,
-          65.926117
+          [
+            [25.691, -29.9197],
+            [24.8908, -29.7792],
+            [24.279, -31.7252],
+            [25.0955, -31.8702],
+            [25.691, -29.9197],
+          ],
         ],
+      "type": "Polygon",
+    },
+  "properties":
+    {
+      "beamModeType": "S3",
+      "browse": null,
+      "bytes": 41598,
+      "centerLat": -30.8248,
+      "centerLon": 24.9918,
+      "faradayRotation": null,
+      "fileID": "S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2-METADATA_RAW",
+      "fileName": "S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2.iso.xml",
+      "flightDirection": null,
+      "frameNumber": "6",
+      "granuleType": "SENTINEL_1A_FRAME",
+      "groupID": "S1A_S3DH_0006_0011_001055_108",
+      "insarStackId": null,
+      "md5sum": "8b325621ddd5d8e953b28ff72bdc5a0e",
+      "offNadirAngle": null,
+      "orbit": 1055,
+      "pathNumber": 108,
+      "platform": "Sentinel-1A",
+      "pointingAngle": null,
+      "polarization": "HH+HV",
+      "processingDate": "2014-06-15T03:44:43.000Z",
+      "processingLevel": "METADATA_RAW",
+      "sceneName": "S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2",
+      "sensor": "C-SAR",
+      "startTime": "2014-06-15T03:44:43.000Z",
+      "stopTime": "2014-06-15T03:45:16.000Z",
+      "url": "https://datapool.asf.alaska.edu/METADATA_RAW/SA/S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2.iso.xml",
+    },
+  "type": "Feature",
+
+  "umm":
+    {
+      "TemporalExtent":
+        {
+          "RangeDateTime":
+            {
+              "BeginningDateTime": "2014-06-15T03:44:43.000Z",
+              "EndingDateTime": "2014-06-15T03:45:16.000Z",
+            },
+        },
+      "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 1055 }],
+      "GranuleUR": "S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2-METADATA_RAW",
+      "AdditionalAttributes":
         [
-          -144.131241,
-          64.439919
+          {
+            "Name": "ACQUISITION_DATE",
+            "Values": ["2014-06-15T03:45:16.000000"],
+          },
+          { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+          { "Name": "ASF_PLATFORM", "Values": ["Sentinel-1A"] },
+          { "Name": "BEAM_MODE", "Values": ["S3"] },
+          {
+            "Name": "BEAM_MODE_DESC",
+            "Values":
+              [
+                "Sentinel-1: Strip Map 3, 80 km swath with a spatial resolution of 5 m x 5 m.",
+              ],
+          },
+          { "Name": "BEAM_MODE_TYPE", "Values": ["S3"] },
+          { "Name": "BYTES", "Values": ["41598"] },
+          { "Name": "CENTER_ESA_FRAME", "Values": ["4215"] },
+          { "Name": "CENTER_FRAME_ID", "Values": ["8"] },
+          { "Name": "CENTER_LAT", "Values": ["-30.8248"] },
+          { "Name": "CENTER_LON", "Values": ["24.9918"] },
+          { "Name": "DOPPLER", "Values": ["0"] },
+          { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+          { "Name": "FAR_END_LAT", "Values": ["-31.8702"] },
+          { "Name": "FAR_END_LON", "Values": ["25.0955"] },
+          { "Name": "FAR_START_LAT", "Values": ["-31.7252"] },
+          { "Name": "FAR_START_LON", "Values": ["24.279"] },
+          { "Name": "FRAME_NUMBER", "Values": ["6"] },
+          { "Name": "GRANULE_TYPE", "Values": ["SENTINEL_1A_FRAME"] },
+          { "Name": "GROUP_ID", "Values": ["S1A_S3DH_0006_0011_001055_108"] },
+          { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+          { "Name": "MD5SUM", "Values": ["8b325621ddd5d8e953b28ff72bdc5a0e"] },
+          { "Name": "MISSION_NAME", "Values": ["NA"] },
+          { "Name": "NEAR_END_LAT", "Values": ["-29.9197"] },
+          { "Name": "NEAR_END_LON", "Values": ["25.691"] },
+          { "Name": "NEAR_START_LAT", "Values": ["-29.7792"] },
+          { "Name": "NEAR_START_LON", "Values": ["24.8908"] },
+          { "Name": "PATH_NUMBER", "Values": ["108"] },
+          { "Name": "POLARIZATION", "Values": ["HH+HV"] },
+          {
+            "Name": "PROCESSING_DATE",
+            "Values": ["2018-02-28T08:26:04.991803"],
+          },
+          {
+            "Name": "PROCESSING_DESCRIPTION",
+            "Values": ["Sentinel-1A ISO 19115-compliant XML metadata file"],
+          },
+          { "Name": "PROCESSING_LEVEL", "Values": ["METADATA_RAW"] },
+          { "Name": "PROCESSING_TYPE", "Values": ["METADATA_RAW"] },
+          {
+            "Name": "PROCESSING_TYPE_DISPLAY",
+            "Values": ["XML Metadata (RAW)"],
+          },
         ],
+      "SpatialExtent":
+        {
+          "HorizontalSpatialDomain":
+            {
+              "Geometry":
+                {
+                  "GPolygons":
+                    [
+                      {
+                        "Boundary":
+                          {
+                            "Points":
+                              [
+                                { "Longitude": 25.691, "Latitude": -29.9197 },
+                                { "Longitude": 24.8908, "Latitude": -29.7792 },
+                                { "Longitude": 24.279, "Latitude": -31.7252 },
+                                { "Longitude": 25.0955, "Latitude": -31.8702 },
+                                { "Longitude": 25.691, "Latitude": -29.9197 },
+                              ],
+                          },
+                      },
+                    ],
+                },
+            },
+        },
+      "ProviderDates":
         [
-          -149.283875,
-          63.992542
+          { "Date": "2020-01-16T07:11:15.000Z", "Type": "Insert" },
+          { "Date": "2020-01-16T07:11:15.000Z", "Type": "Update" },
         ],
+      "CollectionReference":
+        { "ShortName": "SENTINEL-1A_META_RAW", "Version": "1" },
+      "RelatedUrls":
         [
-          -150.149414,
-          65.465057
+          {
+            "Format": "Not provided",
+            "Description": "This link provides direct download access to the granule.",
+            "Type": "GET DATA",
+            "URL": "https://datapool.asf.alaska.edu/METADATA_RAW/SA/S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2.iso.xml",
+          },
+          {
+            "Format": "Not provided",
+            "Description": "ASF DAAC Sentinel-1 data set landing page",
+            "Type": "VIEW RELATED INFORMATION",
+            "URL": "www.asf.alaska.edu/sar-data-sets/sentinel-1",
+          },
+          {
+            "Format": "Not provided",
+            "Description": "ASF DAAC Sentinel-1 User Guide and Technical Documentation",
+            "Type": "VIEW RELATED INFORMATION",
+            "URL": "www.asf.alaska.edu/sar-information/sentinel-1-documents-tools",
+          },
         ],
+      "DataGranule":
+        {
+          "DayNightFlag": "Unspecified",
+          "Identifiers":
+            [
+              {
+                "Identifier": "S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2",
+                "IdentifierType": "ProducerGranuleId",
+              },
+            ],
+          "ProductionDateTime": "2014-06-15T03:44:43.000Z",
+          "ArchiveAndDistributionInformation":
+            [
+              {
+                "Name": "Not provided",
+                "Size": 0.03967094421386719,
+                "SizeUnit": "MB",
+                "Format": "Not provided",
+              },
+            ],
+        },
+      "Platforms":
         [
-          -144.710358,
-          65.926117
-        ]
-      ]
-    ],
-    "type": "Polygon"
+          {
+            "ShortName": "SENTINEL-1A",
+            "Instruments": [{ "ShortName": "C-SAR" }],
+          },
+        ],
+    },
+  "meta": {
+    "concept-type": "granule",
+    "concept-id": "G1288003040-ASF",
+    "revision-id": 9,
+    "native-id": "S1A_S3_RAW__0SDH_20140615T034443_20140615T034516_001055_00107C_BCD2-METADATA_RAW",
+    "provider-id": "ASF",
+    "format": "application/echo10+xml",
+    "revision-date": "2020-01-16T07:11:36.139Z",
   },
-  "properties": {
-    "beamModeType": "IW",
-    "browse": [
-      "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.jpg"
-    ],
-    "bytes": "885840896",
-    "faradayRotation": None,
-    "fileID": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB-GRD_HD",
-    "fileName": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
-    "flightDirection": "ASCENDING",
-    "frameNumber": "210",
-    "granuleType": "SENTINEL_1B_FRAME",
-    "groupID": "S1B_IWDV_0210_0215_029520_094",
-    "insarStackId": None,
-    "md5sum": "ae94d5f09bb00118e2c1429de067fad4",
-    "offNadirAngle": None,
-    "orbit": "29520",
-    "pathNumber": "94",
-    "platform": "Sentinel-1B",
-    "pointingAngle": None,
-    "polarization": "VV+VH",
-    "processingDate": "2021-11-10T03:20:39.000000",
-    "processingLevel": "GRD_HD",
-    "sceneName": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB",
-    "sensor": "C-SAR",
-    "startTime": "2021-11-10T03:20:39.000000",
-    "stopTime": "2021-11-10T03:21:04.000000",
-    "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip"
-  },
-  "type": "Feature"
 }
