@@ -1,5 +1,6 @@
 from asf_search import search
 
+
 class ASFCollection:
     def __init__(self, platform: str, mission: str):
         self.platform = platform

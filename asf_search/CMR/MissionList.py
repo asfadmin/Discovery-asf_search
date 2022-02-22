@@ -1,6 +1,6 @@
 from typing import List
 from asf_search.exceptions import CMRError
-from ..constants.INTERNAL import CMR_HOST, CMR_COLLECTIONS
+from asf_search.constants.INTERNAL import CMR_HOST, CMR_COLLECTIONS
 from defusedxml.lxml import fromstring
 
 import requests
