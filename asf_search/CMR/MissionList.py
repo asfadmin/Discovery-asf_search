@@ -1,11 +1,19 @@
-from typing import List
+from typing import Dict, List
 from asf_search.exceptions import CMRError
 from asf_search.constants.INTERNAL import CMR_HOST, CMR_COLLECTIONS
 
 import requests
 
 
-def get_collections(data) -> List[str]:
+def get_collections(data) -> Dict:
+    """Queries CMR Collections endpoint for 
+    collections associated with the given platform
+
+    :param data: a dictionary with required keys:
+    'include_facets', 'provider', 'platform[]' and optional key: 'instrument[]'
+
+    :return: Dictionary containing CMR umm_json response
+    """
     response = requests.post('https://' + CMR_HOST + CMR_COLLECTIONS,
                       data=data)
     if response.status_code != 200:

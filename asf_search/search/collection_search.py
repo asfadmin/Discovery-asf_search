@@ -2,7 +2,16 @@ from typing import Dict, List, Union
 from asf_search.CMR.MissionList import get_collections
 
 
-def collection_search(platform: str):
+def collection_search(platform: str) -> List[str]:
+    """
+    Returns a list of collection names for the given platform, 
+    each name being usable as a collectionName for asf_search.search() and asf_search.geo_search()
+
+    :param platform: The name of the platform to gather collection names for. 
+    Platforms currently supported include UAVSAR, AIRSAR, and SENTINEL-1 INTERFEROGRAM (BETA)
+    
+    :return: A list of collection names for the given platform
+    """
     data = {
                 'include_facets': 'true',
                 'provider': 'ASF'
@@ -27,6 +36,14 @@ def collection_search(platform: str):
 
 
 def _get_project_names(data: Union[Dict, List]) -> List[str]:
+    """
+    Recursively searches for collection names 
+    under "Projects" key in CMR umm_json response
+
+    :param data: CMR umm_json response
+
+    :return: A list of found collection names for the given platform
+    """
     output = []
     if isinstance(data, Dict):
         for key, value in data.items():
