@@ -16,8 +16,6 @@ test_requirements = [
     "pytest-xdist",
     "coverage",
     "requests-mock",
-    "defusedxml",
-    "lxml",
 ]
 
 with open("README.md", "r") as readme_file:

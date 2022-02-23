@@ -1,5 +1,6 @@
-from asf_search.ASFCollection import ASFCollection
-from asf_search.CMR import MissionList
+from typing import Dict, List, Union
+from asf_search.CMR.MissionList import get_collections
+
 
 def collection_search(platform: str):
     data = {
@@ -18,7 +19,22 @@ def collection_search(platform: str):
             data['platform[]'] = 'SENTINEL-1A'
         else:
             data['platform[]'] = platform
-    return [
-        *map(lambda mission: ASFCollection(platform, mission), 
-            MissionList.getMissions(data))
-        ]
+    
+    missions = get_collections(data)
+    mission_names = _get_project_names(missions)
+
+    return mission_names
+
+
+def _get_project_names(data: Union[Dict, List]) -> List[str]:
+    output = []
+    if isinstance(data, Dict):
+        for key, value in data.items():
+            if key == "Projects":
+                return [list(item.values())[0] for item in value]
+            output.extend(_get_project_names(value))
+    elif isinstance(data, List):
+        for item in data:
+            output.extend(_get_project_names(item))
+    
+    return output
