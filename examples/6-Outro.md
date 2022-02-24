@@ -6,6 +6,7 @@
 - [PyPi](https://pypi.org/project/asf-search/)
 - [Conda](https://anaconda.org/conda-forge/asf_search)
 - [Github](https://github.com/asfadmin/Discovery-asf_search) 
+  - [The notebooks used for this presentation](https://github.com/asfadmin/Discovery-asf_search/tree/master/examples)
 - [Documentation](https://docs.asf.alaska.edu/)
 
 Contact ASF at:
