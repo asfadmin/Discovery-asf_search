@@ -21,3 +21,6 @@ class ASFDownloadError(ASFError):
 
 class ASFAuthenticationError(ASFError):
     """Base download-related Exception"""
+
+class ASFWKTError(ASFError):
+    """Raise when wkt related errors occur"""
