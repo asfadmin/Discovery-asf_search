@@ -9,6 +9,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
+from asf_search.WKT.validate_wkt import validate_wkt
 
 
 def search(
@@ -106,6 +107,9 @@ def search(
     for key in listify_fields:
         if key in data and not isinstance(data[key], list):
             data[key] = [data[key]]
+    
+    if 'intersectsWith' in list(data.keys()):
+        data['intersectsWith'] = validate_wkt(data['intersectsWith'])
 
     flatten_fields = [
         'absoluteOrbit',

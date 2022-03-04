@@ -1,6 +1,5 @@
 import pytest
 
-from shapely.geometry import Polygon
 from shapely.wkt import loads
 
 from asf_search.WKT.validate_wkt import validate_wkt

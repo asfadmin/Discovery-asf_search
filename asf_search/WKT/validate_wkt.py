@@ -23,4 +23,4 @@ def validate_wkt(aoi_wkt: str) -> str:
 
 
 def _simplify_geometry(geometry: BaseGeometry):
-    return geometry.simplify(0.05)
+    return geometry.simplify(0.0001)
