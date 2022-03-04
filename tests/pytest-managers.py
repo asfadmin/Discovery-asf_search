@@ -12,6 +12,8 @@ import os
 import pathlib
 import yaml
 
+from tests.WKT.test_validate_wkt import run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_invalid_type_error, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_winding_order
+
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
     """
@@ -165,6 +167,26 @@ def test_ASFSearch_Search_Error(**args) -> None:
         with raises(ASFSearch5xxError):
             run_test_search_http_error(parameters, error_code, report)
 
+def test_wkt_validation_Type_Error(**args) -> None:
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    
+    run_test_validate_wkt_invalid_type_error(wkt)
+    
+def test_wkt_validation_Invalid_WKT_Error(**args) -> None:
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    run_test_validate_wkt_invalid_wkt_error(wkt)
+
+def test_wkt_validation_WKT_Winding_Order(**args) -> None:
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    run_test_validate_wkt_winding_order(wkt)
+
+def test_wkt_validation_WKT_Valid(**args) -> None:
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    run_test_valdiate_wkt_valid_wkt(wkt)
 
 def get_resource(yml_file):
     

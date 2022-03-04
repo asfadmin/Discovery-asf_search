@@ -5,7 +5,7 @@ from shapely.geometry.polygon import orient
 
 from asf_search.exceptions import ASFWKTError
 
-def validate_wkt(aoi_wkt: str):
+def validate_wkt(aoi_wkt: str) -> str:
     aoi_shape = wkt.loads(aoi_wkt)
     
     if not aoi_shape.is_valid:
@@ -17,7 +17,7 @@ def validate_wkt(aoi_wkt: str):
         return simplified.wkt
     
     if isinstance(simplified, Polygon):
-        return orient(simplified, sign=1.0)
+        return orient(simplified, sign=1.0).wkt
     
     raise ASFWKTError(f'The provided WKT is not a valid type. Valid WKT types include \"Point\", \"LineString\", \"Polygon\"')
 
