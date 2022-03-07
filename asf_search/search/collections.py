@@ -2,7 +2,7 @@ from typing import Dict, List, Union
 from asf_search.CMR.MissionList import get_collections
 
 
-def collection_search(platform: str) -> List[str]:
+def collections(platform: str) -> List[str]:
     """
     Returns a list of collection names for the given platform, 
     each name being usable as a collectionName for asf_search.search() and asf_search.geo_search()

@@ -1,5 +1,5 @@
 from asf_search.CMR.MissionList import get_collections
-from asf_search.search.collection_search import _get_project_names
+from asf_search.search.collections import _get_project_names
 import pytest
 import requests_mock
 
