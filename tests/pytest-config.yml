@@ -63,3 +63,8 @@ test_types:
     required_keys: ["parameters", "status_code", "report"]
     required_in_title: test-ASFSearch-search-error
     method: test_ASFSearch_Search_Error
+
+- For running _get_project_names tests:
+    required_keys: ["cmr_ummjson", "campaigns"]
+    required_in_title: test_get_project_names
+    method: test_get_platform_collection_names

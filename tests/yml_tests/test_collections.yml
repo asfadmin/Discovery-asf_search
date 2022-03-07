@@ -1,0 +1,10 @@
+tests:
+- Test test_get_project_names S1-Interferogram-(Beta):
+    cmr_ummjson: S1_Interferogram_(beta)_cmr_ummjson.yml
+    campaigns: [
+      "S1 I-grams (BETA) - Central CA",
+      "S1 I-grams (BETA) - Kilauea Volcano, HI",
+      "S1 I-grams (BETA) - Northern CA",
+      "S1 I-grams (BETA) - Other",
+      "S1 I-grams (BETA) - Southern CA"
+      ]
