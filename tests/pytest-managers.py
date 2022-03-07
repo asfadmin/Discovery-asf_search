@@ -1,9 +1,11 @@
+from typing import List
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
 from ASFSession.test_ASFSession import run_auth_with_creds
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
+from CMR.test_MissionList import run_test_get_project_names
 
 from pytest import raises
 from unittest.mock import patch
@@ -187,6 +189,12 @@ def test_wkt_validation_WKT_Valid(**args) -> None:
     test_info = args["test_info"]
     wkt = get_resource(test_info['wkt'])
     run_test_valdiate_wkt_valid_wkt(wkt)
+def test_get_platform_collection_names(**args) -> None:
+    test_info = args["test_info"]
+    cmr_ummjson = get_resource(test_info["cmr_ummjson"])
+    campaigns: List[str] = get_resource(test_info["campaigns"])
+    
+    run_test_get_project_names(cmr_ummjson, campaigns)
 
 def get_resource(yml_file):
     

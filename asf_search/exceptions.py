@@ -24,3 +24,6 @@ class ASFAuthenticationError(ASFError):
 
 class ASFWKTError(ASFError):
     """Raise when wkt related errors occur"""
+
+class CMRError(Exception):
+    """Base CMR Exception"""
