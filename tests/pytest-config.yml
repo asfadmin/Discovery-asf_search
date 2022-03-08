@@ -85,9 +85,14 @@ test_types:
     method: test_wkt_validation_WKT_Valid
 
 - For running _get_clamped_geometry tests:
-    required_keys: ["wkt", "clamped-wkt"]
+    required_keys: ["wkt", "clamped-wkt", "clamped-count"]
     required_in_title: test-validate-wkt-clamp
     method: test_wkt_validation_WKT_clamp_geometry
+
+- For running _get_convex_hull tests:
+    required_keys: ["wkt", "convex-wkt"]
+    required_in_title: test-validate-wkt-convex-hull
+    method: test_wkt_validation_convex_hull
 
 - For running _get_project_names tests:
     required_keys: ["cmr_ummjson", "campaigns"]

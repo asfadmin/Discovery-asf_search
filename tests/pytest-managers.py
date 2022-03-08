@@ -14,7 +14,7 @@ import os
 import pathlib
 import yaml
 
-from tests.WKT.test_validate_wkt import run_test_validate_wkt_clamp_geometry, run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_invalid_type_error, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_winding_order
+from tests.WKT.test_validate_wkt import run_test_validate_wkt_clamp_geometry, run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_invalid_type_error, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_winding_order
 
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
@@ -194,7 +194,14 @@ def test_wkt_validation_WKT_clamp_geometry(**args) -> None:
     test_info = args["test_info"]
     wkt = get_resource(test_info['wkt'])
     clamped_wkt = get_resource(test_info['clamped-wkt'])
-    run_test_validate_wkt_clamp_geometry(wkt, clamped_wkt)
+    clamped_count = get_resource(test_info['clamped-count'])
+    run_test_validate_wkt_clamp_geometry(wkt, clamped_wkt, clamped_count)
+
+def test_wkt_validation_convex_hull(**args) -> None:
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    convex_wkt = get_resource(test_info['convex-wkt'])
+    run_test_validate_wkt_convex_hull(wkt, convex_wkt)
 
 def test_get_platform_collection_names(**args) -> None:
     test_info = args["test_info"]
