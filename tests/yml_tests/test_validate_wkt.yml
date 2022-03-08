@@ -16,3 +16,19 @@ tests:
 
 - test-validate-wkt-valid polygon:
     wkt: POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))
+
+- test-validate-wkt-clamp linestring:
+    wkt: LINESTRING (0 -95, 45 0, 90 95)
+    clamped-wkt: LINESTRING (0 -90, 45 0, 90 90)
+
+- test-validate-wkt-clamp point lower-bound:
+    wkt: POINT (95 -95)
+    clamped-wkt: POINT (95 -90)
+
+- test-validate-wkt-clamp point upper-bound:
+    wkt: POINT (95 95)
+    clamped-wkt: POINT (95 90)
+
+- test-validate-wkt-clamp polygon:
+    wkt: POLYGON ((0 -95, 10 0, 10 100, 0 100, 0 -95))
+    clamped-wkt: POLYGON ((0 -90, 10 0, 10 90, 0 90, 0 -90))

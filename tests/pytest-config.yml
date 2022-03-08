@@ -83,6 +83,12 @@ test_types:
     required_keys: ["wkt"]
     required_in_title: 'test-validate-wkt-valid'
     method: test_wkt_validation_WKT_Valid
+
+- For running _get_clamped_geometry tests:
+    required_keys: ["wkt", "clamped-wkt"]
+    required_in_title: test-validate-wkt-clamp
+    method: test_wkt_validation_WKT_clamp_geometry
+
 - For running _get_project_names tests:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names
