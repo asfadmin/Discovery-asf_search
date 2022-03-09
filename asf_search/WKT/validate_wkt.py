@@ -69,13 +69,22 @@ def _search_wkt_prep(shape: BaseGeometry):
 
 
 def _simplify_geometry(geometry: BaseGeometry):
-    repair_reports = []
-    clamped, report = _get_clamped_geometry(geometry)
+    clamped, clamp_report = _get_clamped_geometry(geometry)
+    merged, merge_report = _merge_overlapping_geometry(clamped)
+    convex, convex_report = _get_convex_hull(merged)
+
+    repair_reports = [clamp_report, merge_report, convex_report]
+    
+    for report in repair_reports:
+        if report is not None:
+            print(report.report)
+            print(report.report_type)
+
     return _counter_clockwise_reorientation(
-        clamped.simplify(0.0001)
+        convex.simplify(0.0001)
     )
 
-def _merge_overlapping_geometry(geometry: BaseGeometry):
+def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
     merge_report = None
 
     if isinstance(geometry, BaseMultipartGeometry):
