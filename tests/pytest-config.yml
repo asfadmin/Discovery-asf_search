@@ -80,7 +80,7 @@ test_types:
     method: test_wkt_validation_WKT_Winding_Order
 
 - For running WKT Validation point tests:
-    required_keys: ["wkt"]
+    required_keys: ["wkt", "validated-wkt"]
     required_in_title: 'test-validate-wkt-valid'
     method: test_wkt_validation_WKT_Valid
 

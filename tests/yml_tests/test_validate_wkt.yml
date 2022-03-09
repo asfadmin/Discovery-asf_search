@@ -10,16 +10,19 @@ tests:
 
 - test-validate-wkt-valid point:
     wkt: POINT (0 0)
+    validated-wkt: POINT (0 0)
 
 - test-validate-wkt-valid linestring:
     wkt: LINESTRING (0 0, 1 0, 1 1)
+    validated-wkt: LINESTRING (0 0, 1 0, 1 1)
 
 - test-validate-wkt-valid polygon:
     wkt: POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))
+    validated-wkt: POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))
 
 - test-validate-wkt-valid multipolygon:
     wkt: MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))
-    convex-wkt: POLYGON ((15 5, 5 10, 10 40, 45 40, 40 10, 15 5))
+    validated-wkt: POLYGON ((15 5, 40 10, 45 40, 10 40, 5 10, 15 5))
 
 - test-validate-wkt-clamp linestring:
     wkt: LINESTRING (0 -95, 45 0, 90 95)

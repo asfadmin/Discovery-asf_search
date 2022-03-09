@@ -188,7 +188,8 @@ def test_wkt_validation_WKT_Winding_Order(**args) -> None:
 def test_wkt_validation_WKT_Valid(**args) -> None:
     test_info = args["test_info"]
     wkt = get_resource(test_info['wkt'])
-    run_test_valdiate_wkt_valid_wkt(wkt)
+    validated_wkt = get_resource(test_info['validated-wkt'])
+    run_test_valdiate_wkt_valid_wkt(wkt, validated_wkt)
 
 def test_wkt_validation_WKT_clamp_geometry(**args) -> None:
     test_info = args["test_info"]

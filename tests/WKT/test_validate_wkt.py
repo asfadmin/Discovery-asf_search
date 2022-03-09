@@ -25,8 +25,8 @@ def run_test_validate_wkt_winding_order(wkt: str):
     assert valdiated != original_order
 
 
-def run_test_valdiate_wkt_valid_wkt(wkt: str):
-    assert wkt == validate_wkt(wkt).wkt
+def run_test_valdiate_wkt_valid_wkt(wkt: str, validated_wkt: str):
+    assert validated_wkt == validate_wkt(wkt).wkt
 
 def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_count: Number):
     resp = _get_clamped_geometry(loads(wkt))
