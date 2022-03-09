@@ -5,7 +5,7 @@ from shapely.geometry.base import BaseGeometry
 from shapely.geometry import Polygon, MultiPolygon, Point, MultiPoint, LineString, MultiLineString, GeometryCollection
 from shapely.geometry.collection import BaseMultipartGeometry
 from shapely.geometry.polygon import orient
-from shapely.ops import transform, orient
+from shapely.ops import transform, orient, unary_union
 from asf_search.WKT.RepairEntry import RepairEntry
 
 from asf_search.exceptions import ASFWKTError
@@ -74,6 +74,21 @@ def _simplify_geometry(geometry: BaseGeometry):
     return _counter_clockwise_reorientation(
         clamped.simplify(0.0001)
     )
+
+def _merge_overlapping_geometry(geometry: BaseGeometry):
+    merge_report = None
+
+    if isinstance(geometry, BaseMultipartGeometry):
+        original_amount = len(geometry.geoms)
+        merged = unary_union(geometry)
+        if isinstance(merged, BaseMultipartGeometry):
+            merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': {original_amount - len(merged.geoms)} overlapping shapes merged")
+        else:
+            merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': overlapping shapes merged into one")
+            merged = merged.simplify(0.0001)
+        return merged, merge_report
+
+    return geometry, merge_report
 
 def _counter_clockwise_reorientation(geometry: BaseGeometry):
     return orient(geometry)
