@@ -1,5 +1,5 @@
 from numbers import Number
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 from shapely import wkt
 from shapely.geometry.base import BaseGeometry
 from shapely.geometry import Polygon, MultiPolygon, Point, MultiPoint, LineString, MultiLineString, GeometryCollection
@@ -28,22 +28,12 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> str:
     simplified = _simplify_geometry(aoi_shape)
     
     return simplified
-    
-
-    # if simplified.geom_type in ['Point', 'LineString']:
-    #     return simplified.wkt
-    
-    # if isinstance(simplified, Polygon):
-    #     return orient(simplified, sign=1.0).wkt
-    
-    # raise ASFWKTError(f'The provided WKT is not a valid type. Valid WKT types include \"Point\", \"LineString\", \"Polygon\"')
 
 def _search_wkt_prep(shape: BaseGeometry):
 
     if isinstance(shape, (Point, LineString)):
         return shape
 
-    # if isinstance(shape, Polygon):
     if isinstance(shape, BaseMultipartGeometry) :
         output = []
         for geom in shape.geoms:
@@ -72,16 +62,17 @@ def _simplify_geometry(geometry: BaseGeometry):
     clamped, clamp_report = _get_clamped_geometry(geometry)
     merged, merge_report = _merge_overlapping_geometry(clamped)
     convex, convex_report = _get_convex_hull(merged)
-
-    repair_reports = [clamp_report, merge_report, convex_report]
+    simplified, simplified_report = _simplify_aoi(convex)
+    repair_reports = [clamp_report, merge_report, convex_report, *simplified_report]
     
     for report in repair_reports:
         if report is not None:
-            print(report.report)
             print(report.report_type)
+            print(report.report)
+            
 
     return _counter_clockwise_reorientation(
-        convex.simplify(0.0001)
+        simplified
     )
 
 def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
@@ -123,7 +114,6 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, RepairEntr
     return (clamped, repairReport)
 
 def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
-    convexEntry = None
     
     if geometry.geom_type not in ['MultiPoint', 'MultiLineString', 'MultiPolygon', 'GeometryCollection']:
         return geometry, None
@@ -131,7 +121,33 @@ def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]
     possible_repair = RepairEntry("'type': 'CONVEX_HULL_INDIVIDUAL'", "'report': 'Unconnected shapes: Convex-halled each INDIVIDUAL shape to merge them together.'")
     return geometry.convex_hull, possible_repair
 
+def _simplify_aoi(shape: Union[Polygon, LineString, Point], 
+                  threshold: Number = 0.00001, 
+                  max_depth: Number = 10
+        ) -> Tuple[Union[Polygon, LineString, Point], List[RepairEntry]]:
 
+    if shape.geom_type == 'Point':
+        return shape, []
+    elif _get_shape_coords_len(shape) <= 300:
+        return shape, []
+
+    if max_depth == 0:
+        raise ASFWKTError(f'WKT string: \"Could not simplify {shape.geom_type} past 300 points\"')
+
+    simplified = shape.simplify(threshold)
+    repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'", f"'report': 'Shape Simplified: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
+    output, repairs = _simplify_aoi(simplified, threshold * 5, max_depth - 1)
+    return output, [repair, *repairs]
 
 def _clamp(num):
     return max(-90, min(90, num))
+
+def _get_shape_coords_len(geometry: BaseGeometry):
+    if geometry.geom_type == 'Polygon':
+        return len(list(geometry.exterior.coords))
+    elif geometry.geom_type == 'LineString':
+        return len(list(geometry.coords))
+    elif geometry.geom_type == 'Point':
+        return 1
+    
+    raise ASFWKTError(f'WKT string: Could not get coords length for wkt of type \"{geometry.geom_type}\"')
