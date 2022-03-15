@@ -75,8 +75,8 @@ def _simplify_geometry(geometry: BaseGeometry):
             print(report.report_type)
             print(report.report)
 
-    rounded = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
-    return rounded
+    validated = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
+    return validated
 
 
 def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
@@ -100,15 +100,15 @@ def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, R
 
 
 def _counter_clockwise_reorientation(geometry: BaseGeometry):
-    reversed_report = RepairEntry("'type': 'REVERSE'", "Reversed polygon winding order")
-    reversed = orient(geometry)
+    reoriented_report = RepairEntry("'type': 'REVERSE'", "Reversed polygon winding order")
+    reoriented = orient(geometry)
     
     if isinstance(geometry, Polygon):
         # if the vertice ordering has changed
-        if reversed.exterior.is_ccw != geometry.exterior.is_ccw:
-            return reversed, reversed_report
+        if reoriented.exterior.is_ccw != geometry.exterior.is_ccw:
+            return reoriented, reoriented_report
 
-    return reversed, None
+    return reoriented, None
 
 
 def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
@@ -151,7 +151,8 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
     
     if shape.geom_type == 'Point':
         return shape, []
-    elif _get_shape_coords_len(shape) <= 300 and nearest_neighbor_distance > 0.004:
+
+    if _get_shape_coords_len(shape) <= 300 and nearest_neighbor_distance > 0.004:
         return shape, []
 
     if max_depth == 0:
@@ -173,9 +174,11 @@ def _get_shape_coords_len(geometry: BaseGeometry):
 def _get_shape_coords(geometry: BaseGeometry):
     if geometry.geom_type == 'Polygon':
         return list(geometry.exterior.coords[:-1])
-    elif geometry.geom_type == 'LineString':
+    
+    if geometry.geom_type == 'LineString':
         return list(geometry.coords)
-    elif geometry.geom_type == 'Point':
+    
+    if geometry.geom_type == 'Point':
         return list(geometry.coords)
 
 
