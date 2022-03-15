@@ -24,6 +24,10 @@ tests:
     wkt: MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))
     validated-wkt: POLYGON ((15 5, 40 10, 45 40, 10 40, 5 10, 15 5))
 
+- test-validate-wkt-valid geometrycollection:
+    wkt: GEOMETRYCOLLECTION(POLYGON((46 -19,30 26,-3 41,22 39,49 16,46 -19)), POLYGON((27 24,12 4,18 31,27 24)))
+    validated-wkt: POLYGON ((19.28457446808511 13.71276595744681, 46 -19, 49 16, 22 39, -3 41, 15.25490196078431 18.64705882352941, 12 4, 19.28457446808511 13.71276595744681))
+
 - test-validate-wkt-clamp linestring:
     wkt: LINESTRING (0 -95, 45 0, 90 95)
     clamped-wkt: LINESTRING (0 -90, 45 0, 90 90)
