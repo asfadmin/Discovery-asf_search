@@ -74,8 +74,9 @@ def _simplify_geometry(geometry: BaseGeometry):
         if report is not None:
             print(report.report_type)
             print(report.report)
-            
-    return reoriented
+
+    rounded = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
+    return rounded
 
 
 def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
