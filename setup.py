@@ -7,6 +7,7 @@ requirements = [
     "python-dateutil",
     "pytz",
     "importlib_metadata",
+    "scikit-learn"
 ]
 
 test_requirements = [
