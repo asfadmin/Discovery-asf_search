@@ -14,7 +14,11 @@ from asf_search.exceptions import ASFWKTError
 
 
 def validate_wkt(aoi: Union[str, BaseGeometry]) -> str:
-    
+    """
+    Param aoi: the WKT string or Shapely Geometry to validate and prepare for the CMR query
+    Validates the given area of interest, and returns a validated and simplified WKT string
+    returns: The input AOI's CMR ready WKT string
+    """    
     aoi_shape = BaseGeometry()
 
     if isinstance(aoi, str):
@@ -62,14 +66,24 @@ def _search_wkt_prep(shape: BaseGeometry):
     raise ASFWKTError(f'The provided WKT is not a valid type. Valid WKT types include \"(Multi-)Point\", \"(Multi-)LineString\", \"(Multi-)Polygon\", and \"GeometricCollections\"')
 
 
-def _simplify_geometry(geometry: BaseGeometry):
+def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
+    """
+    param geometry: AOI Shapely Geoemetry to be prepped for CMR 
+    prepares geometry for CMR, ensuring geometry is: 
+        1. Merged, 
+        2. convex-halled
+        3. clamped +/-90
+        4. simplified until its <= 300 points and no closer than 0.00001
+        5. Vertices are in counter-clockwise winding order
+    returns: geometry prepped for CMR
+    """
     merged, merge_report = _merge_overlapping_geometry(geometry)
     convex, convex_report = _get_convex_hull(merged)
     clamped, clamp_report = _get_clamped_geometry(convex)
     simplified, simplified_report = _simplify_aoi(clamped)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
-    repair_reports = [clamp_report, merge_report, convex_report, *simplified_report, reorientation_report]
-    
+
+    repair_reports = [merge_report, convex_report, clamp_report, *simplified_report, reorientation_report]    
     for report in repair_reports:
         if report is not None:
             print(report.report_type)
@@ -80,26 +94,41 @@ def _simplify_geometry(geometry: BaseGeometry):
 
 
 def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
+    """
+    parameter geometry: geometry to merge
+    Performs a unary union overlapping operation of the input geometry, 
+    ensuring geometric collections (multipolygon, multipartgeometry, etc)
+    are simplied as much as possible before the convex-hull step
+    output: merged-overlapping geoemetry
+    """
     merge_report = None
 
     if isinstance(geometry, BaseMultipartGeometry):
         original_amount = len(geometry.geoms)
         if original_amount == 1:
             return geometry
+
         merged = unary_union(geometry)
+
+        # if there were non-overlapping shapes
         if isinstance(merged, BaseMultipartGeometry):
             unique_shapes = len(merged.geoms)
             merged = orient(unary_union(GeometryCollection([geom.convex_hull for geom in merged.geoms])))
-            merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': {unique_shapes} overlapping shapes merged")
+            merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': {unique_shapes} non-overlapping shapes merged by their convex-hulls")
         else:
             merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': overlapping {original_amount} shapes merged into one")
-            merged = merged.simplify(0.0001)
+
         return merged, merge_report
 
     return geometry, merge_report
 
 
-def _counter_clockwise_reorientation(geometry: BaseGeometry):
+def _counter_clockwise_reorientation(geometry: Union[Point, LineString, Polygon]):
+    """
+        param geometry: Shapely geometry to re-orient
+        Ensures the geometry coordinates are wound counter-clockwise
+        output: counter-clockwise oriented geometry
+    """
     reoriented_report = RepairEntry("'type': 'REVERSE'", "Reversed polygon winding order")
     reoriented = orient(geometry)
     
@@ -112,6 +141,11 @@ def _counter_clockwise_reorientation(geometry: BaseGeometry):
 
 
 def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
+    """
+    param geometry: Shapely geometry to clamp    
+    Clamps geometry to +/-90 latitude
+    output: clamped shapely geometry
+    """
     coords_clamped = 0
     def _clamp_coord(x, y, z=None):
         clamped = _clamp(y)
@@ -133,7 +167,11 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, RepairEntr
 
 
 def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
-    
+    """
+    param geometry: geometry to perform possible convex hull operation on
+    If the given geometry is a collection of geoemtries, creates a convex-hull encompassing said geometry
+    output: convex hull of multi-part geometry, or the original single-shaped geometry 
+    """
     if geometry.geom_type not in ['MultiPoint', 'MultiLineString', 'MultiPolygon', 'GeometryCollection']:
         return geometry, None
     
@@ -146,7 +184,15 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
                   max_depth: Number = 10,
                   nearest_neighbor_distance: Number = 0.004
         ) -> Tuple[Union[Polygon, LineString, Point], List[RepairEntry]]:
-
+    """
+    param shape: Shapely geometry to simplify
+    param threshold: point proximity threshold to merge nearby points of geometry with
+    param max_depth: the current depth of the recursive call, defaults to 10
+    nearest_neightbor_distance: the nearest neighboring points contained in the input shape  
+    Recursively simplifies geometry with increasing threshold, and 
+    until there are no more than 300 points and the nearest neighbor distance is no less that 0.004
+    output: simplified geometry
+    """
     nearest_neighbor_distance = _nearest_neighbor(shape)
     
     if shape.geom_type == 'Point':
@@ -165,13 +211,16 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
 
 
 def _clamp(num):
+    """Clamps value between -90 and 90"""
     return max(-90, min(90, num))
 
 
 def _get_shape_coords_len(geometry: BaseGeometry):
     return len(_get_shape_coords(geometry))
 
+
 def _get_shape_coords(geometry: BaseGeometry):
+    """Returns flattened coordinates of input Shapely geometry"""
     if geometry.geom_type == 'Polygon':
         return list(geometry.exterior.coords[:-1])
     

@@ -99,6 +99,11 @@ test_types:
     required_in_title: test-validate-wkt-merge-overlapping-geometry
     method: test_wkt_validation_merge_overlapping_geometry
 
+- For running _counter_clockwise_reorientation tests:
+    required_keys: ["wkt", "cc-wkt"]
+    required_in_title: test-validate-wkt-reorient
+    method: test_wkt_validation_counter_clockwise_reorientation
+
 - For running _get_project_names tests:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names

@@ -4,7 +4,7 @@ import pytest
 from shapely.wkt import loads
 from shapely.ops import orient
 
-from asf_search.WKT.validate_wkt import validate_wkt, _get_clamped_geometry, _get_convex_hull, _merge_overlapping_geometry
+from asf_search.WKT.validate_wkt import validate_wkt, _get_clamped_geometry, _get_convex_hull, _merge_overlapping_geometry, _counter_clockwise_reorientation
 from asf_search.exceptions import ASFWKTError
 
 
@@ -41,3 +41,8 @@ def run_test_validate_wkt_merge_overlapping_geometry(wkt: str, merged_wkt: str):
     shape = loads(wkt)
     
     assert merged_wkt == _merge_overlapping_geometry(shape)[0].wkt
+
+def run_test_validate_wkt_counter_clockwise_reorientation(wkt: str, cc_wkt: str):
+    shape = loads(wkt)
+    
+    assert cc_wkt == _counter_clockwise_reorientation(shape)[0].wkt
