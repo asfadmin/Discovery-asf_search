@@ -230,8 +230,13 @@ def _get_shape_coords(geometry: BaseGeometry):
     if geometry.geom_type == 'Point':
         return list(geometry.coords)
 
+    output = []
+    
+    for geom in geometry.geoms:
+        coords = _get_shape_coords(geom)
+        output = [*output, *coords]
 
-    return [*_get_shape_coords(geometry.geoms)]
+    return output
         
 
 def _nearest_neighbor(geometry: BaseGeometry):

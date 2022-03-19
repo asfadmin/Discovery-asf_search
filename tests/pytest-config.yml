@@ -108,3 +108,8 @@ test_types:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names
     method: test_get_platform_collection_names
+
+- For running _get_project_names tests:
+    required_keys: ["wkt", "coordinates"]
+    required_in_title: test-validate-wkt-get-shape-coords
+    method: test_valdiate_wkt_get_shape_coords
