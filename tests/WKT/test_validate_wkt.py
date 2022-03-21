@@ -3,10 +3,11 @@ import pytest
 from typing import List
 
 from shapely.wkt import loads
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, MultiLineString
 
 from asf_search.WKT.validate_wkt import (
-    validate_wkt, 
+    validate_wkt,
+    _search_wkt_prep,
     _get_clamped_geometry, 
     _get_convex_hull, 
     _merge_overlapping_geometry, 
@@ -66,10 +67,21 @@ def run_test_valdiate_wkt_get_shape_coords(wkt: str, coords: List[Number]):
 
     assert len(shape_coords) == len(coords)
     assert  shape_coords == coords
+
+def run_test_search_wkt_prep(wkt: str):
+    if wkt == ' ':
+        with pytest.raises(ASFWKTError):
+            _search_wkt_prep(None)
+        
+        return
+
+    shape = loads(wkt)
+    ls = _search_wkt_prep(shape)
+    assert ls.geometryType() == shape.geometryType()
+    assert shape.wkt == wkt
     
 def test_validate_wkt_simplify_aoi():
     small_polygon = Polygon([[0,0], [0, 0.000004], [0.00004, 0], [0.00004, 0.000004], [0, 0]])
     
     with pytest.raises(ASFWKTError):
         _simplify_aoi(small_polygon, max_depth=0)
-    

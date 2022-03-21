@@ -14,7 +14,7 @@ import os
 import pathlib
 import yaml
 
-from tests.WKT.test_validate_wkt import run_test_valdiate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_type_error, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_validate_wkt_winding_order
+from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_valdiate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_type_error, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_validate_wkt_winding_order
 
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
@@ -228,6 +228,12 @@ def test_valdiate_wkt_get_shape_coords(**args) -> None:
     wkt = get_resource(test_info['wkt'])
     coords = get_resource(test_info['coordinates'])
     run_test_valdiate_wkt_get_shape_coords(wkt, coords)
+
+def test_search_wkt_prep(**args) -> None:
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    
+    run_test_search_wkt_prep(wkt)
 
 def get_resource(yml_file):
     

@@ -119,3 +119,21 @@ tests:
 - test-validate-wkt-get-shape-coords geomtrycollection and point:
     wkt: GEOMETRYCOLLECTION(GEOMETRYCOLLECTION(POLYGON((-5 -5, 0 0, -5 0, -5 -5))), MULTIPOLYGON (((0 0, 20 0, 20 20, 0 20, 0 0)), ((0 5, 20 5, 20 25, 0 25, 0 5))), POINT(95 -90))
     coordinates: [[0, 0], [20, 0], [20, 20], [0, 20], [0, 5], [20, 5], [20, 25], [0, 25], [95, -90], [-5, -5], [-5, 0], [0, 0]]
+
+- test-search-wkt-prep point:
+    wkt: POINT (0 1)
+
+- test-search-wkt-prep line:
+    wkt: LINESTRING (0 1, 1 0, 1 1)
+
+- test-search-wkt-prep multipoint:
+    wkt: MULTIPOINT (10 40, 40 30, 20 20, 30 10)
+
+- test-search-wkt-prep multilinestring:
+    wkt: MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))
+
+- test-search-wkt-prep geometric-collection:
+    wkt: GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), POLYGON ((40 40, 20 45, 45 30, 40 40)))
+
+- test-search-wkt-prep none:
+    wkt: ' '

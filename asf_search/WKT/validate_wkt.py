@@ -45,10 +45,10 @@ def _search_wkt_prep(shape: BaseGeometry):
     if isinstance(shape, BaseMultipartGeometry) :
         output = []
         for geom in shape.geoms:
-                if isinstance(geom, Polygon):
-                    output.append(orient(geom))
-                else:
-                    output.append(geom)
+            if isinstance(geom, Polygon):
+                output.append(orient(geom))
+            else:
+                output.append(geom)
 
         if isinstance(shape, MultiPolygon):
             return MultiPolygon(output)
