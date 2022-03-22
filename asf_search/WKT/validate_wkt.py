@@ -72,7 +72,7 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     prepares geometry for CMR, ensuring geometry is: 
         1. Merged, 
         2. convex-halled
-        3. clamped +/-90
+        3. latitude clamped +/-90, longitude wrapped +/-180
         4. simplified until its <= 300 points and no closer than 0.00001
         5. Vertices are in counter-clockwise winding order
     returns: geometry prepped for CMR
@@ -83,7 +83,7 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     simplified, simplified_report = _simplify_aoi(clamped)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
 
-    repair_reports = [merge_report, convex_report, clamp_report, *simplified_report, reorientation_report]    
+    repair_reports = [merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]    
     for report in repair_reports:
         if report is not None:
             print(report.report_type)
@@ -140,30 +140,40 @@ def _counter_clockwise_reorientation(geometry: Union[Point, LineString, Polygon]
     return reoriented, None
 
 
-def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
+def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[RepairEntry]]:
     """
     param geometry: Shapely geometry to clamp    
-    Clamps geometry to +/-90 latitude
+    Clamps geometry to +/-90 latitude and wraps longitude +/-180
     output: clamped shapely geometry
     """
     coords_clamped = 0
+    coords_wrapped = 0
     def _clamp_coord(x, y, z=None):
         clamped = _clamp(y)
+        wrapped = x
+
+        if abs(x) > 180:
+            nonlocal coords_wrapped
+            wrapped = (wrapped + 180) % 360 - 180
+            coords_wrapped += 1
 
         if clamped != y:
             nonlocal coords_clamped
             coords_clamped += 1
 
-        return tuple([x, clamped])
+        return tuple([wrapped, clamped])
     
     clamped = transform(_clamp_coord, shape)
     
-    repairReport = None
+    clampRepairReport = None
+    wrapRepairReport = None
 
     if coords_clamped > 0:
-        repairReport = RepairEntry("'type': 'CLAMP'", f"'report': 'Clamped {coords_clamped} value(s) to +/-90 latitude'")
+        clampRepairReport = RepairEntry("'type': 'CLAMP'", f"'report': 'Clamped {coords_clamped} value(s) to +/-90 latitude'")
+    if coords_wrapped > 0:
+        wrapRepairReport = RepairEntry("'type': 'WRAP'", f"'report': 'Wrapped {coords_wrapped} value(s) to +/-180 longitude'")
 
-    return (clamped, repairReport)
+    return (clamped, [clampRepairReport, wrapRepairReport])
 
 
 def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:

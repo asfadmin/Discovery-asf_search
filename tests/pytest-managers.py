@@ -196,7 +196,8 @@ def test_wkt_validation_WKT_clamp_geometry(**args) -> None:
     wkt = get_resource(test_info['wkt'])
     clamped_wkt = get_resource(test_info['clamped-wkt'])
     clamped_count = get_resource(test_info['clamped-count'])
-    run_test_validate_wkt_clamp_geometry(wkt, clamped_wkt, clamped_count)
+    wrapped_count = get_resource(test_info['wrapped-count'])
+    run_test_validate_wkt_clamp_geometry(wkt, clamped_wkt, clamped_count, wrapped_count)
 
 def test_wkt_validation_convex_hull(**args) -> None:
     test_info = args["test_info"]

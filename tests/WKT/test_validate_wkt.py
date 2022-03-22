@@ -39,10 +39,15 @@ def run_test_valdiate_wkt_valid_wkt(wkt: str, validated_wkt: str):
     assert validated_wkt == validate_wkt(wkt).wkt
     assert validated_wkt == validate_wkt(loads(wkt)).wkt
 
-def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_count: Number):
+def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_count: Number, wrapped_count: Number):
     resp = _get_clamped_geometry(loads(wkt))
     assert resp[0].wkt == clamped_wkt
-    assert resp[1].report.split(' ')[2] == str(clamped_count)
+    
+    if clamped_count > 0:
+        assert resp[1][0].report.split(' ')[2] == str(clamped_count)
+    
+    if wrapped_count > 0:
+        assert resp[1][1].report.split(' ')[2] == str(wrapped_count)
 
 def run_test_validate_wkt_convex_hull(wkt: str, corrected_wkt: str):
     shape = loads(wkt)
