@@ -24,8 +24,10 @@ def run_test_validate_wkt_invalid_wkt_error(wkt: str):
 
 
 def run_test_valdiate_wkt_valid_wkt(wkt: str, validated_wkt: str):
-    assert validated_wkt == validate_wkt(wkt).wkt
-    assert validated_wkt == validate_wkt(loads(wkt)).wkt
+    expected_aoi = loads(validated_wkt)
+
+    assert validate_wkt(wkt).equals(expected_aoi)
+    assert validate_wkt(loads(wkt)).equals(expected_aoi)
 
 def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_count: Number, wrapped_count: Number):
     resp = _get_clamped_geometry(loads(wkt))
@@ -44,7 +46,7 @@ def run_test_validate_wkt_convex_hull(wkt: str, corrected_wkt: str):
 def run_test_validate_wkt_merge_overlapping_geometry(wkt: str, merged_wkt: str):
     shape = loads(wkt)
     
-    assert merged_wkt == _merge_overlapping_geometry(shape)[0].wkt
+    assert _merge_overlapping_geometry(shape)[0].equals(loads(merged_wkt))
 
 def run_test_validate_wkt_counter_clockwise_reorientation(wkt: str, cc_wkt: str):
     shape = loads(wkt)

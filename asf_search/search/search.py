@@ -109,7 +109,7 @@ def search(
             data[key] = [data[key]]
     
     if 'intersectsWith' in list(data.keys()):
-        data['intersectsWith'] = validate_wkt(data['intersectsWith'])
+        data['intersectsWith'] = validate_wkt(data['intersectsWith']).wkt
 
     flatten_fields = [
         'absoluteOrbit',

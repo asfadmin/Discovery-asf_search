@@ -13,7 +13,7 @@ import numpy as np
 from asf_search.exceptions import ASFWKTError
 
 
-def validate_wkt(aoi: Union[str, BaseGeometry]) -> str:
+def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
     """
     Param aoi: the WKT string or Shapely Geometry to validate and prepare for the CMR query
     Validates the given area of interest, and returns a validated and simplified WKT string
