@@ -1,15 +1,12 @@
 tests:
-- test-validate-wkt-type-error multipolygon:
-    wkt: MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0), (2 2, 2 3, 3 3, 3 2, 2 2)))
-
-- test-validate-wkt-invalid-error:
+- test-validate-wkt-invalid-error polygon:
     wkt: POLYGON((0 0, 0 1, 1 0, 1 1, 0 0))
 
 - test-validate-wkt-invalid-error duplicate-or-too-close:
     wkt: POLYGON ((361 -95, 181 0, 10 100, 0 100, 361 -95))
 
-- test-validate-wkt-winding-order:
-    wkt: POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))
+- test-validate-wkt-invalid-error multipolygon:
+    wkt: MULTIPOLYGON(((0 0, 0 1, 1 1, 1 0, 0 0), (2 2, 2 3, 3 3, 3 2, 2 2)))
 
 - test-validate-wkt-valid point:
     wkt: POINT (0 0)

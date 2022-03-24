@@ -64,20 +64,10 @@ test_types:
     required_in_title: test-ASFSearch-search-error
     method: test_ASFSearch_Search_Error
 
-- For running WKT Validation type error tests:
-    required_keys: ["wkt"]
-    required_in_title: 'test-validate-wkt-type-error'
-    method: test_wkt_validation_Type_Error
-
 - For running WKT Validation invalid wkt error tests:
     required_keys: ["wkt"]
     required_in_title: 'test-validate-wkt-invalid-error'
     method: test_wkt_validation_Invalid_WKT_Error
-
-- For running WKT Validation winding order tests:
-    required_keys: ["wkt"]
-    required_in_title: 'test-validate-wkt-winding-order'
-    method: test_wkt_validation_WKT_Winding_Order
 
 - For running WKT Validation point tests:
     required_keys: ["wkt", "validated-wkt"]
