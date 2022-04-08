@@ -67,4 +67,4 @@ test_types:
 - For running _get_project_names tests:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names
-    method: test_get_platform_collection_names
+    method: test_get_platform_campaign_names

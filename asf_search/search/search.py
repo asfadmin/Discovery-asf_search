@@ -15,7 +15,7 @@ def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         beamMode: Union[str, Iterable[str]] = None,
-        collectionName: Union[str, Iterable[str]] = None,
+        campaign: Union[str, Iterable[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
@@ -50,7 +50,7 @@ def search(
     :param absoluteOrbit: For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B this value corresponds to the orbit count within the orbit cycle. For UAVSAR it is the Flight ID.
     :param asfFrame: This is primarily an ASF / JAXA frame reference. However, some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
     :param beamMode: The beam mode used to acquire the data.
-    :param collectionName: For UAVSAR and AIRSAR data collections only. Search by general location, site description, or data grouping as supplied by flight agency or project.
+    :param campaign: For UAVSAR and AIRSAR data collections only. Search by general location, site description, or data grouping as supplied by flight agency or project.
     :param maxDoppler: Doppler provides an indication of how much the look direction deviates from the ideal perpendicular flight direction acquisition.
     :param minDoppler: Doppler provides an indication of how much the look direction deviates from the ideal perpendicular flight direction acquisition.
     :param end: End date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
@@ -81,11 +81,19 @@ def search(
 
     :return: ASFSearchResults(list) of search results
     """
-
+    
     kwargs = locals()
     data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
     host = data.pop('host')
 
+    rename_fields = [(
+        'campaign', 'collectionName'
+    )]
+    for (key, replacement) in rename_fields:
+        if key in data:
+            data[replacement] = data[key]
+            data.pop(key)
+    
     listify_fields = [
         'absoluteOrbit',
         'asfFrame',
