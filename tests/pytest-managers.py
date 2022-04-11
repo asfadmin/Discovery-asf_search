@@ -167,7 +167,7 @@ def test_ASFSearch_Search_Error(**args) -> None:
         with raises(ASFSearch5xxError):
             run_test_search_http_error(parameters, error_code, report)
 
-def test_get_platform_collection_names(**args) -> None:
+def test_get_platform_campaign_names(**args) -> None:
     test_info = args["test_info"]
     cmr_ummjson = get_resource(test_info["cmr_ummjson"])
     campaigns: List[str] = get_resource(test_info["campaigns"])

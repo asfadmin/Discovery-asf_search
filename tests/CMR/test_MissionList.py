@@ -1,5 +1,5 @@
-from asf_search.CMR.MissionList import get_collections
-from asf_search.search.collections import _get_project_names
+from asf_search.CMR.MissionList import get_campaigns
+from asf_search.search.campaigns import _get_project_names
 import pytest
 import requests_mock
 
@@ -12,14 +12,14 @@ def test_getMissions_error():
         m.register_uri('POST', f"https://" + CMR_HOST + CMR_COLLECTIONS, status_code=300, json={'error': {'report': ""}})
         
         with pytest.raises(CMRError):    
-            get_collections({})
+            get_campaigns({})
 
 def test_getMissions_error_parsing():
     with requests_mock.Mocker() as m:
         m.post(f"https://" + CMR_HOST + CMR_COLLECTIONS)
         
         with pytest.raises(CMRError):
-            get_collections({})
+            get_campaigns({})
 
 def run_test_get_project_names(cmr_ummjson, campaigns):
     assert _get_project_names(cmr_ummjson) == campaigns
