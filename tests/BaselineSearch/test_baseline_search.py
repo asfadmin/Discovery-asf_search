@@ -41,7 +41,7 @@ def run_test_get_stack_params_invalid_platform_raises_error(product):
     
 def run_test_calc_temporal_baselines(reference, stack):
     reference = ASFProduct(reference)
-    stack = ASFSearchResults(map(lambda product: ASFProduct(product), stack))
+    stack = ASFSearchResults(map(ASFProduct, stack))
     stackLength = len(stack)
 
     calc_temporal_baselines(reference, stack)
@@ -54,7 +54,7 @@ def run_test_stack_from_product(reference, stack):
     reference = ASFProduct(reference)
 
     with patch('asf_search.baseline_search.search') as search_mock:
-        search_mock.return_value = ASFSearchResults(map(lambda product: ASFProduct(product), stack))    
+        search_mock.return_value = ASFSearchResults(map(ASFProduct, stack))    
 
         stack = stack_from_product(reference)
 
@@ -65,14 +65,14 @@ def run_test_stack_from_product(reference, stack):
 def run_test_stack_from_id(stack_id: str, reference, stack):
     
         with patch('asf_search.baseline_search.product_search') as mock_product_search:
-            mock_product_search.return_value = ASFSearchResults(map(lambda product: ASFProduct(product), stack))
+            mock_product_search.return_value = ASFSearchResults(map(ASFProduct, stack))
         
             if not stack_id:    
                 with pytest.raises(ASFSearchError):
                     stack_from_id(stack_id)
             else:
                 with patch('asf_search.baseline_search.search') as search_mock:
-                    search_mock.return_value = ASFSearchResults(map(lambda product: ASFProduct(product), stack))    
+                    search_mock.return_value = ASFSearchResults(map(ASFProduct, stack))    
 
                     returned_stack = stack_from_id(stack_id)
                     assert(len(returned_stack) == len(stack))
