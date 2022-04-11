@@ -2,7 +2,7 @@ from typing import List
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
-from ASFSession.test_ASFSession import run_auth_with_creds
+from ASFSession.test_ASFSession import run_auth_with_creds, run_auth_with_token
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
 from CMR.test_MissionList import run_test_get_project_names
@@ -47,6 +47,18 @@ def test_ASFSession_Error(**args) -> None:
 
         with raises(ASFAuthenticationError):
             run_auth_with_creds(username, password)
+
+def test_ASFSession_Token_Error(**args) -> None:
+    """
+    Test ASFSession.auth_with_token for sign in errors
+    """
+    test_info = args["test_info"]
+    token = test_info["token"]
+    with patch('asf_search.ASFSession.get') as mock_get:
+        mock_get.return_value = "Error"
+
+        with raises(ASFAuthenticationError):
+            run_auth_with_token(token)
 
 # asf_search.search.baseline_search Tests
 def test_get_preprocessed_stack_params(**args) -> None:

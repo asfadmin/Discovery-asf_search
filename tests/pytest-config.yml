@@ -10,8 +10,14 @@ test_types:
     method: test_ASFProduct_Stack
 
 - For running ASFSession tests:
+    required_in_title: password-login
     required_keys: ['username', 'password']
     method: test_ASFSession_Error
+
+- For running ASFSession tests:
+    required_in_title: token-auth
+    required_keys: token
+    method: test_ASFSession_Token_Error
 
 - For running preprocessed baseline stack params tests:
     required_keys: product

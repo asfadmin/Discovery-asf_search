@@ -1,4 +1,10 @@
 tests:
-- Test ASFSession Empty Credentials Raises Error:
+- Test ASFSession empty password-login raises error:
     username: ' '
     password: ' '
+
+- Test ASFSession empty token-auth raises error:
+    token: ''
+
+- Test ASFSession bad token-auth raises error:
+    token: 'bad_token'
