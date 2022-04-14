@@ -25,6 +25,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [3.2.0](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.0...vv3.2.0)
+### Added:
+- Added `campaigns()` in `Campaigns` module, returns a list of campaigns for `UAV, AIRSAR, SENTINEL-1 INTERFEROGRAM (BETA)` platforms
+
+### Changed:
+- "collectionName" parameter in `geo_search()` and `search()` is deprecated and raises a warning. Will be removed in a future release, use "campaign" instead
 
 ------
 ## [3.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.6...v3.1.0)
