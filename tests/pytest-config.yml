@@ -14,10 +14,15 @@ test_types:
     required_keys: ['username', 'password']
     method: test_ASFSession_Error
 
-- For running ASFSession tests:
+- For running ASFSession token_auth tests:
     required_in_title: token-auth
     required_keys: token
     method: test_ASFSession_Token_Error
+
+- For running ASFSession cookiejar_auth tests:
+    required_in_title: cookiejar-auth
+    required_keys: cookies
+    method: test_ASFSession_Cookie_Error
 
 - For running preprocessed baseline stack params tests:
     required_keys: product

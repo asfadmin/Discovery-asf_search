@@ -49,6 +49,14 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
+        
+        if "urs_user_already_logged" not in cookies:
+            raise ASFAuthenticationError("Cookiejar does not contain login cookies")
+
+        for cookie in cookies:
+            if cookie.is_expired():
+                raise ASFAuthenticationError("Cookiejar contains expired cookies")
+
         self.cookies = cookies
 
         return self
