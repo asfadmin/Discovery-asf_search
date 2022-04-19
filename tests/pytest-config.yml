@@ -79,3 +79,8 @@ test_types:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names
     method: test_get_platform_collection_names
+
+- For running download_url tests:
+    required_keys: ["url", "path", "filename"]
+    required_in_title: test-download-url
+    method: test_download_url

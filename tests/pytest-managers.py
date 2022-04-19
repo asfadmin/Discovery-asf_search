@@ -1,4 +1,5 @@
 from typing import List
+from asf_search.download.download import download_url
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
@@ -13,6 +14,8 @@ from unittest.mock import patch
 import os
 import pathlib
 import yaml
+
+from tests.download.test_download import run_test_download_url_auth_error
 
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
@@ -193,6 +196,19 @@ def test_get_platform_collection_names(**args) -> None:
     campaigns: List[str] = get_resource(test_info["campaigns"])
     
     run_test_get_project_names(cmr_ummjson, campaigns)
+
+def test_download_url(**args) -> None:
+    """
+    Test asf_search.download.download_url
+    """
+    test_info = args["test_info"]
+    url = test_info["url"]
+    path = test_info["path"]
+    filename = test_info["filename"]
+        
+    if filename == "error":
+        run_test_download_url_auth_error(url, path, filename)
+            
 
 def get_resource(yml_file):
     
