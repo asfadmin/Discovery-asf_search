@@ -54,11 +54,9 @@ def test_ASFSession_Token_Error(**args) -> None:
     """
     test_info = args["test_info"]
     token = test_info["token"]
-    with patch('asf_search.ASFSession.get') as mock_get:
-        mock_get.return_value = "Error"
 
-        with raises(ASFAuthenticationError):
-            run_auth_with_token(token)
+    with raises(ASFAuthenticationError):
+        run_auth_with_token(token)
 
 def test_ASFSession_Cookie_Error(**args) -> None:
     """

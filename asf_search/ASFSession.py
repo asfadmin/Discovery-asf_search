@@ -6,6 +6,8 @@ from asf_search.exceptions import ASFAuthenticationError
 
 
 class ASFSession(requests.Session):
+    AUTH_DOMAINS = ['alaska.edu', 'nasa.gov']
+
     def __init__(self):
         super().__init__()
         self.headers.update({'User-Agent': f'{__name__}.{__version__}'})
@@ -39,6 +41,12 @@ class ASFSession(requests.Session):
         """
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
+        url = "https://cmr.earthdata.nasa.gov/search/collections"
+        status = self.get(url).status_code        
+
+        if not 200 <= status <= 299:
+            raise ASFAuthenticationError("Invalid/Expired token passed")
+
         return self
 
     def auth_with_cookiejar(self, cookies: http.cookiejar):
@@ -60,3 +68,20 @@ class ASFSession(requests.Session):
         self.cookies = cookies
 
         return self
+
+    def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):
+        """
+        Overrides requests.Session.rebuild_auth() default behavior of stripping the Authorization header
+        upon redirect. This allows token authentication to work with redirects to trusted domains
+        """
+
+        headers = prepared_request.headers
+        url = prepared_request.url
+
+        if 'Authorization' in headers and 300 <= response.status_code <= 399:
+            original_domain = '.'.join(requests.utils.urlparse(response.headers['location']).hostname.split('.')[-2:])
+            redirect_domain = '.'.join(requests.utils.urlparse(url).hostname.split('.')[-2:])
+
+            if (original_domain != redirect_domain 
+                and redirect_domain not in self.AUTH_DOMAINS):
+                del headers['Authorization']
