@@ -8,5 +8,6 @@ MISSION_PATH = '/services/utils/mission_list'
 DATE_PATH = '/services/utils/date'
 
 CMR_HOST = 'cmr.earthdata.nasa.gov'
+CMR_COLLECTIONS = '/search/collections.umm_json_v1_4'
 EDL_HOST = 'urs.earthdata.nasa.gov'
 EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'

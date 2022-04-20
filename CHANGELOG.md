@@ -1,10 +1,53 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [PEP 440](https://www.python.org/dev/peps/pep-0440/) 
+and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+
+<!--
+## Example template!!
+
+## [version](https://github.com/asfadmin/Discovery-PytestAutomation/compare/vOLD...vNEW)
+
+### Added:
+-
+
+### Changed:
+-
+
+### Fixed:
+- 
+
+### Removed:
+-
+
+-->
+
+## [3.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.6...v3.1.0)
+### Added
+- Added walkthrough in the form of several jupyter notebooks in /examples
+- Added `campaigns()` in `Campaigns` module, returns a list of campaigns for `UAV, AIRSAR, SENTINEL-1 INTERFEROGRAM (BETA)` platforms
+
+### Changed
+- Re-enable run-pytest workflow
+  - Add tests for `ASFSearch, ASFSession, ASFProduct` as well as baseline, geographic, and search modules
+  - Add Pytest-Automation Plugin integration
+  - Add automated CodeCov badge to readme
+- "collectionName" parameter in `geo_search()` and `search()` is deprecated and raises a warning. Will be removed in a future release, use "campaign" instead
+
+### Fixed
+- Fix error while raising ASFBaselineError in `baseline_search.get_stack_params()`
+
+------
 ## [3.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.5...v3.0.6)
 ### Changed
 - Skip download if file already exists
   - In the future we will apply file size and/or checksum checks to ensure the existing file is correct
 
+------
 ## [3.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v3.0.5)
 ### Added
 - Add documentation URL to setup.py
@@ -12,6 +55,7 @@
 ### Fixed
 - Change hyphens to underscores in some product type constants
 
+------
 ## [3.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.3...v3.0.4)
 ### Changed
 - When working with source, package **must** be installed directly:
@@ -19,6 +63,7 @@
 ### Fixed
 - In-region S3 downloads should now function without issue
 
+------
 ## [3.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.2...v3.0.3)
 ### Fixed
 - Replace `ASFProduct.centroid()` calculation with shapely-based calculation
@@ -26,6 +71,7 @@
   - Removes numpy requirement
   - Adds shapely requirement
 
+------
 ## [3.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.0...v3.0.2)
 ### Added
 - Feature and Bug Report github issue templates
@@ -34,6 +80,7 @@
 - Fix download authentication header issue during direct-to-S3 redirects
 - Fix Sentinel-1 stacking to include both A and B in stacks
 
+------
 ## [3.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.2...v3.0.0)
 ### Added
 - Auth support for username/password and cookiejars, in addition to the previously available token-based approach. Create a session, authenticate it with the method of choice, then pass the session to whichever download method is being used.
@@ -52,19 +99,23 @@
 - `download_url()`, `download_urls()`, `ASFProduct.download()` and `ASFSearchResults.download()` now expect a `session` argument instead of `token`
 - Send auth headers to every step along a download redirect chain (including final AWS S3 buckets)
 
+------
 ## [2.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.1...v2.0.2)
 ### Added
 - INSTRUMENT constants for C-SAR, PALSAR, and ANVIR-2
 
+------
 ## [2.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v2.0.0...v2.0.1)
 ### Fixed
 - Versioning workflow corrected for proper versioning, stop bumping major instead of patch!
 
+------
 ## [2.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v1.1.0...v2.0.0)
 ### Fixed
 - Fixed import order of operations bug
 - Updated ASFProduct and ASFSearchResults to use path arg in download methods
 
+------
 ## [1.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.4.0...v1.1.0)
 ### Added
 - Parallel downloads now supported by ASFSearchResults. Defaults to 1 (sequential download)
@@ -78,6 +129,7 @@
 - Fixed ASFProduct import in search.py
 - importlib metadata fix for python <3.8
 
+------
 ## [0.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.3.0...v0.4.0)
 ### Added
 - ASFSearchResults now has a geojson() method which returns a data structure that matches the geojson specification
@@ -101,6 +153,7 @@
 - Cleaned up cruft from various refactors
 
 
+------
 ## [0.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.0)
 
 ### Added
@@ -128,6 +181,7 @@
 - unused import cleanup
 - better type hinting on centroid() function
 
+------
 ## [0.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v0.0.0...v0.2.4)
 
 ### Added

@@ -21,3 +21,6 @@ class ASFDownloadError(ASFError):
 
 class ASFAuthenticationError(ASFError):
     """Base download-related Exception"""
+
+class CMRError(Exception):
+    """Base CMR Exception"""

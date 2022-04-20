@@ -1,0 +1,35 @@
+--- # test data
+
+empty_parameters: &empty_parameters {
+    'host' : 'api.daac.asf.alaska.edu'
+}
+
+alos_parameters: &alos_parameters {
+  "platform": "ALOS",
+  "maxResults": 3,
+  'host' : 'api.daac.asf.alaska.edu',
+}
+
+tests:
+- test-ASFSearch ALOS Resp:
+    response: Alos_response_maxResults3.yml
+
+- test-ASFSearch ALOS Resp:
+    response: Alos_stack.yml
+
+- test-ASFSearch ALOS Resp:
+    response: S1_baseline_stack.yml
+
+- test-ASFSearch-search-valid Alos:
+    parameters: *alos_parameters
+    answer: Alos_response_maxResults3.yml
+
+- test-ASFSearch-search-error 400-Error:
+    parameters: *empty_parameters
+    status_code: 400
+    report: "Client Error"
+
+- test-ASFSearch-search-error 500-Error:
+    parameters: *empty_parameters
+    status_code: 500
+    report: "Server Error"
