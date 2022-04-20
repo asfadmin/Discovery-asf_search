@@ -54,3 +54,13 @@ tests:
         rfc2109: False
         }
     ]
+
+- Test ASFSession rebuild_auth non-authorized domains:
+    original_domain: "alaska.edu"
+    response_domain: "google.com"
+    response_code: 302
+
+- Test ASFSession rebuild_auth non-authorized domains:
+    original_domain: "alaska.edu"
+    response_domain: "alaska.edu"
+    response_code: 200
