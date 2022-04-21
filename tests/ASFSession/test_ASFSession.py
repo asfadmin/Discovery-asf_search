@@ -43,15 +43,14 @@ def run_test_asf_session_rebuild_auth(original_domain: str, response_domain: str
         response.location = response_domain
         
         response.headers.update({'Location' : response_domain})
-        
-        with patch('requests.utils.urlparse') as hostname_patch:
-            hostname_patch.hostname.side_effect = [original_domain, response_domain]
-            # hostname_patch.hostname = original_domain
-            
-            # original_domain_patch.return_value = original_domain        
+        response.headers.update({'Authorization': 'Bearer fakeToken'})
+
+        with patch('asf_search.ASFSession._get_hostname') as hostname_patch:
+            hostname_patch.side_effect = [response_domain, original_domain]
+      
             session.rebuild_auth(req, response)
         
             if response_code != 200:
-                assert response.headers.get("Authorization") == None
+                assert req.headers.get("Authorization") == None
             else:
-                assert response.headers.get("Authorization") == session.headers.get("Authorization")
+                assert req.headers.get("Authorization") == 'Bearer fakeToken'
