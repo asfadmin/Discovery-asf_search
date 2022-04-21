@@ -1,16 +1,16 @@
 from typing import Dict, List, Union
-from asf_search.CMR.MissionList import get_collections
+from asf_search.CMR.MissionList import get_campaigns
 
 
-def collections(platform: str) -> List[str]:
+def campaigns(platform: str) -> List[str]:
     """
-    Returns a list of collection names for the given platform, 
-    each name being usable as a collectionName for asf_search.search() and asf_search.geo_search()
+    Returns a list of campaign names for the given platform, 
+    each name being usable as a campaign for asf_search.search() and asf_search.geo_search()
 
-    :param platform: The name of the platform to gather collection names for. 
+    :param platform: The name of the platform to gather campaign names for. 
     Platforms currently supported include UAVSAR, AIRSAR, and SENTINEL-1 INTERFEROGRAM (BETA)
     
-    :return: A list of collection names for the given platform
+    :return: A list of campaign names for the given platform
     """
     data = {
                 'include_facets': 'true',
@@ -29,7 +29,7 @@ def collections(platform: str) -> List[str]:
         else:
             data['platform[]'] = platform
     
-    missions = get_collections(data)
+    missions = get_campaigns(data)
     mission_names = _get_project_names(missions)
 
     return mission_names
@@ -37,12 +37,12 @@ def collections(platform: str) -> List[str]:
 
 def _get_project_names(data: Union[Dict, List]) -> List[str]:
     """
-    Recursively searches for collection names 
+    Recursively searches for campaign names 
     under "Projects" key in CMR umm_json response
 
     :param data: CMR umm_json response
 
-    :return: A list of found collection names for the given platform
+    :return: A list of found campaign names for the given platform
     """
     output = []
     if isinstance(data, Dict):

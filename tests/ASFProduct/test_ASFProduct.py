@@ -12,7 +12,7 @@ def run_test_stack( reference, s1_baseline_stack):
     product = ASFProduct(reference)
     
     with patch('asf_search.baseline_search.search') as search_mock:
-        search_mock.return_value = ASFSearchResults(map(lambda prod: ASFProduct(prod), s1_baseline_stack))
+        search_mock.return_value = ASFSearchResults(map(ASFProduct, s1_baseline_stack))
         stack = product.stack()
         
         for(idx, secondary) in enumerate(stack):
