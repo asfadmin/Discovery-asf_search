@@ -25,7 +25,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [3.1.1](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.0...v3.1.1)
+### Fixed:
+- Fixes missing CMR module import
 
+------
 ## [3.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.6...v3.1.0)
 ### Added
 - Added walkthrough in the form of several jupyter notebooks in /examples
