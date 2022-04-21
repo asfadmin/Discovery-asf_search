@@ -217,8 +217,9 @@ def test_asf_session_rebuild_auth(**args) -> None:
     original_domain = test_info["original_domain"]
     response_domain = test_info["response_domain"]
     response_code = test_info["response_code"]
+    final_token = test_info["final_token"]
 
-    run_test_asf_session_rebuild_auth(original_domain, response_domain, response_code)
+    run_test_asf_session_rebuild_auth(original_domain, response_domain, response_code, final_token)
     # with patch()
 
 def get_resource(yml_file):

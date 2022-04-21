@@ -29,7 +29,16 @@ def run_auth_with_cookiejar(cookies: List):
     session = ASFSession()
     session.auth_with_cookiejar(cookies)
 
-def run_test_asf_session_rebuild_auth(original_domain: str, response_domain: str, response_code: numbers.Number):
+def run_test_asf_session_rebuild_auth(
+    original_domain: str, 
+    response_domain: str, 
+    response_code: numbers.Number, 
+    final_token
+    ):
+
+    if final_token == 'None':
+        final_token = None
+
     session = ASFSession()
 
     with patch('asf_search.ASFSession.get') as mock_token_session:
@@ -50,8 +59,5 @@ def run_test_asf_session_rebuild_auth(original_domain: str, response_domain: str
             hostname_patch.side_effect = [original_domain, response_domain]
       
             session.rebuild_auth(req, response)
-        
-            if response_code != 200:
-                assert req.headers.get("Authorization") == None
-            else:
-                assert req.headers.get("Authorization") == 'Bearer fakeToken'
+
+            assert req.headers.get("Authorization") == final_token

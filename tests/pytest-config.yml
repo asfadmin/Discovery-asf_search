@@ -26,7 +26,7 @@ test_types:
 
 - For running ASFSession rebuild_auth tests:
     required_in_title: rebuild_auth
-    required_keys: ['original_domain', 'response_domain', 'response_code']
+    required_keys: ['original_domain', 'response_domain', 'response_code', 'final_token']
     method: test_asf_session_rebuild_auth
 
 - For running preprocessed baseline stack params tests:
