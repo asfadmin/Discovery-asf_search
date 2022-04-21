@@ -74,6 +74,20 @@ def test_ASFSession_Cookie_Error(**args) -> None:
     with raises(ASFAuthenticationError):
         run_auth_with_cookiejar(cookies)
 
+def test_asf_session_rebuild_auth(**args) -> None:
+    """
+    Test asf_search.ASFSession.rebuild_auth
+    When redirecting from an ASF domain, only accept 
+    domains listed in ASFSession.AUTH_DOMAINS
+    """
+    test_info = args["test_info"]
+    original_domain = test_info["original_domain"]
+    response_domain = test_info["response_domain"]
+    response_code = test_info["response_code"]
+    final_token = test_info["final_token"]
+
+    run_test_asf_session_rebuild_auth(original_domain, response_domain, response_code, final_token)
+
 # asf_search.search.baseline_search Tests
 def test_get_preprocessed_stack_params(**args) -> None:
     """
@@ -212,16 +226,9 @@ def test_download_url(**args) -> None:
     if filename == "error":
         run_test_download_url_auth_error(url, path, filename)
 
-def test_asf_session_rebuild_auth(**args) -> None:
-    test_info = args["test_info"]
-    original_domain = test_info["original_domain"]
-    response_domain = test_info["response_domain"]
-    response_code = test_info["response_code"]
-    final_token = test_info["final_token"]
+# Testing resource loading utilities
 
-    run_test_asf_session_rebuild_auth(original_domain, response_domain, response_code, final_token)
-    # with patch()
-
+# Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
     
     if isinstance(yml_file, str):
