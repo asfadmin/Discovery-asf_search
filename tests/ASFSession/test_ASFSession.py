@@ -38,6 +38,7 @@ def run_test_asf_session_rebuild_auth(original_domain: str, response_domain: str
         
         req = requests.Request(original_domain)
         req.headers.update({'Authorization': 'Bearer fakeToken'})
+        # req.url = 
         response = requests.Response()
         response.status_code = response_code
         response.location = response_domain
@@ -45,8 +46,8 @@ def run_test_asf_session_rebuild_auth(original_domain: str, response_domain: str
         response.headers.update({'Location' : response_domain})
         response.headers.update({'Authorization': 'Bearer fakeToken'})
 
-        with patch('asf_search.ASFSession._get_hostname') as hostname_patch:
-            hostname_patch.side_effect = [response_domain, original_domain]
+        with patch('asf_search.ASFSession._get_domain') as hostname_patch:
+            hostname_patch.side_effect = [original_domain, response_domain]
       
             session.rebuild_auth(req, response)
         

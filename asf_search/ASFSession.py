@@ -79,12 +79,12 @@ class ASFSession(requests.Session):
         url = prepared_request.url
 
         if 'Authorization' in headers and 300 <= response.status_code <= 399:
-            original_domain = '.'.join(self._get_hostname(response.headers['location']))
-            redirect_domain = '.'.join(self._get_hostname(url))
+            original_domain = '.'.join(self._get_domain(response.headers['location']).split('.')[-2:])
+            redirect_domain = '.'.join(self._get_domain(url).split('.')[-2:])
 
             if (original_domain != redirect_domain 
                 and redirect_domain not in self.AUTH_DOMAINS):
                 del headers['Authorization']
 
-    def _get_hostname(self, url: str):
-            return requests.utils.urlparse(url).hostname.split('.')[-2:]
+    def _get_domain(url: str):
+            return requests.utils.urlparse(url).hostname
