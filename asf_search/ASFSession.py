@@ -6,7 +6,7 @@ from asf_search.exceptions import ASFAuthenticationError
 
 
 class ASFSession(requests.Session):
-    AUTH_DOMAINS = ['alaska.edu', 'nasa.gov']
+    AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov']
 
     def __init__(self):
         super().__init__()
@@ -42,9 +42,9 @@ class ASFSession(requests.Session):
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
         url = "https://cmr.earthdata.nasa.gov/search/collections"
-        status = self.get(url).status_code        
+        response = self.get(url)        
 
-        if not 200 <= status <= 299:
+        if not 200 <= response.status_code <= 299:
             raise ASFAuthenticationError("Invalid/Expired token passed")
 
         return self
@@ -78,13 +78,14 @@ class ASFSession(requests.Session):
         headers = prepared_request.headers
         url = prepared_request.url
 
-        if 'Authorization' in headers and 300 <= response.status_code <= 399:
-            original_domain = '.'.join(self._get_domain(response.headers['location']).split('.')[-2:])
-            redirect_domain = '.'.join(self._get_domain(url).split('.')[-2:])
+        if 'Authorization' in headers:
+            original_domain = '.'.join(self._get_domain(response.request.url).split('.')[-3:])
+            redirect_domain = '.'.join(self._get_domain(url).split('.')[-3:])
 
             if (original_domain != redirect_domain 
-                and redirect_domain not in self.AUTH_DOMAINS):
+                and (original_domain not in self.AUTH_DOMAINS
+                or redirect_domain not in self.AUTH_DOMAINS)):
                 del headers['Authorization']
 
-    def _get_domain(url: str):
+    def _get_domain(self, url: str):
             return requests.utils.urlparse(url).hostname

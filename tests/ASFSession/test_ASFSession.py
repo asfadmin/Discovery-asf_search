@@ -47,12 +47,12 @@ def run_test_asf_session_rebuild_auth(
         
         req = requests.Request(original_domain)
         req.headers.update({'Authorization': 'Bearer fakeToken'})
-        # req.url = 
+
         response = requests.Response()
         response.status_code = response_code
         response.location = response_domain
-        
-        response.headers.update({'Location' : response_domain})
+        response.request = requests.Request()
+        response.request.url = response_domain
         response.headers.update({'Authorization': 'Bearer fakeToken'})
 
         with patch('asf_search.ASFSession._get_domain') as hostname_patch:

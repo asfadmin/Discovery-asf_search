@@ -55,14 +55,26 @@ tests:
         }
     ]
 
-- Test ASFSession rebuild_auth non-authorized redirect-to-google domains:
-    original_domain: "alaska.edu"
+- Test ASFSession rebuild_auth non-authorized asf-redirect-to-google domains:
+    original_domain: "asf.alaska.edu"
     response_domain: "google.com"
     response_code: 302
     final_token: None
 
-- Test ASFSession rebuild_auth non-authorized alaska.edu-redirect-to-alaska.edu domains:
-    original_domain: "alaska.edu"
-    response_domain: "alaska.edu"
+- Test ASFSession rebuild_auth non-authorized asf-redirect-to-asf domains:
+    original_domain: "asf.alaska.edu"
+    response_domain: "asf.alaska.edu"
+    response_code: 302
+    final_token: 'Bearer fakeToken'
+
+- Test ASFSession rebuild_auth non-authorized asf-redirect-to-nasa domains:
+    original_domain: "asf.alaska.edu"
+    response_domain: "earthdata.nasa.gov"
+    response_code: 302
+    final_token: 'Bearer fakeToken'
+
+- Test ASFSession rebuild_auth non-authorized nasa-redirect-to-asf domains:
+    original_domain: "earthdata.nasa.gov"
+    response_domain: "asf.alaska.edu"
     response_code: 302
     final_token: 'Bearer fakeToken'
