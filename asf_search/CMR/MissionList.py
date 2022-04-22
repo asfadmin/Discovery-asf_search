@@ -5,7 +5,7 @@ from asf_search.constants.INTERNAL import CMR_HOST, CMR_COLLECTIONS
 import requests
 
 
-def get_collections(data) -> Dict:
+def get_campaigns(data) -> Dict:
     """Queries CMR Collections endpoint for 
     collections associated with the given platform
 
