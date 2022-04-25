@@ -6,6 +6,8 @@ from asf_search.exceptions import ASFAuthenticationError
 
 
 class ASFSession(requests.Session):
+    AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov']
+
     def __init__(self):
         super().__init__()
         self.headers.update({'User-Agent': f'{__name__}.{__version__}'})
@@ -39,6 +41,12 @@ class ASFSession(requests.Session):
         """
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
+        url = "https://cmr.earthdata.nasa.gov/search/collections"
+        response = self.get(url)        
+
+        if not 200 <= response.status_code <= 299:
+            raise ASFAuthenticationError("Invalid/Expired token passed")
+
         return self
 
     def auth_with_cookiejar(self, cookies: http.cookiejar):
@@ -49,6 +57,35 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
+        
+        if "urs_user_already_logged" not in cookies:
+            raise ASFAuthenticationError("Cookiejar does not contain login cookies")
+
+        for cookie in cookies:
+            if cookie.is_expired():
+                raise ASFAuthenticationError("Cookiejar contains expired cookies")
+
         self.cookies = cookies
 
         return self
+
+    def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):
+        """
+        Overrides requests.Session.rebuild_auth() default behavior of stripping the Authorization header
+        upon redirect. This allows token authentication to work with redirects to trusted domains
+        """
+
+        headers = prepared_request.headers
+        url = prepared_request.url
+
+        if 'Authorization' in headers:
+            original_domain = '.'.join(self._get_domain(response.request.url).split('.')[-3:])
+            redirect_domain = '.'.join(self._get_domain(url).split('.')[-3:])
+
+            if (original_domain != redirect_domain 
+                and (original_domain not in self.AUTH_DOMAINS
+                or redirect_domain not in self.AUTH_DOMAINS)):
+                del headers['Authorization']
+
+    def _get_domain(self, url: str):
+            return requests.utils.urlparse(url).hostname

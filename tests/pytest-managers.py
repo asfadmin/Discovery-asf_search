@@ -1,8 +1,10 @@
 from typing import List
+from asf_search.ASFSession import ASFSession
+from asf_search.download.download import download_url
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
-from ASFSession.test_ASFSession import run_auth_with_creds
+from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
 from CMR.test_MissionList import run_test_get_project_names
@@ -15,6 +17,9 @@ import pathlib
 import yaml
 
 from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_valdiate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry
+import requests
+
+from tests.download.test_download import run_test_download_url_auth_error
 
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
@@ -49,6 +54,40 @@ def test_ASFSession_Error(**args) -> None:
 
         with raises(ASFAuthenticationError):
             run_auth_with_creds(username, password)
+
+def test_ASFSession_Token_Error(**args) -> None:
+    """
+    Test ASFSession.auth_with_token for sign in errors
+    """
+    test_info = args["test_info"]
+    token = test_info["token"]
+
+    with raises(ASFAuthenticationError):
+        run_auth_with_token(token)
+
+def test_ASFSession_Cookie_Error(**args) -> None:
+    """
+    Test ASFSession.auth_with_cookie for sign in errors
+    """
+    test_info = args["test_info"]
+    cookies = test_info["cookies"]
+
+    with raises(ASFAuthenticationError):
+        run_auth_with_cookiejar(cookies)
+
+def test_asf_session_rebuild_auth(**args) -> None:
+    """
+    Test asf_search.ASFSession.rebuild_auth
+    When redirecting from an ASF domain, only accept 
+    domains listed in ASFSession.AUTH_DOMAINS
+    """
+    test_info = args["test_info"]
+    original_domain = test_info["original_domain"]
+    response_domain = test_info["response_domain"]
+    response_code = test_info["response_code"]
+    final_token = test_info["final_token"]
+
+    run_test_asf_session_rebuild_auth(original_domain, response_domain, response_code, final_token)
 
 # asf_search.search.baseline_search Tests
 def test_get_preprocessed_stack_params(**args) -> None:
@@ -251,6 +290,21 @@ def test_get_platform_campaign_names(**args) -> None:
     
     run_test_get_project_names(cmr_ummjson, campaigns)
 
+def test_download_url(**args) -> None:
+    """
+    Test asf_search.download.download_url
+    """
+    test_info = args["test_info"]
+    url = test_info["url"]
+    path = test_info["path"]
+    filename = test_info["filename"]
+        
+    if filename == "error":
+        run_test_download_url_auth_error(url, path, filename)
+
+# Testing resource loading utilities
+
+# Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
     
     if isinstance(yml_file, str):

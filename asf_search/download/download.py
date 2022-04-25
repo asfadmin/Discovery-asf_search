@@ -2,9 +2,10 @@ from typing import Iterable
 from multiprocessing import Pool
 import os.path
 import urllib.parse
+from requests.exceptions import HTTPError
 import warnings
 
-from asf_search.exceptions import ASFDownloadError
+from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError, ASFSearch4xxError
 from asf_search import ASFSession
 
 
@@ -73,7 +74,14 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
 
     response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
 
-    response.raise_for_status()
+    try:
+        response.raise_for_status()
+    except HTTPError as e:
+        if 400 <= response.status_code <= 499:
+            raise ASFAuthenticationError(f'HTTP {e.response.status_code}: {e.response.text}')
+        
+        raise e   
+
     with open(os.path.join(path, filename), 'wb') as f:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
