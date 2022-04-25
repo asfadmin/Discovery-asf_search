@@ -25,6 +25,14 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [3.1.2](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.1...v3.1.2)
+### Changed
+- `ASFSession` methods `auth_with_cookiejar()` and `auth_with_token()` now raise an error if the passed cookiejar/token is invalid or expired
+- `ASFAuthenticationError` raised when encountering a 400 level error while downloading files
+### Fixed
+- Downloading files with sessions authenticated by `auth_with_token()` method works again
+
+------
 ## [3.1.1](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.0...v3.1.1)
 ### Fixed:
 - Fixes missing CMR module import
