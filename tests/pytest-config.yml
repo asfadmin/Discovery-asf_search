@@ -10,8 +10,24 @@ test_types:
     method: test_ASFProduct_Stack
 
 - For running ASFSession tests:
+    required_in_title: password-login
     required_keys: ['username', 'password']
     method: test_ASFSession_Error
+
+- For running ASFSession token_auth tests:
+    required_in_title: token-auth
+    required_keys: token
+    method: test_ASFSession_Token_Error
+
+- For running ASFSession cookiejar_auth tests:
+    required_in_title: cookiejar-auth
+    required_keys: cookies
+    method: test_ASFSession_Cookie_Error
+
+- For running ASFSession rebuild_auth tests:
+    required_in_title: rebuild_auth
+    required_keys: ['original_domain', 'response_domain', 'response_code', 'final_token']
+    method: test_asf_session_rebuild_auth
 
 - For running preprocessed baseline stack params tests:
     required_keys: product
@@ -68,3 +84,8 @@ test_types:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names
     method: test_get_platform_campaign_names
+
+- For running download_url tests:
+    required_keys: ["url", "path", "filename"]
+    required_in_title: test-download-url
+    method: test_download_url
