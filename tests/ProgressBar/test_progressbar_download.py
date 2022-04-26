@@ -1,6 +1,3 @@
-### guide
-### https://www.linkedin.com/pulse/bulk-download-sentinel-1-data-aditya-sharma/?trk=public_profile_article_view
-
 import asf_search as asf
 from datetime import date
 import os
@@ -8,6 +5,9 @@ from pathlib import Path
 
 download_files = True
 path = os.getcwd()
+
+USERNAME = ''
+PASSWORD = ''
 
 aoi = 'POLYGON((10.2134 43.957,10.2369 43.957,10.2369 43.9674,10.2134 43.9674,10.2134 43.957))'
 
@@ -26,6 +26,6 @@ print(results)
 
 ##### download bar works only if processes = 1:
 if download_files == True:
-    session = asf.ASFSession().auth_with_creds('carminetranfa', 'Punto.02')
+    session = asf.ASFSession().auth_with_creds(USERNAME, PASSWORD)
     print("download in :",path)
     results.download(path = path, session = session, processes = 1 )
