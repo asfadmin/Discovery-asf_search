@@ -49,7 +49,7 @@ def check_reference(reference: str, stack: List[ASFProduct]):
             reference_product = product
 
     if get_platform(reference) in precalc_datasets:
-            if 'insarBaseline' not in reference_product:
+            if 'insarBaseline' not in reference_product.properties['baseline']:
                 raise ValueError('No baseline values available for precalculated dataset')
     else:
         if not valid_state_vectors(reference_product): # the reference might be missing state vectors, pick a valid reference, replace above warning if it also happened
@@ -88,11 +88,11 @@ def calculate_temporal_baselines(reference: str, stack: List[ASFProduct]):
 def offset_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
     for product in stack:
         if product.properties['sceneName'] == reference:
-            reference_offset = float(product.properties['insarBaseline'])
+            reference_offset = float(product.properties['baseline']['insarBaseline'])
             break
     for product in stack:
         if product.properties['sceneName'] == reference:
             product.properties['perpendicularBaseline'] = 0
         else:
-            product.properties['perpendicularBaseline'] = round(float(product.properties['insarBaseline']) - reference_offset)
+            product.properties['perpendicularBaseline'] = round(float(product.properties['baseline']['insarBaseline']) - reference_offset)
     return stack
