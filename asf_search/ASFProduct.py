@@ -1,4 +1,4 @@
-from shapely.geometry import shape, Point
+from shapely.geometry import shape, Point, Polygon, mapping
 import json
 from collections import UserList
 import requests
@@ -51,4 +51,11 @@ class ASFProduct:
         """
         Finds the centroid of a product
         """
-        return shape(self.geometry).centroid
+        coords = mapping(shape(self.geometry))['coordinates'][0]
+        lons = [p[0] for p in coords]
+        if max(lons) - min(lons) > 180:
+            unwrapped_coords = [a if a[0] > 0 else [a[0] + 360, a[1]] for a in coords]
+        else:
+            unwrapped_coords = [a for a in coords]
+
+        return Polygon(unwrapped_coords).centroid
