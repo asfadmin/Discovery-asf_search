@@ -11,6 +11,7 @@ class ASFProduct:
     def __init__(self, args: dict):
         self.properties = args['properties']
         self.geometry = args['geometry']
+        self.baseline = self.properties.pop('baseline')
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)

@@ -14,7 +14,7 @@ f = pow((1.0 - 1 / 298.257224), 2)
 
 def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
     for product in stack:
-        baselineProperties = product.properties['baseline']
+        baselineProperties = product.baseline
         positionProperties = baselineProperties['stateVectors']['positions']
 
         if None in [positionProperties['prePositionTime'], positionProperties['postPositionTime'], positionProperties['prePosition'], positionProperties['postPosition']]:
@@ -32,8 +32,8 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
 
         t_pre = dateparser.parse(positionProperties['prePositionTime']).timestamp()
         t_post = dateparser.parse(positionProperties['postPositionTime']).timestamp()
-        product.properties['relative_sv_pre_time'] = t_pre - asc_node_time
-        product.properties['relative_sv_post_time'] = t_post - asc_node_time
+        product.baseline['relative_sv_pre_time'] = t_pre - asc_node_time
+        product.baseline['relative_sv_post_time'] = t_post - asc_node_time
 
     for product in stack:
         # product.properties['granulePosition'] = get_granule_position(reference.properties['centerLat'], reference.properties['centerLon'])
@@ -42,11 +42,11 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
             reference = product
             reference.properties['perpendicularBaseline'] = 0
             # Cache these values
-            reference.properties['granulePosition'] = get_granule_position(reference.properties['centerLat'], reference.properties['centerLon'])
+            reference.baseline['granulePosition'] = get_granule_position(reference.properties['centerLat'], reference.properties['centerLon'])
             break
 
     for secondary in stack:
-        if secondary.properties['baseline'].get('noStateVectors'):
+        if secondary.baseline.get('noStateVectors'):
             secondary.properties['perpendicularBaseline'] = None
             continue
 
@@ -58,12 +58,12 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
         #secondary_shared_vel = get_vel_at_rel_time(secondary, shared_rel_time) # unused
 
         # need to get sat pos and sat vel at center time
-        reference.properties['alongBeamVector'] = get_along_beam_vector(reference_shared_pos, reference.properties['granulePosition'])
-        reference.properties['upBeamVector'] = get_up_beam_vector(reference_shared_vel, reference.properties['alongBeamVector'])
+        reference.baseline['alongBeamVector'] = get_along_beam_vector(reference_shared_pos, reference.baseline['granulePosition'])
+        reference.baseline['upBeamVector'] = get_up_beam_vector(reference_shared_vel, reference.baseline['alongBeamVector'])
 
         perpendicular_baseline = get_paired_granule_baseline(
-            reference.properties['granulePosition'],
-            reference.properties['upBeamVector'],
+            reference.baseline['granulePosition'],
+            reference.baseline['upBeamVector'],
             secondary_shared_pos)
         if abs(perpendicular_baseline) > 100000:
             perpendicular_baseline = None
@@ -103,29 +103,29 @@ def get_paired_granule_baseline(reference_granule_position, reference_up_beam_ve
 
 # Find a relative orbit time covered by both granules' SVs
 def get_shared_sv_time(reference, secondary):
-    start = max(reference.properties['relative_sv_pre_time'], secondary.properties['relative_sv_pre_time'])
-    end = max(reference.properties['relative_sv_post_time'], secondary.properties['relative_sv_post_time'])
+    start = max(reference.baseline['relative_sv_pre_time'], secondary.baseline['relative_sv_pre_time'])
+    end = max(reference.baseline['relative_sv_post_time'], secondary.baseline['relative_sv_post_time'])
 
     # Favor the start/end SV time of the reference so we can use that SV directly without interpolation
-    if start == reference.properties['relative_sv_pre_time']:
+    if start == reference.baseline['relative_sv_pre_time']:
         return start
-    if end == reference.properties['relative_sv_post_time']:
+    if end == reference.baseline['relative_sv_post_time']:
         return end
 
     return start
 
 # Interpolate a position SV based on relative time
 def get_pos_at_rel_time(granule: ASFProduct, relative_time):
-    if relative_time == granule.properties['relative_sv_pre_time']:
-        return granule.properties['baseline']['stateVectors']['positions']['prePosition']
-    if relative_time == granule.properties['relative_sv_post_time']:
-        return granule.properties['baseline']['stateVectors']['positions']['postPosition']
+    if relative_time == granule.baseline['relative_sv_pre_time']:
+        return granule.baseline['stateVectors']['positions']['prePosition']
+    if relative_time == granule.baseline['relative_sv_post_time']:
+        return granule.baseline['stateVectors']['positions']['postPosition']
 
-    duration = granule.properties['relative_sv_post_time'] - granule.properties['relative_sv_pre_time']
-    factor = (relative_time - granule.properties['relative_sv_pre_time']) / duration
+    duration = granule.baseline['relative_sv_post_time'] - granule.baseline['relative_sv_pre_time']
+    factor = (relative_time - granule.baseline['relative_sv_pre_time']) / duration
 
-    vec_a = granule.properties['baseline']['stateVectors']['positions']['prePosition']
-    vec_b = granule.properties['baseline']['stateVectors']['positions']['postPosition']
+    vec_a = granule.baseline['stateVectors']['positions']['prePosition']
+    vec_b = granule.baseline['stateVectors']['positions']['postPosition']
 
     v = [
         interpolate(vec_a[0], vec_b[0], factor),
@@ -136,14 +136,14 @@ def get_pos_at_rel_time(granule: ASFProduct, relative_time):
 
 # Interpolate a velocity SV based on relative time
 def get_vel_at_rel_time(granule: ASFProduct, relative_time):
-    velocityProperties = granule.properties['baseline']['stateVectors']['velocities']
-    if relative_time == granule.properties['relative_sv_pre_time']:
+    velocityProperties = granule.baseline['stateVectors']['velocities']
+    if relative_time == granule.baseline['relative_sv_pre_time']:
         return velocityProperties['preVelocity']
-    if relative_time == granule.properties['relative_sv_post_time']:
+    if relative_time == granule.baseline['relative_sv_post_time']:
         return velocityProperties['postVelocity']
 
-    duration = granule.properties['relative_sv_post_time'] - granule.properties['relative_sv_pre_time']
-    factor = (relative_time - granule.properties['relative_sv_pre_time']) / duration
+    duration = granule.baseline['relative_sv_post_time'] - granule.baseline['relative_sv_pre_time']
+    factor = (relative_time - granule.baseline['relative_sv_pre_time']) / duration
 
     vec_a = velocityProperties['preVelocity']
     vec_b = velocityProperties['postVelocity']
@@ -161,12 +161,12 @@ def interpolate(p0, p1, x):
 
 # Bump the provided sat pos out to a radius interpolated between the start and end sat pos vectors
 def radius_fix(granule: ASFProduct, sat_pos, relative_time):
-    positionProperties = granule.properties['baseline']['stateVectors']['positions']
+    positionProperties = granule.baseline['stateVectors']['positions']
     pre_l = np.linalg.norm(positionProperties['prePosition'])
     post_l = np.linalg.norm(positionProperties['postPosition'])
     sat_pos_l = np.linalg.norm(sat_pos)
-    dt = relative_time - granule.properties['relative_sv_pre_time']
-    new_l = pre_l + (post_l - pre_l) * dt / (granule.properties['relative_sv_post_time'] - granule.properties['relative_sv_pre_time'])
+    dt = relative_time - granule.baseline['relative_sv_pre_time']
+    new_l = pre_l + (post_l - pre_l) * dt / (granule.baseline['relative_sv_post_time'] - granule.baseline['relative_sv_pre_time'])
     sat_pos[0] = sat_pos[0] * new_l / sat_pos_l
     sat_pos[1] = sat_pos[1] * new_l / sat_pos_l
     sat_pos[2] = sat_pos[2] * new_l / sat_pos_l

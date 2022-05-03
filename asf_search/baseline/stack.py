@@ -3,7 +3,7 @@ import dateparser
 # from SearchAPI.CMR.Translate import translate_params, input_fixer
 # from SearchAPI.CMR.Query import CMRQuery
 from .calc import calculate_perpendicular_baselines
-from asf_search import ASFProduct, granule_search
+from asf_search import ASFProduct
 
 precalc_datasets = ['AL', 'R1', 'E1', 'E2', 'J1']
 
@@ -28,7 +28,7 @@ def valid_state_vectors(product: ASFProduct):
     if product is None:
         raise ValueError('Attempting to check state vectors on None, this is fatal')
     for key in ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']:
-        if key not in product.properties['baseline']['stateVectors']['positions'] or product.properties['baseline']['stateVectors']['positions'][key] == None:
+        if key not in product.baseline['stateVectors']['positions'] or product.baseline['stateVectors']['positions'][key] == None:
             return False
     return True
 
@@ -49,7 +49,7 @@ def check_reference(reference: str, stack: List[ASFProduct]):
             reference_product = product
 
     if get_platform(reference) in precalc_datasets:
-            if 'insarBaseline' not in reference_product.properties['baseline']:
+            if 'insarBaseline' not in reference_product.baseline:
                 raise ValueError('No baseline values available for precalculated dataset')
     else:
         if not valid_state_vectors(reference_product): # the reference might be missing state vectors, pick a valid reference, replace above warning if it also happened
@@ -88,11 +88,11 @@ def calculate_temporal_baselines(reference: str, stack: List[ASFProduct]):
 def offset_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
     for product in stack:
         if product.properties['sceneName'] == reference:
-            reference_offset = float(product.properties['baseline']['insarBaseline'])
+            reference_offset = float(product.baseline['insarBaseline'])
             break
     for product in stack:
         if product.properties['sceneName'] == reference:
             product.properties['perpendicularBaseline'] = 0
         else:
-            product.properties['perpendicularBaseline'] = round(float(product.properties['baseline']['insarBaseline']) - reference_offset)
+            product.properties['perpendicularBaseline'] = round(float(product.baseline['insarBaseline']) - reference_offset)
     return stack

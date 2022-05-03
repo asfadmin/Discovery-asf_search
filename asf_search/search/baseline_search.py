@@ -1,5 +1,6 @@
 from dateutil.parser import parse
 import pytz
+from asf_search.baseline.stack import get_baseline_from_stack
 
 from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
@@ -37,7 +38,8 @@ def stack_from_product(
 
     stack_params = get_stack_params(reference)
     stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
-    calc_temporal_baselines(reference, stack)
+    stack, warnings = get_baseline_from_stack(reference=reference.properties['sceneName'], stack=stack)
+    # calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     return stack
