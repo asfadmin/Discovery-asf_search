@@ -25,6 +25,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [3.1.3](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.2...v3.1.3)
+### Fixed
+- Centroid calculation fixed for scenes spanning the antimeridian
+
+------
 ## [3.1.2](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.1...v3.1.2)
 ### Changed
 - `ASFSession` methods `auth_with_cookiejar()` and `auth_with_token()` now raise an error if the passed cookiejar/token is invalid or expired
