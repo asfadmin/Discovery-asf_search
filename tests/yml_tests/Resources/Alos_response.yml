@@ -54,7 +54,8 @@
       "sensor": "PALSAR",
       "startTime": "2008-02-24T07:13:21Z",
       "stopTime": "2008-02-24T07:13:29Z",
-      "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRP111041130-L1.0.zip"
+      "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRP111041130-L1.0.zip",
+      "baseline": null
     },
     "type": "Feature"
   }

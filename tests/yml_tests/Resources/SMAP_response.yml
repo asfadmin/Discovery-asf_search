@@ -115,6 +115,7 @@
         "sensor": "SAR",
         "startTime": "2022-01-24T01:52:57Z",
         "stopTime": "2022-01-24T02:42:10Z",
-        "url": "https://datapool.asf.alaska.edu/L1A_Radar_RO_HDF5/SP/SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5"
+        "url": "https://datapool.asf.alaska.edu/L1A_Radar_RO_HDF5/SP/SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5",
+        "baseline": null
     }
 }

@@ -1,13 +1,13 @@
 from typing import List
 import dateparser
-# from SearchAPI.CMR.Translate import translate_params, input_fixer
-# from SearchAPI.CMR.Query import CMRQuery
+from dateutil.parser import parse
+import pytz
 from .calc import calculate_perpendicular_baselines
-from asf_search import ASFProduct
+from asf_search import ASFProduct, ASFSearchResults
 
 precalc_datasets = ['AL', 'R1', 'E1', 'E2', 'J1']
 
-def get_baseline_from_stack(reference: str, stack: List[ASFProduct]):
+def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None
 
     if len(stack) == 0:
@@ -17,10 +17,10 @@ def get_baseline_from_stack(reference: str, stack: List[ASFProduct]):
     stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata')]
     stack = calculate_temporal_baselines(reference, stack)
 
-    if get_platform(reference) in precalc_datasets:
+    if get_platform(reference.properties['sceneName']) in precalc_datasets:
         stack = offset_perpendicular_baselines(reference, stack)
     else:
-        stack = calculate_perpendicular_baselines(reference, stack)
+        stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
 
     return stack, warnings
 
@@ -32,29 +32,25 @@ def valid_state_vectors(product: ASFProduct):
             return False
     return True
 
-def find_new_reference(stack: List[ASFProduct]):
+def find_new_reference(stack: ASFSearchResults):
     for product in stack:
         if valid_state_vectors(product):
-            return product.properties['sceneName']
+            return product
     return None
 
-def check_reference(reference: str, stack: List[ASFProduct]):
+def check_reference(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None
-    if reference not in [product.properties['sceneName'] for product in stack]: # Somehow the reference we built the stack from is missing?! Just pick one
-        reference = stack[0].properties['sceneName']
+    if reference.properties['sceneName'] not in [product.properties['sceneName'] for product in stack]: # Somehow the reference we built the stack from is missing?! Just pick one
+        reference = stack[0]
         warnings = [{'NEW_REFERENCE': 'A new reference scene had to be selected in order to calculate baseline values.'}]
 
-    for product in stack:
-        if product.properties['sceneName'] == reference:
-            reference_product = product
-
-    if get_platform(reference) in precalc_datasets:
-            if 'insarBaseline' not in reference_product.baseline:
+    if get_platform(reference.properties['sceneName']) in precalc_datasets:
+            if 'insarBaseline' not in reference.baseline:
                 raise ValueError('No baseline values available for precalculated dataset')
     else:
-        if not valid_state_vectors(reference_product): # the reference might be missing state vectors, pick a valid reference, replace above warning if it also happened
+        if not valid_state_vectors(reference): # the reference might be missing state vectors, pick a valid reference, replace above warning if it also happened
             reference = find_new_reference(stack)
-            if reference is None:
+            if reference == None:
                 raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
             warnings = [{'NEW_REFERENCE': 'A new reference had to be selected in order to calculate baseline values.'}]
 
@@ -72,27 +68,31 @@ def get_default_product_type(reference: str):
         return 'SLC'
     return None
 
-def calculate_temporal_baselines(reference: str, stack: List[ASFProduct]):
-    for product in stack:
-        if product.properties['sceneName'] == reference:
-            reference_start = dateparser.parse(product.properties['startTime'])
-            break
-    for product in stack:
-        if product.properties['sceneName'] == reference:
-            product.properties['temporalBaseline'] = 0
-        else:
-            start = dateparser.parse(product.properties['startTime'])
-            product.properties['temporalBaseline'] = (start - reference_start).days
+def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults):
+    """
+    Calculates temporal baselines for a stack of products based on a reference scene and injects those values into the stack.
+
+    :param reference: The reference product from which to calculate temporal baselines.
+    :param stack: The stack to operate on.
+    :return: None, as the operation occurs in-place on the stack provided.
+    """
+    reference_time = parse(reference.properties['startTime'])
+    if reference_time.tzinfo is None:
+        reference_time = pytz.utc.localize(reference_time)
+
+    for secondary in stack:
+        secondary_time = parse(secondary.properties['startTime'])
+        if secondary_time.tzinfo is None:
+            secondary_time = pytz.utc.localize(secondary_time)
+        secondary.properties['temporalBaseline'] = (secondary_time - reference_time).days
+    
     return stack
 
-def offset_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
+def offset_perpendicular_baselines(reference: ASFProduct, stack: ASFSearchResults):
+    # for product in stack:
+        # if product.properties['sceneName'] == reference.properties['sceneName']:
+    reference_offset = float(reference.baseline['insarBaseline'])
+            # break
     for product in stack:
-        if product.properties['sceneName'] == reference:
-            reference_offset = float(product.baseline['insarBaseline'])
-            break
-    for product in stack:
-        if product.properties['sceneName'] == reference:
-            product.properties['perpendicularBaseline'] = 0
-        else:
             product.properties['perpendicularBaseline'] = round(float(product.baseline['insarBaseline']) - reference_offset)
     return stack

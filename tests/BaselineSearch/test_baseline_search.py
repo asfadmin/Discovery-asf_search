@@ -2,7 +2,8 @@ from unittest.mock import patch
 from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.search.search import ASFProduct
-from asf_search.search.baseline_search import calc_temporal_baselines, get_stack_params, stack_from_id, stack_from_product
+from asf_search.search.baseline_search import get_stack_params, stack_from_id, stack_from_product
+from asf_search.baseline.stack import calculate_temporal_baselines
 import pytest
 
 def run_test_get_preprocessed_stack_params(product):
@@ -44,7 +45,7 @@ def run_test_calc_temporal_baselines(reference, stack):
     stack = ASFSearchResults(map(ASFProduct, stack))
     stackLength = len(stack)
 
-    calc_temporal_baselines(reference, stack)
+    calculate_temporal_baselines(reference, stack)
 
     assert(len(stack) == stackLength)
     for secondary in stack:
