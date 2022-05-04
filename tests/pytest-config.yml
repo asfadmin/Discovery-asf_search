@@ -6,7 +6,8 @@ test_types:
     method: test_ASFProduct
 
 - For running ASFProduct_Stack tests:
-    required_keys: ["product", "baseline_stack"]
+    required_keys: ["product", "preprocessed_stack", "processed_stack"]
+    required_in_title: ASFProduct_Stack
     method: test_ASFProduct_Stack
 
 - For running ASFSession tests:

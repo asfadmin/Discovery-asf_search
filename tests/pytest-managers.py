@@ -37,8 +37,9 @@ def test_ASFProduct_Stack(**args) -> None:
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
-    stack = get_resource(test_info["baseline_stack"])
-    run_test_stack(reference, stack)
+    preprocessed_stack = get_resource(test_info["preprocessed_stack"])
+    processed_stack = get_resource(test_info["processed_stack"])
+    run_test_stack(reference, preprocessed_stack, processed_stack)
     
 # asf_search.ASFSession Tests
 def test_ASFSession_Error(**args) -> None:
