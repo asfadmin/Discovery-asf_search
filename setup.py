@@ -7,6 +7,7 @@ requirements = [
     "python-dateutil",
     "pytz",
     "importlib_metadata",
+    "numpy"
 ]
 
 test_requirements = [
