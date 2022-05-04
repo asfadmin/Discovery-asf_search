@@ -10,3 +10,19 @@ tests:
 - test-find-new-reference s1 stack 1st no positions:
     stack: Fairbanks_S1_stack_preprocessed_incomplete.yml
     output_index: 1
+
+- test-get_default_product_type empty:
+    scene_name: " "
+    product_type: null
+
+- test-get_default_product_type S1:
+    scene_name: S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081
+    product_type: SLC
+
+- test-get_default_product_type ALOS:
+    scene_name: ALPSRP111041130
+    product_type: L1.1
+
+- test-get_default_product_type ERS:
+    scene_name: E1_19942_STD_F287
+    product_type: L0

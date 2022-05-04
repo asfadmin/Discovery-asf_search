@@ -95,3 +95,8 @@ test_types:
     required_keys: ["stack", "output_index"]
     required_in_title: test-find-new-reference
     method: test_find_new_reference
+
+- For running test_get_default_product_type tests:
+    required_keys: ["scene_name", "product_type"]
+    required_in_title: test-get_default_product_type
+    method: test_get_default_product_type

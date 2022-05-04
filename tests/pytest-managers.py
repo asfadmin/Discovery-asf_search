@@ -16,7 +16,7 @@ import pathlib
 import yaml
 
 import requests
-from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference
+from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_default_product_type
 
 from tests.download.test_download import run_test_download_url_auth_error
 
@@ -236,6 +236,13 @@ def test_find_new_reference(**args) -> None:
     output_index = get_resource(test_info["output_index"])
     
     run_test_find_new_reference(stack, output_index)
+
+def test_get_default_product_type(**args) -> None:
+    test_info = args["test_info"]
+    scene_name = get_resource(test_info["scene_name"])
+    product_type = get_resource(test_info["product_type"])
+    
+    run_test_get_default_product_type(scene_name, product_type)
 
 # Testing resource loading utilities
 
