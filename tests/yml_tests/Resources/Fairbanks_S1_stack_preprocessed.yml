@@ -34,7 +34,7 @@
         "offNadirAngle": null,
         "orbit": "24970",
         "pathNumber": "94",
-        "perpendicularBaseline": 0,
+        "perpendicularBaseline": None,
         "platform": "Sentinel-1B",
         "pointingAngle": null,
         "polarization": "VV+VH",
@@ -44,7 +44,7 @@
         "sensor": "C-SAR",
         "startTime": "2021-01-02T03:20:31.000000",
         "stopTime": "2021-01-02T03:20:58.000000",
-        "temporalBaseline": 0,
+        "temporalBaseline": None,
         "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
         "baseline":
           {
@@ -106,7 +106,7 @@
         "offNadirAngle": null,
         "orbit": "25145",
         "pathNumber": "94",
-        "perpendicularBaseline": 37,
+        "perpendicularBaseline": None,
         "platform": "Sentinel-1B",
         "pointingAngle": null,
         "polarization": "VV+VH",
@@ -116,7 +116,7 @@
         "sensor": "C-SAR",
         "startTime": "2021-01-14T03:20:30.000000",
         "stopTime": "2021-01-14T03:20:57.000000",
-        "temporalBaseline": 11,
+        "temporalBaseline": None,
         "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
         "baseline":
           {
