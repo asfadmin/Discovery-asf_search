@@ -1,0 +1,12 @@
+tests:
+- test-find-new-reference empty stack:
+    stack: []
+    output_index: None
+
+- test-find-new-reference s1 stack:
+    stack: Fairbanks_S1_stack_preprocessed.yml
+    output_index: 0
+
+- test-find-new-reference s1 stack 1st no positions:
+    stack: Fairbanks_S1_stack_preprocessed_incomplete.yml
+    output_index: 1

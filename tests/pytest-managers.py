@@ -1,6 +1,4 @@
 from typing import List
-from asf_search.ASFSession import ASFSession
-from asf_search.download.download import download_url
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
@@ -8,6 +6,7 @@ from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_cr
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
 from CMR.test_MissionList import run_test_get_project_names
+
 
 from pytest import raises
 from unittest.mock import patch
@@ -17,6 +16,7 @@ import pathlib
 import yaml
 
 import requests
+from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference
 
 from tests.download.test_download import run_test_download_url_auth_error
 
@@ -226,6 +226,16 @@ def test_download_url(**args) -> None:
         
     if filename == "error":
         run_test_download_url_auth_error(url, path, filename)
+
+def test_find_new_reference(**args) -> None:
+    """
+    Test asf_search.baseline.calc.find_new_reference
+    """
+    test_info = args["test_info"]
+    stack = get_resource(test_info["stack"])
+    output_index = get_resource(test_info["output_index"])
+    
+    run_test_find_new_reference(stack, output_index)
 
 # Testing resource loading utilities
 

@@ -90,3 +90,8 @@ test_types:
     required_keys: ["url", "path", "filename"]
     required_in_title: test-download-url
     method: test_download_url
+
+- For running find_new_reference tests:
+    required_keys: ["stack", "output_index"]
+    required_in_title: test-find-new-reference
+    method: test_find_new_reference
