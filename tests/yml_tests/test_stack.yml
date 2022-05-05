@@ -28,21 +28,21 @@ tests:
     product_type: L0
 
 - test-get-baseline-from-stack error:
-    reference: Fairbanks_SLC.yml 
+    reference: Fairbanks_SLC.yml
     stack: []
-    output_stack: []  
+    output_stack: []
     error: TypeError
 
 - test-get-baseline-from-stack L1 missing Baseline:
-    reference: Alos_response_missing_baseline.yml 
+    reference: Alos_response_missing_baseline.yml
     stack: ['Alos_response_missing_baseline.yml', 'Alos_response_missing_baseline.yml']
-    output_stack: [] 
+    output_stack: []
     error: TypeError
 
 - test-get-baseline-from-stack L1 missing Baseline:
-    reference: Alos_response_missing_baseline.yml 
+    reference: Alos_response_missing_baseline.yml
     stack: ['Fairbanks_SLC_no_stateVectors.yml', 'Fairbanks_SLC_no_stateVectors.yml']
-    output_stack: [] 
+    output_stack: []
     error: TypeError
 
 - test-get-baseline-from-stack fairbanks SLC stack:
