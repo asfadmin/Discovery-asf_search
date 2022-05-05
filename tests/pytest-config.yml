@@ -100,3 +100,13 @@ test_types:
     required_keys: ["scene_name", "product_type"]
     required_in_title: test-get_default_product_type
     method: test_get_default_product_type
+
+- For running test_get_baseline_from_stack tests:
+    required_keys: ['reference', 'stack', 'output_stack', 'error']
+    required_in_title: test-get-baseline-from-stack
+    method: test_get_baseline_from_stack
+
+- For running test_get_default_product_type tests:
+    required_keys: ["reference", "output"]
+    required_in_title: test-valid-state-vectors
+    method: test_valid_state_vectors

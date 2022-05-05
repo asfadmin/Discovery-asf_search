@@ -26,3 +26,46 @@ tests:
 - test-get_default_product_type ERS:
     scene_name: E1_19942_STD_F287
     product_type: L0
+
+- test-get-baseline-from-stack error:
+    reference: Fairbanks_SLC.yml 
+    stack: []
+    output_stack: []  
+    error: TypeError
+
+- test-get-baseline-from-stack L1 missing Baseline:
+    reference: Alos_response_missing_baseline.yml 
+    stack: ['Alos_response_missing_baseline.yml', 'Alos_response_missing_baseline.yml']
+    output_stack: [] 
+    error: TypeError
+
+- test-get-baseline-from-stack L1 missing Baseline:
+    reference: Alos_response_missing_baseline.yml 
+    stack: ['Fairbanks_SLC_no_stateVectors.yml', 'Fairbanks_SLC_no_stateVectors.yml']
+    output_stack: [] 
+    error: TypeError
+
+- test-get-baseline-from-stack fairbanks SLC stack:
+    reference: Fairbanks_SLC.yml
+    stack: Fairbanks_S1_stack_preprocessed.yml
+    output_stack: Fairbanks_S1_stack.yml
+    error: null
+
+- test-get-baseline-from-stack fairbanks L1 stack:
+    reference: Fairbanks_L1.yml
+    stack: Fairbanks_ers_stack preprocessed.yml
+    output_stack: Fairbanks_ers_stack.yml
+    error: null
+
+- test-valid-state-vectors error:
+    reference: null
+    output: null
+
+- test-valid-state-vectors fairbanks slc:
+    reference: Fairbanks_SLC.yml
+    output: True
+
+- test-valid-state-vectors fairbanks slc:
+    reference: Fairbanks_SLC_no_stateVectors.yml
+    output: False
+

@@ -16,7 +16,7 @@ import pathlib
 import yaml
 
 import requests
-from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_default_product_type
+from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 
 from tests.download.test_download import run_test_download_url_auth_error
 
@@ -244,6 +244,20 @@ def test_get_default_product_type(**args) -> None:
     
     run_test_get_default_product_type(scene_name, product_type)
 
+def test_get_baseline_from_stack(**args) -> None:
+    test_info = args["test_info"]
+    reference = get_resource(test_info['reference'])
+    stack = get_resource(test_info['stack'])
+    output_stack = get_resource(test_info['output_stack'])
+    error = get_resource(test_info['error'])
+    run_test_get_baseline_from_stack(reference, stack, output_stack, error)
+
+def test_valid_state_vectors(**args) -> None:
+    test_info = args["test_info"]
+    reference = get_resource(test_info['reference'])
+    output = get_resource(test_info['output'])
+    
+    run_test_valid_state_vectors(reference, output)
 # Testing resource loading utilities
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
@@ -257,5 +271,10 @@ def get_resource(yml_file):
                     return yaml.safe_load(f)
                 except yaml.YAMLError as exc:
                     print(exc)
-    
+    elif isinstance(yml_file, List): #check if it's a list of yml files
+        if len(yml_file) > 0:
+            if isinstance(yml_file[0], str):
+                if yml_file[0].endswith((".yml", ".yaml")):
+                    return [get_resource(file) for file in yml_file]
+
     return yml_file
