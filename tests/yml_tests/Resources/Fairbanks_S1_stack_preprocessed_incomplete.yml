@@ -51,7 +51,12 @@
             "ascendingNodeTime": "2021-01-02T03:02:58.934857",
             "stateVectors":
               {
-                "positions": {},
+                "positions": {
+                  prePosition: null, 
+                  postPosition: null,
+                  prePositionTime: null,
+                  postPositionTime: null
+                },
                 "velocities":
                   {
                     "postVelocity": [4867.907153, 4928.758938, 3091.226142],

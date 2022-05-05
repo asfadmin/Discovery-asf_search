@@ -20,3 +20,9 @@ tests:
     product: Fairbanks_L1.yml
     preprocessed_stack: Fairbanks_ers_stack preprocessed.yml
     processed_stack: Fairbanks_ers_stack.yml
+
+- Test ASFProduct_Stack S1 Incomplete:
+    product: Fairbanks_L1.yml
+    preprocessed_stack: Fairbanks_S1_stack_preprocessed_incomplete.yml
+    processed_stack: Fairbanks_S1_stack incomplete.yml
+
