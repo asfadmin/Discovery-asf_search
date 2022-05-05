@@ -1,5 +1,3 @@
-from dateutil.parser import parse
-import pytz
 from asf_search.baseline.stack import get_baseline_from_stack
 
 from asf_search.search import search
