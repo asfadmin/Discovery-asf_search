@@ -52,7 +52,7 @@
             "stateVectors":
               {
                 "positions": {
-                  prePosition: null, 
+                  prePosition: null,
                   postPosition: null,
                   prePositionTime: null,
                   postPositionTime: null
