@@ -1,8 +1,10 @@
+from copy import deepcopy
 from unittest.mock import patch
 from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.search.search import ASFProduct
-from asf_search.search.baseline_search import calc_temporal_baselines, get_stack_params, stack_from_id, stack_from_product
+from asf_search.search.baseline_search import get_stack_params, stack_from_id, stack_from_product
+from asf_search.baseline.stack import calculate_temporal_baselines
 import pytest
 
 def run_test_get_preprocessed_stack_params(product):
@@ -44,7 +46,7 @@ def run_test_calc_temporal_baselines(reference, stack):
     stack = ASFSearchResults(map(ASFProduct, stack))
     stackLength = len(stack)
 
-    calc_temporal_baselines(reference, stack)
+    calculate_temporal_baselines(reference, stack)
 
     assert(len(stack) == stackLength)
     for secondary in stack:
@@ -63,7 +65,8 @@ def run_test_stack_from_product(reference, stack):
                 assert(secondary.properties['temporalBaseline'] >= stack[idx - 1].properties['temporalBaseline'])
 
 def run_test_stack_from_id(stack_id: str, reference, stack):
-    
+        temp = deepcopy(stack)
+
         with patch('asf_search.baseline_search.product_search') as mock_product_search:
             mock_product_search.return_value = ASFSearchResults(map(ASFProduct, stack))
         
@@ -72,7 +75,7 @@ def run_test_stack_from_id(stack_id: str, reference, stack):
                     stack_from_id(stack_id)
             else:
                 with patch('asf_search.baseline_search.search') as search_mock:
-                    search_mock.return_value = ASFSearchResults(map(ASFProduct, stack))    
+                    search_mock.return_value = ASFSearchResults(map(ASFProduct, temp))    
 
                     returned_stack = stack_from_id(stack_id)
                     assert(len(returned_stack) == len(stack))
