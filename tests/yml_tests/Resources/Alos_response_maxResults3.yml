@@ -55,8 +55,8 @@
       "startTime": "2011-04-21T20:23:11Z",
       "stopTime": "2011-04-21T20:23:36Z",
       "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRS279162650-L1.0.zip",
-      "baseline": null
     },
+    "baseline": null,
     "type": "Feature"
   },
   {
@@ -115,8 +115,8 @@
       "startTime": "2011-04-21T20:23:11Z",
       "stopTime": "2011-04-21T20:23:36Z",
       "url": "https://datapool.asf.alaska.edu/L1.5/A3/ALPSRS279162650-L1.5.zip",
-      "baseline": null
     },
+      "baseline": null,
     "type": "Feature"
   },
   {
@@ -175,8 +175,8 @@
       "startTime": "2011-04-21T20:22:30Z",
       "stopTime": "2011-04-21T20:22:55Z",
       "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRS279162600-L1.0.zip",
-      "baseline": null
     },
+    "baseline": null,
     "type": "Feature"
   }
 ]

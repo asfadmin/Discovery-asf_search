@@ -1,5 +1,4 @@
 from dateutil.parser import parse
-from typing import List
 import pytz
 from .calc import calculate_perpendicular_baselines
 from asf_search import ASFProduct, ASFSearchResults

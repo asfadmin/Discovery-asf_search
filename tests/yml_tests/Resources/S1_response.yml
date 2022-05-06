@@ -54,7 +54,7 @@
     "startTime": "2021-11-10T03:20:39.000000",
     "stopTime": "2021-11-10T03:21:04.000000",
     "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
-    "baseline": null,
   },
+  "baseline": null,
   "type": "Feature"
 }

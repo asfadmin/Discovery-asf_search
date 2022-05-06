@@ -46,6 +46,6 @@
       "stopTime": "1995-05-08T21:09:36Z",
       "temporalBaseline": None,
       "url": "https://datapool.asf.alaska.edu/L1/E1/E1_19942_STD_F287.zip",
-      "baseline": {'insarBaseline': 0.0}
     },
+    "baseline": {'insarBaseline': 0.0}
 }

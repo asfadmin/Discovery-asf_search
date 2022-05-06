@@ -1,6 +1,6 @@
 tests:
 - Test Empty ASFProduct:
-    products: {geometry: {}, properties: { baseline: {}}}
+    products: {geometry: {}, properties: {}, baseline: {}}
 
 - Test SMAP ASFProduct:
     products: SMAP_response.yml

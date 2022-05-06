@@ -5,7 +5,6 @@ import numpy as np
 from dateutil.parser import parse
 
 from asf_search import ASFProduct
-from asf_search.ASFSearchResults import ASFSearchResults
 # WGS84 constants
 a = 6378137
 f = pow((1.0 - 1 / 298.257224), 2)

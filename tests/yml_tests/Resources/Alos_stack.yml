@@ -50,8 +50,8 @@
         "stopTime": "2007-01-06T07:15:01Z",
         "temporalBaseline": -414,
         "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRP050651130-L1.0.zip",
-        "baseline": {'insarBaseline': 0.0}
       },
+      "baseline": {'insarBaseline': 0.0}
   },
   {
     "type": "Feature",
@@ -104,8 +104,8 @@
         "stopTime": "2007-02-21T07:15:10Z",
         "temporalBaseline": -368,
         "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRP057361130-L1.0.zip",
-        "baseline": {'insarBaseline': 1527.1397}
       },
+      "baseline": {'insarBaseline': 1527.1397}
   },
   {
     "type": "Feature",
@@ -158,8 +158,8 @@
         "stopTime": "2007-07-09T07:15:10Z",
         "temporalBaseline": -230,
         "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRP077491130-L1.0.zip",
-        "baseline": {'insarBaseline': 2539.1189}
       },
+        "baseline": {'insarBaseline': 2539.1189}
   },
   {
     "type": "Feature",
@@ -212,7 +212,7 @@
         "stopTime": "2007-08-24T07:15:03Z",
         "temporalBaseline": -184,
         "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRP084201130-L1.0.zip",
-        "baseline": {'insarBaseline': 2719.0832}
       },
+        "baseline": {'insarBaseline': 2719.0832}
   },
 ]
