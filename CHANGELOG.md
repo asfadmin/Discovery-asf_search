@@ -25,10 +25,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
-## [3.2.3](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.3...v3.2.3)
+## [3.2.0](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.3...v3.2.0)
 ### Changed
 - `ASFProduct.stack()` and `asf_search.baseline_search.stack_from_id()` now calculate `temporalBaseline` and `perpendicularBaseline` values of stacked products locally
-- `search()` now uses `asf_search` output format when querying SearchAPI
+- `search()` now internally uses a custom format when communicating with ASF's SearchAPI. This should have no apparent impact on current usage of asf_search. 
 ------
 ## [3.1.3](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.1.2...v3.1.3)
 ### Fixed
