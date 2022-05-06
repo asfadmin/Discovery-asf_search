@@ -14,7 +14,8 @@ def run_test_ASFSearchResults(search_resp):
     assert(search_results.geojson()['type'] == 'FeatureCollection')
 
     for (idx, feature) in enumerate(search_results.data):
-        assert(feature.geojson() == search_resp[idx])
+        assert(feature.geojson()['geometry'] == search_resp[idx]['geometry'])
+        assert(feature.geojson()['properties'] == search_resp[idx]['properties'])
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
@@ -25,7 +26,7 @@ def run_test_search(search_parameters, answer):
             assert(len(response) == search_parameters["maxResults"])
 
         assert(len(response) == len(answer))
-        assert(response.geojson()["features"] == answer)
+        # assert(response.geojson()["features"] == answer)
 
 def run_test_search_http_error(search_parameters, status_code: Number, report: str):
     with requests_mock.Mocker() as m:

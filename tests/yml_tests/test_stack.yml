@@ -1,0 +1,71 @@
+tests:
+- test-find-new-reference empty stack:
+    stack: []
+    output_index: None
+
+- test-find-new-reference s1 stack:
+    stack: Fairbanks_S1_stack_preprocessed.yml
+    output_index: 0
+
+- test-find-new-reference s1 stack 1st no positions:
+    stack: Fairbanks_S1_stack_preprocessed_incomplete.yml
+    output_index: 1
+
+- test-get_default_product_type empty:
+    scene_name: " "
+    product_type: null
+
+- test-get_default_product_type S1:
+    scene_name: S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081
+    product_type: SLC
+
+- test-get_default_product_type ALOS:
+    scene_name: ALPSRP111041130
+    product_type: L1.1
+
+- test-get_default_product_type ERS:
+    scene_name: E1_19942_STD_F287
+    product_type: L0
+
+- test-get-baseline-from-stack error:
+    reference: Fairbanks_SLC.yml
+    stack: []
+    output_stack: []
+    error: TypeError
+
+- test-get-baseline-from-stack L1 missing Baseline:
+    reference: Alos_response_missing_baseline.yml
+    stack: ['Alos_response_missing_baseline.yml', 'Alos_response_missing_baseline.yml']
+    output_stack: []
+    error: TypeError
+
+- test-get-baseline-from-stack L1 missing Baseline:
+    reference: Alos_response_missing_baseline.yml
+    stack: ['Fairbanks_SLC_no_stateVectors.yml', 'Fairbanks_SLC_no_stateVectors.yml']
+    output_stack: []
+    error: TypeError
+
+- test-get-baseline-from-stack fairbanks SLC stack:
+    reference: Fairbanks_SLC.yml
+    stack: Fairbanks_S1_stack_preprocessed.yml
+    output_stack: Fairbanks_S1_stack.yml
+    error: null
+
+- test-get-baseline-from-stack fairbanks L1 stack:
+    reference: Fairbanks_L1.yml
+    stack: Fairbanks_ers_stack preprocessed.yml
+    output_stack: Fairbanks_ers_stack.yml
+    error: null
+
+- test-valid-state-vectors error:
+    reference: null
+    output: null
+
+- test-valid-state-vectors fairbanks slc:
+    reference: Fairbanks_SLC.yml
+    output: True
+
+- test-valid-state-vectors fairbanks slc:
+    reference: Fairbanks_SLC_no_stateVectors.yml
+    output: False
+
