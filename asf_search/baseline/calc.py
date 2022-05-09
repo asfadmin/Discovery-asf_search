@@ -4,14 +4,14 @@ from typing import List
 import numpy as np
 from dateutil.parser import parse
 
-from asf_search import ASFProduct
+from asf_search import ASFProduct, ASFSearchResults
 # WGS84 constants
 a = 6378137
 f = pow((1.0 - 1 / 298.257224), 2)
 # Technically f is normally considered to just be that 298... part but this is all we ever use, so
 # pre-calc and cache and call it all f anyhow
 
-def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
+def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]) -> ASFSearchResults:
     for product in stack:
         baselineProperties = product.baseline
         positionProperties = baselineProperties['stateVectors']['positions']
@@ -68,7 +68,7 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
             perpendicular_baseline = None
         secondary.properties['perpendicularBaseline'] = perpendicular_baseline
 
-    return stack
+    return ASFSearchResults(stack)
 
 # Convert granule center lat/lon to fixed earth coordinates in meters using WGS84 ellipsoid.
 def get_granule_position(scene_center_lat, scene_center_lon):
