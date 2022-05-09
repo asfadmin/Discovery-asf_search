@@ -20,7 +20,7 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
 
-    return stack, warnings
+    return ASFSearchResults(stack), warnings
 
 def valid_state_vectors(product: ASFProduct):
     if product is None:
