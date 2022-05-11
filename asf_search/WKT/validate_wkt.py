@@ -6,7 +6,7 @@ from shapely.geometry import Polygon, MultiPolygon, Point, MultiPoint, LineStrin
 from shapely.geometry.collection import BaseMultipartGeometry
 from shapely.geometry.polygon import orient
 from shapely.ops import transform, orient, unary_union
-from asf_search.WKT.RepairEntry import RepairEntry
+from .RepairEntry import RepairEntry
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
 
