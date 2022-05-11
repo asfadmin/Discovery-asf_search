@@ -7,7 +7,7 @@ requirements = [
     "python-dateutil",
     "pytz",
     "importlib_metadata",
-    "scikit-learn"
+    "scikit-learn",
     "numpy"
 ]
 
