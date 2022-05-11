@@ -8,6 +8,7 @@ requirements = [
     "pytz",
     "importlib_metadata",
     "scikit-learn"
+    "numpy"
 ]
 
 test_requirements = [

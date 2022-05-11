@@ -159,7 +159,7 @@ def search(
         if key in data:
             data[key] = ','.join(data[key])
 
-    data['output'] = 'geojson'
+    data['output'] = 'asf_search'
 
     headers = {'User-Agent': f'{__name__}.{__version__}'}
     response = requests.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data, headers=headers)

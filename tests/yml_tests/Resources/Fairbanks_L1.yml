@@ -1,0 +1,51 @@
+{
+  "type": "Feature",
+  "geometry":
+    {
+      "coordinates":
+        [
+          [
+            [-146.403205, 65.324152],
+            [-147.094104, 64.38274],
+            [-149.081122, 64.627404],
+            [-148.460235, 65.57549],
+            [-146.403205, 65.324152],
+          ],
+        ],
+      "type": "Polygon",
+    },
+  "properties":
+    {
+      "beamModeType": "STD",
+      "browse":
+        ["https://datapool.asf.alaska.edu/BROWSE/E1/E1_19942_STD_F287.jpg"],
+      "bytes": "58750445",
+      "centerLat": "64.9813",
+      "centerLon": "-147.7602",
+      "faradayRotation": None,
+      "fileID": "E1_19942_STD_F287-L1",
+      "fileName": "E1_19942_STD_F287.zip",
+      "flightDirection": "DESCENDING",
+      "frameNumber": "2291",
+      "granuleType": "E1_STD_FRAME",
+      "groupID": None,
+      "insarStackId": "1736495",
+      "md5sum": "612958259af2fa499cd10a12d9e8c9a4",
+      "offNadirAngle": None,
+      "orbit": "19942",
+      "pathNumber": "415",
+      "perpendicularBaseline": None,
+      "platform": "ERS-1",
+      "pointingAngle": None,
+      "polarization": "VV",
+      "processingDate": "2010-12-05T11:21:45Z",
+      "processingLevel": "L1",
+      "sceneName": "E1_19942_STD_F287",
+      "sensor": "SAR",
+      "startTime": "1995-05-08T21:09:19Z",
+      "stopTime": "1995-05-08T21:09:36Z",
+      "temporalBaseline": None,
+      "url": "https://datapool.asf.alaska.edu/L1/E1/E1_19942_STD_F287.zip",
+    },
+    "baseline": {'insarBaseline': 0.0}
+}
