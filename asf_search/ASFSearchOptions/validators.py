@@ -189,4 +189,4 @@ def parse_session(session: Type[requests.Session]):
     if issubclass(session, Session):
         return session
     else:
-        raise ValueError(f"Invalid Session. Must be requests.Session or a subclass of it (like ASFSession).")
+        raise ValueError(f'Invalid Session: expected ASFSession or a requests.Session subclass. Got {type(session)}')
