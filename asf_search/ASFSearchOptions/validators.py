@@ -185,8 +185,8 @@ def parse_wkt(value: str) -> str:
     return parse_wkt_util(value)
 
 # Take "requests.Session", or anything that subclasses it:
-def parse_session(session: Union[ Type[requests.Session], None ]):
-    if session is None or issubclass(session, Session):
+def parse_session(session: Type[requests.Session]):
+    if issubclass(session, Session):
         return session
     else:
         raise ValueError(f"Invalid Session. Must be a valid session already, or 'None'.")
