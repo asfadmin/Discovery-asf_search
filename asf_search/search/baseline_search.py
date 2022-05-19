@@ -6,7 +6,7 @@ from asf_search.ASFProduct import ASFProduct
 from asf_search.ASFSession import ASFSession
 from asf_search.constants import PLATFORM
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
-
+from copy import copy
 
 precalc_platforms = [
     PLATFORM.ALOS,
