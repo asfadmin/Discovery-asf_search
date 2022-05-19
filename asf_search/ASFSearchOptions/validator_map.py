@@ -25,7 +25,6 @@ validator_map = {
     'absoluteOrbit':          parse_int_or_range_list,
     'asfFrame':               parse_int_or_range_list,
     'beamMode':               parse_string_list,
-    'provider':           parse_string,
     'collectionName':         parse_string,
     'maxDoppler':             parse_float,
     'minDoppler':             parse_float,
@@ -52,7 +51,8 @@ validator_map = {
     'instrument':             parse_string,
     # Config parameters       Parser
     'session':                parse_session,
-    'host':                   parse_string
+    'host':                   parse_string,
+    'provider':               parse_string,
 }
 
 
