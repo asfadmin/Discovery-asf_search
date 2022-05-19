@@ -25,6 +25,29 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+
+## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v4.0.0)
+### Added
+- `ASFSearchOptions`: This class provides a number of useful ways to build search results
+  - Search parameters are immediately validated upon object creation/edit instead of at search time, which should lead to fewer errors at search time
+  - All search functions allow both the previous style of keyword arguments, as well as simply passing in an ASFSearchOptions object using the `opts` keyword arg. `opts` is always optional.
+    - If both approaches are used, the two are merged, with specific keyword args superseding the options in the object
+    - Most search functions now expect only their specific parameters, and an optional `opts` parameter. This allows simple usage in most cases, while the `opts` parameter provides access to advanced behavior or alternate workflows.
+  - Internally, all search functions work by passing ASFSearchOptions objects. This allows consistency when working with differently-configured search environments, such as in development.
+  - `ASFSearchResults` objects now include a `searchOptions` property, which describes the search used to create those results. This object can be copied, altered, used for subsequent searches, etc.
+<!--
+- Exposed `stack_from_product()` and `get_stack_opts()` to support more approaches for building insar stacks.
+  - `get_stack_opts()` accepts an `ASFProduct` as a stack reference and returns the ASFSearchOptions object that would be used to build a corresponding insar stack
+    - A matching convenience method has been added to `ASFProduct`
+  - Both functions support the new `opts` argument described above.
+-->
+
+### Changed
+- All search functions now accepts the optional `opts=` argument, see `ASFSearchOptions` notes above.
+- Replaced all `cmr_token` key arguments with `session`, which takes a `Session`-compatible object. See https://docs.asf.alaska.edu/asf_search/ASFSession/ for more details.
+- Removed old GitHub actions
+
+------
 ## [3.2.1](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.2.0...v3.2.1)
 ### Fixed
 - `ASFProduct.stack()` and `asf_search.baseline_search.stack_from_id()` now return ASFSearchResults instead of a list
@@ -180,7 +203,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Cleaned up cruft from various refactors
 
-
 ------
 ## [0.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.0)
 
@@ -229,3 +251,5 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - Removed hard-coded version string
 - Install setuptools_scm in pypi publish action
+
+------

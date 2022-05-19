@@ -1,10 +1,10 @@
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
 from collections import UserList
-import requests
 
 from asf_search.download import download_url
 from asf_search import ASFSession
+from asf_search import ASFSearchOptions
 
 
 class ASFProduct:
@@ -38,15 +38,30 @@ class ASFProduct:
 
         download_url(url=self.properties['url'], path=path, filename=filename, session=session)
 
-    def stack(self) -> UserList:
+    def stack(
+            self,
+            opts: ASFSearchOptions = None
+    ) -> UserList:
         """
         Builds a baseline stack from this product.
 
-        :return: ASFSearchResults(list) of the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
+        :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
+
+        :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
 
-        return stack_from_product(self)
+        return stack_from_product(self, opts=opts)
+
+    def get_stack_opts(self) -> ASFSearchOptions:
+        """
+        Build search options that can be used to find an insar stack for this product
+
+        :return: ASFSearchOptions describing appropriate options for building a stack from this product
+        """
+        from .search.baseline_search import get_stack_opts
+
+        return get_stack_opts(reference=self)
 
     def centroid(self) -> Point:
         """
