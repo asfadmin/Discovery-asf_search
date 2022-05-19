@@ -1,4 +1,5 @@
 from .validator_map import validator_map, validate
+from .defaults import defaults
 from asf_search import ASFSession
 from asf_search.constants import INTERNAL
 
@@ -18,7 +19,7 @@ class ASFSearchOptions:
         for key, value in kwargs.items():
             self.__setattr__(key, value)
 
-        def __setattr__(self, key, value):
+    def __setattr__(self, key, value):
         """
         Set a search option, restricting to the keys in validator_map only, and applying validation to the value before setting
         :param key: the name of the option to be set
