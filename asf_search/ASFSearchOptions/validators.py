@@ -1,8 +1,8 @@
 import dateparser
 import datetime
+import requests
 from WKTUtils.Input import parse_wkt_util
-from asf_search import ASFSession
-from typing import Union, Tuple, TypeVar, Callable, List
+from typing import Union, Tuple, TypeVar, Callable, List, Type
 import math
 
 number = TypeVar('number', int, float)
@@ -184,11 +184,9 @@ def parse_wkt(value: str) -> str:
     # The utils library needs this function for repairWKT.
     return parse_wkt_util(value)
 
-
-def parse_session(*args, **kwargs):
-    if len(args) + len(kwargs) == 1:
-        if len(args) == 1 and isinstance(args[0], ASFSession):
-            return args[0]
-        if len(kwargs) == 1 and "session" in kwargs and isinstance(kwargs["session"], ASFSession):
-            return kwargs["session"]
-    return ASFSession(*args, **kwargs)
+# Take "requests.Session", or anything that subclasses it:
+def parse_session(session: Union[ Type[requests.Session], None ]):
+    if session is None or issubclass(session, Session):
+        return session
+    else:
+        raise ValueError(f"Invalid Session. Must be a valid session already, or 'None'.")
