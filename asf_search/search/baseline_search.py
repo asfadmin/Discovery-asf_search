@@ -77,7 +77,7 @@ def get_stack_opts(
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
             stack_opts.insarStackId = reference.properties['insarStackId']
             return stack_opts
-        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference["properties"]["fileID"]}')
+        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:

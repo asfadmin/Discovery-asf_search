@@ -43,12 +43,12 @@ test_types:
 - For running Invalid Stack ID stack params tests:
     required_keys: product
     required_in_title: test-invalid-insarStackID
-    method: test_get_stack_params_invalid_insarStackId
+    method: test_get_stack_opts_invalid_insarStackId
 
 - For running Invalid Platform stack params tests:
     required_keys: product
     required_in_title: test-invalid-platform
-    method: test_get_stack_params_invalid_platform
+    method: test_get_stack_opts_invalid_platform
 
 
 - For running Invalid Platform stack params tests:

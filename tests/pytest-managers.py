@@ -92,8 +92,8 @@ def test_asf_session_rebuild_auth(**args) -> None:
 # asf_search.search.baseline_search Tests
 def test_get_preprocessed_stack_params(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a reference scene
-    that's part of a pre-calculated platform, asserting that get_stack_params returns an object with two parameters
+    Test asf_search.search.baseline_search.get_stack_opts with a reference scene
+    that's part of a pre-calculated platform, asserting that get_stack_opts returns an object with two parameters
     \n1. processingLevel
     \n2. insarStackId
     """
@@ -104,32 +104,32 @@ def test_get_preprocessed_stack_params(**args) -> None:
 
 def test_get_unprocessed_stack_params(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a reference scene
-    that's not part of a pre-calculated platform, asserting that get_stack_params returns an object with seven parameters
+    Test asf_search.search.baseline_search.get_stack_opts with a reference scene
+    that's not part of a pre-calculated platform, asserting that get_stack_opts returns an object with seven parameters
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
 
     run_test_get_unprocessed_stack_params(reference)
 
-def test_get_stack_params_invalid_insarStackId(**args) -> None:
+def test_get_stack_opts_invalid_insarStackId(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a the reference scene's 
+    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's 
     insarStackID set to an invalid value, and asserting an ASFBaselineError is raised
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
     
-    run_get_stack_params_invalid_insarStackId(reference)
+    run_get_stack_opts_invalid_insarStackId(reference)
     
-def test_get_stack_params_invalid_platform(**args) -> None:
+def test_get_stack_opts_invalid_platform(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a the reference scene's 
+    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's 
     platform set to an invalid value, and asserting an ASFBaselineError is raised
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])    
-    run_test_get_stack_params_invalid_platform_raises_error(reference)
+    run_test_get_stack_opts_invalid_platform_raises_error(reference)
     
 def test_temporal_baseline(**args) -> None:
     """
