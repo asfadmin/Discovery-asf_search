@@ -1,4 +1,4 @@
-from asf_search.baseline.stack import get_baseline_from_stack
+from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
 from asf_search.search import search, product_search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
@@ -71,7 +71,7 @@ def get_stack_opts(
 ) -> ASFSearchOptions:
 
     stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-    stack_opts.processingLevel = reference.properties['processingLevel']
+    stack_opts.processingLevel = get_default_product_type(reference.properties['sceneName'])
 
     if reference.properties['platform'] in precalc_platforms:
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
