@@ -110,3 +110,7 @@ test_types:
     required_keys: ["reference", "output"]
     required_in_title: test-valid-state-vectors
     method: test_valid_state_vectors
+
+- For running ASFSearchOptions tests:
+    required_in_title: test-ASFSearchOptions
+    method: test_ASFSearchOptions
