@@ -121,7 +121,11 @@ test_types:
     required_in_title: test-validator-map-validate
     method: test_validator_map_validate
 
-- For running ASFSearchOption validator tests:
+- For running ASFSearchOption-validator tests:
     required_keys: ['validator', 'input', 'output', 'error']
     required_in_title: test-validators
     method: test_ASFSearchOptions_validator
+
+- For running ASFSearchOptions tests:
+    required_in_title: test-ASFSearchOptions
+    method: test_ASFSearchOptions
