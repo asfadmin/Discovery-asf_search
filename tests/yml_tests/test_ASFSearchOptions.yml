@@ -1,0 +1,101 @@
+tests:
+- test-validator-map-validate parse-string collectionName:
+    key: collectionName
+    value: 123
+    output: '123'
+
+- test-validator-map-validate parse-float maxDoppler:
+    key: maxDoppler
+    value: '123.0'
+    output: 123.0
+
+- test-validators parse_float:
+    validator: parse_float
+    input: '123.0'
+    output: 123.0
+    error: null
+
+- test-validators parse_float error invalid float:
+    validator: parse_float
+    input: 'asf'
+    output: 123.0
+    error: Invalid float
+
+- test-validators parse_float error infinity:
+    validator: parse_float
+    input: 'inf'
+    output: 123.0
+    error: Float values must be finite
+
+- test-validators parse_string from string:
+    validator: parse_string
+    input: 'inf'
+    output: 'inf'
+    error: null
+
+- test-validators parse_string from number:
+    validator: parse_string
+    input: 123.0
+    output: '123.0'
+    error: null
+
+- test-validators parse_int_range ints:
+    validator: parse_int_range
+    input: { tuple: [123.0, 125.0] }
+    output: { tuple: [123.0, 125.0] }
+    error: null
+
+- test-validators parse_int_range floats:
+    validator: parse_int_range
+    input: { tuple: [123.5, 125.5] }
+    output: { tuple: [123.0, 125.0] }
+    error: null
+
+- test-validators parse_float_range ints:
+    validator: parse_float_range
+    input: { tuple: [123.0, 125.0] }
+    output: { tuple: [123.0, 125.0] }
+    error: null
+
+- test-validators parse_float_range floats:
+    validator: parse_float_range
+    input: { tuple: [123.5, 125.5] }
+    output: { tuple: [123.5, 125.5] }
+    error: null
+
+- test-validators parse_string_list strings:
+    validator: parse_string_list
+    input: ['asf', 'nasa']
+    output: ['asf', 'nasa']
+    error: null
+
+- test-validators parse_string_list numbers:
+    validator: parse_string_list
+    input: [123, 0.123, 0.0]
+    output: ['123', '0.123', '0.0']
+    error: null
+
+- test-validators parse_int_list strings:
+    validator: parse_int_list
+    input: ['1', '2', '123']
+    output: [1, 2, 123]
+    error: null
+
+- test-validators parse_int_list int:
+    validator: parse_int_list
+    input: [1, 2, 123]
+    output: [1, 2, 123]
+    error: null
+
+- test-validators parse_int_list floats:
+    validator: parse_int_list
+    input: [1.0, 2.0, 123.5]
+    output: [1, 2, 123]
+    error: null
+
+
+- test-validators parse_int_list error strings:
+    validator: parse_int_list
+    input: ['asf', 'nasa']
+    output: null
+    error: Invalid int list
