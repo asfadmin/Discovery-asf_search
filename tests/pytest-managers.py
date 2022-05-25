@@ -17,7 +17,6 @@ import os
 import pathlib
 import yaml
 
-import requests
 from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 

@@ -1,4 +1,4 @@
-from asf_search.ASFSearchOptions import validators, ASFSearchOptions
+from asf_search.ASFSearchOptions import validators, ASFSearchOptions, defaults
 from asf_search.ASFSearchOptions.validator_map import validate, validator_map
 from pytest import raises
 
@@ -47,3 +47,14 @@ def run_test_ASFSearchOptions(**kwargs):
 
     for key, val in expect_output.items():
         assert getattr(options_obj, key) == val, f"ERROR: options object param '{key}' should have value '{val}'. Got '{getattr(options_obj, key)}'."
+
+    # test ASFSearchOptions.reset()
+    options_obj.reset()
+    
+    assert len(dict(options_obj).values()) == 0, "ERROR: ASFSearchOptions.reset() did not clear all non-default searchable params"
+    
+    for key, value in defaults.defaults.items():
+        if test_info.get(key) is not None:
+            assert getattr(options_obj, key) == test_info[key], f"ERROR: User defined value '{test_info[key]}' for default param '{key}', but value was lost after ASFSearchOptions.reset()"
+        else:
+            assert getattr(options_obj, key) == value, f"ERROR: default param '{key}' left default by user changed, should have value '{val}'. Got '{getattr(options_obj, key)}'."

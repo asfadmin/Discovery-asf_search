@@ -4,12 +4,10 @@ from requests.exceptions import HTTPError
 import datetime
 import math
 
-import warnings
-import inspect
 
 from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSearchOptions import ASFSearchOptions, defaults
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
@@ -20,7 +18,6 @@ def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         beamMode: Union[str, Iterable[str]] = None,
-        collectionName: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
@@ -99,19 +96,11 @@ def search(
 
     data = dict(opts)
 
-    if 'collectionName' in data:
-        stack_level = 2
-        if inspect.stack()[1].function == 'geo_search':
-            stack_level = 3
+    data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
 
-        warnings.filterwarnings('once')
-        warnings.warn("search parameter \"collectionName\" is deprecated and will be removed in a future release. Use \"campaign\" instead.", 
-                      DeprecationWarning, 
-                      stacklevel=stack_level)
-    
-    rename_fields = [(
-        'campaign', 'collectionName'
-    )]
+    rename_fields = [
+        ('campaign', 'collectionName')
+    ]
     for (key, replacement) in rename_fields:
         if key in data:
             data[replacement] = data[key]
