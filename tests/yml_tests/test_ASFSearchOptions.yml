@@ -1,6 +1,6 @@
 tests:
-- test-validator-map-validate parse-string collectionName:
-    key: collectionName
+- test-validator-map-validate parse-string campaign:
+    key: campaign
     value: 123
     output: '123'
 
@@ -108,7 +108,7 @@ tests:
         absoluteOrbit: Null
         asfFrame: Null
         beamMode: Null
-        collectionName: Null
+        campaign: Null
         maxDoppler: Null
         minDoppler: Null
         maxFaradayRotation: Null

@@ -20,7 +20,6 @@ def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         beamMode: Union[str, Iterable[str]] = None,
-        collectionName: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
@@ -98,20 +97,10 @@ def search(
         setattr(opts, p, data[p])
 
     data = dict(opts)
-
-    if 'collectionName' in data:
-        stack_level = 2
-        if inspect.stack()[1].function == 'geo_search':
-            stack_level = 3
-
-        warnings.filterwarnings('once')
-        warnings.warn("search parameter \"collectionName\" is deprecated and will be removed in a future release. Use \"campaign\" instead.", 
-                      DeprecationWarning, 
-                      stacklevel=stack_level)
     
-    rename_fields = [(
-        'campaign', 'collectionName'
-    )]
+    rename_fields = [
+        ('campaign', 'collectionName')
+    ]
     for (key, replacement) in rename_fields:
         if key in data:
             data[replacement] = data[key]
