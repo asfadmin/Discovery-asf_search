@@ -140,8 +140,8 @@ tests:
     
 - test-ASFSearchOptions - create with valid dates:
     exception: Null
-    start: 2022-01-01
-    end: 2022-02-02
+    start: "2022-01-01"
+    end: "2022-02-02"
     expect_output:
         start: 2022-01-01 00:00:00
         end: 2022-02-02 00:00:00
