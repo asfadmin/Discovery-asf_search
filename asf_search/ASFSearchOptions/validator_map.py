@@ -26,6 +26,7 @@ validator_map = {
     'asfFrame':               parse_int_or_range_list,
     'beamMode':               parse_string_list,
     'collectionName':         parse_string,
+    'campaign':               parse_string,
     'maxDoppler':             parse_float,
     'minDoppler':             parse_float,
     'maxFaradayRotation':     parse_float,
