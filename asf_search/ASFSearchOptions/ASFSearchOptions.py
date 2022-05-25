@@ -53,9 +53,17 @@ class ASFSearchOptions:
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-        no_export = ['host', 'session', 'provider']  # TODO: remove 'provider' from this list once we're hitting CMR directly
+        no_export = ['host', 'session', 'provider', 'maturity']  # TODO: remove 'provider' from this list once we're hitting CMR directly
         for key in validator_map:
             if key not in no_export:
                 value = self.__getattribute__(key)
                 if value is not None:
                     yield key, value
+
+    def reset(self):
+        """
+        Resets all populated search options, exlcuding options that have defined defaults in defaults.py unchanged (host, session, etc)
+        """
+        for key, _ in self:
+            if key not in defaults.keys():
+                super().__setattr__(key, None)
