@@ -4,12 +4,10 @@ from requests.exceptions import HTTPError
 import datetime
 import math
 
-import warnings
-import inspect
 
 from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSearchOptions import ASFSearchOptions, defaults
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
@@ -97,7 +95,9 @@ def search(
         setattr(opts, p, data[p])
 
     data = dict(opts)
-    
+
+    data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
+
     rename_fields = [
         ('campaign', 'collectionName')
     ]
