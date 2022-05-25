@@ -29,8 +29,7 @@ def run_test_ASFSearchOptions(**kwargs):
     test_info = kwargs["test_info"]
     exception = test_info["exception"] # Can be "None" for don't.
     if "expect_output" in test_info:
-        expect_output = test_info["expect_output"]
-        del test_info["expect_output"]
+        expect_output = test_info.pop("expect_output")
     else:
         expect_output = {}
 
