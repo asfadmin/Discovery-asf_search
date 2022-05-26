@@ -18,9 +18,9 @@ def validate(key, value):
         raise KeyError(error_msg)
     return validator_map[key](value)
 
-# Disabling multiple spaces between the key and value
-# pylint: disable=E241
+
 validator_map = {
+    # pylint: disable=E241
     # Search parameters       Parser
     'maxResults':             int,
     'absoluteOrbit':          parse_int_or_range_list,
