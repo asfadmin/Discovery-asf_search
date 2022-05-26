@@ -137,7 +137,7 @@ tests:
 - test-ASFSearchOptions - create with bad value:
     asfFrame: potato
     exception: ValueError
-    
+
 - test-ASFSearchOptions - create with valid dates:
     exception: Null
     start: "2022-01-01"
