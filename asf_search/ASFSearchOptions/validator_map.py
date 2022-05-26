@@ -18,9 +18,7 @@ def validate(key, value):
         raise KeyError(error_msg)
     return validator_map[key](value)
 
-
 validator_map = {
-    # pylint: disable=E241
     # Search parameters       Parser
     'maxResults':             int,
     'absoluteOrbit':          parse_int_or_range_list,
