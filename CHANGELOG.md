@@ -27,7 +27,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ## [3.2.2](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.2.1...v3.2.2)
 ### Fixed
-- `ASFProduct.download()` works with netrc authentication again
+- netrc authentication works again, affects `ASFProduct.download()`, `ASFSearchResults.download()`, `download_urls()`, `download_url()`
 
 ------
 ## [3.2.1](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.2.0...v3.2.1)
