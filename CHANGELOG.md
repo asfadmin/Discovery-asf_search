@@ -35,17 +35,20 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - Most search functions now expect only their specific parameters, and an optional `opts` parameter. This allows simple usage in most cases, while the `opts` parameter provides access to advanced behavior or alternate workflows.
   - Internally, all search functions work by passing ASFSearchOptions objects. This allows consistency when working with differently-configured search environments, such as in development.
   - `ASFSearchResults` objects now include a `searchOptions` property, which describes the search used to create those results. This object can be copied, altered, used for subsequent searches, etc.
-<!--
-- Exposed `stack_from_product()` and `get_stack_opts()` to support more approaches for building insar stacks.
+- Exposed `get_stack_opts()` to support more approaches for building insar stacks.
   - `get_stack_opts()` accepts an `ASFProduct` as a stack reference and returns the ASFSearchOptions object that would be used to build a corresponding insar stack
     - A matching convenience method has been added to `ASFProduct`
-  - Both functions support the new `opts` argument described above.
--->
+  - Supports the new `opts` argument described above.
 
 ### Changed
 - All search functions now accepts the optional `opts=` argument, see `ASFSearchOptions` notes above.
 - Replaced all `cmr_token` key arguments with `session`, which takes a `Session`-compatible object. See https://docs.asf.alaska.edu/asf_search/ASFSession/ for more details.
 - Removed old GitHub actions
+
+------
+## [3.2.2](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.2.1...v3.2.2)
+### Fixed
+- netrc authentication works again, affects `ASFProduct.download()`, `ASFSearchResults.download()`, `download_urls()`, `download_url()`
 
 ------
 ## [3.2.1](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.2.0...v3.2.1)
