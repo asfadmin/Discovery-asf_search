@@ -1,4 +1,4 @@
-from asf_search.search.search import ASFProduct, ASFSearchResults
+from asf_search.search.search import ASFProduct, ASFSearchResults, ASFSearchOptions
 from unittest.mock import patch
 
 def run_test_ASFProduct_Geo_Search(geographic_response):
@@ -28,3 +28,10 @@ def run_test_stack(reference, pre_processed_stack, processed_stack):
             
             assert(secondary.properties['temporalBaseline'] == processed_stack[idx]['properties']['temporalBaseline'])
             assert(secondary.properties['perpendicularBaseline'] == processed_stack[idx]['properties']['perpendicularBaseline'])
+
+def run_test_product_get_stack_options(reference, options):
+    product = ASFProduct(reference)
+    expected_options = dict(ASFSearchOptions(**options))
+
+    product_options = dict(product.get_stack_opts())
+    assert product_options == dict(expected_options)

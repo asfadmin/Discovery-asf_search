@@ -1,4 +1,4 @@
-from asf_search.baseline.stack import get_baseline_from_stack
+from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
 from dateutil.parser import parse
 import pytz
 from copy import copy
@@ -7,9 +7,10 @@ from asf_search.search import search, product_search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFProduct import ASFProduct
+from asf_search.ASFSession import ASFSession
 from asf_search.constants import PLATFORM
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
-
+from copy import copy
 
 precalc_platforms = [
     PLATFORM.ALOS,
@@ -33,10 +34,13 @@ def stack_from_product(
     :return: ASFSearchResults(dict) of search results
     """
 
-    stack_params = get_stack_params(reference)
-    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
-    stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
+    opts = (ASFSearchOptions() if opts is None else copy(opts))
 
+    stack_opts = get_stack_opts(reference, opts=opts)
+
+    stack = search(opts=stack_opts)
+    stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
+    # calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     return stack
@@ -71,11 +75,11 @@ def get_stack_opts(
 ) -> ASFSearchOptions:
 
     stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-    stack_opts.processingLevel = reference.properties['processingLevel']
+    stack_opts.processingLevel = get_default_product_type(reference.properties['sceneName'])
 
     if reference.properties['platform'] in precalc_platforms:
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
-            stack_opts.insarStackId['insarStackId'] = reference.properties['insarStackId']
+            stack_opts.insarStackId = reference.properties['insarStackId']
             return stack_opts
         raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
 

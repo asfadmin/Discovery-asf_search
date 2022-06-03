@@ -12,7 +12,6 @@ def geo_search(
         absoluteOrbit: Iterable[Union[int, range]] = None,
         asfFrame: Iterable[Union[int, range]] = None,
         beamMode: Iterable[str] = None,
-        collectionName: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
         end: Union[datetime.datetime, str] = None,
         flightDirection: Iterable[str] = None,

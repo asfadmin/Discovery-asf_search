@@ -53,3 +53,10 @@ tests:
     product: Fairbanks_L1.yml
     preprocessed_stack: Fairbanks_S1_stack_preprocessed_incomplete.yml
     processed_stack: Fairbanks_S1_stack incomplete.yml
+
+- Test ASFProduct-get-stack-options S1:
+    product: Fairbanks_L1.yml
+    options: {
+        processingLevel: ['L0'],
+        insarStackId: '1736495'
+    }

@@ -1,9 +1,8 @@
 import warnings
 from .validator_map import validator_map, validate
-
-from asf_search.ASFSession import ASFSession
-from asf_search.constants import INTERNAL
 from .defaults import defaults
+from asf_search import ASFSession
+from asf_search.constants import INTERNAL
 
 
 class ASFSearchOptions:
@@ -24,7 +23,7 @@ class ASFSearchOptions:
     def __setattr__(self, key, value):
         """
         Set a search option, restricting to the keys in validator_map only, and applying validation to the value before setting
-
+        
         :param key: the name of the option to be set
         :param value: the value to which to set the named option
         """
@@ -56,12 +55,21 @@ class ASFSearchOptions:
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-        no_export = ['host', 'session', 'maxResults']
+        no_export = ['host', 'session', 'provider', 'maturity']  # TODO: remove 'provider' from this list once we're hitting CMR directly
+
         for key in validator_map:
             if key not in no_export:
                 value = self.__getattribute__(key)
                 if value is not None:
                     yield key, value
+
+    def reset(self):
+        """
+        Resets all populated search options, exlcuding options that have defined defaults in defaults.py unchanged (host, session, etc)
+        """
+        for key, _ in self:
+            if key not in defaults.keys():
+                super().__setattr__(key, None)
 
     def merge_args(self, **kwargs) -> None:
         """

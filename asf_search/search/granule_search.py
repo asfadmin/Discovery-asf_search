@@ -20,6 +20,7 @@ def granule_search(
     """
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
+    
     opts.merge_args(granule_list=granule_list)
-
+    
     return search(opts=opts)

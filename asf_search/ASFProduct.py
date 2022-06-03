@@ -3,10 +3,10 @@ import json
 from collections import UserList
 
 from asf_search.download import download_url
-from asf_search.ASFSession import ASFSession
-from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.CMR import translate_product
 
+from asf_search import ASFSession
+from asf_search import ASFSearchOptions
+from asf_search.CMR import translate_product
 
 class ASFProduct:
     def __init__(self, args: dict):

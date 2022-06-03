@@ -35,13 +35,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - Most search functions now expect only their specific parameters, and an optional `opts` parameter. This allows simple usage in most cases, while the `opts` parameter provides access to advanced behavior or alternate workflows.
   - Internally, all search functions work by passing ASFSearchOptions objects. This allows consistency when working with differently-configured search environments, such as in development.
   - `ASFSearchResults` objects now include a `searchOptions` property, which describes the search used to create those results. This object can be copied, altered, used for subsequent searches, etc.
-- Exposed `stack_from_product()` and `get_stack_opts()` to support more approaches for building insar stacks.
-  - `stack_from_product()` accepts an `ASFProduct` as a stack reference and returns ASFSearchResults for that stack
+- Exposed `get_stack_opts()` to support more approaches for building insar stacks.
   - `get_stack_opts()` accepts an `ASFProduct` as a stack reference and returns the ASFSearchOptions object that would be used to build a corresponding insar stack
     - A matching convenience method has been added to `ASFProduct`
-  - Both functions support the new `opts` argument described above.
-- `ASFSession` will now figure out which auth method to use, based on what's passed into it's constructor. Can still authenticate manually with the various `ASFSession.auth_with_*` methods.
-
+  - Supports the new `opts` argument described above.
 
 ### Changed
 - All search functions now accepts the optional `opts=` argument, see `ASFSearchOptions` notes above.
@@ -208,8 +205,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 - Cleaned up cruft from various refactors
-
-------
 
 ------
 ## [0.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v0.2.4...v0.3.0)

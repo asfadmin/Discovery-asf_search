@@ -14,7 +14,4 @@ CMR_COLLECTIONS = f'/search/collections.{CMR_FORMAT_EXT}'
 EDL_HOST = 'urs.earthdata.nasa.gov'
 EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'
 
-EDL_HOST = 'urs.earthdata.nasa.gov'
-EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'
-
 DEFAULT_PROVIDER = 'ASF'

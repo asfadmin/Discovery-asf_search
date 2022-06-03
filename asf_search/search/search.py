@@ -3,13 +3,11 @@ from copy import copy
 from requests.exceptions import HTTPError
 import datetime
 
-import warnings
-import inspect
 
 from asf_search import __version__
 
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSearchOptions import ASFSearchOptions, defaults
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
@@ -21,7 +19,6 @@ def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         beamMode: Union[str, Iterable[str]] = None,
-        collectionName: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
@@ -47,9 +44,6 @@ def search(
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        provider: str = None,
-        session: ASFSession = None,
-        host: str = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
@@ -83,16 +77,22 @@ def search(
     :param season: Start and end day of year for desired seasonal range. This option is used in conjunction with start/end to specify a seasonal range within an overall date range.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
-    :param provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
-    :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
     :return: ASFSearchResults(list) of search results
     """
     
     kwargs = locals()
-    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts'] and v is not None)
+
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
+
+    opts = (ASFSearchOptions() if opts is None else copy(opts))
+    for p in data:
+        setattr(opts, p, data[p])
+
+    data = dict(opts)
+
+    data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
 
     if 'collectionName' in data:
         stack_level = 2
@@ -107,31 +107,11 @@ def search(
     rename_fields = [(
         'campaign', 'collectionName'
     )]
+
     for (key, replacement) in rename_fields:
         if key in data:
             data[replacement] = data[key]
             data.pop(key)
-    
-    listify_fields = [
-        'absoluteOrbit',
-        'asfFrame',
-        'beamMode',
-        'collectionName',
-        'frame',
-        'granule_list',
-        'groupID',
-        'instrument',
-        'lookDirection',
-        'offNadirAngle',
-        'platform',
-        'polarization',
-        'processingLevel',
-        'product_list',
-        'relativeOrbit'
-    ]
-    for key in listify_fields:
-        if key in data and not isinstance(data[key], list):
-            data[key] = [data[key]]
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
     opts.merge_args(**data)

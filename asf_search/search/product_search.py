@@ -20,6 +20,7 @@ def product_search(
     """
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-    opts.merge_args(product_list=product_list)
 
+    opts.merge_args(product_list=product_list)
+  
     return search(opts=opts)
