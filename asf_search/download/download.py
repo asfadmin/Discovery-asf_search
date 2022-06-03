@@ -2,7 +2,7 @@ from typing import Iterable
 from multiprocessing import Pool
 import os.path
 import urllib.parse
-import requests
+import warnings
 
 from asf_search.exceptions import ASFDownloadError
 from asf_search import ASFSession
@@ -58,7 +58,8 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
         raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
 
     if os.path.isfile(os.path.join(path, filename)):
-        raise ASFDownloadError(f'File already exists: {os.path.join(path, filename)}')
+        warnings.warn(f'File already exists, skipping download: {os.path.join(path, filename)}')
+        return
 
     if session is None:
         session = ASFSession()
