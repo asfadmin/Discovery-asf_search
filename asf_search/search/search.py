@@ -1,14 +1,14 @@
 from typing import Union, Iterable, Tuple
-import requests
+from copy import copy
 from requests.exceptions import HTTPError
 import datetime
 import math
 
-import warnings
-import inspect
 
 from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.ASFSearchOptions import ASFSearchOptions, defaults
+from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
@@ -18,7 +18,6 @@ def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         beamMode: Union[str, Iterable[str]] = None,
-        collectionName: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
@@ -44,12 +43,13 @@ def search(
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        host: str = INTERNAL.SEARCH_API_HOST,
-        cmr_token: str = None,
-        cmr_provider: str = None
+        provider: str = None,
+        session: ASFSession = None,
+        host: str = None,
+        opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
-    Performs a generic search using the ASF SearchAPI
+    Performs a generic search using the ASF SearchAPI. Accepts a number of search parameters, and/or an ASFSearchOptions object. If an ASFSearchOptions object is provided as well as other specific parameters, the two sets of options will be merged, preferring the specific keyword arguments.
 
     :param absoluteOrbit: For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B this value corresponds to the orbit count within the orbit cycle. For UAVSAR it is the Flight ID.
     :param asfFrame: This is primarily an ASF / JAXA frame reference. However, some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
@@ -79,30 +79,28 @@ def search(
     :param season: Start and end day of year for desired seasonal range. This option is used in conjunction with start/end to specify a seasonal range within an overall date range.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param cmr_token: EDL authentication token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
-    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
+    :param provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
+    :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
+    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
+    :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
     :return: ASFSearchResults(list) of search results
     """
     
     kwargs = locals()
-    data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
-    host = data.pop('host')
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
 
-    if 'collectionName' in data:
-        stack_level = 2
-        if inspect.stack()[1].function == 'geo_search':
-            stack_level = 3
+    opts = (ASFSearchOptions() if opts is None else copy(opts))
+    for p in data:
+        setattr(opts, p, data[p])
 
-        warnings.filterwarnings('once')
-        warnings.warn("search parameter \"collectionName\" is deprecated and will be removed in a future release. Use \"campaign\" instead.", 
-                      DeprecationWarning, 
-                      stacklevel=stack_level)
-    
-    rename_fields = [(
-        'campaign', 'collectionName'
-    )]
+    data = dict(opts)
+
+    data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
+
+    rename_fields = [
+        ('campaign', 'collectionName')
+    ]
     for (key, replacement) in rename_fields:
         if key in data:
             data[replacement] = data[key]
@@ -136,13 +134,12 @@ def search(
         'offNadirAngle',
         'relativeOrbit']
     for key in flatten_fields:
-        if key in data:
+        if key in opts:
             data[key] = flatten_list(data[key])
 
     join_fields = [
         'beamMode',
         'collectionName',
-        'flightDirection',
         'granule_list',
         'groupID',
         'instrument',
@@ -154,11 +151,16 @@ def search(
     for key in join_fields:
         if key in data:
             data[key] = ','.join(data[key])
+    
+    # Special case to unravel WKT field a little for compatibility
+    if data.get('intersectsWith') is not None:
+        (shapeType, shape) = data['intersectsWith'].split(':')
+        del data['intersectsWith']
+        data[shapeType] = shape
 
     data['output'] = 'asf_search'
-
-    headers = {'User-Agent': f'{__name__}.{__version__}'}
-    response = requests.post(f'https://{host}{INTERNAL.SEARCH_PATH}', data=data, headers=headers)
+    # Join the url, to guarantee *exactly* one '/' between each url fragment:
+    response = opts.session.post(url=f'https://{opts.host}{INTERNAL.SEARCH_PATH}', data=data)
 
     try:
         response.raise_for_status()
@@ -170,7 +172,7 @@ def search(
         raise ASFServerError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
 
     products = [ASFProduct(f) for f in response.json()['features']]
-    return ASFSearchResults(products)
+    return ASFSearchResults(products, opts=opts)
 
 
 def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:

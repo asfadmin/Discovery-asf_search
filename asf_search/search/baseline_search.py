@@ -1,103 +1,97 @@
-from asf_search.baseline.stack import get_baseline_from_stack
-
-from asf_search.search import search
+from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
+from asf_search.search import search, product_search
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFProduct import ASFProduct
-from asf_search.search.product_search import product_search
-from asf_search.constants import INTERNAL, PLATFORM
+from asf_search.ASFSession import ASFSession
+from asf_search.constants import PLATFORM
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
-
+from copy import copy
 
 precalc_platforms = [
     PLATFORM.ALOS,
     PLATFORM.RADARSAT,
     PLATFORM.ERS1,
     PLATFORM.ERS2,
-    PLATFORM.JERS]
+    PLATFORM.JERS,
+]
 
 
 def stack_from_product(
         reference: ASFProduct,
-        strategy = None,
-        host: str = INTERNAL.SEARCH_API_HOST,
-        cmr_token: str = None,
-        cmr_provider: str = None) -> ASFSearchResults:
+        opts: ASFSearchOptions = None
+    ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference ASFProduct
 
-    :param reference: Reference scene to base the stack from, and from which to calculate perpendicular/temporal baselines
-    :param strategy: If the requested reference can not be used to calculate perpendicular baselines, this sort function will be used to pick an alternative reference from the stack. 'None' implies that no attempt will be made to find an alternative reference.
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
-    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
+    :param reference: Reference scene to base the stack on, and from which to calculate perpendicular/temporal baselines
+    :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
     :return: ASFSearchResults(dict) of search results
     """
 
-    stack_params = get_stack_params(reference)
-    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
-    stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
+    opts = (ASFSearchOptions() if opts is None else copy(opts))
 
+    stack_opts = get_stack_opts(reference, opts=opts)
+
+    stack = search(opts=stack_opts)
+    stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
+    # calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     return stack
 
 def stack_from_id(
         reference_id: str,
-        strategy = None,
-        host: str = INTERNAL.SEARCH_API_HOST,
-        cmr_token: str = None,
-        cmr_provider: str = None) -> ASFSearchResults:
+        opts: ASFSearchOptions = None
+) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
 
     :param reference_id: Reference product to base the stack from, and from which to calculate perpendicular/temporal baselines
-    :param strategy: If the requested reference can not be used to calculate perpendicular baselines, this sort function will be used to pick an alternative reference from the stack. 'None' implies that no attempt will be made to find an alternative reference.
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
-    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
+    :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
     :return: ASFSearchResults(list) of search results
     """
-    reference_results = product_search(
-        [reference_id],
-        host=host,
-        cmr_token=cmr_token,
-        cmr_provider=cmr_provider)
+
+    opts = (ASFSearchOptions() if opts is None else copy(opts))
+
+    reference_results = product_search(product_list=reference_id, opts=opts)
 
     if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
     reference = reference_results[0]
 
-    return stack_from_product(reference, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    return stack_from_product(reference, opts=opts)
 
 
-def get_stack_params(reference: ASFProduct) -> dict:
+def get_stack_opts(
+        reference: ASFProduct,
+        opts: ASFSearchOptions = None
+) -> ASFSearchOptions:
 
-    stack_params = {
-        'processingLevel': [reference.properties['processingLevel']]
-    }
+    stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
+    stack_opts.processingLevel = get_default_product_type(reference.properties['sceneName'])
 
     if reference.properties['platform'] in precalc_platforms:
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
-            stack_params['insarStackId'] = reference.properties['insarStackId']
-            return stack_params
+            stack_opts.insarStackId = reference.properties['insarStackId']
+            return stack_opts
         raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:
-        stack_params['platform'] = [PLATFORM.SENTINEL1]
-        stack_params['beamMode'] = [reference.properties['beamModeType']]
-        stack_params['flightDirection'] = [reference.properties['flightDirection']]
-        #stack_params['lookDirection'] = [ref_scene.properties['lookDirection']]
-        stack_params['relativeOrbit'] = [int(reference.properties['pathNumber'])]  # path
+        stack_opts.platform = [PLATFORM.SENTINEL1]
+        stack_opts.beamMode = [reference.properties['beamModeType']]
+        stack_opts.flightDirection = reference.properties['flightDirection']
+        stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path
         if reference.properties['polarization'] in ['HH', 'HH+HV']:
-            stack_params['polarization'] = ['HH','HH+HV']
+            stack_opts.polarization = ['HH','HH+HV']
         elif reference.properties['polarization'] in ['VV', 'VV+VH']:
-            stack_params['polarization'] = ['VV','VV+VH']
+            stack_opts.polarization = ['VV','VV+VH']
         else:
-            stack_params['polarization'] = [reference.properties['polarization']]
-        stack_params['intersectsWith'] = reference.centroid().wkt
-        return stack_params
+            stack_opts.polarization = [reference.properties['polarization']]
+        stack_opts.intersectsWith = reference.centroid().wkt
+        return stack_opts
 
     raise ASFBaselineError(f'Reference product is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference.properties["fileID"]}')

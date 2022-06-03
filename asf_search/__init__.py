@@ -14,6 +14,7 @@ except PackageNotFoundError as e:
 from .ASFSession import ASFSession
 from .ASFProduct import ASFProduct
 from .ASFSearchResults import ASFSearchResults
+from .ASFSearchOptions import ASFSearchOptions, validators
 from .exceptions import *
 from .constants import *
 from .health import *
