@@ -1,4 +1,4 @@
-from shapely.geometry import shape, Point
+from shapely.geometry import shape, Point, Polygon, mapping
 import json
 from collections import UserList
 
@@ -9,12 +9,13 @@ from asf_search.CMR import translate_product
 
 
 class ASFProduct:
-    def __init__(self, item: dict):
-        translated = translate_product(item)
-        self.meta = item['meta']
-        self.umm = item['umm']
-        self.properties = translated['properties']
-        self.geometry = translated['geometry']
+    def __init__(self, args: dict):
+        translated = translate_product(args)
+        self.meta = args['meta']
+        self.umm = args['umm']
+        self.properties = args['properties']
+        self.geometry = args['geometry']
+        self.baseline = args['baseline']
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
@@ -70,4 +71,11 @@ class ASFProduct:
         """
         Finds the centroid of a product
         """
-        return shape(self.geometry).centroid
+        coords = mapping(shape(self.geometry))['coordinates'][0]
+        lons = [p[0] for p in coords]
+        if max(lons) - min(lons) > 180:
+            unwrapped_coords = [a if a[0] > 0 else [a[0] + 360, a[1]] for a in coords]
+        else:
+            unwrapped_coords = [a for a in coords]
+
+        return Polygon(unwrapped_coords).centroid

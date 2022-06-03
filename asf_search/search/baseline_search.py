@@ -1,3 +1,4 @@
+from asf_search.baseline.stack import get_baseline_from_stack
 from dateutil.parser import parse
 import pytz
 from copy import copy
@@ -32,12 +33,10 @@ def stack_from_product(
     :return: ASFSearchResults(dict) of search results
     """
 
-    opts = (ASFSearchOptions() if opts is None else copy(opts))
+    stack_params = get_stack_params(reference)
+    stack = search(**stack_params, host=host, cmr_token=cmr_token, cmr_provider=cmr_provider)
+    stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
 
-    stack_opts = get_stack_opts(reference, opts=opts)
-
-    stack = search(opts=stack_opts)
-    calc_temporal_baselines(reference, stack)
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     return stack
@@ -96,25 +95,3 @@ def get_stack_opts(
         return stack_opts
 
     raise ASFBaselineError(f'Reference product is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference.properties["fileID"]}')
-
-
-def calc_temporal_baselines(
-        reference: ASFProduct,
-        stack: ASFSearchResults
-) -> None:
-    """
-    Calculates temporal baselines for a stack of products based on a reference scene and injects those values into the stack.
-
-    :param reference: The reference product from which to calculate temporal baselines.
-    :param stack: The stack to operate on.
-    :return: None, as the operation occurs in-place on the stack provided.
-    """
-    reference_time = parse(reference.properties['startTime'])
-    if reference_time.tzinfo is None:
-        reference_time = pytz.utc.localize(reference_time)
-
-    for secondary in stack:
-        secondary_time = parse(secondary.properties['startTime'])
-        if secondary_time.tzinfo is None:
-            secondary_time = pytz.utc.localize(secondary_time)
-        secondary.properties['temporalBaseline'] = (secondary_time - reference_time).days

@@ -1,9 +1,12 @@
+from typing import List
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
-from ASFSession.test_ASFSession import run_auth_with_creds
+from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
+from CMR.test_MissionList import run_test_get_project_names
+
 
 from pytest import raises
 from unittest.mock import patch
@@ -11,6 +14,11 @@ from unittest.mock import patch
 import os
 import pathlib
 import yaml
+
+import requests
+from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
+
+from tests.download.test_download import run_test_download_url_auth_error
 
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
@@ -29,8 +37,9 @@ def test_ASFProduct_Stack(**args) -> None:
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
-    stack = get_resource(test_info["baseline_stack"])
-    run_test_stack(reference, stack)
+    preprocessed_stack = get_resource(test_info["preprocessed_stack"])
+    processed_stack = get_resource(test_info["processed_stack"])
+    run_test_stack(reference, preprocessed_stack, processed_stack)
     
 # asf_search.ASFSession Tests
 def test_ASFSession_Error(**args) -> None:
@@ -45,6 +54,40 @@ def test_ASFSession_Error(**args) -> None:
 
         with raises(ASFAuthenticationError):
             run_auth_with_creds(username, password)
+
+def test_ASFSession_Token_Error(**args) -> None:
+    """
+    Test ASFSession.auth_with_token for sign in errors
+    """
+    test_info = args["test_info"]
+    token = test_info["token"]
+
+    with raises(ASFAuthenticationError):
+        run_auth_with_token(token)
+
+def test_ASFSession_Cookie_Error(**args) -> None:
+    """
+    Test ASFSession.auth_with_cookie for sign in errors
+    """
+    test_info = args["test_info"]
+    cookies = test_info["cookies"]
+
+    with raises(ASFAuthenticationError):
+        run_auth_with_cookiejar(cookies)
+
+def test_asf_session_rebuild_auth(**args) -> None:
+    """
+    Test asf_search.ASFSession.rebuild_auth
+    When redirecting from an ASF domain, only accept 
+    domains listed in ASFSession.AUTH_DOMAINS
+    """
+    test_info = args["test_info"]
+    original_domain = test_info["original_domain"]
+    response_domain = test_info["response_domain"]
+    response_code = test_info["response_code"]
+    final_token = test_info["final_token"]
+
+    run_test_asf_session_rebuild_auth(original_domain, response_domain, response_code, final_token)
 
 # asf_search.search.baseline_search Tests
 def test_get_preprocessed_stack_params(**args) -> None:
@@ -165,7 +208,59 @@ def test_ASFSearch_Search_Error(**args) -> None:
         with raises(ASFSearch5xxError):
             run_test_search_http_error(parameters, error_code, report)
 
+def test_get_platform_campaign_names(**args) -> None:
+    test_info = args["test_info"]
+    cmr_ummjson = get_resource(test_info["cmr_ummjson"])
+    campaigns: List[str] = get_resource(test_info["campaigns"])
+    
+    run_test_get_project_names(cmr_ummjson, campaigns)
 
+def test_download_url(**args) -> None:
+    """
+    Test asf_search.download.download_url
+    """
+    test_info = args["test_info"]
+    url = test_info["url"]
+    path = test_info["path"]
+    filename = test_info["filename"]
+        
+    if filename == "error":
+        run_test_download_url_auth_error(url, path, filename)
+
+def test_find_new_reference(**args) -> None:
+    """
+    Test asf_search.baseline.calc.find_new_reference
+    """
+    test_info = args["test_info"]
+    stack = get_resource(test_info["stack"])
+    output_index = get_resource(test_info["output_index"])
+    
+    run_test_find_new_reference(stack, output_index)
+
+def test_get_default_product_type(**args) -> None:
+    test_info = args["test_info"]
+    scene_name = get_resource(test_info["scene_name"])
+    product_type = get_resource(test_info["product_type"])
+    
+    run_test_get_default_product_type(scene_name, product_type)
+
+def test_get_baseline_from_stack(**args) -> None:
+    test_info = args["test_info"]
+    reference = get_resource(test_info['reference'])
+    stack = get_resource(test_info['stack'])
+    output_stack = get_resource(test_info['output_stack'])
+    error = get_resource(test_info['error'])
+    run_test_get_baseline_from_stack(reference, stack, output_stack, error)
+
+def test_valid_state_vectors(**args) -> None:
+    test_info = args["test_info"]
+    reference = get_resource(test_info['reference'])
+    output = get_resource(test_info['output'])
+    
+    run_test_valid_state_vectors(reference, output)
+# Testing resource loading utilities
+
+# Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
     
     if isinstance(yml_file, str):
@@ -176,5 +271,10 @@ def get_resource(yml_file):
                     return yaml.safe_load(f)
                 except yaml.YAMLError as exc:
                     print(exc)
-    
+    elif isinstance(yml_file, List): #check if it's a list of yml files
+        if len(yml_file) > 0:
+            if isinstance(yml_file[0], str):
+                if yml_file[0].endswith((".yml", ".yaml")):
+                    return [get_resource(file) for file in yml_file]
+
     return yml_file

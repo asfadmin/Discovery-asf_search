@@ -2,13 +2,14 @@
 from setuptools import find_packages, setup
 
 requirements = [
-        "requests",
-        "shapely",
-        "python-dateutil",
-        "pytz",
-        "importlib_metadata",
-        "dateparser",
-        "WKTUtils==1.1.0",
+    "requests",
+    "shapely",
+    "python-dateutil",
+    "pytz",
+    "importlib_metadata",
+    "numpy",
+    "dateparser",
+    "WKTUtils==1.1.0",
 ]
 
 test_requirements = [
