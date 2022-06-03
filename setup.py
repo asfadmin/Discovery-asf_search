@@ -7,7 +7,9 @@ requirements = [
     "python-dateutil",
     "pytz",
     "importlib_metadata",
-    "numpy"
+    "numpy",
+    "dateparser",
+    "WKTUtils==1.1.0",
 ]
 
 test_requirements = [
