@@ -1,4 +1,5 @@
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.constants import DEFAULT_PROVIDER
 
 from .field_map import field_map
 
@@ -6,6 +7,8 @@ from .field_map import field_map
 def translate_opts(opts: ASFSearchOptions) -> list:
     # Start by just grabbing the searchable parameters
     dict_opts = dict(opts)
+    # provider doesn't get copied with the 'dict' cast above
+    dict_opts['provider'] = getattr(opts, 'provider', DEFAULT_PROVIDER)
 
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
