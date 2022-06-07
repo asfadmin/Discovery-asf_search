@@ -83,16 +83,15 @@ def search(
     """
     
     kwargs = locals()
-
     data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-    for p in data:
-        setattr(opts, p, data[p])
+    opts.merge_args(**data)
 
     data = dict(opts)
-
+    # maturity isn't a key, that get's copied to the data dict above, need to grab it directly:
     data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
+    max_results = data.pop("maxResults")
 
     if 'collectionName' in data:
         stack_level = 2
@@ -110,11 +109,7 @@ def search(
 
     for (key, replacement) in rename_fields:
         if key in data:
-            data[replacement] = data[key]
-            data.pop(key)
-
-    opts = (ASFSearchOptions() if opts is None else copy(opts))
-    opts.merge_args(**data)
+            data[replacement] = data.pop(key)
 
     subqueries = build_subqueries(opts)
 
@@ -124,6 +119,8 @@ def search(
 
     for query in subqueries:
         response = opts.session.post(url=url, data=translate_opts(query))
+
+        # TODO: Handle maxResults HERE, since this is basically the old CMR/Query.py
 
         try:
             response.raise_for_status()
