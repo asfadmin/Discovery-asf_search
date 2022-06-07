@@ -22,6 +22,10 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         params['product_list'] = chunk_list(params['product_list'], 500)
 
     list_param_names = ['platform']  # these parameters will dodge the subquery system
+    skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL
+    
+    params = dict([ (k, v) for k, v in params.items() if k not in skip_param_names ])
+
     subquery_params, list_params = {}, {}
     for k, v in params.items():
         if k in list_param_names:
