@@ -36,7 +36,7 @@ def translate_product(item: dict) -> dict:
     properties = {
         'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
         'browse': get(umm, 'RelatedUrls', ('Type', 'GET RELATED VISUALIZATION'), 'URL'),
-        'bytes': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0)),
+        'bytes': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0).rstrip('.0')),
         'centerLat': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0)),
         'centerLon': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0)),
         'faradayRotation': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0)),
@@ -61,6 +61,27 @@ def translate_product(item: dict) -> dict:
         'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
     }
 
+    stateVectors = {}
+    prePosition = get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0)
+    if prePosition is not None:
+        stateVectors['prePosition'], stateVectors['prePositionTime'] = prePosition
+        stateVectors['postPosition'], stateVectors['postPositionTime'] = get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0)
+        stateVectors['preVelocity'], stateVectors['preVelocityTime'] = get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0)
+        stateVectors['postVelocity'], stateVectors['postVelocityTime'] = get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0)
+        ascendingNodeTime = get(umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
+
+    insarBaseline = get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0)
+    
+    baseline = {}
+    if None not in stateVectors.values() and len(stateVectors.items()) == 4:
+        baseline['stateVectors'] = stateVectors
+        baseline['ascendingNodeTime'] = ascendingNodeTime
+    elif insarBaseline is not None:
+        baseline['insarBaseline'] = insarBaseline
+    else:
+        baseline = None
+
+
     properties['fileName'] = properties['url'].split('/')[-1]
 
     asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS']
@@ -69,7 +90,7 @@ def translate_product(item: dict) -> dict:
     else:
         properties['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0)
 
-    return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
+    return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 
 
 def cast(f, v):

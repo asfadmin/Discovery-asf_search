@@ -17,7 +17,7 @@ class ASFProduct:
 
         self.properties = translated['properties']
         self.geometry = translated['geometry']
-        # self.baseline = translated['baseline']
+        self.baseline = translated['baseline']
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
