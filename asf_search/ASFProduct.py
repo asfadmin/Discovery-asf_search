@@ -10,12 +10,14 @@ from asf_search.CMR import translate_product
 
 class ASFProduct:
     def __init__(self, args: dict):
-        translated = translate_product(args)
         self.meta = args['meta']
         self.umm = args['umm']
-        self.properties = args['properties']
-        self.geometry = args['geometry']
-        self.baseline = args['baseline']
+
+        translated = translate_product(args)
+
+        self.properties = translated['properties']
+        self.geometry = translated['geometry']
+        # self.baseline = translated['baseline']
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
