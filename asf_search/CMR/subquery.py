@@ -45,6 +45,9 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         q['session'] = copy(opts.session)
         for key in list_params.keys():
             q[key] = list_params[key]
+        
+        if 'intersectsWith' in list(q.keys()):
+            q['intersectsWith'] = q['intersectsWith'].replace(':', "(").replace(',', ' ') + ")"
         final_sub_query_opts.append(ASFSearchOptions(**q))
 
     return final_sub_query_opts

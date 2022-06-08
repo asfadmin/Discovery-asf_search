@@ -91,7 +91,11 @@ def search(
     data = dict(opts)
     # maturity isn't a key, that get's copied to the data dict above, need to grab it directly:
     data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
-    max_results = data.pop("maxResults")
+    max_results = data.pop("maxResults", None)
+    wkt: str = data.pop("intersectsWith", None)
+    
+    # if wkt != None:
+    #     wkt = wkt.replace(' (', ':').replace(' ', ',')[:-1].lower()
 
     if 'collectionName' in data:
         stack_level = 2
@@ -115,10 +119,14 @@ def search(
 
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
+
     results = ASFSearchResults(opts=opts)
 
     for query in subqueries:
-        response = opts.session.post(url=url, data=translate_opts(query))
+        translated_opts = translate_opts(query)
+        if wkt is not None:
+            translated_opts.append((wkt.split(':')[0], wkt.split(':')[1]))
+        response = opts.session.post(url=url, data=translated_opts)
 
         # TODO: Handle maxResults HERE, since this is basically the old CMR/Query.py
 

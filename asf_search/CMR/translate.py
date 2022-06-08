@@ -69,7 +69,7 @@ def translate_product(item: dict) -> dict:
     stateVectors['postVelocity'], stateVectors['postVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
     ascendingNodeTime = get(umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
 
-    insarBaseline = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
+    insarBaseline = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
     
     baseline = {}
     if None not in stateVectors.values() and len(stateVectors.items()) > 0:
@@ -122,4 +122,7 @@ def get(item: dict, *args):
     return item
 
 def get_state_vector(state_vector: str):
+    if state_vector is None:
+        return None, None
+    
     return state_vector.split(',')[:3], state_vector.split(',')[-1]
