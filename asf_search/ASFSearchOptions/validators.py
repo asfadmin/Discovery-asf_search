@@ -186,7 +186,7 @@ def parse_wkt(value: str) -> str:
 
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):
-    if issubclass(session, Session):
+    if issubclass(type(session), requests.Session):
         return session
     else:
         raise ValueError(f'Invalid Session: expected ASFSession or a requests.Session subclass. Got {type(session)}')
