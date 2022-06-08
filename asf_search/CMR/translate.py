@@ -1,3 +1,4 @@
+from datetime import datetime
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import DEFAULT_PROVIDER
 
@@ -62,15 +63,13 @@ def translate_product(item: dict) -> dict:
     }
 
     stateVectors = {}
-    prePosition = get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0)
-    if prePosition is not None:
-        stateVectors['prePosition'], stateVectors['prePositionTime'] = get_state_vector(prePosition)
-        stateVectors['postPosition'], stateVectors['postPositionTime'] = get_state_vector(get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
-        stateVectors['preVelocity'], stateVectors['preVelocityTime'] = get_state_vector(get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
-        stateVectors['postVelocity'], stateVectors['postVelocityTime'] = get_state_vector(get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
-        ascendingNodeTime = get(umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
+    stateVectors['prePosition'], stateVectors['prePositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
+    stateVectors['postPosition'], stateVectors['postPositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
+    stateVectors['preVelocity'], stateVectors['preVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
+    stateVectors['postVelocity'], stateVectors['postVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
+    ascendingNodeTime = get(umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
 
-    insarBaseline = get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0)
+    insarBaseline = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
     
     baseline = {}
     if None not in stateVectors.values() and len(stateVectors.items()) > 0:
@@ -123,4 +122,4 @@ def get(item: dict, *args):
     return item
 
 def get_state_vector(state_vector: str):
-    return state_vector.split(',')[:2], state_vector.split(',')[2:]
+    return state_vector.split(',')[:3], state_vector.split(',')[-1]
