@@ -22,19 +22,19 @@ class ASFSearchResults(UserList):
             self,
             path: str,
             session: ASFSession = None,
-            processes=1
+            processes: int = 1
     ) -> None:
         """
         Iterates over each ASFProduct and downloads them to the specified path.
 
         :param path: The directory into which the products should be downloaded.
-        :param session: The session to use, in most cases should be authenticated beforehand
+        :param session: The session to use. Defaults to the session used to fetch the results, or a new one if none was used.
         :param processes: Number of download processes to use. Defaults to 1 (i.e. sequential download)
 
         :return: None
         """
         if session is None:
-            session = ASFSession()
+            session = ASFSession() if self.searchOptions is None else self.searchOptions.session
 
         if processes == 1:
             for product in self:
