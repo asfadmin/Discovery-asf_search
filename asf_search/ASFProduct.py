@@ -55,9 +55,6 @@ class ASFProduct:
         """
         from .search.baseline_search import stack_from_product
 
-        if opts is None and self.searchOptions is not None:
-            opts = self.searchOptions
-
         return stack_from_product(self, opts=opts)
 
     def get_stack_opts(self) -> ASFSearchOptions:
