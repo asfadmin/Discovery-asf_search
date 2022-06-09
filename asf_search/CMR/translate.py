@@ -1,7 +1,10 @@
+from ast import Tuple
 from datetime import datetime
+from typing import Any, Dict
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import DEFAULT_PROVIDER
-
+# from asf_search.search.search import fix_date
+import dateparser
 from .field_map import field_map
 
 
@@ -11,15 +14,20 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # provider doesn't get copied with the 'dict' cast above
     dict_opts['provider'] = getattr(opts, 'provider', DEFAULT_PROVIDER)
 
+    dict_opts = fix_date(dict_opts)
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
-        if isinstance(val, list):
+        if key == 'intersectsWith':
+            cmr_opts.append((val.split(':')[0], val.split(':')[1]))
+        elif isinstance(val, list):
             for x in val:
                 cmr_opts.append((key, x))
         else:
             cmr_opts.append((key, val))
 
+        # cmr_opts.append((wkt.split(':')[0], wkt.split(':')[1]))
+        
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
@@ -63,16 +71,24 @@ def translate_product(item: dict) -> dict:
     }
 
     stateVectors = {}
-    stateVectors['prePosition'], stateVectors['prePositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
-    stateVectors['postPosition'], stateVectors['postPositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
-    stateVectors['preVelocity'], stateVectors['preVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
-    stateVectors['postVelocity'], stateVectors['postVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
+    positions = {}
+    velocities = {}
+    positions['prePosition'], positions['prePositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
+    positions['postPosition'], positions['postPositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
+    velocities['preVelocity'], velocities['preVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
+    velocities['postVelocity'], velocities['postVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
     ascendingNodeTime = get(umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
+
+
+    stateVectors = {
+        'positions': positions,
+        'velocities': velocities
+    }
 
     insarBaseline = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
     
     baseline = {}
-    if None not in stateVectors.values() and len(stateVectors.items()) > 0:
+    if None not in stateVectors['positions'].values() and len(stateVectors.items()) > 0:
         baseline['stateVectors'] = stateVectors
         baseline['ascendingNodeTime'] = ascendingNodeTime
     elif insarBaseline is not None:
@@ -125,4 +141,41 @@ def get_state_vector(state_vector: str):
     if state_vector is None:
         return None, None
     
-    return state_vector.split(',')[:3], state_vector.split(',')[-1]
+    return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
+
+
+
+def fix_date(fixed_params: Dict[str, Any]):
+    if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
+        # set default start and end dates if needed, and then make sure they're formatted correctly
+        # whether using the default or not
+        # set_start = fixed_params.index('start')
+        start_s = fixed_params['start'].isoformat() if 'start' in fixed_params else '1978-01-01T00:00:00Z'
+        end_s = fixed_params['end'].isoformat() if 'end' in fixed_params else datetime.utcnow().isoformat()
+
+        start = dateparser.parse(start_s, settings={'RETURN_AS_TIMEZONE_AWARE': True})
+        end = dateparser.parse(end_s, settings={'RETURN_AS_TIMEZONE_AWARE': True})
+
+        # Check/fix the order of start/end
+        if start > end:
+            start, end = end, start
+
+        # Final temporal string that will actually be used
+        fixed_params['temporal'] = '{0},{1}'.format(
+            start.strftime('%Y-%m-%dT%H:%M:%SZ'),
+            end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        )
+
+        # add the seasonal search if requested now that the regular dates are
+        # sorted out
+        if 'season' in fixed_params:
+            fixed_params['temporal'] += ',{0}'.format(
+                ','.join(str(x) for x in fixed_params['season'])
+            )
+
+        # And a little cleanup
+        fixed_params.pop('start', None)
+        fixed_params.pop('end', None)
+        fixed_params.pop('season', None)
+        
+    return fixed_params

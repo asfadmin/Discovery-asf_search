@@ -85,7 +85,7 @@ def get_stack_opts(
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:
-        stack_opts.platform = [PLATFORM.SENTINEL1]
+        stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
         stack_opts.beamMode = [reference.properties['beamModeType']]
         stack_opts.flightDirection = reference.properties['flightDirection']
         stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path

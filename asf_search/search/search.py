@@ -1,8 +1,9 @@
-from typing import Union, Iterable, Tuple
+from typing import Any, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
 import datetime
-
+import dateparser
+import warnings
 
 from asf_search import __version__
 
@@ -124,8 +125,7 @@ def search(
 
     for query in subqueries:
         translated_opts = translate_opts(query)
-        if wkt is not None:
-            translated_opts.append((wkt.split(':')[0], wkt.split(':')[1]))
+        # translated_opts = fix_date(translated_opts)
         response = opts.session.post(url=url, data=translated_opts)
 
         # TODO: Handle maxResults HERE, since this is basically the old CMR/Query.py
