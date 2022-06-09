@@ -86,7 +86,7 @@ def search(
 
     :return: ASFSearchResults(list) of search results
     """
-    
+
     kwargs = locals()
     data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
 
@@ -171,7 +171,7 @@ def search(
             raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
         raise ASFServerError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
 
-    products = [ASFProduct(f) for f in response.json()['features']]
+    products = [ASFProduct(f, opts=opts) for f in response.json()['features']]
     return ASFSearchResults(products, opts=opts)
 
 

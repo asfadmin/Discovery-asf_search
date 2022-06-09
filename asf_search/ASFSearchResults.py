@@ -1,12 +1,14 @@
 from collections import UserList
 from multiprocessing import Pool
 import json
-from asf_search import ASFSession
+from asf_search import ASFSession, ASFSearchOptions
 
 
 class ASFSearchResults(UserList):
-    def __init__(self, *args, opts=None):
+    def __init__(self, *args, opts: ASFSearchOptions = None):
         super().__init__(*args)
+        # Store it JUST so the user can access it (There might be zero products)
+        # Each product will use their own reference to opts (but points to the same obj)
         self.searchOptions = opts
 
     def geojson(self):
@@ -33,8 +35,6 @@ class ASFSearchResults(UserList):
 
         :return: None
         """
-        if session is None:
-            session = ASFSession() if self.searchOptions is None else self.searchOptions.session
 
         if processes == 1:
             for product in self:
