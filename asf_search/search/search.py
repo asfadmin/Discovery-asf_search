@@ -126,6 +126,8 @@ def search(
     for query in subqueries:
         translated_opts = translate_opts(query)
         # translated_opts = fix_date(translated_opts)
+        if max_results != None:
+            translated_opts.append(('page_size',  max_results))
         response = opts.session.post(url=url, data=translated_opts)
 
         # TODO: Handle maxResults HERE, since this is basically the old CMR/Query.py
@@ -140,5 +142,8 @@ def search(
             raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
 
         results.extend([ASFProduct(f) for f in response.json()['items']])
+
+        if 'CMR-Search-After' in response.headers:            
+            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
     return results
