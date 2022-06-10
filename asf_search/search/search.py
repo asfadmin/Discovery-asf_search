@@ -4,6 +4,7 @@ from requests.exceptions import HTTPError
 import datetime
 import dateparser
 import warnings
+import inspect
 
 from asf_search import __version__
 
@@ -92,7 +93,7 @@ def search(
     data = dict(opts)
     # maturity isn't a key that get's copied to the data dict above, need to grab it directly:
     data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
-    max_results = data.pop("maxResults", None)
+    max_results = data.pop("maxResults", 150)
     wkt: str = data.pop("intersectsWith", None)
     
     # if wkt != None:
