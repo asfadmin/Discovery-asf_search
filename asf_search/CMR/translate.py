@@ -32,6 +32,8 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
 
+    cmr_opts.append(('page_size',  150))
+
     return cmr_opts
 
 

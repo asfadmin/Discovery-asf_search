@@ -1,6 +1,7 @@
 from typing import Any, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
+from requests import Response
 import datetime
 import dateparser
 import warnings
@@ -93,11 +94,7 @@ def search(
     data = dict(opts)
     # maturity isn't a key that get's copied to the data dict above, need to grab it directly:
     data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
-    max_results = data.pop("maxResults", 150)
-    wkt: str = data.pop("intersectsWith", None)
-    
-    # if wkt != None:
-    #     wkt = wkt.replace(' (', ':').replace(' ', ',')[:-1].lower()
+    maxResults = data.pop("maxResults", INTERNAL.CMR_PAGE_SIZE)
 
     if 'collectionName' in data:
         stack_level = 2
@@ -121,28 +118,36 @@ def search(
 
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
-
     results = ASFSearchResults(opts=opts)
 
     for query in subqueries:
         translated_opts = translate_opts(query)
-        # translated_opts = fix_date(translated_opts)
-        if max_results != None:
-            translated_opts.append(('page_size',  max_results))
-        response = opts.session.post(url=url, data=translated_opts)
 
-        try:
-            response.raise_for_status()
-        except HTTPError:
-            if 400 <= response.status_code <= 499:
-                raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-            if 500 <= response.status_code <= 599:
-                raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-            raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
 
-        results.extend([ASFProduct(f) for f in response.json()['items']])
+        hits = [ASFProduct(f) for f in response.json()['items']]
+        results.extend(hits[:min(maxResults, len(hits))])
 
-        if 'CMR-Search-After' in response.headers:            
+        while('CMR-Search-After' in response.headers and len(results) < maxResults):
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
+            response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+            
+            hits = [ASFProduct(f) for f in response.json()['items']]
+            results.extend(hits[:min(maxResults - len(results), len(hits))])
+
     return results
+
+def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
+    response = session.post(url=url, data=translated_opts)
+
+    try:
+        response.raise_for_status()
+    except HTTPError:
+        if 400 <= response.status_code <= 499:
+            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        if 500 <= response.status_code <= 599:
+            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+
+    return response
