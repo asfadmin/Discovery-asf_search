@@ -54,7 +54,8 @@ class ASFProduct:
         :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
-
+        # *this* opts, probably isn't the same as the one used to do the search.
+        # Don't default to self.searchOptions here
         return stack_from_product(self, opts=opts)
 
     def get_stack_opts(self) -> ASFSearchOptions:
