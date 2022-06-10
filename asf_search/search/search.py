@@ -130,8 +130,6 @@ def search(
             translated_opts.append(('page_size',  max_results))
         response = opts.session.post(url=url, data=translated_opts)
 
-        # TODO: Handle maxResults HERE, since this is basically the old CMR/Query.py
-
         try:
             response.raise_for_status()
         except HTTPError:
