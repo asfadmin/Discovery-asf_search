@@ -90,7 +90,7 @@ def search(
     opts.merge_args(**data)
 
     data = dict(opts)
-    # maturity isn't a key, that get's copied to the data dict above, need to grab it directly:
+    # maturity isn't a key that get's copied to the data dict above, need to grab it directly:
     data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
     max_results = data.pop("maxResults", None)
     wkt: str = data.pop("intersectsWith", None)
@@ -112,9 +112,9 @@ def search(
         'campaign', 'collectionName'
     )]
 
-    for (key, replacement) in rename_fields:
-        if key in data:
-            data[replacement] = data.pop(key)
+    for (new_key, deprecated_key) in rename_fields:
+        if deprecated_key in data:
+            data[new_key] = data.pop(deprecated_key)
 
     subqueries = build_subqueries(opts)
 
