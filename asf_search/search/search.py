@@ -96,6 +96,9 @@ def search(
     data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
     maxResults = data.pop("maxResults", INTERNAL.CMR_PAGE_SIZE)
 
+    if getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False):
+        maxResults = None
+    
     if 'collectionName' in data:
         stack_level = 2
         if inspect.stack()[1].function == 'geo_search':
@@ -126,15 +129,30 @@ def search(
         response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
 
         hits = [ASFProduct(f) for f in response.json()['items']]
-        results.extend(hits[:min(maxResults, len(hits))])
 
-        while('CMR-Search-After' in response.headers and len(results) < maxResults):
+        if maxResults != None:
+            results.extend(hits[:min(maxResults, len(hits))])
+            if len(results) == maxResults:
+                break
+        else:
+            results.extend(hits)
+
+        while('CMR-Search-After' in response.headers):
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
             response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
             
             hits = [ASFProduct(f) for f in response.json()['items']]
-            results.extend(hits[:min(maxResults - len(results), len(hits))])
+            
+            if maxResults != None:
+                results.extend(hits[:min(maxResults, len(hits))])
+                if len(results) == maxResults:
+                    break
+            else:
+                results.extend(hits)
+        
+        opts.session.headers.pop('CMR-Search-After', None)
+
 
     return results
 

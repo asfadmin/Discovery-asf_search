@@ -46,9 +46,16 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         for key in list_params.keys():
             q[key] = list_params[key]
         
+        # don't want to parse intersectsWith twice, since it's already in the format CMR expects by this point
+        wkt = None
         if 'intersectsWith' in list(q.keys()):
             q['intersectsWith'] = q['intersectsWith'].replace(':', "(").replace(',', ' ') + ")"
+            wkt = q.pop('intersectsWith')
+        
         final_sub_query_opts.append(ASFSearchOptions(**q))
+        
+        if wkt != None:
+            final_sub_query_opts.append(wkt)
 
     return final_sub_query_opts
 
