@@ -1,8 +1,8 @@
 from ast import Tuple
 from datetime import datetime
 from typing import Any, Dict
-from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.constants import DEFAULT_PROVIDER
+from asf_search.ASFSearchOptions import ASFSearchOptions, validators
+from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
 # from asf_search.search.search import fix_date
 import dateparser
 from .field_map import field_map
@@ -13,6 +13,12 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     dict_opts = dict(opts)
     # provider doesn't get copied with the 'dict' cast above
     dict_opts['provider'] = getattr(opts, 'provider', DEFAULT_PROVIDER)
+    
+    # CMR requires non-wkt format for shapes
+    # [polygon/linestring/point]: 0, 0, 20, 20, ...
+    if 'intersectsWith' in dict_opts:
+        shape_type, shape = validators.parse_wkt(dict_opts.pop('intersectsWith')).split(':')
+        dict_opts[shape_type] = shape
 
 
 
@@ -21,19 +27,21 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
-        if key == 'intersectsWith':
-            cmr_opts.append((val.split(':')[0], val.split(':')[1]))
-        elif isinstance(val, list):
+        if isinstance(val, list):
             for x in val:
-                cmr_opts.append((key, x))
+                if x in ['granule_list', 'product_list']:
+                    for y in x.split(','):
+                        cmr_opts.append((key, y))
+                else:
+                    cmr_opts.append((key, x))
         else:
             cmr_opts.append((key, val))
 
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
-
-    cmr_opts.append(('page_size',  150))
+    
+    cmr_opts.append(('page_size', CMR_PAGE_SIZE))
 
     return cmr_opts
 
@@ -48,7 +56,7 @@ def translate_product(item: dict) -> dict:
     properties = {
         'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
         'browse': get(umm, 'RelatedUrls', ('Type', 'GET RELATED VISUALIZATION'), 'URL'),
-        'bytes': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0).rstrip('.0')),
+        'bytes': cast(int, try_strip_trailing_zero(get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0))),
         'centerLat': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0)),
         'centerLon': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0)),
         'faradayRotation': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0)),
@@ -146,7 +154,11 @@ def get_state_vector(state_vector: str):
     
     return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
 
-
+def try_strip_trailing_zero(value: str):
+    if value != None:
+        return value.rstrip('.0')
+    
+    return value
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
