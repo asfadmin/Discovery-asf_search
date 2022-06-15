@@ -14,7 +14,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # provider doesn't get copied with the 'dict' cast above
     dict_opts['provider'] = getattr(opts, 'provider', DEFAULT_PROVIDER)
 
+
+
     dict_opts = fix_date(dict_opts)
+    dict_opts = fix_platform(dict_opts)
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
@@ -26,8 +29,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         else:
             cmr_opts.append((key, val))
 
-        # cmr_opts.append((wkt.split(':')[0], wkt.split(':')[1]))
-        
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
@@ -180,4 +181,39 @@ def fix_date(fixed_params: Dict[str, Any]):
         fixed_params.pop('end', None)
         fixed_params.pop('season', None)
         
+    return fixed_params
+
+def fix_platform(fixed_params: Dict[str, Any]):
+
+    plat_aliases = {
+        'S1': ['SENTINEL-1A', 'SENTINEL-1B'],
+        'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B'],
+        'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B'],
+        'ERS': ['ERS-1', 'ERS-2'],
+        'SIR-C': ['STS-59', 'STS-68']
+    }
+
+    plat_names = {
+        'R1': 'RADARSAT-1',
+        'E1': 'ERS-1',
+        'E2': 'ERS-2',
+        'J1': 'JERS-1',
+        'A3': 'ALOS',
+        'AS': 'DC-8',
+        'AIRSAR': 'DC-8',
+        'SS': 'SEASAT 1',
+        'SEASAT': 'SEASAT 1',
+        'SA': 'SENTINEL-1A',
+        'SB': 'SENTINEL-1B',
+        'SP': 'SMAP',
+        'UA': 'G-III',
+        'UAVSAR': 'G-III'
+    }
+
+
+    # Legacy API allowed a few synonyms. If they're using one,
+    # translate it. Also handle airsar/seasat/uavsar platform
+    # conversion
+    if 'platform' in fixed_params:
+        pass
     return fixed_params
