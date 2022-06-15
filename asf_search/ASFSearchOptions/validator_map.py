@@ -34,7 +34,7 @@ validator_map = {
     'frame':                  parse_int_or_range_list,
     'granule_list':           parse_string_list,
     'product_list':           parse_string_list,
-    'intersectsWith':         parse_wkt,
+    'intersectsWith':         parse_string,
     'lookDirection':          parse_string,
     'offNadirAngle':          parse_float_or_range_list,
     'platform':               parse_string_list,

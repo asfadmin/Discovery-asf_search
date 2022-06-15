@@ -1,7 +1,7 @@
 from ast import Tuple
 from datetime import datetime
 from typing import Any, Dict
-from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSearchOptions import ASFSearchOptions, validators
 from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
 # from asf_search.search.search import fix_date
 import dateparser
@@ -17,9 +17,8 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # CMR requires non-wkt format for shapes
     # [polygon/linestring/point]: 0, 0, 20, 20, ...
     if 'intersectsWith' in dict_opts:
-        shape_type, shape = dict_opts['intersectsWith'].split(':')
+        shape_type, shape = validators.parse_wkt(dict_opts.pop('intersectsWith')).split(':')
         dict_opts[shape_type] = shape
-        dict_opts.pop('intersectsWith')
 
     dict_opts = fix_date(dict_opts)
     # convert the above parameters to a list of key/value tuples
@@ -27,8 +26,11 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     for (key, val) in dict_opts.items():
         if isinstance(val, list):
             for x in val:
-                for y in x.split(','):
-                    cmr_opts.append((key, y))
+                if x in ['granule_list', 'product_list']:
+                    for y in x.split(','):
+                        cmr_opts.append((key, y))
+                else:
+                    cmr_opts.append((key, x))
         else:
             cmr_opts.append((key, val))
 

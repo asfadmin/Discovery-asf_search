@@ -1,8 +1,6 @@
 import warnings
 from .validator_map import validator_map, validate
 from .defaults import defaults
-from asf_search import ASFSession
-from asf_search.constants import INTERNAL
 
 
 class ASFSearchOptions:
