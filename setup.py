@@ -9,6 +9,8 @@ requirements = [
     "importlib_metadata",
     "scikit-learn",
     "numpy"
+    "dateparser",
+    "WKTUtils==1.1.0",
 ]
 
 test_requirements = [

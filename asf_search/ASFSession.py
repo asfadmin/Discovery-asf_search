@@ -1,4 +1,5 @@
 import requests
+from requests.utils import get_netrc_auth
 import http.cookiejar
 from asf_search import __version__
 from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
@@ -11,6 +12,7 @@ class ASFSession(requests.Session):
     def __init__(self):
         super().__init__()
         self.headers.update({'User-Agent': f'{__name__}.{__version__}'})
+
 
     def auth_with_creds(self, username: str, password: str):
         """
@@ -86,6 +88,10 @@ class ASFSession(requests.Session):
                 and (original_domain not in self.AUTH_DOMAINS
                 or redirect_domain not in self.AUTH_DOMAINS)):
                 del headers['Authorization']
+
+        new_auth = get_netrc_auth(url) if self.trust_env else None
+        if new_auth is not None:
+            prepared_request.prepare_auth(new_auth)
 
     def _get_domain(self, url: str):
             return requests.utils.urlparse(url).hostname

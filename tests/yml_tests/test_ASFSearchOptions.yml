@@ -1,0 +1,163 @@
+tests:
+- test-validator-map-validate parse-string campaign:
+    key: campaign
+    value: 123
+    output: '123'
+
+- test-validator-map-validate parse-float maxDoppler:
+    key: maxDoppler
+    value: '123.0'
+    output: 123.0
+
+- test-validators parse_float:
+    validator: parse_float
+    input: '123.0'
+    output: 123.0
+    error: null
+
+- test-validators parse_float error invalid float:
+    validator: parse_float
+    input: 'asf'
+    output: 123.0
+    error: Invalid float
+
+- test-validators parse_float error infinity:
+    validator: parse_float
+    input: 'inf'
+    output: 123.0
+    error: Float values must be finite
+
+- test-validators parse_string from string:
+    validator: parse_string
+    input: 'inf'
+    output: 'inf'
+    error: null
+
+- test-validators parse_string from number:
+    validator: parse_string
+    input: 123.0
+    output: '123.0'
+    error: null
+
+- test-validators parse_int_range ints:
+    validator: parse_int_range
+    input: { tuple: [123.0, 125.0] }
+    output: { tuple: [123.0, 125.0] }
+    error: null
+
+- test-validators parse_int_range floats:
+    validator: parse_int_range
+    input: { tuple: [123.5, 125.5] }
+    output: { tuple: [123.0, 125.0] }
+    error: null
+
+- test-validators parse_float_range ints:
+    validator: parse_float_range
+    input: { tuple: [123.0, 125.0] }
+    output: { tuple: [123.0, 125.0] }
+    error: null
+
+- test-validators parse_float_range floats:
+    validator: parse_float_range
+    input: { tuple: [123.5, 125.5] }
+    output: { tuple: [123.5, 125.5] }
+    error: null
+
+- test-validators parse_string_list strings:
+    validator: parse_string_list
+    input: ['asf', 'nasa']
+    output: ['asf', 'nasa']
+    error: null
+
+- test-validators parse_string_list numbers:
+    validator: parse_string_list
+    input: [123, 0.123, 0.0]
+    output: ['123', '0.123', '0.0']
+    error: null
+
+- test-validators parse_int_list strings:
+    validator: parse_int_list
+    input: ['1', '2', '123']
+    output: [1, 2, 123]
+    error: null
+
+- test-validators parse_int_list int:
+    validator: parse_int_list
+    input: [1, 2, 123]
+    output: [1, 2, 123]
+    error: null
+
+- test-validators parse_int_list floats:
+    validator: parse_int_list
+    input: [1.0, 2.0, 123.5]
+    output: [1, 2, 123]
+    error: null
+
+- test-validators parse_int_list error strings:
+    validator: parse_int_list
+    input: ['asf', 'nasa']
+    output: null
+    error: Invalid int list
+
+- test-ASFSearchOptions - create blank object:
+    exception: Null
+    # At least once, make sure they all exist but are None:
+    expect_output:
+        platform: Null
+        instrument: Null
+        absoluteOrbit: Null
+        asfFrame: Null
+        beamMode: Null
+        campaign: Null
+        maxDoppler: Null
+        minDoppler: Null
+        maxFaradayRotation: Null
+        minFaradayRotation: Null
+        flightDirection: Null
+        flightLine: Null
+        frame: Null
+        granule_list: Null
+        groupID: Null
+        lookDirection: Null
+        offNadirAngle: Null
+        polarization: Null
+        processingLevel: Null
+        product_list: Null
+        relativeOrbit: Null
+        processingDate: Null
+        start: Null
+        end: Null
+        season: Null
+        maxResults: Null
+
+- test-ASFSearchOptions - create with bad key:
+    doesNotExist: whatevs
+    exception: KeyError
+
+- test-ASFSearchOptions - create with bad value:
+    asfFrame: potato
+    exception: ValueError
+
+- test-ASFSearchOptions - create with valid dates:
+    exception: Null
+    start: "2022-01-01"
+    end: "2022-02-02"
+    expect_output:
+        start: 2022-01-01 00:00:00
+        end: 2022-02-02 00:00:00
+
+- test-ASFSearchOptions - test with defaults NOT null:
+    exception: Null
+    # not sure how to check session...
+    expect_output:
+        host: api.daac.asf.alaska.edu
+        provider: ASF
+
+- test-ASFSearchOptions - test with defaults override:
+    exception: Null
+    host: does-not-exist.asf.alaska.edu
+    provider: TOTALLY NOT ASF
+    # not sure how to check session...
+    expect_output:
+        host: does-not-exist.asf.alaska.edu
+        provider: TOTALLY NOT ASF

@@ -1,6 +1,8 @@
-from typing import List
+from typing import Dict, List
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
+from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_product_get_stack_options, run_test_stack
+from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
@@ -17,6 +19,7 @@ import yaml
 
 from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_valdiate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry
 import requests
+from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 
 from tests.download.test_download import run_test_download_url_auth_error
@@ -41,7 +44,14 @@ def test_ASFProduct_Stack(**args) -> None:
     preprocessed_stack = get_resource(test_info["preprocessed_stack"])
     processed_stack = get_resource(test_info["processed_stack"])
     run_test_stack(reference, preprocessed_stack, processed_stack)
-    
+
+def test_ASFProduct_get_stack_options(**args) -> None:
+    test_info = args["test_info"]
+    reference = get_resource(test_info['product'])
+    options = get_resource(test_info['options'])
+
+    run_test_product_get_stack_options(reference, options)
+ 
 # asf_search.ASFSession Tests
 def test_ASFSession_Error(**args) -> None:
     """
@@ -93,8 +103,8 @@ def test_asf_session_rebuild_auth(**args) -> None:
 # asf_search.search.baseline_search Tests
 def test_get_preprocessed_stack_params(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a reference scene
-    that's part of a pre-calculated platform, asserting that get_stack_params returns an object with two parameters
+    Test asf_search.search.baseline_search.get_stack_opts with a reference scene
+    that's part of a pre-calculated platform, asserting that get_stack_opts returns an object with two parameters
     \n1. processingLevel
     \n2. insarStackId
     """
@@ -105,32 +115,32 @@ def test_get_preprocessed_stack_params(**args) -> None:
 
 def test_get_unprocessed_stack_params(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a reference scene
-    that's not part of a pre-calculated platform, asserting that get_stack_params returns an object with seven parameters
+    Test asf_search.search.baseline_search.get_stack_opts with a reference scene
+    that's not part of a pre-calculated platform, asserting that get_stack_opts returns an object with seven parameters
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
 
     run_test_get_unprocessed_stack_params(reference)
 
-def test_get_stack_params_invalid_insarStackId(**args) -> None:
+def test_get_stack_opts_invalid_insarStackId(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a the reference scene's 
+    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's 
     insarStackID set to an invalid value, and asserting an ASFBaselineError is raised
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
     
-    run_get_stack_params_invalid_insarStackId(reference)
+    run_get_stack_opts_invalid_insarStackId(reference)
     
-def test_get_stack_params_invalid_platform(**args) -> None:
+def test_get_stack_opts_invalid_platform(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_params with a the reference scene's 
+    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's 
     platform set to an invalid value, and asserting an ASFBaselineError is raised
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])    
-    run_test_get_stack_params_invalid_platform_raises_error(reference)
+    run_test_get_stack_opts_invalid_platform_raises_error(reference)
     
 def test_temporal_baseline(**args) -> None:
     """
@@ -334,7 +344,42 @@ def test_valid_state_vectors(**args) -> None:
     output = get_resource(test_info['output'])
     
     run_test_valid_state_vectors(reference, output)
+    
+def test_validator_map_validate(**args) -> None:
+    test_info = args["test_info"]
+    key = get_resource(test_info['key'])
+    value = get_resource(test_info['value'])
+    output = get_resource(test_info['output'])
+
+    run_test_validator_map_validate(key, value, output)
+
+def test_ASFSearchOptions_validator(**args) -> None:
+    test_info = args["test_info"]
+    validator_name = get_resource(test_info['validator'])
+    param = safe_load_tuple(get_resource(test_info['input']))
+    output = safe_load_tuple(get_resource(test_info['output']))
+    error = get_resource(test_info['error'])
+    run_test_ASFSearchOptions_validator(validator_name, param, output, error)
+    
+
+def test_ASFSearchOptions(**kwargs) -> None:
+    run_test_ASFSearchOptions(**kwargs)
+
+
 # Testing resource loading utilities
+
+def safe_load_tuple(param):
+    """
+    loads a tuple from a list if a param is an object with key 'tuple'
+    (Arbritrary constructor initialization is not supported by yaml.safe_load
+    as a security measure)
+    
+    """
+    if isinstance(param, Dict):
+        if "tuple" in param.keys():
+            param = tuple(param['tuple'])
+    
+    return param
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):

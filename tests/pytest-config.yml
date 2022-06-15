@@ -10,6 +10,11 @@ test_types:
     required_in_title: ASFProduct_Stack
     method: test_ASFProduct_Stack
 
+- For running ASFProduct_get_stack_options tests:
+    required_keys: ["product", "options"]
+    required_in_title: ASFProduct-get-stack-options
+    method: test_ASFProduct_get_stack_options
+
 - For running ASFSession tests:
     required_in_title: password-login
     required_keys: ['username', 'password']
@@ -43,12 +48,12 @@ test_types:
 - For running Invalid Stack ID stack params tests:
     required_keys: product
     required_in_title: test-invalid-insarStackID
-    method: test_get_stack_params_invalid_insarStackId
+    method: test_get_stack_opts_invalid_insarStackId
 
 - For running Invalid Platform stack params tests:
     required_keys: product
     required_in_title: test-invalid-platform
-    method: test_get_stack_params_invalid_platform
+    method: test_get_stack_opts_invalid_platform
 
 
 - For running Invalid Platform stack params tests:
@@ -150,3 +155,17 @@ test_types:
     required_keys: ["reference", "output"]
     required_in_title: test-valid-state-vectors
     method: test_valid_state_vectors
+
+- For running test_validator_map_validate tests:
+    required_keys: ['key', 'value', 'output']
+    required_in_title: test-validator-map-validate
+    method: test_validator_map_validate
+
+- For running ASFSearchOption-validator tests:
+    required_keys: ['validator', 'input', 'output', 'error']
+    required_in_title: test-validators
+    method: test_ASFSearchOptions_validator
+
+- For running ASFSearchOptions tests:
+    required_in_title: test-ASFSearchOptions
+    method: test_ASFSearchOptions
