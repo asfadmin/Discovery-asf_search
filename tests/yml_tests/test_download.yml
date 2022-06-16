@@ -1,0 +1,15 @@
+tests:
+- Test test-download-url url error:
+    url: urlError
+    path: " "
+    filename: "error"
+
+- Test test-download-url path error:
+    url: pathError
+    path: " "
+    filename: "error"
+
+- Test test-download-url filename warning:
+    url: filenameError
+    path: " "
+    filename: "error"

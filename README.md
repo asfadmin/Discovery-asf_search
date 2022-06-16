@@ -9,6 +9,12 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search/badge)](https://www.codefactor.io/repository/github/asfadmin/discovery-asf_search)
 [![Github workflow](https://github.com/asfadmin/asf_search/actions/workflows/run-pytest.yml/badge.svg)](https://github.com/asfadmin/Discovery-asf_search/actions/workflows/run-pytest.yml)
 
+![CodeCov](https://img.shields.io/codecov/c/github/asfadmin/Discovery-asf_search/master)
+
+[![Documentation](https://img.shields.io/badge/docs-at_ASF-green)](https://docs.asf.alaska.edu/asf_search/basics/)
+[![Join the chat at https://gitter.im/ASFDiscovery/asf_search](https://badges.gitter.im/ASFDiscovery/asf_search.svg)](https://gitter.im/ASFDiscovery/asf_search?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 Python wrapper for the ASF SearchAPI
 
 ```python
@@ -26,20 +32,29 @@ print(results)
 
 In order to easily manage dependencies, we recommend using dedicated project environments
 via [Anaconda/Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
-or [Python virtual environments](https://docs.python.org/3/tutorial/venv.html). 
+or [Python virtual environments](https://docs.python.org/3/tutorial/venv.html).
 
 asf_search can be installed into a conda environment with
 
-```
+```bash
 conda install -c conda-forge asf_search
 ```
 
 or into a virtual environment with
 
+```bash
+python3 -m pip install asf_search
 ```
-python -m pip install asf_search
+
+To install pytest/cov packages for testing, along with the minimal packages:
+
+```bash
+python3 -m pip install asf_search[test]
 ```
+
 ## Usage
+
+_Full documentation is available at https://docs.asf.alaska.edu/asf_search/basics/_
 
 Programmatically searching for ASF data is made simple with asf_search. Several search functions are provided:
 - `geo_search()` Find product info over an area of interest using a WKT string

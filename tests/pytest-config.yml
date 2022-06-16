@@ -1,0 +1,131 @@
+# Contents of pytest-config.yml
+test_types:
+
+- For running ASFProduct tests:
+    required_keys: products
+    method: test_ASFProduct
+
+- For running ASFProduct_Stack tests:
+    required_keys: ["product", "preprocessed_stack", "processed_stack"]
+    required_in_title: ASFProduct_Stack
+    method: test_ASFProduct_Stack
+
+- For running ASFProduct_get_stack_options tests:
+    required_keys: ["product", "options"]
+    required_in_title: ASFProduct-get-stack-options
+    method: test_ASFProduct_get_stack_options
+
+- For running ASFSession tests:
+    required_in_title: password-login
+    required_keys: ['username', 'password']
+    method: test_ASFSession_Error
+
+- For running ASFSession token_auth tests:
+    required_in_title: token-auth
+    required_keys: token
+    method: test_ASFSession_Token_Error
+
+- For running ASFSession cookiejar_auth tests:
+    required_in_title: cookiejar-auth
+    required_keys: cookies
+    method: test_ASFSession_Cookie_Error
+
+- For running ASFSession rebuild_auth tests:
+    required_in_title: rebuild_auth
+    required_keys: ['original_domain', 'response_domain', 'response_code', 'final_token']
+    method: test_asf_session_rebuild_auth
+
+- For running preprocessed baseline stack params tests:
+    required_keys: product
+    required_in_title: test-preprocessed-product
+    method: test_get_preprocessed_stack_params
+
+- For running unprocessed baseline stack params tests:
+    required_keys: product
+    required_in_title: test-unprocessed-product
+    method: test_get_unprocessed_stack_params
+
+- For running Invalid Stack ID stack params tests:
+    required_keys: product
+    required_in_title: test-invalid-insarStackID
+    method: test_get_stack_opts_invalid_insarStackId
+
+- For running Invalid Platform stack params tests:
+    required_keys: product
+    required_in_title: test-invalid-platform
+    method: test_get_stack_opts_invalid_platform
+
+
+- For running Invalid Platform stack params tests:
+    required_keys: ["product", "stack"]
+    required_in_title: test-temporal-baseline
+    method: test_temporal_baseline
+
+- For running Invalid Platform stack params tests:
+    required_keys: ["product", "stack"]
+    required_in_title: test-product-stack
+    method: test_stack_from_product
+
+- For running stack_from_id tests:
+    required_keys: ["stack_id", "stack", "stack_reference"]
+    required_in_title: test-stack-id
+    method: test_stack_from_id
+
+- For running stack from ASFSearch tests:
+    required_keys: response
+    required_in_title: test-ASFSearch
+    method: test_ASFSearchResults
+
+- For ASFSearch search with parameters tests:
+    required_keys: ["parameters", "answer"]
+    required_in_title: test-ASFSearch-search-valid
+    method: test_ASFSearch_Search
+
+- For running ASFSearch search error tests:
+    required_keys: ["parameters", "status_code", "report"]
+    required_in_title: test-ASFSearch-search-error
+    method: test_ASFSearch_Search_Error
+
+- For running _get_project_names tests:
+    required_keys: ["cmr_ummjson", "campaigns"]
+    required_in_title: test_get_project_names
+    method: test_get_platform_campaign_names
+
+- For running download_url tests:
+    required_keys: ["url", "path", "filename"]
+    required_in_title: test-download-url
+    method: test_download_url
+
+- For running find_new_reference tests:
+    required_keys: ["stack", "output_index"]
+    required_in_title: test-find-new-reference
+    method: test_find_new_reference
+
+- For running test_get_default_product_type tests:
+    required_keys: ["scene_name", "product_type"]
+    required_in_title: test-get_default_product_type
+    method: test_get_default_product_type
+
+- For running test_get_baseline_from_stack tests:
+    required_keys: ['reference', 'stack', 'output_stack', 'error']
+    required_in_title: test-get-baseline-from-stack
+    method: test_get_baseline_from_stack
+
+- For running test_get_default_product_type tests:
+    required_keys: ["reference", "output"]
+    required_in_title: test-valid-state-vectors
+    method: test_valid_state_vectors
+
+- For running test_validator_map_validate tests:
+    required_keys: ['key', 'value', 'output']
+    required_in_title: test-validator-map-validate
+    method: test_validator_map_validate
+
+- For running ASFSearchOption-validator tests:
+    required_keys: ['validator', 'input', 'output', 'error']
+    required_in_title: test-validators
+    method: test_ASFSearchOptions_validator
+
+- For running ASFSearchOptions tests:
+    required_in_title: test-ASFSearchOptions
+    method: test_ASFSearchOptions

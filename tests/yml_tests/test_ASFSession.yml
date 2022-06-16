@@ -1,0 +1,80 @@
+tests:
+- Test ASFSession empty password-login raises error:
+    username: ' '
+    password: ' '
+
+- Test ASFSession empty token-auth raises error:
+    token: ''
+
+- Test ASFSession bad token-auth raises error:
+    token: 'bad_token'
+
+- Test ASFSession bad cookiejar-auth raises missing login-cookie error:
+    cookies: [
+        {
+        version: 0,
+        name: 'not_the_urs_user_already_logged_cookie',
+        value: 'yes',
+        port: None,
+        # port_specified: False,
+        domain: '.earthdata.nasa.gov',
+        # domain_specified: True,
+        # domain_initial_dot: False,
+        # path: '/',
+        # path_specified: True,
+        secure: True,
+        expires: 0000000001,
+        discard: False,
+        comment: null,
+        comment_url: None,
+        rest: {'HttpOnly': None},
+        rfc2109: False
+        }
+    ]
+
+- Test ASFSession bad cookiejar-auth raises expired login-cookie error:
+    cookies: [
+        {
+        version: 0,
+        name: 'urs_user_already_logged',
+        value: 'yes',
+        port: None,
+        # port_specified: False,
+        domain: '.earthdata.nasa.gov',
+        # domain_specified: True,
+        # domain_initial_dot: False,
+        # path: '/',
+        # path_specified: True,
+        secure: True,
+        expires: 0000000001,
+        discard: False,
+        comment: null,
+        comment_url: None,
+        rest: {'HttpOnly': None},
+        rfc2109: False
+        }
+    ]
+
+- Test ASFSession rebuild_auth non-authorized asf-redirect-to-google domains:
+    original_domain: "asf.alaska.edu"
+    response_domain: "google.com"
+    response_code: 302
+    final_token: None
+
+- Test ASFSession rebuild_auth non-authorized asf-redirect-to-asf domains:
+    original_domain: "asf.alaska.edu"
+    response_domain: "asf.alaska.edu"
+    response_code: 302
+    final_token: 'Bearer fakeToken'
+
+- Test ASFSession rebuild_auth non-authorized asf-redirect-to-nasa domains:
+    original_domain: "asf.alaska.edu"
+    response_domain: "earthdata.nasa.gov"
+    response_code: 302
+    final_token: 'Bearer fakeToken'
+
+- Test ASFSession rebuild_auth non-authorized nasa-redirect-to-asf domains:
+    original_domain: "earthdata.nasa.gov"
+    response_domain: "asf.alaska.edu"
+    response_code: 302
+    final_token: 'Bearer fakeToken'

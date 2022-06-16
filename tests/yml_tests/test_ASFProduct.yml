@@ -1,0 +1,34 @@
+tests:
+- Test Empty ASFProduct:
+    products: {geometry: {}, properties: {}, baseline: {}}
+
+- Test SMAP ASFProduct:
+    products: SMAP_response.yml
+
+- Test ALOS ASFProduct:
+    products: Alos_response.yml
+
+- Test S1 ASFProduct:
+    products: S1_response.yml
+
+- Test ASFProduct_Stack S1:
+    product: Fairbanks_SLC.yml
+    preprocessed_stack: Fairbanks_S1_stack_preprocessed.yml
+    processed_stack: Fairbanks_S1_stack.yml
+
+- Test ASFProduct_Stack ERS:
+    product: Fairbanks_L1.yml
+    preprocessed_stack: Fairbanks_ers_stack preprocessed.yml
+    processed_stack: Fairbanks_ers_stack.yml
+
+- Test ASFProduct_Stack S1 Incomplete:
+    product: Fairbanks_L1.yml
+    preprocessed_stack: Fairbanks_S1_stack_preprocessed_incomplete.yml
+    processed_stack: Fairbanks_S1_stack incomplete.yml
+
+- Test ASFProduct-get-stack-options S1:
+    product: Fairbanks_L1.yml
+    options: {
+        processingLevel: ['L0'],
+        insarStackId: '1736495'
+    }

@@ -1,0 +1,54 @@
+{
+  "type": "Feature",
+  "geometry":
+    {
+      "coordinates":
+        [
+          [
+            [-136.125, 56.538],
+            [-136.295, 57.037],
+            [-135.227, 57.142],
+            [-135.071, 56.643],
+            [-136.125, 56.538],
+          ],
+        ],
+      "type": "Polygon",
+    },
+  "properties":
+    {
+      "beamModeType": "FBS",
+      "browse":
+        [
+          "https://datapool.asf.alaska.edu/BROWSE/A3/ALPSRP111041130.jpg",
+          "https://datapool.asf.alaska.edu/BROWSE/A3/AP_11104_FBS_F1130.jpg",
+        ],
+      "bytes": "408738585",
+      "centerLat": "56.8411",
+      "centerLon": "-135.6799",
+      "faradayRotation": "0.456056",
+      "fileID": "ALPSRP111041130-L1.0",
+      "fileName": "ALPSRP111041130-L1.0.zip",
+      "flightDirection": "ASCENDING",
+      "frameNumber": "1130",
+      "granuleType": "ALOS_PALSAR_SCENE",
+      "groupID": "ALPSRP111041130",
+      "insarStackId": "1486384",
+      "md5sum": "2a5fa75a25f9eb8d176ffd5bf1bfab21",
+      "offNadirAngle": "34.3",
+      "orbit": "11104",
+      "pathNumber": "238",
+      "perpendicularBaseline": None,
+      "platform": "ALOS",
+      "pointingAngle": None,
+      "polarization": "HH",
+      "processingDate": "2012-08-23T00:00:00Z",
+      "processingLevel": "L1.0",
+      "sceneName": "ALPSRP111041130",
+      "sensor": "PALSAR",
+      "startTime": "2008-02-24T07:13:21Z",
+      "stopTime": "2008-02-24T07:13:29Z",
+      "temporalBaseline": None,
+      "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRP111041130-L1.0.zip",
+    },
+    "baseline": {}
+}

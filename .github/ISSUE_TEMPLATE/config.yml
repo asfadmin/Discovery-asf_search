@@ -1,0 +1,8 @@
+contact_links:
+  - name: Ask Questions
+    url: https://github.com/asfadmin/Discovery-asf_search/discussions
+    about: Feel free to ask and answer questions in GitHub's Discussions
+
+  - name: Gitter Chat
+    url: https://gitter.im/ASFDiscovery/asf_search
+    about: Come chat with the asf_search community

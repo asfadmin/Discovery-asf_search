@@ -1,21 +1,22 @@
 from typing import Union, Iterable
 import datetime
+from copy import copy
 
 from asf_search.search import search
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.constants import INTERNAL
 
 
 def geo_search(
+        intersectsWith: str,
         absoluteOrbit: Iterable[Union[int, range]] = None,
         asfFrame: Iterable[Union[int, range]] = None,
         beamMode: Iterable[str] = None,
-        collectionName: Iterable[str] = None,
+        campaign: Union[str, Iterable[str]] = None,
         end: Union[datetime.datetime, str] = None,
         flightDirection: Iterable[str] = None,
         frame: Iterable[Union[int, range]] = None,
         instrument: Iterable[str] = None,
-        intersectsWith: str = None,
         lookDirection: Iterable[str] = None,
         platform: Iterable[str] = None,
         polarization: Iterable[str] = None,
@@ -24,9 +25,7 @@ def geo_search(
         relativeOrbit: Iterable[Union[int, range]] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        host: str = INTERNAL.SEARCH_API_HOST,
-        cmr_token: str = None,
-        cmr_provider: str = None
+        opts: ASFSearchOptions = None
 ) -> ASFSearchResults:
     """
     Performs a geographic search using the ASF SearchAPI
@@ -34,7 +33,7 @@ def geo_search(
     :param absoluteOrbit: For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B this value corresponds to the orbit count within the orbit cycle. For UAVSAR it is the Flight ID.
     :param asfFrame: This is primarily an ASF / JAXA frame reference. However, some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
     :param beamMode: The beam mode used to acquire the data.
-    :param collectionName: For UAVSAR and AIRSAR data collections only. Search by general location, site description, or data grouping as supplied by flight agency or project.
+    :param campaign: For UAVSAR and AIRSAR data collections only. Search by general location, site description, or data grouping as supplied by flight agency or project.
     :param end: End date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param flightDirection: Satellite orbit direction during data acquisition
     :param frame: ESA-referenced frames are offered to give users a universal framing convention. Each ESA frame has a corresponding ASF frame assigned. See also: asfframe
@@ -48,14 +47,16 @@ def geo_search(
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes.
-    :param cmr_token: EDL Auth Token for authenticated searches, see https://urs.earthdata.nasa.gov/user_tokens
-    :param cmr_provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
+    :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
     :return: ASFSearchResults(list) of search results
     """
 
     kwargs = locals()
-    data = dict((k,v) for k,v in kwargs.items() if v is not None and v != '')
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts'] and v is not None)
 
-    return search(**data)
+    opts = (ASFSearchOptions() if opts is None else copy(opts))
+    for p in data:
+        setattr(opts, p, data[p])
+
+    return search(opts=opts)

@@ -2,12 +2,24 @@
 from setuptools import find_packages, setup
 
 requirements = [
-        "requests",
-        "shapely",
-        "python-dateutil",
-        "pytz",
-        "importlib_metadata",
-    ]
+    "requests",
+    "shapely",
+    "python-dateutil",
+    "pytz",
+    "importlib_metadata",
+    "numpy",
+    "dateparser",
+    "WKTUtils==1.1.0",
+]
+
+test_requirements = [
+    "pytest",
+    "pytest-automation",
+    "pytest-cov",
+    "pytest-xdist",
+    "coverage",
+    "requests-mock",
+]
 
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
@@ -21,10 +33,14 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/asfadmin/Discovery-asf_search.git",
-    packages=find_packages(),
+    project_urls={
+        'Documentation': 'https://docs.asf.alaska.edu/asf_search/basics/'
+    },
+    packages=find_packages(exclude=["tests.*", "tests", "examples.*", "examples"]),
     package_dir={'asf_search': 'asf_search'},
     python_requires='>=3.6',
     install_requires=requirements,
+    extras_require={ "test": test_requirements },
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[
@@ -45,6 +61,4 @@ setup(
         "Topic :: Scientific/Engineering :: Hydrology",
         "Topic :: Utilities"
     ],
-    #test_suite='???',
-    #tests_require=['???'],
 )
