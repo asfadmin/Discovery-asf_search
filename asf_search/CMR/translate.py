@@ -196,36 +196,47 @@ def fix_date(fixed_params: Dict[str, Any]):
     return fixed_params
 
 def fix_platform(fixed_params: Dict[str, Any]):
+    if 'platform' not in fixed_params:
+        # Nothing to do
+        return fixed_params
+
+    # If it's a single plat str, make it a list of that plat:
+    if not isinstance(fixed_params["platform"], list):
+        fixed_params["platform"] = [ fixed_params["platform"] ]
 
     plat_aliases = {
+        # Groups:
         'S1': ['SENTINEL-1A', 'SENTINEL-1B'],
         'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B'],
         'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B'],
         'ERS': ['ERS-1', 'ERS-2'],
-        'SIR-C': ['STS-59', 'STS-68']
+        'SIR-C': ['STS-59', 'STS-68'],
+        # Singles / Aliases:
+        'R1': ['RADARSAT-1'],
+        'E1': ['ERS-1'],
+        'E2': ['ERS-2'],
+        'J1': ['JERS-1'],
+        'A3': ['ALOS'],
+        'AS': ['DC-8'],
+        'AIRSAR': ['DC-8'],
+        'SS': ['SEASAT 1'],
+        'SEASAT': ['SEASAT 1'],
+        'SA': ['SENTINEL-1A'],
+        'SB': ['SENTINEL-1B'],
+        'SP': ['SMAP'],
+        'UA': ['G-III'],
+        'UAVSAR': ['G-III'],
     }
-
-    plat_names = {
-        'R1': 'RADARSAT-1',
-        'E1': 'ERS-1',
-        'E2': 'ERS-2',
-        'J1': 'JERS-1',
-        'A3': 'ALOS',
-        'AS': 'DC-8',
-        'AIRSAR': 'DC-8',
-        'SS': 'SEASAT 1',
-        'SEASAT': 'SEASAT 1',
-        'SA': 'SENTINEL-1A',
-        'SB': 'SENTINEL-1B',
-        'SP': 'SMAP',
-        'UA': 'G-III',
-        'UAVSAR': 'G-III'
-    }
-
 
     # Legacy API allowed a few synonyms. If they're using one,
     # translate it. Also handle airsar/seasat/uavsar platform
     # conversion
-    if 'platform' in fixed_params:
-        pass
+    platform_list = []
+    for plat in fixed_params["platform"]:
+        if plat.upper() in plat_aliases:
+            platform_list.extend(plat_aliases[plat.upper()])
+        else:
+            platform_list.append(plat)
+
+    fixed_params["platform"] = platform_list
     return fixed_params
