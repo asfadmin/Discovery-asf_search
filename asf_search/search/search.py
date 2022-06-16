@@ -84,7 +84,7 @@ def search(
 
     :return: ASFSearchResults(list) of search results
     """
-    
+
     kwargs = locals()
     data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
 
@@ -168,4 +168,43 @@ def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
             raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
         raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
 
-    return response
+    products = [ASFProduct(f, opts=opts) for f in response.json()['features']]
+    return ASFSearchResults(products, opts=opts)
+
+
+def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
+    """
+    Converts a list of numbers and/or min/max tuples to a string of comma-separated numbers and/or ranges.
+    Example: [1,2,3,(10,20)] -> '1,2,3,10-20'
+
+    :param items: The list of numbers and/or min/max tuples to flatten
+
+    :return: String containing comma-separated representation of input, min/max tuples converted to 'min-max' format
+
+    :raises ValueError: if input list contains tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
+    :raises TypeError: if input list contains non-numeric values
+    """
+
+    for item in items:
+        if isinstance(item, tuple):
+            if len(item) < 2:
+                raise ValueError(f'Not enough values in min/max tuple: {item}')
+            if len(item) > 2:
+                raise ValueError(f'Too many values in min/max tuple: {item}')
+            if not isinstance(item[0], (int, float, complex)) and not isinstance(item[0], bool):
+                raise TypeError(f'Expected numeric min in tuple, got {type(item[0])}: {item}')
+            if not isinstance(item[1], (int, float, complex)) and not isinstance(item[1], bool):
+                raise TypeError(f'Expected numeric max in tuple, got {type(item[1])}: {item}')
+            if math.isinf(item[0]) or math.isnan(item[0]):
+                raise ValueError(f'Expected finite numeric min in min/max tuple, got {item[0]}: {item}')
+            if math.isinf(item[1]) or math.isnan(item[1]):
+                raise ValueError(f'Expected finite numeric max in min/max tuple, got {item[1]}: {item}')
+            if item[0] > item[1]:
+                raise ValueError(f'Min must be less than max when using min/max tuples to search: {item}')
+        elif isinstance(item, (int, float, complex)) and not isinstance(item, bool):
+            if math.isinf(item) or math.isnan(item):
+                raise ValueError(f'Expected finite numeric value, got {item}')
+        elif not isinstance(item, (int, float, complex)) and not isinstance(item, bool):
+            raise TypeError(f'Expected number or min/max tuple, got {type(item)}')
+
+    return ','.join([f'{item[0]}-{item[1]}' if isinstance(item, tuple) else f'{item}' for item in items])

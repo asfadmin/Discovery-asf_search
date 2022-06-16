@@ -35,6 +35,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - Most search functions now expect only their specific parameters, and an optional `opts` parameter. This allows simple usage in most cases, while the `opts` parameter provides access to advanced behavior or alternate workflows.
   - Internally, all search functions work by passing ASFSearchOptions objects. This allows consistency when working with differently-configured search environments, such as in development.
   - `ASFSearchResults` objects now include a `searchOptions` property, which describes the search used to create those results. This object can be copied, altered, used for subsequent searches, etc.
+    - When downloading, `ASFSearchResults` and `ASFProduct` default to use the session inside `searchOptions`, so you don't have to pass the same session in for both fetching and downloading results.
 - Exposed `get_stack_opts()` to support more approaches for building insar stacks.
   - `get_stack_opts()` accepts an `ASFProduct` as a stack reference and returns the ASFSearchOptions object that would be used to build a corresponding insar stack
     - A matching convenience method has been added to `ASFProduct`
