@@ -3,15 +3,21 @@ import json
 from collections import UserList
 
 from asf_search.download import download_url
+
 from asf_search import ASFSession
 from asf_search import ASFSearchOptions
-
+from asf_search.CMR import translate_product
 
 class ASFProduct:
     def __init__(self, args: dict, opts: ASFSearchOptions = None):
-        self.properties = args['properties']
-        self.geometry = args['geometry']
-        self.baseline = args['baseline']
+        self.meta = args['meta']
+        self.umm = args['umm']
+
+        translated = translate_product(args)
+
+        self.properties = translated['properties']
+        self.geometry = translated['geometry']
+        self.baseline = translated['baseline']
         self.searchOptions = opts
 
     def __str__(self):

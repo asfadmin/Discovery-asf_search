@@ -1,13 +1,17 @@
-from typing import Union, Iterable, Tuple
+from typing import Any, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
+from requests import Response
 import datetime
-import math
-
+import dateparser
+import warnings
+import inspect
 
 from asf_search import __version__
+
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions, defaults
+from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
@@ -43,9 +47,6 @@ def search(
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
-        provider: str = None,
-        session: ASFSession = None,
-        host: str = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
@@ -79,9 +80,6 @@ def search(
     :param season: Start and end day of year for desired seasonal range. This option is used in conjunction with start/end to specify a seasonal range within an overall date range.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param maxResults: The maximum number of results to be returned by the search
-    :param provider: Custom provider name to constrain CMR results to, for more info on how this is used, see https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#c-provider
-    :param session: A Session to be used when performing the search. For most uses, can be ignored. Used when searching for a dataset, provider, etc. that requires authentication. See also: asf_search.ASFSession
-    :param host: SearchAPI host, defaults to Production SearchAPI. This option is intended for dev/test purposes and can generally be ignored.
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 
     :return: ASFSearchResults(list) of search results
@@ -91,123 +89,83 @@ def search(
     data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-    for p in data:
-        setattr(opts, p, data[p])
+    opts.merge_args(**data)
 
     data = dict(opts)
-
+    # maturity isn't a key that get's copied to the data dict above, need to grab it directly:
     data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
+    maxResults = data.pop("maxResults", INTERNAL.CMR_PAGE_SIZE)
 
-    rename_fields = [
-        ('campaign', 'collectionName')
-    ]
-    for (key, replacement) in rename_fields:
-        if key in data:
-            data[replacement] = data[key]
-            data.pop(key)
+    if getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False):
+        maxResults = None
     
-    listify_fields = [
-        'absoluteOrbit',
-        'asfFrame',
-        'beamMode',
-        'collectionName',
-        'frame',
-        'granule_list',
-        'groupID',
-        'instrument',
-        'lookDirection',
-        'offNadirAngle',
-        'platform',
-        'polarization',
-        'processingLevel',
-        'product_list',
-        'relativeOrbit'
-    ]
-    for key in listify_fields:
-        if key in data and not isinstance(data[key], list):
-            data[key] = [data[key]]
+    if 'collectionName' in data:
+        stack_level = 2
+        if inspect.stack()[1].function == 'geo_search':
+            stack_level = 3
 
-    flatten_fields = [
-        'absoluteOrbit',
-        'asfFrame',
-        'frame',
-        'offNadirAngle',
-        'relativeOrbit']
-    for key in flatten_fields:
-        if key in opts:
-            data[key] = flatten_list(data[key])
-
-    join_fields = [
-        'beamMode',
-        'collectionName',
-        'granule_list',
-        'groupID',
-        'instrument',
-        'lookDirection',
-        'platform',
-        'polarization',
-        'processingLevel',
-        'product_list']
-    for key in join_fields:
-        if key in data:
-            data[key] = ','.join(data[key])
+        warnings.filterwarnings('once')
+        warnings.warn("search parameter \"collectionName\" is deprecated and will be removed in a future release. Use \"campaign\" instead.", 
+                      DeprecationWarning, 
+                      stacklevel=stack_level)
     
-    # Special case to unravel WKT field a little for compatibility
-    if data.get('intersectsWith') is not None:
-        (shapeType, shape) = data['intersectsWith'].split(':')
-        del data['intersectsWith']
-        data[shapeType] = shape
+    rename_fields = [(
+        'campaign', 'collectionName'
+    )]
 
-    data['output'] = 'asf_search'
-    # Join the url, to guarantee *exactly* one '/' between each url fragment:
-    response = opts.session.post(url=f'https://{opts.host}{INTERNAL.SEARCH_PATH}', data=data)
+    for (new_key, deprecated_key) in rename_fields:
+        if deprecated_key in data:
+            data[new_key] = data.pop(deprecated_key)
+
+    subqueries = build_subqueries(opts)
+
+    url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
+
+    results = ASFSearchResults(opts=opts)
+
+    for query in subqueries:
+        translated_opts = translate_opts(query)
+
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+
+        hits = [ASFProduct(f) for f in response.json()['items']]
+
+        if maxResults != None:
+            results.extend(hits[:min(maxResults, len(hits))])
+            if len(results) == maxResults:
+                break
+        else:
+            results.extend(hits)
+
+        while('CMR-Search-After' in response.headers):
+            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
+
+            response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+            
+            hits = [ASFProduct(f) for f in response.json()['items']]
+            
+            if maxResults != None:
+                results.extend(hits[:min(maxResults, len(hits))])
+                if len(results) == maxResults:
+                    break
+            else:
+                results.extend(hits)
+        
+        opts.session.headers.pop('CMR-Search-After', None)
+
+
+    return results
+
+def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
+    response = session.post(url=url, data=translated_opts)
 
     try:
         response.raise_for_status()
     except HTTPError:
         if 400 <= response.status_code <= 499:
-            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
         if 500 <= response.status_code <= 599:
-            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
-        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["error"]["report"]}')
+            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
 
-    products = [ASFProduct(f, opts=opts) for f in response.json()['features']]
-    return ASFSearchResults(products, opts=opts)
-
-
-def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
-    """
-    Converts a list of numbers and/or min/max tuples to a string of comma-separated numbers and/or ranges.
-    Example: [1,2,3,(10,20)] -> '1,2,3,10-20'
-
-    :param items: The list of numbers and/or min/max tuples to flatten
-
-    :return: String containing comma-separated representation of input, min/max tuples converted to 'min-max' format
-
-    :raises ValueError: if input list contains tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
-    :raises TypeError: if input list contains non-numeric values
-    """
-
-    for item in items:
-        if isinstance(item, tuple):
-            if len(item) < 2:
-                raise ValueError(f'Not enough values in min/max tuple: {item}')
-            if len(item) > 2:
-                raise ValueError(f'Too many values in min/max tuple: {item}')
-            if not isinstance(item[0], (int, float, complex)) and not isinstance(item[0], bool):
-                raise TypeError(f'Expected numeric min in tuple, got {type(item[0])}: {item}')
-            if not isinstance(item[1], (int, float, complex)) and not isinstance(item[1], bool):
-                raise TypeError(f'Expected numeric max in tuple, got {type(item[1])}: {item}')
-            if math.isinf(item[0]) or math.isnan(item[0]):
-                raise ValueError(f'Expected finite numeric min in min/max tuple, got {item[0]}: {item}')
-            if math.isinf(item[1]) or math.isnan(item[1]):
-                raise ValueError(f'Expected finite numeric max in min/max tuple, got {item[1]}: {item}')
-            if item[0] > item[1]:
-                raise ValueError(f'Min must be less than max when using min/max tuples to search: {item}')
-        elif isinstance(item, (int, float, complex)) and not isinstance(item, bool):
-            if math.isinf(item) or math.isnan(item):
-                raise ValueError(f'Expected finite numeric value, got {item}')
-        elif not isinstance(item, (int, float, complex)) and not isinstance(item, bool):
-            raise TypeError(f'Expected number or min/max tuple, got {type(item)}')
-
-    return ','.join([f'{item[0]}-{item[1]}' if isinstance(item, tuple) else f'{item}' for item in items])
+    return response

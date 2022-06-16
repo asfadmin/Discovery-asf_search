@@ -1,4 +1,8 @@
 from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
+from dateutil.parser import parse
+import pytz
+from copy import copy
+
 from asf_search.search import search, product_search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
@@ -81,7 +85,7 @@ def get_stack_opts(
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:
-        stack_opts.platform = [PLATFORM.SENTINEL1]
+        stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
         stack_opts.beamMode = [reference.properties['beamModeType']]
         stack_opts.flightDirection = reference.properties['flightDirection']
         stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path

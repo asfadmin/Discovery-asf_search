@@ -1,7 +1,6 @@
+import warnings
 from .validator_map import validator_map, validate
 from .defaults import defaults
-from asf_search import ASFSession
-from asf_search.constants import INTERNAL
 
 
 class ASFSearchOptions:
@@ -22,6 +21,7 @@ class ASFSearchOptions:
     def __setattr__(self, key, value):
         """
         Set a search option, restricting to the keys in validator_map only, and applying validation to the value before setting
+        
         :param key: the name of the option to be set
         :param value: the value to which to set the named option
         """
@@ -54,6 +54,7 @@ class ASFSearchOptions:
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
         no_export = ['host', 'session', 'provider', 'maturity']  # TODO: remove 'provider' from this list once we're hitting CMR directly
+
         for key in validator_map:
             if key not in no_export:
                 value = self.__getattribute__(key)
@@ -67,3 +68,16 @@ class ASFSearchOptions:
         for key, _ in self:
             if key not in defaults.keys():
                 super().__setattr__(key, None)
+
+    def merge_args(self, **kwargs) -> None:
+        """
+        Merges all keyword args into this ASFSearchOptions object. Emits a warning for any options that are over-written by the operation.
+
+        :param kwargs: The search options to merge into the object
+        :return: None
+        """
+        for key in kwargs:
+            val = getattr(self, key, None)
+            if val is not None:
+                warnings.warn(f'While merging search options, existing option {key}:{val} overwritten by kwarg with value {kwargs[key]}')
+            self.__setattr__(key, kwargs[key])
