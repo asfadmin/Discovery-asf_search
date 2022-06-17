@@ -3,7 +3,8 @@ from copy import copy
 from requests.exceptions import HTTPError
 import datetime
 import math
-
+from WKTUtils import RepairWKT, Input
+from warnings import warn
 
 from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
@@ -154,7 +155,16 @@ def search(
     
     # Special case to unravel WKT field a little for compatibility
     if data.get('intersectsWith') is not None:
-        (shapeType, shape) = data['intersectsWith'].split(':')
+        repaired_wkt = RepairWKT.repairWKT(data['intersectsWith'])
+        if "errors" in repaired_wkt:
+            raise ValueError(f"Error repairing wkt: {repaired_wkt['errors']}")
+        for repair in repaired_wkt["repairs"]:
+            warn(f"Modified shape: {repair}")
+        # DO we want unwrapped here??
+        opts.intersectsWith = repaired_wkt["wkt"]["unwrapped"]
+        cmr_wkt = Input.parse_wkt_util(repaired_wkt["wkt"]["unwrapped"])
+
+        (shapeType, shape) = cmr_wkt.split(':')
         del data['intersectsWith']
         data[shapeType] = shape
 
