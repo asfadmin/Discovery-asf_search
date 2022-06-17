@@ -161,8 +161,8 @@ def search(
         for repair in repaired_wkt["repairs"]:
             warn(f"Modified shape: {repair}")
         # DO we want unwrapped here??
-        opts.intersectsWith = repaired_wkt["wkt"]["unwrapped"]
-        cmr_wkt = Input.parse_wkt_util(repaired_wkt["wkt"]["unwrapped"])
+        opts.intersectsWith = repaired_wkt["wkt"]["wrapped"]
+        cmr_wkt = Input.parse_wkt_util(repaired_wkt["wkt"]["wrapped"])
 
         (shapeType, shape) = cmr_wkt.split(':')
         del data['intersectsWith']
