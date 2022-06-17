@@ -7,6 +7,9 @@ from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
 import dateparser
 from .field_map import field_map
 
+from WKTUtils import RepairWKT, Input
+
+from warnings import warn
 
 def translate_opts(opts: ASFSearchOptions) -> list:
     # Start by just grabbing the searchable parameters
@@ -14,12 +17,26 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # provider doesn't get copied with the 'dict' cast above
     dict_opts['provider'] = getattr(opts, 'provider', DEFAULT_PROVIDER)
     
-    # CMR requires non-wkt format for shapes
-    # [polygon/linestring/point]: 0, 0, 20, 20, ...
-    if 'intersectsWith' in dict_opts:
-        shape_type, shape = validators.parse_wkt(dict_opts.pop('intersectsWith')).split(':')
-        dict_opts[shape_type] = shape
+    # # CMR requires non-wkt format for shapes
+    # # [polygon/linestring/point]: 0, 0, 20, 20, ...
+    # if 'intersectsWith' in dict_opts:
+    #     shape_type, shape = validators.parse_wkt(dict_opts.pop('intersectsWith')).split(':')
+    #     dict_opts[shape_type] = shape
 
+    # Special case to unravel WKT field a little for compatibility
+    if dict_opts.get('intersectsWith') is not None:
+        repaired_wkt = RepairWKT.repairWKT(dict_opts['intersectsWith'])
+        if "errors" in repaired_wkt:
+            raise ValueError(f"Error repairing wkt: {repaired_wkt['errors']}")
+        for repair in repaired_wkt["repairs"]:
+            warn(f"Modified shape: {repair}")
+        # DO we want unwrapped here??
+        opts.intersectsWith = repaired_wkt["wkt"]["wrapped"]
+        cmr_wkt = Input.parse_wkt_util(repaired_wkt["wkt"]["wrapped"])
+
+        (shapeType, shape) = cmr_wkt.split(':')
+        del dict_opts['intersectsWith']
+        dict_opts[shapeType] = shape
 
 
     dict_opts = fix_date(dict_opts)

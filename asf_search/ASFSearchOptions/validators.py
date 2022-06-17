@@ -6,6 +6,7 @@ from WKTUtils.Input import parse_wkt_util
 from typing import Union, Tuple, TypeVar, Callable, List, Type
 
 import math
+from shapely import wkt, errors
 
 number = TypeVar('number', int, float)
 
@@ -181,10 +182,12 @@ def parse_point_list(value: List[float]) -> List[float]:
 
 
 # Parse a WKT and convert it to a coordinate string
-# NOTE: If given an empty ("POINT EMPTY") shape, will return "point:". Should it throw instead?
 def parse_wkt(value: str) -> str:
-    # The utils library needs this function for repairWKT.
-    return parse_wkt_util(value)
+    try:
+        value = wkt.loads(value)
+    except errors.WKTReadingError as e:
+        raise ValueError(f'Invalid wkt: {e}') from e
+    return wkt.dumps(value)
 
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):

@@ -6,6 +6,7 @@ import datetime
 import dateparser
 import warnings
 import inspect
+import math
 
 from asf_search import __version__
 
