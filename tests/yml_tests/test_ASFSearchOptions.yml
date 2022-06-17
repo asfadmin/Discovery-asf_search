@@ -150,7 +150,7 @@ tests:
     exception: Null
     # not sure how to check session...
     expect_output:
-        host: api.daac.asf.alaska.edu
+        host: cmr.earthdata.nasa.gov
         provider: ASF
 
 - test-ASFSearchOptions - test with defaults override:

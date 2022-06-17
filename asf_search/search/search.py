@@ -126,9 +126,9 @@ def search(
     for query in subqueries:
         translated_opts = translate_opts(query)
 
-        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts, opts=query)
 
-        hits = [ASFProduct(f) for f in response.json()['items']]
+        hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
 
         if maxResults != None:
             results.extend(hits[:min(maxResults, len(hits))])
@@ -142,7 +142,7 @@ def search(
 
             response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
             
-            hits = [ASFProduct(f) for f in response.json()['items']]
+            hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
             
             if maxResults != None:
                 results.extend(hits[:min(maxResults, len(hits))])
@@ -156,7 +156,7 @@ def search(
 
     return results
 
-def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
+def get_page(session: ASFSession, url: str, translated_opts: list, opts: ASFSearchOptions) -> Response:
     response = session.post(url=url, data=translated_opts)
 
     try:
@@ -168,8 +168,10 @@ def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
             raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
         raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
 
-    products = [ASFProduct(f, opts=opts) for f in response.json()['features']]
-    return ASFSearchResults(products, opts=opts)
+    return response
+    # json = response.json()
+    # return [ASFProduct(f, opts=opts) for f in response.json()['items']]
+    # return ASFSearchResults(products, opts=opts)
 
 
 def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
