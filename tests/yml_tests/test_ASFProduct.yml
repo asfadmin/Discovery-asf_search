@@ -1,35 +1,34 @@
-# empty:
-#   &empty {
-#     geometry: {},
-#     properties: {},
-#     meta:
-#       {
-#         "concept-type": ' ',
-#         "concept-id": ' ',
-#         "revision-id": 0,
-#         "native-id": ' ',
-#         "provider-id": ' ',
-#         "format": ' ',
-#         "revision-date": ' '
-#       },
-#     umm:
-#       {
-#         "TemporalExtent": {},
-#         "OrbitCalculatedSpatialDomains": [],
-#         "GranuleUR": " ",
-#         "AdditionalAttributes": [],
-#         "SpatialExtent": {},
-#         "ProviderDates": [],
-#         "CollectionReference": {},
-#         "RelatedUrls": [],
-#         "DataGranule": {},
-#         "Platforms": [],
-#       },
-#   }
+empty: &empty {
+    geometry: {},
+    properties: {},
+    meta:
+      {
+        "concept-type": ' ',
+        "concept-id": ' ',
+        "revision-id": 0,
+        "native-id": ' ',
+        "provider-id": ' ',
+        "format": ' ',
+        "revision-date": ' '
+      },
+    umm:
+      {
+        "TemporalExtent": {},
+        "OrbitCalculatedSpatialDomains": [],
+        "GranuleUR": " ",
+        "AdditionalAttributes": [],
+        "SpatialExtent": {},
+        "ProviderDates": [],
+        "CollectionReference": {},
+        "RelatedUrls": [],
+        "DataGranule": {},
+        "Platforms": [],
+      },
+  }
 
 tests:
 - Test Empty ASFProduct:
-    products: {geometry: {}, properties: {}, baseline: {}}
+    products: *empty
 
 
 # bug in CMR/translate.py, invalid literal for int() with base 10
@@ -37,7 +36,7 @@ tests:
 #       products: SMAP_response.yml
 
 - Test S1 ASFProduct:
-    products: S1_response.yml
+    products: Fairbanks_SLC.yml
 
 - Test ASFProduct_Stack S1:
     product: Fairbanks_SLC.yml

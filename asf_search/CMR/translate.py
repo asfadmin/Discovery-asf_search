@@ -46,7 +46,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     for (key, val) in dict_opts.items():
         if isinstance(val, list):
             for x in val:
-                if x in ['granule_list', 'product_list']:
+                if key in ['granule_list', 'product_list']:
                     for y in x.split(','):
                         cmr_opts.append((key, y))
                 else:
