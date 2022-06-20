@@ -1,13 +1,13 @@
 --- # test data
 
 empty_parameters: &empty_parameters {
-    'host' : 'api.daac.asf.alaska.edu'
+    # 'host' : 'api.daac.asf.alaska.edu'
 }
 
 alos_parameters: &alos_parameters {
   "platform": "ALOS",
   "maxResults": 3,
-  'host' : 'api.daac.asf.alaska.edu',
+#   'host' : 'api.daac.asf.alaska.edu',
 }
 
 tests:
