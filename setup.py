@@ -8,7 +8,7 @@ requirements = [
     "pytz",
     "importlib_metadata",
     "scikit-learn",
-    "numpy"
+    "numpy",
     "dateparser",
     "WKTUtils==1.1.0",
 ]
