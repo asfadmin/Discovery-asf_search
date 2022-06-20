@@ -10,9 +10,9 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
 
     if len(stack) == 0:
         raise ValueError('No products found matching stack parameters')
-
+    stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata') and product.baseline != None]
     reference, stack, warnings = check_reference(reference, stack)
-    stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata')]
+    
     stack = calculate_temporal_baselines(reference, stack)
 
     if get_platform(reference.properties['sceneName']) in precalc_datasets:

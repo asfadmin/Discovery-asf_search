@@ -19,7 +19,10 @@ def run_test_stack(reference, pre_processed_stack, processed_stack):
     product = ASFProduct(reference, opts=opts)
     
     with patch('asf_search.baseline_search.search') as search_mock:
-        search_mock.return_value = ASFSearchResults([ASFProduct(prod, None) for prod in pre_processed_stack])
+        temp = ASFSearchResults([ASFProduct(prod, None) for prod in pre_processed_stack])
+        for idx, prod in enumerate(temp):
+            prod.baseline = pre_processed_stack[idx]['baseline']
+        search_mock.return_value = temp
         stack = product.stack()
 
 
@@ -37,7 +40,7 @@ def run_test_stack(reference, pre_processed_stack, processed_stack):
 
 def run_test_product_get_stack_options(reference, options):
     product = ASFProduct(reference, None)
-    expected_options = dict(ASFSearchOptions(**options, opts=None))
+    expected_options = dict(ASFSearchOptions(**options))
 
     product_options = dict(product.get_stack_opts())
     assert product_options == dict(expected_options)

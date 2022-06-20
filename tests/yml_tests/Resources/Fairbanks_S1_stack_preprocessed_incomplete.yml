@@ -57,39 +57,7 @@
             "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
             "frameNumber": "210"
         },
-        "baseline": {
-            "stateVectors": {
-                "positions": {
-                    "prePosition": [
-                        -2893767.065414,
-                        -1235752.268405,
-                        6327528.043215
-                    ],
-                    "prePositionTime": "2021-01-02T03:20:43.000000",
-                    "postPosition": [
-                        -2845284.115433,
-                        -1186496.621016,
-                        6358798.348458
-                    ],
-                    "postPositionTime": "2021-01-02T03:20:53.000000"
-                },
-                "velocities": {
-                    "preVelocity": [
-                        4828.593801,
-                        4922.268943,
-                        3162.776438
-                    ],
-                    "preVelocityTime": "2021-01-02T03:20:43.000000",
-                    "postVelocity": [
-                        4867.907153,
-                        4928.758938,
-                        3091.226142
-                    ],
-                    "postVelocityTime": "2021-01-02T03:20:53.000000"
-                }
-            },
-            "ascendingNodeTime": "2021-01-02T03:02:58.934857"
-        },
+        "baseline": null,
         "umm": {
             "TemporalExtent": {
                 "RangeDateTime": {
