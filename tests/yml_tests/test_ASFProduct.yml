@@ -27,8 +27,8 @@ empty: &empty {
   }
 
 tests:
-- Test Empty ASFProduct:
-    products: *empty
+# - Test Empty ASFProduct:
+#     products: *empty
 
 
 # bug in CMR/translate.py, invalid literal for int() with base 10

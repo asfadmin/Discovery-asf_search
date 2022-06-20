@@ -1,121 +1,520 @@
 {
+    "type": "Feature",
     "geometry": {
         "coordinates": [
-        [
             [
-            -156.42279,
-            81.909
-            ],
-            [
-            -141.93079,
-            74.072
-            ],
-            [
-            -132.77879,
-            56.883
-            ],
-            [
-            -116.70479,
-            -14.862
-            ],
-            [
-            -105.02479,
-            -48.262
-            ],
-            [
-            -93.73979,
-            -62.451
-            ],
-            [
-            -80.32579,
-            -70.237
-            ],
-            [
-            -61.41179,
-            -75.082
-            ],
-            [
-            -28.54879,
-            -77.358
-            ],
-            [
-            -28.59879,
-            -86.386
-            ],
-            [
-            -72.72279,
-            -84.998
-            ],
-            [
-            -99.16579,
-            -79.734
-            ],
-            [
-            -107.40579,
-            -74.098
-            ],
-            [
-            -116.49779,
-            -57.146
-            ],
-            [
-            -132.82479,
-            15.541
-            ],
-            [
-            -144.96879,
-            49.39
-            ],
-            [
-            -153.65679,
-            60.693
-            ],
-            [
-            -166.04779,
-            68.968
-            ],
-            [
-            -179.999,
-            73.252441
-            ],
-            [
-            -179.999,
-            84.661675
-            ],
-            [
-            -156.42279,
-            81.909
+                [
+                    139.18621,
+                    77.358
+                ],
+                [
+                    176.75921,
+                    74.248
+                ],
+                [
+                    179.999,
+                    73.253055
+                ],
+                [
+                    179.999,
+                    84.661908
+                ],
+                [
+                    170.35421,
+                    85.788
+                ],
+                [
+                    139.23521,
+                    86.386
+                ],
+                [
+                    139.18621,
+                    77.358
+                ]
             ]
-        ]
         ],
         "type": "Polygon"
     },
     "properties": {
         "beamModeType": "STD",
-        "browse": [],
-        "bytes": "985537904.0",
+        "browse": null,
+        "bytes": 985537904,
+        "centerLat": -0.0582105217779381,
+        "centerLon": -124.694724358625,
         "faradayRotation": null,
         "fileID": "SP_37287_A_008-L1A_Radar_RO_HDF5",
-        "fileName": "SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5",
-        "flightDirection": "DESCENDING",
-        "frameNumber": "1860",
-        "granuleType": "SMAP_SWATH",
+        "flightDirection": null,
         "groupID": "SP_37287_A_008",
+        "granuleType": "SMAP_SWATH",
         "insarStackId": "-1",
         "md5sum": "9bdf4c212fb79b62f470ab9f4465ceaa",
-        "offNadirAngle": null,
-        "orbit": "37287",
-        "pathNumber": "0",
+        "offNadirAngle": -1.0,
+        "orbit": 37287,
+        "pathNumber": 0,
         "platform": "SMAP",
         "pointingAngle": null,
-        "polarization": null,
-        "processingDate": "2022-01-24T05:01:02Z",
+        "polarization": "NULL",
+        "processingDate": "2022-01-24T05:01:02.000Z",
         "processingLevel": "L1A_Radar_RO_HDF5",
         "sceneName": "SP_37287_A_008",
         "sensor": "SAR",
-        "startTime": "2022-01-24T01:52:57Z",
-        "stopTime": "2022-01-24T02:42:10Z",
+        "startTime": "2022-01-24T01:52:57.000Z",
+        "stopTime": "2022-01-24T02:42:10.000Z",
         "url": "https://datapool.asf.alaska.edu/L1A_Radar_RO_HDF5/SP/SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5",
+        "fileName": "SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5",
+        "frameNumber": "1860"
     },
-    "baseline": null
+    "baseline": {
+        "insarBaseline": 0.0
+    },
+    "umm": {
+        "TemporalExtent": {
+            "RangeDateTime": {
+                "BeginningDateTime": "2022-01-24T01:52:57.000Z",
+                "EndingDateTime": "2022-01-24T02:42:10.000Z"
+            }
+        },
+        "OrbitCalculatedSpatialDomains": [
+            {
+                "OrbitNumber": 37287
+            }
+        ],
+        "GranuleUR": "SP_37287_A_008-L1A_Radar_RO_HDF5",
+        "AdditionalAttributes": [
+            {
+                "Name": "FLIGHT_LINE",
+                "Values": [
+                    "NULL"
+                ]
+            },
+            {
+                "Name": "GROUP_ID",
+                "Values": [
+                    "SP_37287_A_008"
+                ]
+            },
+            {
+                "Name": "OFF_NADIR_ANGLE",
+                "Values": [
+                    "-1"
+                ]
+            },
+            {
+                "Name": "MD5SUM",
+                "Values": [
+                    "9bdf4c212fb79b62f470ab9f4465ceaa"
+                ]
+            },
+            {
+                "Name": "GRANULE_TYPE",
+                "Values": [
+                    "SMAP_SWATH"
+                ]
+            },
+            {
+                "Name": "ASCENDING_DESCENDING",
+                "Values": [
+                    "DESCENDING"
+                ]
+            },
+            {
+                "Name": "FAR_END_LAT",
+                "Values": [
+                    "-87.0"
+                ]
+            },
+            {
+                "Name": "INSAR_STACK_SIZE",
+                "Values": [
+                    "0"
+                ]
+            },
+            {
+                "Name": "BEAM_MODE_TYPE",
+                "Values": [
+                    "STD"
+                ]
+            },
+            {
+                "Name": "INSAR_BASELINE",
+                "Values": [
+                    "0"
+                ]
+            },
+            {
+                "Name": "CENTER_FRAME_ID",
+                "Values": [
+                    "1860"
+                ]
+            },
+            {
+                "Name": "CENTER_ESA_FRAME",
+                "Values": [
+                    "1860"
+                ]
+            },
+            {
+                "Name": "ACQUISITION_DATE",
+                "Values": [
+                    "2022-01-24T02:42:10Z"
+                ]
+            },
+            {
+                "Name": "MISSION_NAME",
+                "Values": [
+                    "NULL"
+                ]
+            },
+            {
+                "Name": "CENTER_LON",
+                "Values": [
+                    "-124.694724358625"
+                ]
+            },
+            {
+                "Name": "NEAR_START_LAT",
+                "Values": [
+                    "87.0"
+                ]
+            },
+            {
+                "Name": "BEAM_MODE",
+                "Values": [
+                    "Standard"
+                ]
+            },
+            {
+                "Name": "BEAM_MODE_DESC",
+                "Values": [
+                    "ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"
+                ]
+            },
+            {
+                "Name": "PROCESSING_TYPE",
+                "Values": [
+                    "L1A_Radar_RO_HDF5"
+                ]
+            },
+            {
+                "Name": "PROCESSING_DESCRIPTION",
+                "Values": [
+                    "SMAP L1A Radar Receive Only HDF5 Data Product"
+                ]
+            },
+            {
+                "Name": "FRAME_NUMBER",
+                "Values": [
+                    "-1"
+                ]
+            },
+            {
+                "Name": "PROCESSING_LEVEL",
+                "Values": [
+                    "L1"
+                ]
+            },
+            {
+                "Name": "PROCESSING_DATE",
+                "Values": [
+                    "2022-01-24 05:01:02.159944"
+                ]
+            },
+            {
+                "Name": "NEAR_START_LON",
+                "Values": [
+                    "-179.5"
+                ]
+            },
+            {
+                "Name": "DOPPLER",
+                "Values": [
+                    "-1"
+                ]
+            },
+            {
+                "Name": "FAR_START_LAT",
+                "Values": [
+                    "87.0"
+                ]
+            },
+            {
+                "Name": "NEAR_END_LON",
+                "Values": [
+                    "-179.5"
+                ]
+            },
+            {
+                "Name": "PROCESSING_TYPE_DISPLAY",
+                "Values": [
+                    "L1A Radar Receive Only Product"
+                ]
+            },
+            {
+                "Name": "POLARIZATION",
+                "Values": [
+                    "NULL"
+                ]
+            },
+            {
+                "Name": "FAR_START_LON",
+                "Values": [
+                    "179.5"
+                ]
+            },
+            {
+                "Name": "THUMBNAIL_URL",
+                "Values": [
+                    "NULL"
+                ]
+            },
+            {
+                "Name": "ASF_PLATFORM",
+                "Values": [
+                    "SMAP"
+                ]
+            },
+            {
+                "Name": "INSAR_STACK_ID",
+                "Values": [
+                    "-1"
+                ]
+            },
+            {
+                "Name": "LOOK_DIRECTION",
+                "Values": [
+                    "R"
+                ]
+            },
+            {
+                "Name": "PATH_NUMBER",
+                "Values": [
+                    "0"
+                ]
+            },
+            {
+                "Name": "NEAR_END_LAT",
+                "Values": [
+                    "-87.0"
+                ]
+            },
+            {
+                "Name": "FARADAY_ROTATION",
+                "Values": [
+                    "NA"
+                ]
+            },
+            {
+                "Name": "FAR_END_LON",
+                "Values": [
+                    "179.5"
+                ]
+            },
+            {
+                "Name": "BYTES",
+                "Values": [
+                    "985537904.0"
+                ]
+            },
+            {
+                "Name": "CENTER_LAT",
+                "Values": [
+                    "-.0582105217779381"
+                ]
+            }
+        ],
+        "SpatialExtent": {
+            "HorizontalSpatialDomain": {
+                "Geometry": {
+                    "GPolygons": [
+                        {
+                            "Boundary": {
+                                "Points": [
+                                    {
+                                        "Longitude": 139.18621,
+                                        "Latitude": 77.358
+                                    },
+                                    {
+                                        "Longitude": 176.75921,
+                                        "Latitude": 74.248
+                                    },
+                                    {
+                                        "Longitude": 179.999,
+                                        "Latitude": 73.253055
+                                    },
+                                    {
+                                        "Longitude": 179.999,
+                                        "Latitude": 84.661908
+                                    },
+                                    {
+                                        "Longitude": 170.35421,
+                                        "Latitude": 85.788
+                                    },
+                                    {
+                                        "Longitude": 139.23521,
+                                        "Latitude": 86.386
+                                    },
+                                    {
+                                        "Longitude": 139.18621,
+                                        "Latitude": 77.358
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "Boundary": {
+                                "Points": [
+                                    {
+                                        "Longitude": -179.999,
+                                        "Latitude": 84.661675
+                                    },
+                                    {
+                                        "Longitude": -179.999,
+                                        "Latitude": 73.252441
+                                    },
+                                    {
+                                        "Longitude": -166.04779,
+                                        "Latitude": 68.968
+                                    },
+                                    {
+                                        "Longitude": -153.65679,
+                                        "Latitude": 60.693
+                                    },
+                                    {
+                                        "Longitude": -144.96879,
+                                        "Latitude": 49.39
+                                    },
+                                    {
+                                        "Longitude": -132.82479,
+                                        "Latitude": 15.541
+                                    },
+                                    {
+                                        "Longitude": -116.49779,
+                                        "Latitude": -57.146
+                                    },
+                                    {
+                                        "Longitude": -107.40579,
+                                        "Latitude": -74.098
+                                    },
+                                    {
+                                        "Longitude": -99.16579,
+                                        "Latitude": -79.734
+                                    },
+                                    {
+                                        "Longitude": -72.72279,
+                                        "Latitude": -84.998
+                                    },
+                                    {
+                                        "Longitude": -28.59879,
+                                        "Latitude": -86.386
+                                    },
+                                    {
+                                        "Longitude": -28.54879,
+                                        "Latitude": -77.358
+                                    },
+                                    {
+                                        "Longitude": -61.41179,
+                                        "Latitude": -75.082
+                                    },
+                                    {
+                                        "Longitude": -80.32579,
+                                        "Latitude": -70.237
+                                    },
+                                    {
+                                        "Longitude": -93.73979,
+                                        "Latitude": -62.451
+                                    },
+                                    {
+                                        "Longitude": -105.02479,
+                                        "Latitude": -48.262
+                                    },
+                                    {
+                                        "Longitude": -116.70479,
+                                        "Latitude": -14.862
+                                    },
+                                    {
+                                        "Longitude": -132.77879,
+                                        "Latitude": 56.883
+                                    },
+                                    {
+                                        "Longitude": -141.93079,
+                                        "Latitude": 74.072
+                                    },
+                                    {
+                                        "Longitude": -156.42279,
+                                        "Latitude": 81.909
+                                    },
+                                    {
+                                        "Longitude": -179.999,
+                                        "Latitude": 84.661675
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "ProviderDates": [
+            {
+                "Date": "2022-01-24T05:01:02.000Z",
+                "Type": "Insert"
+            },
+            {
+                "Date": "2022-01-24T05:01:02.000Z",
+                "Type": "Update"
+            }
+        ],
+        "CollectionReference": {
+            "EntryTitle": "SMAP_L1A_RADAR_RECEIVE_ONLY_V003"
+        },
+        "RelatedUrls": [
+            {
+                "Format": "Not provided",
+                "Type": "GET DATA",
+                "URL": "https://datapool.asf.alaska.edu/L1A_Radar_RO_HDF5/SP/SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5"
+            }
+        ],
+        "DataGranule": {
+            "DayNightFlag": "Unspecified",
+            "Identifiers": [
+                {
+                    "Identifier": "SP_37287_A_008",
+                    "IdentifierType": "ProducerGranuleId"
+                }
+            ],
+            "ProductionDateTime": "2022-01-24T05:01:02.000Z",
+            "ArchiveAndDistributionInformation": [
+                {
+                    "Name": "Not provided",
+                    "Size": 939.88218689,
+                    "SizeUnit": "MB",
+                    "Format": "Not provided"
+                }
+            ]
+        },
+        "Platforms": [
+            {
+                "ShortName": "SMAP",
+                "Instruments": [
+                    {
+                        "ShortName": "SAR",
+                        "ComposedOf": [
+                            {
+                                "ShortName": "STD"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "meta": {
+        "concept-type": "granule",
+        "concept-id": "G2206655279-ASF",
+        "revision-id": 1,
+        "native-id": "SP_37287_A_008-L1A_Radar_RO_HDF5",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2022-01-24T08:16:19.380Z"
+    }
 }

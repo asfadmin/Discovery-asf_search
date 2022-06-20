@@ -15,10 +15,11 @@ def run_test_ASFProduct_Geo_Search(geographic_response):
     assert(product.meta == geographic_response["meta"])
 
 def run_test_stack(reference, pre_processed_stack, processed_stack):
-    product = ASFProduct(reference)
+    opts = reference.pop('opts', None)
+    product = ASFProduct(reference, opts=opts)
     
     with patch('asf_search.baseline_search.search') as search_mock:
-        search_mock.return_value = ASFSearchResults(map(ASFProduct, pre_processed_stack))
+        search_mock.return_value = ASFSearchResults([ASFProduct(prod, None) for prod in pre_processed_stack])
         stack = product.stack()
 
 

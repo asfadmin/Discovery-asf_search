@@ -44,6 +44,7 @@
             "offNadirAngle": null,
             "orbit": 24970,
             "pathNumber": 94,
+            "perpendicularBaseline": 0,
             "platform": "Sentinel-1B",
             "pointingAngle": null,
             "polarization": "VV+VH",
@@ -53,6 +54,7 @@
             "sensor": "C-SAR",
             "startTime": "2021-01-02T03:20:31.000Z",
             "stopTime": "2021-01-02T03:20:58.000Z",
+            "temporalBaseline": 0,
             "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
             "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
             "frameNumber": "210"
@@ -491,6 +493,7 @@
             "offNadirAngle": null,
             "orbit": 25145,
             "pathNumber": 94,
+            "perpendicularBaseline": 37,
             "platform": "Sentinel-1B",
             "pointingAngle": null,
             "polarization": "VV+VH",
@@ -500,6 +503,7 @@
             "sensor": "C-SAR",
             "startTime": "2021-01-14T03:20:30.000Z",
             "stopTime": "2021-01-14T03:20:57.000Z",
+            "temporalBaseline": 11,
             "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
             "fileName": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
             "frameNumber": "210"
@@ -938,6 +942,7 @@
             "offNadirAngle": null,
             "orbit": 25320,
             "pathNumber": 94,
+            "perpendicularBaseline": 40,
             "platform": "Sentinel-1B",
             "pointingAngle": null,
             "polarization": "VV+VH",
@@ -947,11 +952,10 @@
             "sensor": "C-SAR",
             "startTime": "2021-01-26T03:20:30.000Z",
             "stopTime": "2021-01-26T03:20:57.000Z",
+            "temporalBaseline": 23,
             "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
             "fileName": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
             "frameNumber": "210",
-            "temporalBaseline": 11,
-            "perpendicularBaseline": 40,
         },
         "baseline": {
             "stateVectors": {
