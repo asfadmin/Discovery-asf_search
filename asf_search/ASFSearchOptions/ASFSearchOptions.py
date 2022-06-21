@@ -60,6 +60,27 @@ class ASFSearchOptions:
                 value = self.__getattribute__(key)
                 if value is not None:
                     yield key, value
+    
+    # Default is set to '...', since 'None' is a very valid default here
+    def pop(self, key, default=...):
+        """
+        Removes 'key' from self and returns it's value. Throws KeyError if doesn't exist
+
+        :param key: name of key to return value of, and delete
+        """
+        if key not in validator_map:
+            raise KeyError(f"key '{key}' is not a valid key for ASFSearchOptions. (pop)")
+
+        val = getattr(self, key)
+        if val is None:
+            if default != ...:
+                # Is it right to run the key through validator here?
+                # If something is a list, it casts it, etc...
+                return default
+            raise KeyError(f"key '{key}' is set to empty/None. (pop)")
+        # Success, delete and return it:
+        self.__delattr__(key)
+        return val
 
     def reset(self):
         """
