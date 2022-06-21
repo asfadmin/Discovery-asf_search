@@ -57,7 +57,13 @@
             "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
             "frameNumber": "210"
         },
-        "baseline": null,
+        "baseline": {
+            "stateVectors": {
+                    "positions": {},
+                "velocities": {}
+            },
+            "ascendingNodeTime": "2021-01-02T03:02:58.934857"
+        },
         "umm": {
             "TemporalExtent": {
                 "RangeDateTime": {
@@ -921,34 +927,8 @@
         },
         "baseline": {
             "stateVectors": {
-                "positions": {
-                    "prePosition": [
-                        -2893709.242044,
-                        -1235768.184608,
-                        6327545.175914
-                    ],
-                    "prePositionTime": "2021-01-26T03:20:42.000000",
-                    "postPosition": [
-                        -2845226.283146,
-                        -1186512.31404,
-                        6358815.223669
-                    ],
-                    "postPositionTime": "2021-01-26T03:20:52.000000"
-                },
-                "velocities": {
-                    "preVelocity": [
-                        4828.59494,
-                        4922.291175,
-                        3162.750859
-                    ],
-                    "preVelocityTime": "2021-01-26T03:20:42.000000",
-                    "postVelocity": [
-                        4867.907754,
-                        4928.781369,
-                        3091.20021
-                    ],
-                    "postVelocityTime": "2021-01-26T03:20:52.000000"
-                }
+                "positions": {},
+                "velocities": {}
             },
             "ascendingNodeTime": "2021-01-26T03:02:57.994247"
         },

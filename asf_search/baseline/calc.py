@@ -15,7 +15,10 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
     for product in stack:
         baselineProperties = product.baseline
         positionProperties = baselineProperties['stateVectors']['positions']
-
+        
+        if len(positionProperties.keys()) == 0:
+            baselineProperties['noStateVectors'] = True
+            continue
         if None in [positionProperties['prePositionTime'], positionProperties['postPositionTime'], positionProperties['prePosition'], positionProperties['postPosition']]:
             baselineProperties['noStateVectors'] = True
             continue
