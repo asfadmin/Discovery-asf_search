@@ -11,13 +11,13 @@ alos_parameters: &alos_parameters {
 }
 
 tests:
-- test-ASFSearch ALOS Resp:
+- test-ASFSearch ALOS Resp 1:
     response: Alos_response_maxResults3.yml
 
-- test-ASFSearch ALOS Resp:
+- test-ASFSearch ALOS Resp 2:
     response: Alos_stack.yml
 
-- test-ASFSearch ALOS Resp:
+- test-ASFSearch ALOS Resp 3:
     response: S1_baseline_stack.yml
 
 - test-ASFSearch-search-valid Alos:
