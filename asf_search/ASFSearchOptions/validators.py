@@ -41,18 +41,19 @@ def parse_float(value: float) -> float:
     return value
 
 
-def parse_date(value: Union[str, datetime.datetime]) -> datetime.datetime:
+def parse_date(value: Union[str, datetime.datetime]) -> str:
     """
     Base date validator
-    :param value: String or datetime object to be validated/converted
-    :return: Validated/converted datetime object
+    :param value: String or datetime object to be validated
+    :return: String passed in, if it can successfully convert to Datetime.
+    (Need to keep strings like "today" w/out converting them, but throw on "asdf")
     """
     if isinstance(value, datetime.datetime):
         return value
     d = dateparser.parse(str(value))
     if d is None:
         raise ValueError(f"Invalid date: '{value}'.")
-    return d
+    return str(value)
 
 
 def parse_range(value: Tuple[number, number], h: Callable[[number], number]) -> Tuple[number, number]:

@@ -12,22 +12,31 @@ from WKTUtils import Input
 from warnings import warn
 
 def translate_opts(opts: ASFSearchOptions) -> list:
-    # Start by just grabbing the searchable parameters
+    # Need to add params which ASFSearchOptions cant support (like temporal),
+    # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
-    # provider doesn't get copied with the 'dict' cast above
+    # Dict only copies CMR params. Copy provider over too:
     dict_opts['provider'] = opts.provider
 
     # Special case to unravel WKT field a little for compatibility
-    if dict_opts.get('intersectsWith') is not None:
+    if "intersectsWith" in dict_opts:
         cmr_wkt = Input.parse_wkt_util(dict_opts["intersectsWith"])
-
+        dict_opts.pop("intersectsWith", None)
+        # Add it to the dict w/ how cmr expects:
         (shapeType, shape) = cmr_wkt.split(':')
-        del dict_opts['intersectsWith']
         dict_opts[shapeType] = shape
 
+    # If you need to use the temporal key:
+    if any(key in dict_opts for key in ['start', 'end', 'season']):
+        start = dict_opts["start"] if "start" in dict_opts else ""
+        end = dict_opts["end"] if "end" in dict_opts else ""
+        season = ','.join(str(x) for x in dict_opts["season"]) if "season" in dict_opts else ""
 
-    dict_opts = fix_date(dict_opts)
-    dict_opts = fix_platform(dict_opts)
+        dict_opts['temporal'] = f'{start},{end},{season}'
+        dict_opts.pop("start", None)
+        dict_opts.pop("end", None)
+        dict_opts.pop("season", None)
+
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
@@ -170,81 +179,15 @@ def try_strip_trailing_zero(value: str):
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
-        # set default start and end dates if needed, and then make sure they're formatted correctly
-        # whether using the default or not
-        # set_start = fixed_params.index('start')
-        start_s = fixed_params['start'].isoformat() if 'start' in fixed_params else '1978-01-01T00:00:00Z'
-        end_s = fixed_params['end'].isoformat() if 'end' in fixed_params else datetime.utcnow().isoformat()
+        fixed_params["start"] = fixed_params["start"] if "start" in fixed_params else ""
+        fixed_params["end"] = fixed_params["end"] if "end" in fixed_params else ""
+        fixed_params["season"] = ','.join(str(x) for x in fixed_params['season']) if "season" in fixed_params else ""
 
-        start = dateparser.parse(start_s, settings={'RETURN_AS_TIMEZONE_AWARE': True})
-        end = dateparser.parse(end_s, settings={'RETURN_AS_TIMEZONE_AWARE': True})
-
-        # Check/fix the order of start/end
-        if start > end:
-            start, end = end, start
-
-        # Final temporal string that will actually be used
-        fixed_params['temporal'] = '{0},{1}'.format(
-            start.strftime('%Y-%m-%dT%H:%M:%SZ'),
-            end.strftime('%Y-%m-%dT%H:%M:%SZ')
-        )
-
-        # add the seasonal search if requested now that the regular dates are
-        # sorted out
-        if 'season' in fixed_params:
-            fixed_params['temporal'] += ',{0}'.format(
-                ','.join(str(x) for x in fixed_params['season'])
-            )
+        fixed_params['temporal'] = f'{fixed_params["start"]},{fixed_params["end"]},{fixed_params["season"]}'
 
         # And a little cleanup
         fixed_params.pop('start', None)
         fixed_params.pop('end', None)
         fixed_params.pop('season', None)
         
-    return fixed_params
-
-def fix_platform(fixed_params: Dict[str, Any]):
-    if 'platform' not in fixed_params:
-        # Nothing to do
-        return fixed_params
-
-    # If it's a single plat str, make it a list of that plat:
-    if not isinstance(fixed_params["platform"], list):
-        fixed_params["platform"] = [ fixed_params["platform"] ]
-
-    plat_aliases = {
-        # Groups:
-        'S1': ['SENTINEL-1A', 'SENTINEL-1B'],
-        'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B'],
-        'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B'],
-        'ERS': ['ERS-1', 'ERS-2'],
-        'SIR-C': ['STS-59', 'STS-68'],
-        # Singles / Aliases:
-        'R1': ['RADARSAT-1'],
-        'E1': ['ERS-1'],
-        'E2': ['ERS-2'],
-        'J1': ['JERS-1'],
-        'A3': ['ALOS'],
-        'AS': ['DC-8'],
-        'AIRSAR': ['DC-8'],
-        'SS': ['SEASAT 1'],
-        'SEASAT': ['SEASAT 1'],
-        'SA': ['SENTINEL-1A'],
-        'SB': ['SENTINEL-1B'],
-        'SP': ['SMAP'],
-        'UA': ['G-III'],
-        'UAVSAR': ['G-III'],
-    }
-
-    # Legacy API allowed a few synonyms. If they're using one,
-    # translate it. Also handle airsar/seasat/uavsar platform
-    # conversion
-    platform_list = []
-    for plat in fixed_params["platform"]:
-        if plat.upper() in plat_aliases:
-            platform_list.extend(plat_aliases[plat.upper()])
-        else:
-            platform_list.append(plat)
-
-    fixed_params["platform"] = platform_list
     return fixed_params
