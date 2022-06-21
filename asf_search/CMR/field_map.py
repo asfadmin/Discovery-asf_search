@@ -8,7 +8,7 @@ field_map = {
     'bbox':                 {'key': 'bounding_box',            'fmt': '{0}'},
     'beamMode':             {'key': 'attribute[]',             'fmt': 'string,BEAM_MODE,{0}'},
     'beamSwath':            {'key': 'attribute[]',             'fmt': 'string,BEAM_MODE_TYPE,{0}'},
-    'collectionName':       {'key': 'attribute[]',             'fmt': 'string,MISSION_NAME,{0}'},
+    'campaign':             {'key': 'attribute[]',             'fmt': 'string,MISSION_NAME,{0}'},
     'maxDoppler':           {'key': 'attribute[]',             'fmt': 'float,DOPPLER,,{0}'},
     'minDoppler':           {'key': 'attribute[]',             'fmt': 'float,DOPPLER,{0},'},
     'maxFaradayRotation':   {'key': 'attribute[]',             'fmt': 'float,FARADAY_ROTATION,,{0}'},
