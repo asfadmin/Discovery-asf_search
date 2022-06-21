@@ -85,9 +85,9 @@ def translate_product(item: dict) -> dict:
         'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
     }
 
-    # for key in ['temporalBaseline', 'perpendicularBaseline']:
-    #     if key in item['properties']:
-    #         properties[key] = item['properties'][key]
+    for key in ['temporalBaseline', 'perpendicularBaseline']:
+        if "properties" in item and key in item['properties']:
+            properties[key] = item['properties'][key]
 
     stateVectors = {}
     positions = {}
