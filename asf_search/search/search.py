@@ -7,6 +7,7 @@ import dateparser
 import warnings
 import inspect
 import math
+from WKTUtils import RepairWKT
 
 from asf_search import __version__
 
@@ -108,8 +109,17 @@ def search(
         if inspect.stack()[1].function == 'geo_search':
             stack_level = 3
 
-    subqueries = build_subqueries(opts)
+    # Repair WKT here so it only happens once, and you can save the result to the new Opts object:
+    if opts.intersectsWith is not None:
+        repaired_wkt = RepairWKT.repairWKT(opts.intersectsWith)
+        if "errors" in repaired_wkt:
+            raise ValueError(f"Error repairing wkt: {repaired_wkt['errors']}")
+        for repair in repaired_wkt["repairs"]:
+            warnings.warn(f"Modified shape: {repair}")
 
+        opts.intersectsWith = repaired_wkt["wkt"]["wrapped"]
+
+    subqueries = build_subqueries(opts)
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
     results = ASFSearchResults(opts=opts)
