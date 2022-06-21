@@ -14,15 +14,17 @@ def run_test_ASFSearchResults(search_resp):
     assert(len(search_results) == len(search_resp))
     assert(search_results.geojson()['type'] == 'FeatureCollection')
 
-    for (idx, feature) in enumerate(search_results.data):
+    for (idx, feature) in enumerate(search_results):
+        # temporal and perpendicular baseline values are calculated post-search, 
+        # so there's no instance where they'll be returned in a CMR search
+        search_resp[idx]['properties'].pop('temporalBaseline', None)
+        search_resp[idx]['properties'].pop('perpendicularBaseline', None)
+
         assert(feature.geojson()['geometry'] == search_resp[idx]['geometry'])
         assert(feature.geojson()['properties'] == search_resp[idx]['properties'])
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
-        copy_params = search_parameters
-        copy_params.pop('maxResults', None)
-        translated_opts = translate_opts(ASFSearchOptions(**copy_params))
         m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", json={'items': answer})
         response = search(**search_parameters)
 
