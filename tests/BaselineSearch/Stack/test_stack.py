@@ -11,14 +11,17 @@ def run_test_find_new_reference(stack: List, output_index: Number) -> None:
     if stack == []:
         assert(find_new_reference(stack) == None)
     else:
-        assert find_new_reference([ASFProduct(product) for product in stack]).properties['sceneName'] == stack[output_index]['properties']['sceneName']
+        products = [ASFProduct(product, opts=None) for product in stack]
+        for idx, product in enumerate(products):
+            product = clear_baseline(stack[idx], product)
+        assert find_new_reference(products).properties['sceneName'] == stack[output_index]['properties']['sceneName']
         
 def run_test_get_default_product_type(scene_name: str, product_type: str) -> None:
     assert get_default_product_type(scene_name) == product_type
     
 def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
-    reference = ASFProduct(reference)
-    stack = ASFSearchResults([ASFProduct(product) for product in stack])
+    reference = ASFProduct(reference, opts=None)
+    stack = ASFSearchResults([ASFProduct(product, opts=None) for product in stack])
     
     if error == None:
         stack, warnings = get_baseline_from_stack(reference, stack)
@@ -32,13 +35,31 @@ def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
         return
     
     with pytest.raises(ValueError):
+        for product in stack:
+            if product.baseline.get('insarBaseline', False):
+                product.baseline = {}
+            else:
+                product.baseline['stateVectors']['positions'] =  {}
+                product.baseline['stateVectors']['velocities'] =  {}
+        reference.baseline = {}
         get_baseline_from_stack(reference=reference, stack=stack)
 
 
 def run_test_valid_state_vectors(reference, output):
     if reference != None:
-        assert output == valid_state_vectors(ASFProduct(reference))
+        product = ASFProduct(reference, opts=None)
+        clear_baseline(reference, product)
+        assert output == valid_state_vectors(product)
         return
     
     with pytest.raises(ValueError):
         valid_state_vectors(reference)
+
+def clear_baseline(resource, product: ASFProduct):
+# Baseline values can be restored from UMM in asfProduct constructor, 
+# this erases them again if the resource omitted them from the product
+    if resource['baseline'].get('stateVectors', False).get('positions', False) == {}:
+        product.baseline['stateVectors']['positions'] =  {}
+        product.baseline['stateVectors']['velocities'] =  {}
+    
+    return product
