@@ -15,7 +15,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # Start by just grabbing the searchable parameters
     dict_opts = dict(opts)
     # provider doesn't get copied with the 'dict' cast above
-    dict_opts['provider'] = getattr(opts, 'provider', DEFAULT_PROVIDER)
+    dict_opts['provider'] = opts.provider
 
     # Special case to unravel WKT field a little for compatibility
     if dict_opts.get('intersectsWith') is not None:
