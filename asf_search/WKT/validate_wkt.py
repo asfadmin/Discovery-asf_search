@@ -1,5 +1,6 @@
 from numbers import Number
 from typing import Union, Tuple, List
+from warnings import warn
 from shapely import wkt
 from shapely.geometry.base import BaseGeometry
 from shapely.geometry import Polygon, MultiPolygon, Point, MultiPoint, LineString, MultiLineString, GeometryCollection
@@ -77,17 +78,16 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
         5. Vertices are in counter-clockwise winding order
     returns: geometry prepped for CMR
     """
-    merged, merge_report = _merge_overlapping_geometry(geometry)
+    clamped, clamp_report = _get_clamped_geometry(geometry)
+    merged, merge_report = _merge_overlapping_geometry(clamped)
     convex, convex_report = _get_convex_hull(merged)
-    clamped, clamp_report = _get_clamped_geometry(convex)
-    simplified, simplified_report = _simplify_aoi(clamped)
+    simplified, simplified_report = _simplify_aoi(convex)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
 
     repair_reports = [merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]    
     for report in repair_reports:
         if report is not None:
-            print(report.report_type)
-            print(report.report)
+            warn(f"{report.report_type}\n{report.report}")
 
     validated = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
     return validated
@@ -156,7 +156,15 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
             nonlocal coords_wrapped
             wrapped = (wrapped + 180) % 360 - 180
             coords_wrapped += 1
-
+            
+        # width = max(lons) - min(lons)
+        # unwrapped_lons = [a if a > 0 else a + 180 for a in lons]
+        # unwrapped_width = max(unwrapped_lons) - min(unwrapped_lons)
+        # if width > unwrapped_width:
+        #   # shape should be unwrapped, use that version
+        # else:
+        #     blah
+  # shape doesn't need unwrapping, use that version
         if clamped != y:
             nonlocal coords_clamped
             coords_clamped += 1
