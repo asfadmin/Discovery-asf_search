@@ -86,37 +86,27 @@ def search(
     :return: ASFSearchResults(list) of search results
     """
 
+    # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:
     kwargs = locals()
-    data = dict((k, v) for k, v in kwargs.items() if k not in ['opts'] and v is not None)
+    opts = (ASFSearchOptions() if kwargs["opts"] is None else copy(opts))
+    del kwargs["opts"]
 
-    opts = (ASFSearchOptions() if opts is None else copy(opts))
-    opts.merge_args(**data)
+    kwargs = dict((k, v) for k, v in kwargs.items() if v is not None)
+    kw_opts = ASFSearchOptions(**kwargs)
 
-    data = dict(opts)
-    # maturity isn't a key that get's copied to the data dict above, need to grab it directly:
-    data['maturity'] = getattr(opts, 'maturity', defaults.defaults['maturity'])
-    maxResults = data.pop("maxResults", INTERNAL.CMR_PAGE_SIZE)
+    # Anything passed in as kwargs has priority over anything in opts:
+    opts.merge_args(**dict(kw_opts))
 
-    if getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False):
-        maxResults = None
-    
-    if 'collectionName' in data:
+    maxResults = opts.pop("maxResults", None)
+
+    if maxResults is not None and \
+        (getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)):
+            raise ValueError("Cannot use maxResults along with product_list/granule_list.")
+
+    if 'campaign' in dict(opts):
         stack_level = 2
         if inspect.stack()[1].function == 'geo_search':
             stack_level = 3
-
-        warnings.filterwarnings('once')
-        warnings.warn("search parameter \"collectionName\" is deprecated and will be removed in a future release. Use \"campaign\" instead.", 
-                      DeprecationWarning, 
-                      stacklevel=stack_level)
-    
-    rename_fields = [(
-        'campaign', 'collectionName'
-    )]
-
-    for (new_key, deprecated_key) in rename_fields:
-        if deprecated_key in data:
-            data[new_key] = data.pop(deprecated_key)
 
     subqueries = build_subqueries(opts)
 
