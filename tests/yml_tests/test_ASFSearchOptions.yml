@@ -143,8 +143,8 @@ tests:
     start: "2022-01-01"
     end: "2022-02-02"
     expect_output:
-        start: 2022-01-01 00:00:00
-        end: 2022-02-02 00:00:00
+        start: "2022-01-01"
+        end: "2022-02-02"
 
 - test-ASFSearchOptions - test with defaults NOT null:
     exception: Null
