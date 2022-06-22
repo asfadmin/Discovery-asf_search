@@ -80,8 +80,10 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     """
     clamped, clamp_report = _get_clamped_geometry(geometry)
     merged, merge_report = _merge_overlapping_geometry(clamped)
+
     convex, convex_report = _get_convex_hull(merged)
     simplified, simplified_report = _simplify_aoi(convex)
+    # clamped, clamp_report = _get_clamped_geometry(simplified)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
 
     repair_reports = [merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]    
@@ -152,10 +154,10 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
         clamped = _clamp(y)
         wrapped = x
 
-        if abs(x) > 180:
-            nonlocal coords_wrapped
-            wrapped = (wrapped + 180) % 360 - 180
-            coords_wrapped += 1
+        # if abs(x) > 180:
+        #     nonlocal coords_wrapped
+        #     wrapped = (wrapped + 180) % 360 - 180
+        #     coords_wrapped += 1
             
         # width = max(lons) - min(lons)
         # unwrapped_lons = [a if a > 0 else a + 180 for a in lons]
@@ -170,8 +172,24 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
             coords_clamped += 1
 
         return tuple([wrapped, clamped])
+
+    def  _wrap_coord(x, y, z=None):
+        wrapped = (x + 180) % 360 - 180 if x < 0 else x
+
+        if wrapped != x:
+            nonlocal coords_wrapped
+            coords_wrapped += 1
+
+        return tuple([wrapped, y])
+
+    width = shape.bounds[2] - shape.bounds[0]
+    # unwrapped_lons = [a if a > 0 else a + 180 for a in lons]
+    unwrapped_width = (shape.bounds[2] if shape.bounds[2] >= 0 else shape.bounds[2] + 180) - (shape.bounds[0] if shape.bounds[0] >= 0 else shape.bounds[0] + 180)
     
-    clamped = transform(_clamp_coord, shape)
+    wrapped = shape
+    if width > unwrapped_width:
+        wrapped = transform(_wrap_coord, shape)
+    clamped = transform(_clamp_coord, wrapped)
     
     clampRepairReport = None
     wrapRepairReport = None
@@ -213,6 +231,7 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
     """
     nearest_neighbor_distance = _nearest_neighbor(shape)
     
+    shape = wkt.loads(shape.wkt)
     if shape.geom_type == 'Point':
         return shape, []
 
@@ -276,7 +295,7 @@ def _nearest_neighbor(geometry: BaseGeometry):
     points = _get_shape_coords(geometry)
     if len(points) < 2:
         return float("inf")
-    nbrs = NearestNeighbors(n_neighbors=2, metric=distance).fit(points)
+    nbrs = NearestNeighbors(n_neighbors=2, metric=distance, algorithm='ball_tree').fit(points)
     distances, indices = nbrs.kneighbors(points)
     distances = distances.tolist()
     #Throw away unneeded data in distances:

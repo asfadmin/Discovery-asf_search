@@ -17,7 +17,7 @@ import os
 import pathlib
 import yaml
 
-from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_valdiate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_valdiate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry
+from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry
 import requests
 from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
@@ -235,7 +235,7 @@ def test_wkt_validation_WKT_Valid(**args) -> None:
     test_info = args["test_info"]
     wkt = get_resource(test_info['wkt'])
     validated_wkt = get_resource(test_info['validated-wkt'])
-    run_test_valdiate_wkt_valid_wkt(wkt, validated_wkt)
+    run_test_validate_wkt_valid_wkt(wkt, validated_wkt)
 
 def test_wkt_validation_WKT_clamp_geometry(**args) -> None:
     """
@@ -276,14 +276,14 @@ def test_wkt_validation_counter_clockwise_reorientation(**args) -> None:
     cc_wkt = get_resource(test_info['cc-wkt'])
     run_test_validate_wkt_counter_clockwise_reorientation(wkt, cc_wkt)
 
-def test_valdiate_wkt_get_shape_coords(**args) -> None:
+def test_validate_wkt_get_shape_coords(**args) -> None:
     """
     Test asf_search.validate_wkt._get_shape_coords asserting all coordinates are returned and expected
     """
     test_info = args["test_info"]
     wkt = get_resource(test_info['wkt'])
     coords = get_resource(test_info['coordinates'])
-    run_test_valdiate_wkt_get_shape_coords(wkt, coords)
+    run_test_validate_wkt_get_shape_coords(wkt, coords)
 
 def test_search_wkt_prep(**args) -> None:
     """
