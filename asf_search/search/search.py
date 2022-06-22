@@ -148,10 +148,12 @@ def search(
         'platform',
         'polarization',
         'processingLevel',
-        'product_list']
+        'product_list',
+        'season',
+    ]
     for key in join_fields:
         if key in data:
-            data[key] = ','.join(data[key])
+            data[key] = ','.join([str(v) for v in data[key]])
     
     # Special case to unravel WKT field a little for compatibility
     if data.get('intersectsWith') is not None:
@@ -169,6 +171,7 @@ def search(
         data[shapeType] = shape
 
     data['output'] = 'asf_search'
+    print(data)
     # Join the url, to guarantee *exactly* one '/' between each url fragment:
     response = opts.session.post(url=f'https://{opts.host}{INTERNAL.SEARCH_PATH}', data=data)
 
