@@ -171,7 +171,6 @@ def search(
         data[shapeType] = shape
 
     data['output'] = 'asf_search'
-    print(data)
     # Join the url, to guarantee *exactly* one '/' between each url fragment:
     response = opts.session.post(url=f'https://{opts.host}{INTERNAL.SEARCH_PATH}', data=data)
 
