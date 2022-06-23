@@ -80,10 +80,8 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     """
     clamped, clamp_report = _get_clamped_geometry(geometry)
     merged, merge_report = _merge_overlapping_geometry(clamped)
-
     convex, convex_report = _get_convex_hull(merged)
     simplified, simplified_report = _simplify_aoi(convex)
-    # clamped, clamp_report = _get_clamped_geometry(simplified)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
 
     repair_reports = [merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]    
@@ -173,8 +171,8 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
 
         return tuple([wrapped, clamped])
 
-    def  _wrap_coord(x, y, z=None):
-        wrapped = (x + 180) % 360 - 180 if x < 0 else x
+    def  _unwrap_coord(x, y, z=None):
+        wrapped = x if x >= 0 else x + 360
 
         if wrapped != x:
             nonlocal coords_wrapped
@@ -182,14 +180,11 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
 
         return tuple([wrapped, y])
 
-    width = shape.bounds[2] - shape.bounds[0]
-    # unwrapped_lons = [a if a > 0 else a + 180 for a in lons]
-    unwrapped_width = (shape.bounds[2] if shape.bounds[2] >= 0 else shape.bounds[2] + 180) - (shape.bounds[0] if shape.bounds[0] >= 0 else shape.bounds[0] + 180)
-    
-    wrapped = shape
-    if width > unwrapped_width:
-        wrapped = transform(_wrap_coord, shape)
-    clamped = transform(_clamp_coord, wrapped)
+    unwrapped = shape
+    if shape.bounds[2] - shape.bounds[0] > 180:
+        unwrapped = transform(_unwrap_coord, shape)
+
+    clamped = transform(_clamp_coord, unwrapped)
     
     clampRepairReport = None
     wrapRepairReport = None

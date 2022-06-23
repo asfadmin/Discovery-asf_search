@@ -44,9 +44,9 @@ tests:
 
 - test-validate-wkt-clamp linestring wrapped:
     wkt: LINESTRING (-179 -95, 45 0, 90 95)
-    clamped-wkt: LINESTRING (-179 -90, 45 0, 90 90)
+    clamped-wkt: LINESTRING (181 -90, 45 0, 90 90)
     clamped-count: 2
-    wrapped-count: 0
+    wrapped-count: 1
 
 - test-validate-wkt-clamp point lower-bound:
     wkt: POINT (95 -95)
