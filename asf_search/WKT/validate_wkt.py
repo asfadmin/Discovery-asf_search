@@ -152,19 +152,6 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
         clamped = _clamp(y)
         wrapped = x
 
-        # if abs(x) > 180:
-        #     nonlocal coords_wrapped
-        #     wrapped = (wrapped + 180) % 360 - 180
-        #     coords_wrapped += 1
-            
-        # width = max(lons) - min(lons)
-        # unwrapped_lons = [a if a > 0 else a + 180 for a in lons]
-        # unwrapped_width = max(unwrapped_lons) - min(unwrapped_lons)
-        # if width > unwrapped_width:
-        #   # shape should be unwrapped, use that version
-        # else:
-        #     blah
-  # shape doesn't need unwrapping, use that version
         if clamped != y:
             nonlocal coords_clamped
             coords_clamped += 1
