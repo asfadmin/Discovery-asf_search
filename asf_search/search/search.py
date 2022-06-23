@@ -152,10 +152,12 @@ def search(
         'platform',
         'polarization',
         'processingLevel',
-        'product_list']
+        'product_list',
+        'season',
+    ]
     for key in join_fields:
         if key in data:
-            data[key] = ','.join(data[key])
+            data[key] = ','.join([str(v) for v in data[key]])
     
     # Special case to unravel WKT field a little for compatibility
     if data.get('intersectsWith') is not None:
