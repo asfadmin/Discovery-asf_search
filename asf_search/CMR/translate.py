@@ -5,6 +5,9 @@ from asf_search.ASFSearchOptions import ASFSearchOptions, validators
 from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
 # from asf_search.search.search import fix_date
 import dateparser
+from shapely import wkt
+from shapely.geometry import Polygon
+from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 
 from WKTUtils import Input
@@ -20,11 +23,23 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     # Special case to unravel WKT field a little for compatibility
     if "intersectsWith" in dict_opts:
-        cmr_wkt = Input.parse_wkt_util(dict_opts["intersectsWith"])
-        dict_opts.pop("intersectsWith", None)
-        # Add it to the dict w/ how cmr expects:
-        (shapeType, shape) = cmr_wkt.split(':')
-        dict_opts[shapeType] = shape
+        shape_wkt = dict_opts.pop("intersectsWith", None)
+        shape = wkt.loads(shape_wkt)
+        
+        # If a wide rectangle is provided, make sure to use the bounding box
+        # instead of the wkt for better responses from CMR 
+        # This will provide better results with AOI's near poles
+        if should_use_bbox(shape):
+            boundary = shape.boundary
+            bottom_left = [str(coord) for coord in boundary.bounds[:2]]
+            top_right = [str(coord) for coord in boundary.bounds[2:]]
+            bbox = ','.join([*bottom_left, *top_right])
+            dict_opts['bbox'] = bbox
+        else:
+            cmr_wkt = Input.parse_wkt_util(shape_wkt)
+            # Add it to the dict w/ how cmr expects:
+            (shapeType, shape) = cmr_wkt.split(':')
+            dict_opts[shapeType] = shape
 
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
@@ -187,3 +202,14 @@ def fix_date(fixed_params: Dict[str, Any]):
         fixed_params.pop('season', None)
         
     return fixed_params
+
+def should_use_bbox(shape: BaseGeometry):
+    """
+    If the passed shape is a polygon, and if that polygon
+    is equivalent to it's bounding box (if it's a rectangle),
+    we should use the bounding box to search instead
+    """
+    if isinstance(shape, Polygon):
+        return shape.equals(Polygon(shape.boundary.coords))
+    
+    return False
