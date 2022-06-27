@@ -8,7 +8,7 @@ from asf_search.CMR import translate_opts
 from asf_search.search.search import get_page, preprocess_opts
 from asf_search import INTERNAL
 
-def count(        
+def search_count(        
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         beamMode: Union[str, Iterable[str]] = None,
