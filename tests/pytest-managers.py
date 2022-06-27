@@ -300,7 +300,7 @@ def test_notebook_examples(**args) -> None:
 
     with open(path) as f:
         notebook = nbformat.read(f, as_version=4)
-        ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+        ep = ExecutePreprocessor(timeout=600)
         try:
             assert ep.preprocess(notebook) != None, f"Got empty notebook for {notebook_file}"
         except Exception:
