@@ -22,6 +22,10 @@ from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, r
 
 from tests.download.test_download import run_test_download_url_auth_error
 
+import nbformat
+from nbconvert.preprocessors import ExecutePreprocessor
+
+
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
     """
@@ -287,6 +291,20 @@ def test_ASFSearchOptions_validator(**args) -> None:
 
 def test_ASFSearchOptions(**kwargs) -> None:
     run_test_ASFSearchOptions(**kwargs)
+
+
+def test_notebook_examples(**args) -> None:
+    test_info = args['test_info']
+    notebook_file = test_info['notebook']
+    path = os.path.join('examples', notebook_file)
+
+    with open(path) as f:
+        notebook = nbformat.read(f, as_version=4)
+        ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
+        try:
+            assert ep.preprocess(notebook) != None, f"Got empty notebook for {notebook_file}"
+        except Exception:
+            assert False, f"Failed executing {notebook_file}"
 
 
 # Testing resource loading utilities

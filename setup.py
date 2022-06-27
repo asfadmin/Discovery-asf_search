@@ -19,6 +19,8 @@ test_requirements = [
     "pytest-xdist",
     "coverage",
     "requests-mock",
+    "nbformat",
+    "nbconvert"
 ]
 
 with open("README.md", "r") as readme_file:

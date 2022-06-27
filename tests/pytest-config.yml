@@ -129,3 +129,7 @@ test_types:
 - For running ASFSearchOptions tests:
     required_in_title: test-ASFSearchOptions
     method: test_ASFSearchOptions
+
+- For running jupyter notebook example tests:
+    required_keys: notebook
+    method: test_notebook_examples

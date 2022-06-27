@@ -185,9 +185,9 @@ def set_default_dates(opts: ASFSearchOptions):
         opts.end = dateparser.parse(opts.end, settings={'RETURN_AS_TIMEZONE_AWARE': True})
     # If both are used, make sure they're in the right order:
     if opts.start is not None and opts.end is not None:
-        if start > end:
+        if opts.start > opts.end:
             warnings.warn(f"Start date ({opts.start}) is after end date ({opts.end}). Switching the two.")
-            start, end = end, start
+            opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
     if opts.start is not None:
         opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
