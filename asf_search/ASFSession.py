@@ -13,6 +13,7 @@ class ASFSession(requests.Session):
         super().__init__()
         self.headers.update({'User-Agent': f'{__name__}.{__version__}'})
 
+
     def auth_with_creds(self, username: str, password: str):
         """
         Authenticates the session using EDL username/password credentials
