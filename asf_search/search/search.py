@@ -174,6 +174,18 @@ def search(
 
     results = ASFSearchResults(opts=opts)
 
+    # hits = True
+    # if hits:
+    #     count = 0
+    #     for query in subqueries:        
+    #         translated_opts = translate_opts(query)
+    #         response = get_page(session=opts.session, url=url, translated_opts=translated_opts, hits=hits)
+    #         if 'CMR-hits' in response.headers:
+    #             count += int(response.headers['CMR-hits'])
+        
+    #     return count
+        # return [get_page(session=opts.session, url=url, translated_opts=translate_opts, hits=hits).headers for query in subqueries]
+
     for query in subqueries:
         translated_opts = translate_opts(query)
 
@@ -207,7 +219,7 @@ def search(
 
     return results
 
-def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
+def get_page(session: ASFSession, url: str, translated_opts: list, hits: bool = False) -> Response:
     response = session.post(url=url, data=translated_opts)
     try:
         response.raise_for_status()
@@ -217,7 +229,7 @@ def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
         raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-
+    
     return response
     # json = response.json()
     # return [ASFProduct(f, opts=opts) for f in response.json()['items']]
