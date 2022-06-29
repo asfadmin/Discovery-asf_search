@@ -95,6 +95,9 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
 
 
 def _flatten_multipart_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
+    if geometry.has_z:
+        warn(f"Higher Dimension REPORT:\nOnly 2-Dimensional area of interests are supported (lon/lat), higher dimension coordinates will be ignored")
+
     def _recurse_nested_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
         output = []
 
