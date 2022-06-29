@@ -46,6 +46,12 @@ tests:
     wkt: LINESTRING (-179 -95, 45 0, 90 95)
     clamped-wkt: LINESTRING (181 -90, 45 0, 90 90)
     clamped-count: 2
+    wrapped-count: 0
+
+- test-validate-wkt-clamp point:
+    wkt: POINT (-999999999999 -999999999999)
+    clamped-wkt: POINT (81 -90)
+    clamped-count: 1
     wrapped-count: 1
 
 - test-validate-wkt-clamp point lower-bound:
@@ -63,7 +69,7 @@ tests:
 
 - test-validate-wkt-clamp point lat lon-lower-bound:
     wkt: POINT (181 -95)
-    clamped-wkt: POINT (181 -90)
+    clamped-wkt: POINT (-179 -90)
     clamped-count: 1
     wrapped-count: 0
 
@@ -83,7 +89,7 @@ tests:
     wkt: POLYGON ((-181 -95, 181 0, 10 100, 0 100, -181 -95))
     clamped-wkt: POLYGON ((179 -90, 181 0, 10 90, 0 90, 179 -90))
     clamped-count: 4
-    wrapped-count: 2
+    wrapped-count: 3
 
 - test-validate-wkt-convex-hull point:
     wkt: POINT (95 -90)

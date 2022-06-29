@@ -166,7 +166,7 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
     """
     coords_clamped = 0
     coords_wrapped = 0
-    def _clamp_coord(x, y, z=None):
+    def _clamp_lat(x, y, z=None):
         clamped = _clamp(y)
         wrapped = x
 
@@ -176,8 +176,10 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
 
         return tuple([wrapped, clamped])
 
-    def  _unwrap_coord(x, y, z=None):
-        wrapped = x if x >= 0 else x + 360
+    def _wrap_lon(x, y, z=None):
+        wrapped = x
+        if abs(x) > 180:
+            wrapped = (x + 180) % 360 - 180
 
         if wrapped != x:
             nonlocal coords_wrapped
@@ -185,11 +187,18 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
 
         return tuple([wrapped, y])
 
-    unwrapped = shape
-    if shape.bounds[2] - shape.bounds[0] > 180:
-        unwrapped = transform(_unwrap_coord, shape)
+    def  _unwrap_lon(x, y, z=None):
+        unwrapped = x if x >= 0 else x + 360
 
-    clamped = transform(_clamp_coord, unwrapped)
+        return tuple([unwrapped, y])
+
+    wrapped = transform(_wrap_lon, shape)
+    unwrapped = wrapped
+    
+    if wrapped.bounds[2] - wrapped.bounds[0] > 180:
+        unwrapped = transform(_unwrap_lon, wrapped)
+
+    clamped = transform(_clamp_lat, unwrapped)
     
     clampRepairReport = None
     wrapRepairReport = None
