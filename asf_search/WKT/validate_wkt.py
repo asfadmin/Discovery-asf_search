@@ -78,7 +78,8 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
         5. Vertices are in counter-clockwise winding order
     returns: geometry prepped for CMR
     """
-    clamped, clamp_report = _get_clamped_geometry(geometry)
+    flattened = _flatten_multipart_geometry(geometry)
+    clamped, clamp_report = _get_clamped_geometry(flattened)
     merged, merge_report = _merge_overlapping_geometry(clamped)
     convex, convex_report = _get_convex_hull(merged)
     simplified, simplified_report = _simplify_aoi(convex)
@@ -91,6 +92,23 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
 
     validated = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
     return validated
+
+
+def _flatten_multipart_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
+    def _recurse_nested_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
+        output = []
+
+        if isinstance(geometry, BaseMultipartGeometry):
+            for geom in geometry.geoms:
+                output.extend(_recurse_nested_geometry(geom))
+        elif not geometry.is_empty:
+            return [geometry]
+
+        return output
+    
+    flattened = _recurse_nested_geometry(geometry)
+
+    return flattened[0] if len(flattened) == 1 else GeometryCollection(flattened)
 
 
 def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
