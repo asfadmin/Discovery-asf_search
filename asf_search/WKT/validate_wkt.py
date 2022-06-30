@@ -1,6 +1,6 @@
+import logging
 from numbers import Number
 from typing import Union, Tuple, List
-from warnings import warn
 from shapely import wkt
 from shapely.geometry.base import BaseGeometry
 from shapely.geometry import Polygon, MultiPolygon, Point, MultiPoint, LineString, MultiLineString, GeometryCollection
@@ -85,19 +85,21 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     simplified, simplified_report = _simplify_aoi(convex)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
 
-    repair_reports = [merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]    
+    dimension_report = RepairEntry(
+        report_type="Higher Dimension REPORT", 
+        report="Only 2-Dimensional area of interests are supported (lon/lat), higher dimension coordinates will be ignored"
+        ) if geometry.has_z else None
+
+    repair_reports = [dimension_report, merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]   
     for report in repair_reports:
         if report is not None:
-            warn(f"{report.report_type}\n{report.report}")
+            logging.info(f"{report.report_type}\n\t{report.report}")
 
     validated = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
     return validated
 
 
 def _flatten_multipart_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
-    if geometry.has_z:
-        warn(f"Higher Dimension REPORT:\nOnly 2-Dimensional area of interests are supported (lon/lat), higher dimension coordinates will be ignored")
-
     def _recurse_nested_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
         output = []
 
