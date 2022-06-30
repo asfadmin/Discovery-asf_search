@@ -31,6 +31,10 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
         aoi_shape = _search_wkt_prep(aoi_shape)
 
         if not aoi_shape.is_valid:
+            if isinstance(aoi_shape, Polygon):
+                if not aoi_shape.exterior.is_simple:
+                    raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" is a self intersecting polygon')
+   
             raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" is not a valid WKT string')
     
     simplified = _simplify_geometry(aoi_shape)
