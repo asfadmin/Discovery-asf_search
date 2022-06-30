@@ -117,7 +117,7 @@ def search(
         hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
 
         if maxResults != None:
-            results.extend(hits[:min(maxResults, len(hits))])
+            results.extend(hits[:min(maxResults - len(results), len(hits))])
             if len(results) == maxResults:
                 break
         else:
@@ -131,7 +131,7 @@ def search(
             hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
             
             if maxResults != None:
-                results.extend(hits[:min(maxResults, len(hits))])
+                results.extend(hits[:min(maxResults - len(results), len(hits))])
                 if len(results) == maxResults:
                     break
             else:
