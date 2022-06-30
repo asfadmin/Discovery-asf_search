@@ -69,13 +69,14 @@ def _search_wkt_prep(shape: BaseGeometry):
 
 def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     """
-    param geometry: AOI Shapely Geoemetry to be prepped for CMR 
-    prepares geometry for CMR, ensuring geometry is: 
-        1. Merged, 
-        2. convex-halled
-        3. latitude clamped +/-90, longitude wrapped +/-180
-        4. simplified until its <= 300 points and no closer than 0.00001
-        5. Vertices are in counter-clockwise winding order
+    param geometry: AOI Shapely Geometry to be prepped for CMR 
+    prepares geometry for CMR by:
+        1. Flattening any nested multi-part geometry into single collection
+        2. clamping latitude +/-90, unwrapping longitude +/-180, removing coordinate dimensions higher than 2 (lon,lat)
+        3. Merging any overlapping shapes
+        4. convex-hulling the remainder into a single shape
+        4. simplifing until the shape has <= 300 points, with no point closer than 0.00001
+        5. Orienting vertices in counter-clockwise winding order
     returns: geometry prepped for CMR
     """
     flattened = _flatten_multipart_geometry(geometry)
@@ -122,7 +123,7 @@ def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, R
     Performs a unary union overlapping operation of the input geometry, 
     ensuring geometric collections (multipolygon, multipartgeometry, etc)
     are simplied as much as possible before the convex-hull step
-    output: merged-overlapping geoemetry
+    output: merged-overlapping geometry
     """
     merge_report = None
 
@@ -223,7 +224,7 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
 def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:
     """
     param geometry: geometry to perform possible convex hull operation on
-    If the given geometry is a collection of geoemtries, creates a convex-hull encompassing said geometry
+    If the given geometry is a collection of geometries, creates a convex-hull encompassing said geometry
     output: convex hull of multi-part geometry, or the original single-shaped geometry 
     """
     if geometry.geom_type not in ['MultiPoint', 'MultiLineString', 'MultiPolygon', 'GeometryCollection']:
