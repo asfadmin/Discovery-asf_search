@@ -135,7 +135,11 @@ def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, R
         if isinstance(merged, BaseMultipartGeometry):
             unique_shapes = len(merged.geoms)
             merged = orient(unary_union(GeometryCollection([geom.convex_hull for geom in merged.geoms])))
-            merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': {unique_shapes} non-overlapping shapes merged by their convex-hulls")
+            if isinstance(merged, BaseMultipartGeometry):
+                if unique_shapes != len(merged.geoms):
+                    merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': {unique_shapes - len(merged.geoms)} non-overlapping shapes merged by their convex-hulls")
+            else:
+                merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': {unique_shapes} non-overlapping shapes merged by their convex-hulls")
         else:
             merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': overlapping {original_amount} shapes merged into one")
 
