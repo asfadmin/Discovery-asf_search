@@ -43,14 +43,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
-        start = dict_opts["start"] if "start" in dict_opts else ""
-        end = dict_opts["end"] if "end" in dict_opts else ""
-        season = ','.join(str(x) for x in dict_opts["season"]) if "season" in dict_opts else ""
-
-        dict_opts['temporal'] = f'{start},{end},{season}'
-        dict_opts.pop("start", None)
-        dict_opts.pop("end", None)
-        dict_opts.pop("season", None)
+        dict_opts = fix_date(dict_opts)
 
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
@@ -190,8 +183,8 @@ def try_strip_trailing_zero(value: str):
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
-        fixed_params["start"] = fixed_params["start"] if "start" in fixed_params else ""
-        fixed_params["end"] = fixed_params["end"] if "end" in fixed_params else ""
+        fixed_params["start"] = fixed_params["start"] if "start" in fixed_params else "1978-01-01T00:00:00Z"
+        fixed_params["end"] = fixed_params["end"] if "end" in fixed_params else datetime.utcnow().isoformat()
         fixed_params["season"] = ','.join(str(x) for x in fixed_params['season']) if "season" in fixed_params else ""
 
         fixed_params['temporal'] = f'{fixed_params["start"]},{fixed_params["end"]},{fixed_params["season"]}'
