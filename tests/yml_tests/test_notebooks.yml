@@ -7,6 +7,6 @@ tests:
 
 - Test Granule-Search notebook:
     notebook: 3-Granule_Search.ipynb
-    
+
 - Test Baseline-Search notebook:
     notebook: 4-Baseline_Search.ipynb

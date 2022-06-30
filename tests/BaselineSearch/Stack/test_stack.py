@@ -39,8 +39,8 @@ def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
             if product.baseline.get('insarBaseline', False):
                 product.baseline = {}
             else:
-                product.baseline['stateVectors']['positions'] =  {}
-                product.baseline['stateVectors']['velocities'] =  {}
+                product.baseline['stateVectors']['positions'] = {}
+                product.baseline['stateVectors']['velocities'] = {}
         reference.baseline = {}
         get_baseline_from_stack(reference=reference, stack=stack)
 
@@ -59,7 +59,7 @@ def clear_baseline(resource, product: ASFProduct):
 # Baseline values can be restored from UMM in asfProduct constructor, 
 # this erases them again if the resource omitted them from the product
     if resource['baseline'].get('stateVectors', False).get('positions', False) == {}:
-        product.baseline['stateVectors']['positions'] =  {}
-        product.baseline['stateVectors']['velocities'] =  {}
+        product.baseline['stateVectors']['positions'] = {}
+        product.baseline['stateVectors']['velocities'] = {}
     
     return product
