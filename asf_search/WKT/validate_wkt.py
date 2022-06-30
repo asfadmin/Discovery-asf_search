@@ -91,6 +91,9 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
         report="Only 2-Dimensional area of interests are supported (lon/lat), higher dimension coordinates will be ignored"
         ) if geometry.has_z else None
 
+    if convex_report != None:
+        merge_report = None
+
     repair_reports = [dimension_report, merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]   
     for report in repair_reports:
         if report is not None:
