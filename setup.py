@@ -10,7 +10,7 @@ requirements = [
     "scikit-learn",
     "numpy",
     "dateparser",
-    "WKTUtils==1.1.0",
+    "WKTUtils==1.1.5",
 ]
 
 test_requirements = [
