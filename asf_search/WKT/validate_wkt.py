@@ -129,7 +129,7 @@ def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, R
     if isinstance(geometry, BaseMultipartGeometry):
         original_amount = len(geometry.geoms)
         if original_amount == 1:
-            return geometry
+            return geometry, merge_report
 
         merged = unary_union(geometry)
 
