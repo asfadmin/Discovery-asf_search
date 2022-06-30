@@ -87,8 +87,8 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
 
     dimension_report = RepairEntry(
-        report_type="Higher Dimension REPORT", 
-        report="Only 2-Dimensional area of interests are supported (lon/lat), higher dimension coordinates will be ignored"
+        report_type="'type': 'EXTRA_DIMENSION'", 
+        report="'report': Only 2-Dimensional area of interests are supported (lon/lat), higher dimension coordinates will be ignored"
         ) if geometry.has_z else None
 
     if convex_report != None:
@@ -147,7 +147,7 @@ def _merge_overlapping_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, R
             else:
                 merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': {unique_shapes} non-overlapping shapes merged by their convex-hulls")
         else:
-            merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': overlapping {original_amount} shapes merged into one")
+            merge_report = RepairEntry("'type': 'OVERLAP_MERGE'", f"'report': Overlapping {original_amount} shapes merged into one")
 
         return merged, merge_report
 
@@ -160,7 +160,7 @@ def _counter_clockwise_reorientation(geometry: Union[Point, LineString, Polygon]
         Ensures the geometry coordinates are wound counter-clockwise
         output: counter-clockwise oriented geometry
     """
-    reoriented_report = RepairEntry("'type': 'REVERSE'", "Reversed polygon winding order")
+    reoriented_report = RepairEntry("'type': 'REVERSE'", "'report': Reversed polygon winding order")
     reoriented = orient(geometry)
     
     if isinstance(geometry, Polygon):
