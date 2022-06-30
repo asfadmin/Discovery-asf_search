@@ -61,8 +61,15 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
+
+    additional_keys = [
+    ('page_size', CMR_PAGE_SIZE),
+    ('options[temporal][and]', 'true'), 
+    ('sort_key[]', '-end_date'), 
+    ('sort_key[]', 'granule_ur'), 
+    ('options[platform][ignore_case]', 'true')]
     
-    cmr_opts.append(('page_size', CMR_PAGE_SIZE))
+    cmr_opts.extend(additional_keys)
 
     return cmr_opts
 
