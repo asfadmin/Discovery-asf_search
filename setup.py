@@ -20,7 +20,8 @@ test_requirements = [
     "coverage",
     "requests-mock",
     "nbformat",
-    "nbconvert"
+    "nbconvert",
+    "ipykernel", 
 ]
 
 with open("README.md", "r") as readme_file:
