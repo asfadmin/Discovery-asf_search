@@ -108,8 +108,13 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     return validated
 
 
-def _flatten_multipart_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
-    def _recurse_nested_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
+def _flatten_multipart_geometry(unflattened_geometry: BaseGeometry) -> BaseGeometry:
+    """
+    Recursively flattens nested geometric collections, 
+    guarantees geometric collections have a depth equal to 1.
+    Also ignores any empty shapes in multipart geometry
+    """
+    def _recurse_nested_geometry(geometry: BaseGeometry) -> List[BaseGeometry]:
         output = []
 
         if isinstance(geometry, BaseMultipartGeometry):
@@ -120,7 +125,7 @@ def _flatten_multipart_geometry(geometry) -> Tuple[BaseGeometry, RepairEntry]:
 
         return output
     
-    flattened = _recurse_nested_geometry(geometry)
+    flattened = _recurse_nested_geometry(unflattened_geometry)
 
     return flattened[0] if len(flattened) == 1 else GeometryCollection(flattened)
 
