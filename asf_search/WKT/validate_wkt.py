@@ -19,9 +19,7 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
     Param aoi: the WKT string or Shapely Geometry to validate and prepare for the CMR query
     Validates the given area of interest, and returns a validated and simplified WKT string
     returns: The input AOI's CMR ready WKT string
-    """    
-    aoi_shape = BaseGeometry()
-
+    """
     if isinstance(aoi, str):
         aoi_shape = wkt.loads(aoi)
     else:
@@ -37,6 +35,9 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
    
             raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" is not a valid WKT string')
     
+    if aoi_shape.is_empty:
+        raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" empty WKT is not a valid AOI')
+        
     simplified = _simplify_geometry(aoi_shape)
     
     return simplified
