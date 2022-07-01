@@ -78,7 +78,7 @@ print('='*80)
 wkt = 'POLYGON((-160 65,-150 65,-160 60,-150 60,-160 65))' # Self-intersecting bowtie
 try:
     results = asf.geo_search(platform=[asf.PLATFORM.SENTINEL1], intersectsWith=wkt)
-except asf.ASFSearch4xxError as e:
+except asf.ASFWKTError as e:
     print(f'Exception example: {e}')
 
 print('='*80)
