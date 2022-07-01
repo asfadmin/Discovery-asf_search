@@ -4,4 +4,4 @@ class RepairEntry:
         self.report = report
     
     def __str__(self) -> str:
-        return f'{self.report_type}\{self.report}'
+        return f'{self.report_type}\n\t{self.report}'

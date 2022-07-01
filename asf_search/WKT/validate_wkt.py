@@ -86,7 +86,7 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     repair_reports = [dimension_report, merge_report, convex_report, *clamp_report, *simplified_report, reorientation_report]   
     for report in repair_reports:
         if report is not None:
-            logging.info(f"{report.report_type}\n\t{report.report}")
+            logging.info(f"{report}")
 
     validated = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
     return validated
