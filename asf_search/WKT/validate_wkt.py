@@ -196,7 +196,7 @@ def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
 
         return tuple([wrapped, y])
 
-    def  _unwrap_lon(x, y, z=None):
+    def _unwrap_lon(x, y, z=None):
         unwrapped = x if x >= 0 else x + 360
 
         return tuple([unwrapped, y])

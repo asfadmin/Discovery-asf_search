@@ -65,7 +65,7 @@ def run_test_validate_wkt_get_shape_coords(wkt: str, coords: List[Number]):
     shape_coords.sort()
 
     assert len(shape_coords) == len(coords)
-    assert  shape_coords == coords
+    assert shape_coords == coords
 
 def run_test_search_wkt_prep(wkt: str):
     if wkt == ' ':
