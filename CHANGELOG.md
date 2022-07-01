@@ -25,7 +25,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [4.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.0...v4.0.1)
+### Changed
+- Removed WKTUtils module as a dependency, rolls out new wkt validation logic
 
+------
 ## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v4.0.0)
 ### Added
 - `ASFSearchOptions`: This class provides a number of useful ways to build search results
