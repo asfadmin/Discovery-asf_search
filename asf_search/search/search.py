@@ -3,8 +3,6 @@ from copy import copy
 from requests.exceptions import HTTPError
 import datetime
 import math
-from WKTUtils import RepairWKT, Input
-from warnings import warn
 
 from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
@@ -13,6 +11,7 @@ from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
+from asf_search.WKT.validate_wkt import validate_wkt
 
 
 def search(
@@ -127,6 +126,9 @@ def search(
     for key in listify_fields:
         if key in data and not isinstance(data[key], list):
             data[key] = [data[key]]
+    
+    if 'intersectsWith' in list(data.keys()):
+        data['intersectsWith'] = validate_wkt(data['intersectsWith']).wkt
 
     flatten_fields = [
         'absoluteOrbit',
@@ -154,21 +156,6 @@ def search(
     for key in join_fields:
         if key in data:
             data[key] = ','.join([str(v) for v in data[key]])
-    
-    # Special case to unravel WKT field a little for compatibility
-    if data.get('intersectsWith') is not None:
-        repaired_wkt = RepairWKT.repairWKT(data['intersectsWith'])
-        if "errors" in repaired_wkt:
-            raise ValueError(f"Error repairing wkt: {repaired_wkt['errors']}")
-        for repair in repaired_wkt["repairs"]:
-            warn(f"Modified shape: {repair}")
-        # DO we want unwrapped here??
-        opts.intersectsWith = repaired_wkt["wkt"]["wrapped"]
-        cmr_wkt = Input.parse_wkt_util(repaired_wkt["wkt"]["wrapped"])
-
-        (shapeType, shape) = cmr_wkt.split(':')
-        del data['intersectsWith']
-        data[shapeType] = shape
 
     data['output'] = 'asf_search'
     # Join the url, to guarantee *exactly* one '/' between each url fragment:
