@@ -17,6 +17,8 @@ import os
 import pathlib
 import yaml
 
+from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry
+import requests
 from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 
@@ -216,6 +218,81 @@ def test_ASFSearch_Search_Error(**args) -> None:
     if error_code == 500:
         with raises(ASFSearch5xxError):
             run_test_search_http_error(parameters, error_code, report)
+
+def test_wkt_validation_Invalid_WKT_Error(**args) -> None:
+    """
+    Test asf_search.wkt errors,
+    asserting wkt validation errors are raised
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    run_test_validate_wkt_invalid_wkt_error(wkt)
+
+def test_wkt_validation_WKT_Valid(**args) -> None:
+    """
+    Test asf_search.validate_wkt, asserting expected wkts are returned
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    validated_wkt = get_resource(test_info['validated-wkt'])
+    run_test_validate_wkt_valid_wkt(wkt, validated_wkt)
+
+def test_wkt_validation_WKT_clamp_geometry(**args) -> None:
+    """
+    Test asf_search.validate_wkt._get_clamped_and_wrapped_geometry, asserting the amount of clamped and wrapped coordinates
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    clamped_wkt = get_resource(test_info['clamped-wkt'])
+    clamped_count = get_resource(test_info['clamped-count'])
+    wrapped_count = get_resource(test_info['wrapped-count'])
+    run_test_validate_wkt_clamp_geometry(wkt, clamped_wkt, clamped_count, wrapped_count)
+
+def test_wkt_validation_convex_hull(**args) -> None:
+    """
+    Test asf_search.validate_wkt._get_convex_hull, asserting convex hulls producted are expected
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    convex_wkt = get_resource(test_info['convex-wkt'])
+    run_test_validate_wkt_convex_hull(wkt, convex_wkt)
+
+def test_wkt_validation_merge_overlapping_geometry(**args) -> None:
+    """
+    Test asf_search.validate_wkt._merge_overlapping_geometry, asserting expected shapes are merged
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    merged_wkt = get_resource(test_info['merged-wkt'])
+    run_test_validate_wkt_merge_overlapping_geometry(wkt, merged_wkt)
+
+def test_wkt_validation_counter_clockwise_reorientation(**args) -> None:
+    """
+    Test asf_search.validate_wkt._counter_clockwise_reorientation reverses polygon orientation if polygon is wound clockwise,
+    and maintains counter-clockwise winding when polygon orientation is correct
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    cc_wkt = get_resource(test_info['cc-wkt'])
+    run_test_validate_wkt_counter_clockwise_reorientation(wkt, cc_wkt)
+
+def test_validate_wkt_get_shape_coords(**args) -> None:
+    """
+    Test asf_search.validate_wkt._get_shape_coords asserting all coordinates are returned and expected
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    coords = get_resource(test_info['coordinates'])
+    run_test_validate_wkt_get_shape_coords(wkt, coords)
+
+def test_search_wkt_prep(**args) -> None:
+    """
+    Test asf_search.validate_wkt.wkt_prep, asserting returned shape is correct geometric type and expected shape
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    
+    run_test_search_wkt_prep(wkt)
 
 def test_get_platform_campaign_names(**args) -> None:
     test_info = args["test_info"]

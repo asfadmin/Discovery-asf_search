@@ -7,9 +7,9 @@ requirements = [
     "python-dateutil",
     "pytz",
     "importlib_metadata",
+    "scikit-learn",
     "numpy",
-    "dateparser",
-    "WKTUtils==1.1.5",
+    "dateparser"
 ]
 
 test_requirements = [
