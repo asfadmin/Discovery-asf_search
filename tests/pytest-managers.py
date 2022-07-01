@@ -239,7 +239,7 @@ def test_wkt_validation_WKT_Valid(**args) -> None:
 
 def test_wkt_validation_WKT_clamp_geometry(**args) -> None:
     """
-    Test asf_search.validate_wkt._get_clamped_geometry, asserting the amount of clamped and wrapped coordinates
+    Test asf_search.validate_wkt._get_clamped_and_wrapped_geometry, asserting the amount of clamped and wrapped coordinates
     """
     test_info = args["test_info"]
     wkt = get_resource(test_info['wkt'])

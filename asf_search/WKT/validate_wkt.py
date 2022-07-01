@@ -69,8 +69,8 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     returns: geometry prepped for CMR
     """
     flattened = _flatten_multipart_geometry(geometry)
-    clamped, clamp_report = _get_clamped_geometry(flattened)
-    merged, merge_report = _merge_overlapping_geometry(clamped)
+    clamped_and_wrapped, clamp_report = _get_clamped_and_wrapped_geometry(flattened)
+    merged, merge_report = _merge_overlapping_geometry(clamped_and_wrapped)
     convex, convex_report = _get_convex_hull(merged)
     simplified, simplified_report = _simplify_aoi(convex)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
@@ -167,7 +167,7 @@ def _counter_clockwise_reorientation(geometry: Union[Point, LineString, Polygon]
     return reoriented, None
 
 
-def _get_clamped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[RepairEntry]]:
+def _get_clamped_and_wrapped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry, List[RepairEntry]]:
     """
     param geometry: Shapely geometry to clamp    
     Clamps geometry to +/-90 latitude and wraps longitude +/-180

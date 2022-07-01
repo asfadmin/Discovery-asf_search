@@ -96,7 +96,7 @@ test_types:
     required_in_title: 'test-validate-wkt-valid'
     method: test_wkt_validation_WKT_Valid
 
-- For running _get_clamped_geometry tests:
+- For running _get_clamped_and_wrapped_geometry tests:
     required_keys: ["wkt", "clamped-wkt", "clamped-count", "wrapped-count"]
     required_in_title: test-validate-wkt-clamp
     method: test_wkt_validation_WKT_clamp_geometry

@@ -9,7 +9,7 @@ from shapely.geometry.base import BaseMultipartGeometry
 from asf_search.WKT.validate_wkt import (
     validate_wkt,
     _search_wkt_prep,
-    _get_clamped_geometry, 
+    _get_clamped_and_wrapped_geometry, 
     _get_convex_hull, 
     _merge_overlapping_geometry, 
     _counter_clockwise_reorientation,
@@ -31,7 +31,7 @@ def run_test_validate_wkt_valid_wkt(wkt: str, validated_wkt: str):
     assert validate_wkt(loads(wkt)).equals(expected_aoi)
 
 def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_count: Number, wrapped_count: Number):
-    resp = _get_clamped_geometry(loads(wkt))
+    resp = _get_clamped_and_wrapped_geometry(loads(wkt))
     assert resp[0].wkt == clamped_wkt
     
     if clamped_count > 0:
