@@ -7,6 +7,7 @@ from shapely.geometry import Polygon, MultiPolygon, Point, MultiPoint, LineStrin
 from shapely.geometry.collection import BaseMultipartGeometry
 from shapely.geometry.polygon import orient
 from shapely.ops import transform, orient, unary_union
+from shapely.validation import make_valid
 from .RepairEntry import RepairEntry
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
@@ -28,13 +29,13 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
     if not aoi_shape.is_valid:
         aoi_shape = _search_wkt_prep(aoi_shape)
 
-        if not aoi_shape.is_valid:
+        if not aoi_shape.is_valid and not isinstance(aoi_shape, MultiPolygon):
             if isinstance(aoi_shape, Polygon):
                 if not aoi_shape.exterior.is_simple:
                     raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" is a self intersecting polygon')
-   
+
             raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" is not a valid WKT string')
-    
+
     if aoi_shape.is_empty:
         raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" empty WKT is not a valid AOI')
         
@@ -44,33 +45,16 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
 
 
 def _search_wkt_prep(shape: BaseGeometry):
-
-    if isinstance(shape, (Point, LineString)):
-        return shape
-
-    if isinstance(shape, BaseMultipartGeometry) :
+    if isinstance(shape, MultiPolygon) :
         output = []
         for geom in shape.geoms:
-            if isinstance(geom, Polygon):
-                output.append(orient(geom))
-            else:
-                output.append(geom)
+            output.append(orient(Polygon(geom.exterior)))
 
-        if isinstance(shape, MultiPolygon):
-            return MultiPolygon(output)
-        if isinstance(shape, MultiLineString):
-            return MultiLineString(output)
-        if isinstance(shape, MultiPoint):
-            return MultiPoint(output)
-        if isinstance(shape, GeometryCollection):
-            return GeometryCollection(output)
+        return MultiPolygon(output)
                          
     
     if isinstance(shape, Polygon):
-        return orient(shape, sign=1.0)
-    
-    raise ASFWKTError(f'The provided WKT is not a valid type. Valid WKT types include \"(Multi-)Point\", \"(Multi-)LineString\", \"(Multi-)Polygon\", and \"GeometricCollections\"')
-
+        return orient(Polygon(shape.exterior), sign=1.0)
 
 def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
     """
@@ -121,6 +105,8 @@ def _flatten_multipart_geometry(unflattened_geometry: BaseGeometry) -> BaseGeome
             for geom in geometry.geoms:
                 output.extend(_recurse_nested_geometry(geom))
         elif not geometry.is_empty:
+            if isinstance(geometry, Polygon):
+                return [Polygon(geometry.exterior)]
             return [geometry]
 
         return output
