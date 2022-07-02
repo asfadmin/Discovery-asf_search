@@ -1,5 +1,4 @@
 import logging
-from numbers import Number
 from typing import Union, Tuple, List
 from shapely import wkt
 from shapely.geometry.base import BaseGeometry
@@ -7,10 +6,7 @@ from shapely.geometry import Polygon, MultiPolygon, Point, MultiPoint, LineStrin
 from shapely.geometry.collection import BaseMultipartGeometry
 from shapely.geometry.polygon import orient
 from shapely.ops import transform, orient, unary_union
-from shapely.validation import make_valid
 from .RepairEntry import RepairEntry
-from sklearn.neighbors import NearestNeighbors
-import numpy as np
 
 from asf_search.exceptions import ASFWKTError
 
@@ -234,26 +230,23 @@ def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]
 
 
 def _simplify_aoi(shape: Union[Polygon, LineString, Point], 
-                  threshold: Number = 0.00001, 
-                  max_depth: Number = 10,
-                  nearest_neighbor_distance: Number = 0.004
+                  threshold: float = 0.004,
+                  max_depth: int = 10,
         ) -> Tuple[Union[Polygon, LineString, Point], List[RepairEntry]]:
     """
     param shape: Shapely geometry to simplify
     param threshold: point proximity threshold to merge nearby points of geometry with
     param max_depth: the current depth of the recursive call, defaults to 10
-    nearest_neightbor_distance: the nearest neighboring points contained in the input shape  
     Recursively simplifies geometry with increasing threshold, and 
-    until there are no more than 300 points and the nearest neighbor distance is no less that 0.004
+    until there are no more than 300 points
     output: simplified geometry
     """
-    nearest_neighbor_distance = _nearest_neighbor(shape)
     
     shape = wkt.loads(shape.wkt)
     if shape.geom_type == 'Point':
         return shape, []
 
-    if _get_shape_coords_len(shape) <= 300 and nearest_neighbor_distance > 0.004:
+    if _get_shape_coords_len(shape) <= 300:
         return shape, []
 
     if max_depth == 0:
@@ -261,7 +254,7 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
 
     simplified = shape.simplify(threshold)
     repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'", f"'report': 'Shape Simplified: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-    output, repairs = _simplify_aoi(simplified, threshold * 5, max_depth - 1, nearest_neighbor_distance)
+    output, repairs = _simplify_aoi(simplified, threshold * 1.5, max_depth - 1)
     return output, [repair, *repairs]
 
 
@@ -292,31 +285,3 @@ def _get_shape_coords(geometry: BaseGeometry):
         output = [*output, *coords]
 
     return output
-        
-
-def _nearest_neighbor(geometry: BaseGeometry):
-    
-    def distance(p1, p2):
-        lon1, lat1 = p1
-        lon2, lat2 = p2
-        # Convert to radians:
-        lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
-        # haversine formula
-        dlon = lon2 - lon1
-        dlat = lat2 - lat1
-        a = np.sin(dlat/2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2)**2
-        c = 2 * np.arcsin(np.sqrt(a))
-        km = 6367 * c
-        return km
-
-    ## getClosestPointDist START:
-    points = _get_shape_coords(geometry)
-    if len(points) < 2:
-        return float("inf")
-    nbrs = NearestNeighbors(n_neighbors=2, metric=distance, algorithm='ball_tree').fit(points)
-    distances, indices = nbrs.kneighbors(points)
-    distances = distances.tolist()
-    #Throw away unneeded data in distances:
-    for i, dist in enumerate(distances):
-        distances[i] = dist[1]
-    return min(distances)
