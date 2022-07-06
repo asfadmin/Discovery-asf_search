@@ -242,6 +242,9 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
     output: simplified geometry
     """
 
+    if shape.geom_type == 'Point':
+        return shape, []
+
     repairs = []
     for simplify_level in range(0, max_depth):
     # Check for very small shapes and collapse accordingly
