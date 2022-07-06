@@ -2,6 +2,7 @@ from ast import Tuple
 from datetime import datetime
 from typing import Any, Dict
 from asf_search.ASFSearchOptions import ASFSearchOptions, validators
+from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
 # from asf_search.search.search import fix_date
 import dateparser
@@ -9,8 +10,6 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-
-from WKTUtils import Input
 
 from warnings import warn
 
@@ -23,9 +22,8 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     # Special case to unravel WKT field a little for compatibility
     if "intersectsWith" in dict_opts:
-        shape_wkt = dict_opts.pop("intersectsWith", None)
-        shape = wkt.loads(shape_wkt)
-        
+        shape = wkt.loads(dict_opts.pop('intersectsWith', None))
+
         # If a wide rectangle is provided, make sure to use the bounding box
         # instead of the wkt for better responses from CMR 
         # This will provide better results with AOI's near poles
@@ -36,9 +34,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
             bbox = ','.join([*bottom_left, *top_right])
             dict_opts['bbox'] = bbox
         else:
-            cmr_wkt = Input.parse_wkt_util(shape_wkt)
-            # Add it to the dict w/ how cmr expects:
-            (shapeType, shape) = cmr_wkt.split(':')
+            (shapeType, shape) = wkt_to_cmr_shape(shape).split(':')
             dict_opts[shapeType] = shape
 
     # If you need to use the temporal key:
@@ -213,3 +209,20 @@ def should_use_bbox(shape: BaseGeometry):
         return shape.equals(Polygon(shape.boundary.coords))
     
     return False
+
+
+def wkt_to_cmr_shape(shape: BaseGeometry):
+    # take note of the WKT type
+    if shape.geom_type not in ["Point","linestring", "Polygon"]:
+        raise ValueError('Unsupported WKT: {0}.'.format(shape.wkt))
+    
+    if shape.geom_type == "Polygon":
+        coords = shape.exterior.coords
+    else: # type == Point | Linestring
+        coords = shape.coords
+    # Turn [[x,y],[x,y]] into [x,y,x,y]:
+    lon_lat_sequence = []
+    for lon_lat in coords: lon_lat_sequence.extend(lon_lat)
+    # Turn any "6e8" to a literal number. (As a sting):
+    coords = ['{:.16f}'.format(float(cord)) for cord in lon_lat_sequence]
+    return '{0}:{1}'.format(shape.geom_type.lower(), ','.join(coords))

@@ -5,7 +5,7 @@ from requests import Response
 import datetime
 import dateparser
 import warnings
-from WKTUtils import RepairWKT
+import math
 
 from asf_search import __version__
 
@@ -16,6 +16,7 @@ from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
+from asf_search.WKT.validate_wkt import validate_wkt
 
 
 def search(
@@ -169,13 +170,7 @@ def preprocess_opts(opts: ASFSearchOptions):
 
 def wrap_wkt(opts: ASFSearchOptions):
     if opts.intersectsWith is not None:
-        repaired_wkt = RepairWKT.repairWKT(opts.intersectsWith)
-        if "errors" in repaired_wkt:
-            raise ValueError(f"Error repairing wkt: {repaired_wkt['errors']}")
-        for repair in repaired_wkt["repairs"]:
-            warnings.warn(f"Modified shape: {repair}")
-
-        opts.intersectsWith = repaired_wkt["wkt"]["wrapped"]
+        opts.intersectsWith = validate_wkt(opts.intersectsWith).wkt
 
 
 def set_default_dates(opts: ASFSearchOptions):
