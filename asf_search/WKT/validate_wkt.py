@@ -242,40 +242,39 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
     output: simplified geometry
     """
 
-    shape = wkt.loads(shape.wkt)
-    if shape.geom_type == 'Point':
-        return shape, []
-
+    repairs = []
+    for simplify_level in range(0, max_depth):
     # Check for very small shapes and collapse accordingly
-    mbr_width = shape.bounds[2] - shape.bounds[0]
-    mbr_height = shape.bounds[3] - shape.bounds[1]
-    if mbr_width <= threshold and mbr_height <= threshold:
-        simplified = shape.centroid
-        repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
-                             f"'report': 'Shape Collapsed to Point: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-        return simplified, [repair]
-    elif mbr_width <= threshold:
-        lon = (shape.bounds[2] - shape.bounds[0]) / 2 + shape.bounds[0]
-        simplified = LineString([(lon, shape.bounds[1]), (lon, shape.bounds[3])])
-        repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
-                             f"'report': 'Shape Collapsed to Vertical Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-        return simplified, [repair]
-    elif mbr_height <= threshold:
-        lat = (shape.bounds[3] - shape.bounds[1]) / 2 + shape.bounds[1]
-        simplified = LineString([(shape.bounds[0], lat), (shape.bounds[2], lat)])
-        repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
-                             f"'report': 'Shape Collapsed to Horizontal Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-        return simplified, [repair]
-    elif _get_shape_coords_len(shape) <= 300:
-            return shape, []
-    else:
-        if max_depth == 0:
-            raise ASFWKTError(f'WKT string: \"Could not simplify {shape.geom_type} past 300 points\"')
-        simplified = shape.simplify(threshold)
+        mbr_width = shape.bounds[2] - shape.bounds[0]
+        mbr_height = shape.bounds[3] - shape.bounds[1]
+        if mbr_width <= threshold and mbr_height <= threshold:
+            simplified = shape.centroid
+            repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
+                                f"'report': 'Shape Collapsed to Point: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
+            return simplified, [*repairs, repair]
+        elif mbr_width <= threshold:
+            lon = (shape.bounds[2] - shape.bounds[0]) / 2 + shape.bounds[0]
+            simplified = LineString([(lon, shape.bounds[1]), (lon, shape.bounds[3])])
+            repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
+                                f"'report': 'Shape Collapsed to Vertical Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
+            return simplified, [*repairs, repair]
+        elif mbr_height <= threshold:
+            lat = (shape.bounds[3] - shape.bounds[1]) / 2 + shape.bounds[1]
+            simplified = LineString([(shape.bounds[0], lat), (shape.bounds[2], lat)])
+            repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
+                                f"'report': 'Shape Collapsed to Horizontal Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
+            return simplified, [*repairs, repair]
 
-    repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'", f"'report': 'Shape Simplified: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-    output, repairs = _simplify_aoi(simplified, threshold * 1.5, max_depth - 1)
-    return output, [repair, *repairs]
+        simplifed = shape.simplify(tolerance=threshold*(1.5**simplify_level))
+        
+        coords_length = _get_shape_coords_len(simplifed)
+        if _get_shape_coords_len(shape) != coords_length:
+            repairs.append(RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'", f"'report': 'Shape Simplified: shape of {_get_shape_coords_len(shape)} simplified to {coords_length} with proximity threshold of {threshold}'"))
+        
+        if coords_length <= 300:
+            return simplifed, repairs
+
+    raise ASFWKTError(f"Failed to simplify wkt string: {shape.wkt}")
 
 
 def _clamp(num):
