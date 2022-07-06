@@ -17,7 +17,7 @@ import os
 import pathlib
 import yaml
 
-from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry
+from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_simplify_aoi
 import requests
 from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
@@ -297,6 +297,16 @@ def test_search_wkt_prep(**args) -> None:
     wkt = get_resource(test_info['wkt'])
     
     run_test_search_wkt_prep(wkt)
+
+def test_simplify_aoi(**args) -> None:
+    """
+    Test asf_search.validate_wkt.wkt_prep, asserting returned shape is correct geometric type and expected shape
+    """
+    test_info = args["test_info"]
+    wkt = get_resource(test_info['wkt'])
+    simplified = get_resource(test_info["simplified-wkt"])
+    RepairEntries = get_resource(test_info["RepairEntries"])
+    run_test_simplify_aoi(wkt, simplified, RepairEntries)
 
 def test_get_platform_campaign_names(**args) -> None:
     test_info = args["test_info"]
