@@ -265,7 +265,7 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
                                 f"'report': 'Shape Collapsed to Horizontal Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
             return simplified, [*repairs, repair]
 
-        simplifed = shape.simplify(tolerance=threshold*(1.5**simplify_level))
+        simplifed = shape.simplify(tolerance=threshold*simplify_level)
         
         coords_length = _get_shape_coords_len(simplifed)
         if _get_shape_coords_len(shape) != coords_length:
