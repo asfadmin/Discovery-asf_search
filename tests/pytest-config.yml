@@ -121,6 +121,11 @@ test_types:
     required_in_title: test-search-wkt-prep
     method: test_search_wkt_prep
 
+- For running _simplify_aoi tests:
+    required_keys: ["wkt", "simplified-wkt", "RepairEntries"]
+    required_in_title: test-simplify-aoi
+    method: test_simplify_aoi
+
 - For running _get_project_names tests:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names

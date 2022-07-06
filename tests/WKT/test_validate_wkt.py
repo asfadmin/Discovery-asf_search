@@ -79,8 +79,11 @@ def run_test_search_wkt_prep(wkt: str):
     assert ls.geometryType() == shape.geometryType()
     assert shape.wkt == wkt
     
-def test_validate_wkt_simplify_aoi():
-    small_polygon = Polygon([[0,0], [0, 0.000004], [0.00004, 0], [0.00004, 0.000004], [0, 0]])
-    
-    with pytest.raises(ASFWKTError):
-        _simplify_aoi(small_polygon, max_depth=0)
+def run_test_simplify_aoi(wkt: str, simplified: str, repairs: List[str]):
+    shape = loads(wkt)
+    resp, shape_repairs = _simplify_aoi(shape)
+
+    assert resp.equals(loads(simplified))
+
+    for idx, repair in enumerate(repairs):
+        assert shape_repairs[idx].report.startswith(repair)
