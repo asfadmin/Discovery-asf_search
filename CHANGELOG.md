@@ -25,7 +25,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
-## [4.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.0...v4.0.1)
+## [4.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.2...v4.0.3)
+### Fixed
+- `product_search()` now assigns `product_list` parameter to `ASFSearchOptions.product_list` instead of `ASFSearchOptions.granule_list` 
+
+------
+## [4.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.1...v4.0.2)
 ### Changed
 - Removed `scikit-learn` module as a dependency, greatly reducing install footprint
 - Simplified AOI refinement:
