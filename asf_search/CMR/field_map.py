@@ -17,7 +17,7 @@ field_map = {
     'flightLine':           {'key': 'attribute[]',             'fmt': 'string,FLIGHT_LINE,{0}'},
     'frame':                {'key': 'attribute[]',             'fmt': 'int,CENTER_ESA_FRAME,{0}'},
     'granule_list':         {'key': 'readable_granule_name[]', 'fmt': '{0}'},
-    'groupId':              {'key': 'attribute[]',             'fmt': 'string,GROUP_ID,{0}'},
+    'groupID':              {'key': 'attribute[]',             'fmt': 'string,GROUP_ID,{0}'},
     'insarStackId':         {'key': 'attribute[]',             'fmt': 'int,INSAR_STACK_ID,{0}'},
     'linestring':           {'key': 'line',                    'fmt': '{0}'},
     'lookDirection':        {'key': 'attribute[]',             'fmt': 'string,LOOK_DIRECTION,{0}'},
