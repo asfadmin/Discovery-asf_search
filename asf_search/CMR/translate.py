@@ -50,8 +50,12 @@ def translate_opts(opts: ASFSearchOptions) -> list:
                     for y in x.split(','):
                         cmr_opts.append((key, y))
                 else:
+                    # if the ITEM has a comma, escape it for CMR
+                    x = str(x).replace(",", "\,")
                     cmr_opts.append((key, x))
         else:
+            # if the ITEM has a comma, escape it for CMR
+            val = str(val).replace(",", "\,")
             cmr_opts.append((key, val))
 
     # translate the above tuples to CMR key/values
