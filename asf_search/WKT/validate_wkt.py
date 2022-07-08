@@ -241,44 +241,45 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
     until there are no more than 300 points
     output: simplified geometry
     """
+    repairs = []
 
     if shape.geom_type.lower() == 'point':
-        return shape, []
+        return shape, repairs
 
-    repairs = []
+    ### Check for very small shapes and collapse accordingly
+    mbr_width = shape.bounds[2] - shape.bounds[0]
+    mbr_height = shape.bounds[3] - shape.bounds[1]
+    # If both pass, it's a tiny box. Turn it to a point
+    if mbr_width <= threshold and mbr_height <= threshold:
+        simplified = shape.centroid
+        repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
+                            f"'report': 'Shape Collapsed to Point: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
+        return simplified, [*repairs, repair]
+    # If it's a single line segment, it's already as simple as can be. Don't do anything
+    elif shape.geom_type.lower() == 'linestring' and len(shape.coords) == 2:
+        return shape, repairs
+    # Else, check if it's slim enough to become a linestring:
+    elif mbr_width <= threshold:
+        lon = (shape.bounds[2] - shape.bounds[0]) / 2 + shape.bounds[0]
+        simplified = LineString([(lon, shape.bounds[1]), (lon, shape.bounds[3])])
+        repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
+                            f"'report': 'Shape Collapsed to Vertical Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
+        return simplified, [*repairs, repair]
+    elif mbr_height <= threshold:
+        lat = (shape.bounds[3] - shape.bounds[1]) / 2 + shape.bounds[1]
+        simplified = LineString([(shape.bounds[0], lat), (shape.bounds[2], lat)])
+        repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
+                            f"'report': 'Shape Collapsed to Horizontal Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
+        return simplified, [*repairs, repair]
+
+    ### Keep taking away points until it's under 300:
     for simplify_level in range(0, max_depth):
-    # Check for very small shapes and collapse accordingly
-        mbr_width = shape.bounds[2] - shape.bounds[0]
-        mbr_height = shape.bounds[3] - shape.bounds[1]
-        # If both pass, it's a tiny box. Turn it to a point
-        if mbr_width <= threshold and mbr_height <= threshold:
-            simplified = shape.centroid
-            repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
-                                f"'report': 'Shape Collapsed to Point: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-            return simplified, [*repairs, repair]
-        # If it's a single line segment, it's already as simple as can be. Don't do anything
-        elif shape.geom_type.lower() == 'linestring' and len(shape.coords) == 2:
-            return shape, repairs
-        # Else, check if it's slim enough to become a linestring:
-        elif mbr_width <= threshold:
-            lon = (shape.bounds[2] - shape.bounds[0]) / 2 + shape.bounds[0]
-            simplified = LineString([(lon, shape.bounds[1]), (lon, shape.bounds[3])])
-            repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
-                                f"'report': 'Shape Collapsed to Vertical Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-            return simplified, [*repairs, repair]
-        elif mbr_height <= threshold:
-            lat = (shape.bounds[3] - shape.bounds[1]) / 2 + shape.bounds[1]
-            simplified = LineString([(shape.bounds[0], lat), (shape.bounds[2], lat)])
-            repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
-                                f"'report': 'Shape Collapsed to Horizontal Line: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
-            return simplified, [*repairs, repair]
-
         simplifed = shape.simplify(tolerance=threshold*(1.5**simplify_level))
-        
+
         coords_length = _get_shape_coords_len(simplifed)
         if _get_shape_coords_len(shape) != coords_length:
             repairs.append(RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'", f"'report': 'Shape Simplified: shape of {_get_shape_coords_len(shape)} simplified to {coords_length} with proximity threshold of {threshold}'"))
-        
+
         if coords_length <= 300:
             return simplifed, repairs
 
