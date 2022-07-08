@@ -213,10 +213,10 @@ def should_use_bbox(shape: BaseGeometry):
 
 def wkt_to_cmr_shape(shape: BaseGeometry):
     # take note of the WKT type
-    if shape.geom_type not in ["Point","linestring", "Polygon"]:
+    if shape.geom_type.lower() not in ["point","linestring", "polygon"]:
         raise ValueError('Unsupported WKT: {0}.'.format(shape.wkt))
     
-    if shape.geom_type == "Polygon":
+    if shape.geom_type.lower() == "polygon":
         coords = shape.exterior.coords
     else: # type == Point | Linestring
         coords = shape.coords
