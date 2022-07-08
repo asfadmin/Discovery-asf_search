@@ -86,14 +86,14 @@ def translate_param(param_name, param_val):
     if not isinstance(param_val, list):
         param_val = [param_val]
 
-    for l in param_val:
-        format_val = l
+    for unformatted_val in param_val:
+        formatted_val = unformatted_val
 
-        if isinstance(l, list):
-            format_val = ','.join([f'{t}' for t in l])
+        if isinstance(unformatted_val, list):
+            formatted_val = ','.join([f'{t}' for t in unformatted_val])
 
         param_list.append({
-            param_name: format_val
+            param_name: formatted_val
         })
 
     return param_list

@@ -5,19 +5,18 @@ from requests import Response
 import datetime
 import dateparser
 import warnings
-import inspect
 import math
-from WKTUtils import RepairWKT
 
 from asf_search import __version__
 
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.ASFSearchOptions import ASFSearchOptions, defaults
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
+from asf_search.WKT.validate_wkt import validate_wkt
 
 
 def search(
@@ -104,37 +103,94 @@ def search(
         (getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)):
             raise ValueError("Cannot use maxResults along with product_list/granule_list.")
 
-    if 'campaign' in dict(opts):
-        stack_level = 2
-        if inspect.stack()[1].function == 'geo_search':
-            stack_level = 3
+    preprocess_opts(opts)
 
+    subqueries = build_subqueries(opts)
+    url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
+
+    results = ASFSearchResults(opts=opts)
+
+    for query in subqueries:
+        translated_opts = translate_opts(query)
+
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+
+        hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
+
+        if maxResults != None:
+            results.extend(hits[:min(maxResults - len(results), len(hits))])
+            if len(results) == maxResults:
+                break
+        else:
+            results.extend(hits)
+
+        while('CMR-Search-After' in response.headers):
+            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
+
+            response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+
+            hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
+            
+            if maxResults != None:
+                results.extend(hits[:min(maxResults - len(results), len(hits))])
+                if len(results) == maxResults:
+                    break
+            else:
+                results.extend(hits)
+        
+        opts.session.headers.pop('CMR-Search-After', None)
+
+    return results
+
+
+def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
+    response = session.post(url=url, data=translated_opts)
+    try:
+        response.raise_for_status()
+    except HTTPError:
+        if 400 <= response.status_code <= 499:
+            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        if 500 <= response.status_code <= 599:
+            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+    
+    return response
+
+
+def preprocess_opts(opts: ASFSearchOptions):
     # Repair WKT here so it only happens once, and you can save the result to the new Opts object:
-    if opts.intersectsWith is not None:
-        repaired_wkt = RepairWKT.repairWKT(opts.intersectsWith)
-        if "errors" in repaired_wkt:
-            raise ValueError(f"Error repairing wkt: {repaired_wkt['errors']}")
-        for repair in repaired_wkt["repairs"]:
-            warnings.warn(f"Modified shape: {repair}")
-
-        opts.intersectsWith = repaired_wkt["wkt"]["wrapped"]
+    wrap_wkt(opts=opts)
 
     # Date/Time logic, convert "today" to the literal timestamp if needed:
+    set_default_dates(opts=opts)
+
+    # Platform Alias logic:
+    set_platform_alias(opts=opts)
+
+
+def wrap_wkt(opts: ASFSearchOptions):
+    if opts.intersectsWith is not None:
+        opts.intersectsWith = validate_wkt(opts.intersectsWith).wkt
+
+
+def set_default_dates(opts: ASFSearchOptions):
     if opts.start is not None and isinstance(opts.start, str):
         opts.start = dateparser.parse(opts.start, settings={'RETURN_AS_TIMEZONE_AWARE': True})
     if opts.end is not None and isinstance(opts.end, str):
         opts.end = dateparser.parse(opts.end, settings={'RETURN_AS_TIMEZONE_AWARE': True})
     # If both are used, make sure they're in the right order:
     if opts.start is not None and opts.end is not None:
-        if start > end:
+        if opts.start > opts.end:
             warnings.warn(f"Start date ({opts.start}) is after end date ({opts.end}). Switching the two.")
-            start, end = end, start
+            opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
     if opts.start is not None:
         opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
     if opts.end is not None:
         opts.end = opts.end.strftime('%Y-%m-%dT%H:%M:%SZ')
 
+
+def set_platform_alias(opts: ASFSearchOptions):
     # Platform Alias logic:
     if opts.platform is not None:
         plat_aliases = {
@@ -167,96 +223,5 @@ def search(
                 platform_list.extend(plat_aliases[plat.upper()])
             else:
                 platform_list.append(plat)
+
         opts.platform = platform_list
-
-    subqueries = build_subqueries(opts)
-    url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
-
-    results = ASFSearchResults(opts=opts)
-
-    for query in subqueries:
-        translated_opts = translate_opts(query)
-
-        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
-
-        hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
-
-        if maxResults != None:
-            results.extend(hits[:min(maxResults, len(hits))])
-            if len(results) == maxResults:
-                break
-        else:
-            results.extend(hits)
-
-        while('CMR-Search-After' in response.headers):
-            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
-
-            response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
-
-            hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
-            
-            if maxResults != None:
-                results.extend(hits[:min(maxResults, len(hits))])
-                if len(results) == maxResults:
-                    break
-            else:
-                results.extend(hits)
-        
-        opts.session.headers.pop('CMR-Search-After', None)
-
-
-    return results
-
-def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
-    response = session.post(url=url, data=translated_opts)
-    try:
-        response.raise_for_status()
-    except HTTPError:
-        if 400 <= response.status_code <= 499:
-            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-        if 500 <= response.status_code <= 599:
-            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-
-    return response
-    # json = response.json()
-    # return [ASFProduct(f, opts=opts) for f in response.json()['items']]
-    # return ASFSearchResults(products, opts=opts)
-
-
-def flatten_list(items: Iterable[Union[float, Tuple[float, float]]]) -> str:
-    """
-    Converts a list of numbers and/or min/max tuples to a string of comma-separated numbers and/or ranges.
-    Example: [1,2,3,(10,20)] -> '1,2,3,10-20'
-
-    :param items: The list of numbers and/or min/max tuples to flatten
-
-    :return: String containing comma-separated representation of input, min/max tuples converted to 'min-max' format
-
-    :raises ValueError: if input list contains tuples with fewer or more than 2 values, or if a min/max tuple in the input list is descending
-    :raises TypeError: if input list contains non-numeric values
-    """
-
-    for item in items:
-        if isinstance(item, tuple):
-            if len(item) < 2:
-                raise ValueError(f'Not enough values in min/max tuple: {item}')
-            if len(item) > 2:
-                raise ValueError(f'Too many values in min/max tuple: {item}')
-            if not isinstance(item[0], (int, float, complex)) and not isinstance(item[0], bool):
-                raise TypeError(f'Expected numeric min in tuple, got {type(item[0])}: {item}')
-            if not isinstance(item[1], (int, float, complex)) and not isinstance(item[1], bool):
-                raise TypeError(f'Expected numeric max in tuple, got {type(item[1])}: {item}')
-            if math.isinf(item[0]) or math.isnan(item[0]):
-                raise ValueError(f'Expected finite numeric min in min/max tuple, got {item[0]}: {item}')
-            if math.isinf(item[1]) or math.isnan(item[1]):
-                raise ValueError(f'Expected finite numeric max in min/max tuple, got {item[1]}: {item}')
-            if item[0] > item[1]:
-                raise ValueError(f'Min must be less than max when using min/max tuples to search: {item}')
-        elif isinstance(item, (int, float, complex)) and not isinstance(item, bool):
-            if math.isinf(item) or math.isnan(item):
-                raise ValueError(f'Expected finite numeric value, got {item}')
-        elif not isinstance(item, (int, float, complex)) and not isinstance(item, bool):
-            raise TypeError(f'Expected number or min/max tuple, got {type(item)}')
-
-    return ','.join([f'{item[0]}-{item[1]}' if isinstance(item, tuple) else f'{item}' for item in items])

@@ -2,12 +2,14 @@ from ast import Tuple
 from datetime import datetime
 from typing import Any, Dict
 from asf_search.ASFSearchOptions import ASFSearchOptions, validators
+from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
 # from asf_search.search.search import fix_date
 import dateparser
+from shapely import wkt
+from shapely.geometry import Polygon
+from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-
-from WKTUtils import Input
 
 from warnings import warn
 
@@ -20,22 +22,24 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     # Special case to unravel WKT field a little for compatibility
     if "intersectsWith" in dict_opts:
-        cmr_wkt = Input.parse_wkt_util(dict_opts["intersectsWith"])
-        dict_opts.pop("intersectsWith", None)
-        # Add it to the dict w/ how cmr expects:
-        (shapeType, shape) = cmr_wkt.split(':')
-        dict_opts[shapeType] = shape
+        shape = wkt.loads(dict_opts.pop('intersectsWith', None))
+
+        # If a wide rectangle is provided, make sure to use the bounding box
+        # instead of the wkt for better responses from CMR 
+        # This will provide better results with AOI's near poles
+        if should_use_bbox(shape):
+            boundary = shape.boundary
+            bottom_left = [str(coord) for coord in boundary.bounds[:2]]
+            top_right = [str(coord) for coord in boundary.bounds[2:]]
+            bbox = ','.join([*bottom_left, *top_right])
+            dict_opts['bbox'] = bbox
+        else:
+            (shapeType, shape) = wkt_to_cmr_shape(shape).split(':')
+            dict_opts[shapeType] = shape
 
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
-        start = dict_opts["start"] if "start" in dict_opts else ""
-        end = dict_opts["end"] if "end" in dict_opts else ""
-        season = ','.join(str(x) for x in dict_opts["season"]) if "season" in dict_opts else ""
-
-        dict_opts['temporal'] = f'{start},{end},{season}'
-        dict_opts.pop("start", None)
-        dict_opts.pop("end", None)
-        dict_opts.pop("season", None)
+        dict_opts = fix_date(dict_opts)
 
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
@@ -53,8 +57,15 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
+
+    additional_keys = [
+    ('page_size', CMR_PAGE_SIZE),
+    ('options[temporal][and]', 'true'), 
+    ('sort_key[]', '-end_date'), 
+    ('sort_key[]', 'granule_ur'), 
+    ('options[platform][ignore_case]', 'true')]
     
-    cmr_opts.append(('page_size', CMR_PAGE_SIZE))
+    cmr_opts.extend(additional_keys)
 
     return cmr_opts
 
@@ -175,8 +186,8 @@ def try_strip_trailing_zero(value: str):
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
-        fixed_params["start"] = fixed_params["start"] if "start" in fixed_params else ""
-        fixed_params["end"] = fixed_params["end"] if "end" in fixed_params else ""
+        fixed_params["start"] = fixed_params["start"] if "start" in fixed_params else "1978-01-01T00:00:00Z"
+        fixed_params["end"] = fixed_params["end"] if "end" in fixed_params else datetime.utcnow().isoformat()
         fixed_params["season"] = ','.join(str(x) for x in fixed_params['season']) if "season" in fixed_params else ""
 
         fixed_params['temporal'] = f'{fixed_params["start"]},{fixed_params["end"]},{fixed_params["season"]}'
@@ -187,3 +198,31 @@ def fix_date(fixed_params: Dict[str, Any]):
         fixed_params.pop('season', None)
         
     return fixed_params
+
+def should_use_bbox(shape: BaseGeometry):
+    """
+    If the passed shape is a polygon, and if that polygon
+    is equivalent to it's bounding box (if it's a rectangle),
+    we should use the bounding box to search instead
+    """
+    if isinstance(shape, Polygon):
+        return shape.equals(Polygon(shape.boundary.coords))
+    
+    return False
+
+
+def wkt_to_cmr_shape(shape: BaseGeometry):
+    # take note of the WKT type
+    if shape.geom_type not in ["Point","linestring", "Polygon"]:
+        raise ValueError('Unsupported WKT: {0}.'.format(shape.wkt))
+    
+    if shape.geom_type == "Polygon":
+        coords = shape.exterior.coords
+    else: # type == Point | Linestring
+        coords = shape.coords
+    # Turn [[x,y],[x,y]] into [x,y,x,y]:
+    lon_lat_sequence = []
+    for lon_lat in coords: lon_lat_sequence.extend(lon_lat)
+    # Turn any "6e8" to a literal number. (As a sting):
+    coords = ['{:.16f}'.format(float(cord)) for cord in lon_lat_sequence]
+    return '{0}:{1}'.format(shape.geom_type.lower(), ','.join(coords))

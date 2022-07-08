@@ -8,8 +8,7 @@ requirements = [
     "pytz",
     "importlib_metadata",
     "numpy",
-    "dateparser",
-    "WKTUtils==1.1.0",
+    "dateparser"
 ]
 
 test_requirements = [
@@ -19,6 +18,9 @@ test_requirements = [
     "pytest-xdist",
     "coverage",
     "requests-mock",
+    "nbformat",
+    "nbconvert",
+    "ipykernel", 
 ]
 
 with open("README.md", "r") as readme_file:

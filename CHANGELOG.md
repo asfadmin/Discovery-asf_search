@@ -25,7 +25,25 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [4.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.2...v4.0.3)
+### Fixed
+- `product_search()` now assigns `product_list` parameter to `ASFSearchOptions.product_list` instead of `ASFSearchOptions.granule_list` 
 
+------
+## [4.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.1...v4.0.2)
+### Changed
+- Removed `scikit-learn` module as a dependency, greatly reducing install footprint
+- Simplified AOI refinement:
+  - AOIs are iteratively simplified with an increasing threshold, that threshold now starts at 0.004
+  - AOIs with an MBR <= 0.004 in lat/lon are collapsed to a single point
+  - AOIs with an MBR <= 0.004 in either lat or lon are collapsed to a line along the center of the rectangle
+
+------
+## [4.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.0...v4.0.1)
+### Changed
+- Removed WKTUtils module as a dependency, that functionality is now directly included
+
+------
 ## [4.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v3.0.4...v4.0.0)
 ### Added
 - `ASFSearchOptions`: This class provides a number of useful ways to build search results
@@ -45,6 +63,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - All search functions now accepts the optional `opts=` argument, see `ASFSearchOptions` notes above.
 - Replaced all `cmr_token` key arguments with `session`, which takes a `Session`-compatible object. See https://docs.asf.alaska.edu/asf_search/ASFSession/ for more details.
 - Removed old GitHub actions
+
+### Fixed
+- `season` filter in `asf.search()` now doesn't throw when used.
 
 ------
 ## [3.2.2](https://github.com/asfadmin/Discovery-PytestAutomation/compare/v3.2.1...v3.2.2)

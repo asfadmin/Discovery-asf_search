@@ -86,10 +86,55 @@ test_types:
     required_in_title: test-ASFSearch-search-error
     method: test_ASFSearch_Search_Error
 
+- For running WKT Validation invalid wkt error tests:
+    required_keys: ["wkt"]
+    required_in_title: 'test-validate-wkt-invalid-error'
+    method: test_wkt_validation_Invalid_WKT_Error
+
+- For running WKT Validation point tests:
+    required_keys: ["wkt", "validated-wkt"]
+    required_in_title: 'test-validate-wkt-valid'
+    method: test_wkt_validation_WKT_Valid
+
+- For running _get_clamped_and_wrapped_geometry tests:
+    required_keys: ["wkt", "clamped-wkt", "clamped-count", "wrapped-count"]
+    required_in_title: test-validate-wkt-clamp
+    method: test_wkt_validation_WKT_clamp_geometry
+
+- For running _get_convex_hull tests:
+    required_keys: ["wkt", "convex-wkt"]
+    required_in_title: test-validate-wkt-convex-hull
+    method: test_wkt_validation_convex_hull
+
+- For running _get_convex_hull tests:
+    required_keys: ["wkt", "merged-wkt"]
+    required_in_title: test-validate-wkt-merge-overlapping-geometry
+    method: test_wkt_validation_merge_overlapping_geometry
+
+- For running _counter_clockwise_reorientation tests:
+    required_keys: ["wkt", "cc-wkt"]
+    required_in_title: test-validate-wkt-reorient
+    method: test_wkt_validation_counter_clockwise_reorientation
+
+- For running _wkt_prep tests:
+    required_keys: wkt
+    required_in_title: test-search-wkt-prep
+    method: test_search_wkt_prep
+
+- For running _simplify_aoi tests:
+    required_keys: ["wkt", "simplified-wkt", "RepairEntries"]
+    required_in_title: test-simplify-aoi
+    method: test_simplify_aoi
+
 - For running _get_project_names tests:
     required_keys: ["cmr_ummjson", "campaigns"]
     required_in_title: test_get_project_names
     method: test_get_platform_campaign_names
+
+- For running _get_project_names tests:
+    required_keys: ["wkt", "coordinates"]
+    required_in_title: test-validate-wkt-get-shape-coords
+    method: test_validate_wkt_get_shape_coords
 
 - For running download_url tests:
     required_keys: ["url", "path", "filename"]
@@ -129,3 +174,7 @@ test_types:
 - For running ASFSearchOptions tests:
     required_in_title: test-ASFSearchOptions
     method: test_ASFSearchOptions
+
+- For running jupyter notebook example tests:
+    required_keys: notebook
+    method: test_notebook_examples
