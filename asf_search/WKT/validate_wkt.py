@@ -258,7 +258,7 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
             return simplified, [*repairs, repair]
         # If it's a single line segment, it's already as simple as can be. Don't do anything
         elif shape.geom_type.lower() == 'linestring' and len(shape.coords) == 2:
-            return shape, []
+            return shape, repairs
         # Else, check if it's slim enough to become a linestring:
         elif mbr_width <= threshold:
             lon = (shape.bounds[2] - shape.bounds[0]) / 2 + shape.bounds[0]
