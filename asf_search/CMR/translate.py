@@ -54,10 +54,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
                     x = str(x).replace(",", "\,")
                     cmr_opts.append((key, x))
         else:
-            # if the ITEM has a comma, escape it for CMR
-            val = str(val).replace(",", "\,")
+            # if it's not a wkt: if the ITEM has a comma, escape it for CMR
+            if key not in ["point", "linestring", "polygon"]:
+                val = str(val).replace(",", "\,")
             cmr_opts.append((key, val))
-
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
