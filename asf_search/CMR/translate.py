@@ -20,6 +20,12 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # Dict only copies CMR params. Copy provider over too:
     dict_opts['provider'] = opts.provider
 
+    # Escape commas for each key in the list.
+    # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
+    for escape_commas in ["campaign"]:
+        if escape_commas in dict_opts:
+            dict_opts[escape_commas] = dict_opts[escape_commas].replace(",", "\,")
+
     # Special case to unravel WKT field a little for compatibility
     if "intersectsWith" in dict_opts:
         shape = wkt.loads(dict_opts.pop('intersectsWith', None))
@@ -50,13 +56,8 @@ def translate_opts(opts: ASFSearchOptions) -> list:
                     for y in x.split(','):
                         cmr_opts.append((key, y))
                 else:
-                    # if the ITEM has a comma, escape it for CMR
-                    x = str(x).replace(",", "\,")
                     cmr_opts.append((key, x))
         else:
-            # if it's not a wkt: if the ITEM has a comma, escape it for CMR
-            if key not in ["point", "linestring", "polygon"]:
-                val = str(val).replace(",", "\,")
             cmr_opts.append((key, val))
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
