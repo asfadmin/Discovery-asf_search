@@ -242,7 +242,7 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
     output: simplified geometry
     """
 
-    if shape.geom_type == 'Point':
+    if shape.geom_type.lower() == 'point':
         return shape, []
 
     repairs = []
@@ -250,11 +250,16 @@ def _simplify_aoi(shape: Union[Polygon, LineString, Point],
     # Check for very small shapes and collapse accordingly
         mbr_width = shape.bounds[2] - shape.bounds[0]
         mbr_height = shape.bounds[3] - shape.bounds[1]
+        # If both pass, it's a tiny box. Turn it to a point
         if mbr_width <= threshold and mbr_height <= threshold:
             simplified = shape.centroid
             repair = RepairEntry("'type': 'GEOMETRY_SIMPLIFICATION'",
                                 f"'report': 'Shape Collapsed to Point: shape of {_get_shape_coords_len(shape)} simplified to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'")
             return simplified, [*repairs, repair]
+        # If it's a single line segment, it's already as simple as can be. Don't do anything
+        elif shape.geom_type.lower() == 'linestring' and len(shape.coords) == 2:
+            return shape, []
+        # Else, check if it's slim enough to become a linestring:
         elif mbr_width <= threshold:
             lon = (shape.bounds[2] - shape.bounds[0]) / 2 + shape.bounds[0]
             simplified = LineString([(lon, shape.bounds[1]), (lon, shape.bounds[3])])
