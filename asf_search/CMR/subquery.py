@@ -3,6 +3,7 @@ import itertools
 from copy import copy
 
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.constants import CMR_PAGE_SIZE
 
 
 def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
@@ -17,9 +18,9 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
 
     # Break out two big list offenders into manageable chunks
     if params.get('granule_list') is not None:
-        params['granule_list'] = chunk_list(params['granule_list'], 500)
+        params['granule_list'] = chunk_list(params['granule_list'], CMR_PAGE_SIZE)
     if params.get('product_list') is not None:
-        params['product_list'] = chunk_list(params['product_list'], 500)
+        params['product_list'] = chunk_list(params['product_list'], CMR_PAGE_SIZE)
 
     list_param_names = ['platform', 'season']  # these parameters will dodge the subquery system
     skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL

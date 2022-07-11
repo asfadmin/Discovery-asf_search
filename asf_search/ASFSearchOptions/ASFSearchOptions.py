@@ -1,4 +1,6 @@
 import warnings
+import json
+
 from .validator_map import validator_map, validate
 from .defaults import defaults
 
@@ -60,7 +62,13 @@ class ASFSearchOptions:
                 value = self.__getattribute__(key)
                 if value is not None:
                     yield key, value
-    
+
+    def __str__(self):
+        """
+        What to display if print(opts) is called.
+        """
+        return json.dumps(dict(self), indent=4)
+
     # Default is set to '...', since 'None' is a very valid default here
     def pop(self, key, default=...):
         """

@@ -13,4 +13,4 @@ def health(host: str = None) -> dict:
 
     if host is None:
         host = asf_search.INTERNAL.CMR_HOST
-    return json.loads(requests.get(f'https://{host}{asf_search.INTERNAL.HEALTH_PATH}').text)
+    return json.loads(requests.get(f'https://{host}{asf_search.INTERNAL.CMR_HEALTH_PATH}').text)

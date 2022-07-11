@@ -224,4 +224,4 @@ def set_platform_alias(opts: ASFSearchOptions):
             else:
                 platform_list.append(plat)
 
-        opts.platform = platform_list
+        opts.platform = list(set(platform_list))

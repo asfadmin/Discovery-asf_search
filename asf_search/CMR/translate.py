@@ -20,6 +20,12 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # Dict only copies CMR params. Copy provider over too:
     dict_opts['provider'] = opts.provider
 
+    # Escape commas for each key in the list.
+    # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
+    for escape_commas in ["campaign"]:
+        if escape_commas in dict_opts:
+            dict_opts[escape_commas] = dict_opts[escape_commas].replace(",", "\,")
+
     # Special case to unravel WKT field a little for compatibility
     if "intersectsWith" in dict_opts:
         shape = wkt.loads(dict_opts.pop('intersectsWith', None))
@@ -56,7 +62,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
                         cmr_opts.append((key, x))
         else:
             cmr_opts.append((key, val))
-
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
@@ -218,7 +223,7 @@ def should_use_bbox(shape: BaseGeometry):
 
 def wkt_to_cmr_shape(shape: BaseGeometry):
     # take note of the WKT type
-    if shape.geom_type not in ["Point","linestring", "Polygon"]:
+    if shape.geom_type not in ["Point","LineString", "Polygon"]:
         raise ValueError('Unsupported WKT: {0}.'.format(shape.wkt))
     
     if shape.geom_type == "Polygon":
