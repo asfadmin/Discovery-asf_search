@@ -50,7 +50,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
                     for y in x.split(','):
                         cmr_opts.append((key, y))
                 else:
-                    cmr_opts.append((key, x))
+                    if isinstance(x, tuple):
+                        cmr_opts.append((key, ','.join([str(t) for t in x])))                    
+                    else:
+                        cmr_opts.append((key, x))
         else:
             cmr_opts.append((key, val))
 
@@ -80,7 +83,7 @@ def translate_product(item: dict) -> dict:
     properties = {
         'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
         'browse': get(umm, 'RelatedUrls', ('Type', 'GET RELATED VISUALIZATION'), 'URL'),
-        'bytes': cast(int, try_strip_trailing_zero(get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0))),
+        'bytes': cast(int, try_round_float(get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0))),
         'centerLat': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0)),
         'centerLon': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0)),
         'faradayRotation': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0)),
@@ -178,9 +181,11 @@ def get_state_vector(state_vector: str):
     
     return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
 
-def try_strip_trailing_zero(value: str):
+# some products don't have integer values in BYTES fields, round to nearest int
+def try_round_float(value: str):
     if value != None:
-        return value.rstrip('.0')
+        value = float(value)
+        return round(value)
     
     return value
 
