@@ -6,12 +6,13 @@ from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
 # from asf_search.search.search import fix_date
 import dateparser
+import re
 from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 
-from warnings import warn
+import logging
 
 def translate_opts(opts: ASFSearchOptions) -> list:
     # Need to add params which ASFSearchOptions cant support (like temporal),
@@ -66,6 +67,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
 
+
+    if should_use_asf_frame(cmr_opts):
+            cmr_opts = use_asf_frame(cmr_opts)
+
     additional_keys = [
     ('page_size', CMR_PAGE_SIZE),
     ('options[temporal][and]', 'true'), 
@@ -77,6 +82,41 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     return cmr_opts
 
+def should_use_asf_frame(cmr_opts):
+    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
+
+    return any([
+        p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
+        for p in cmr_opts
+    ])
+
+def use_asf_frame(cmr_opts):
+    """
+    Sentinel/ALOS: always use asf frame instead of esa frame
+
+    Platform-specific hack
+    We do them at the subquery level in case the main query crosses
+    platforms that don't suffer these issue.
+    """
+
+    for n, p in enumerate(cmr_opts):
+        if not isinstance(p[1], str):
+            continue
+
+        m = re.search(r'CENTER_ESA_FRAME', p[1])
+        if m is None:
+            continue
+
+        logging.debug(
+            'Sentinel/ALOS subquery, using ASF frame instead of ESA frame'
+        )
+
+        cmr_opts[n] = (
+            p[0],
+            p[1].replace(',CENTER_ESA_FRAME,', ',FRAME_NUMBER,')
+        )
+    
+    return cmr_opts
 
 def translate_product(item: dict) -> dict:
     coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
