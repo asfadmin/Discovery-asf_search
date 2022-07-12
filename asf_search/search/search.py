@@ -126,6 +126,9 @@ def search(
     for key in listify_fields:
         if key in data and not isinstance(data[key], list):
             data[key] = [data[key]]
+        
+        if key in data:
+            data[key] = ['-'.join([str(s) for s in prop]) if isinstance(prop, tuple) else str(prop) for prop in data[key]]
     
     if 'intersectsWith' in list(data.keys()):
         opts.intersectsWith = validate_wkt(data['intersectsWith']).wkt
@@ -153,6 +156,8 @@ def search(
         'processingLevel',
         'product_list',
         'season',
+        'relativeOrbit',
+        'frame'
     ]
     for key in join_fields:
         if key in data:
