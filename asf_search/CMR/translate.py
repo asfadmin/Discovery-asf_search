@@ -182,6 +182,9 @@ def translate_product(item: dict) -> dict:
 
     properties['fileName'] = properties['url'].split('/')[-1]
 
+    if properties['platform'] is None:
+        properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
+
     asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS']
     if properties['platform'] in asf_frame_platforms:
         properties['frameNumber'] = get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0)
