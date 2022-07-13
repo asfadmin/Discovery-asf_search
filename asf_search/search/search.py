@@ -105,12 +105,11 @@ def search(
 
     preprocess_opts(opts)
 
-    subqueries = build_subqueries(opts)
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
     results = ASFSearchResults(opts=opts)
 
-    for query in subqueries:
+    for query in build_subqueries(opts):
         translated_opts = translate_opts(query)
 
         response = get_page(session=opts.session, url=url, translated_opts=translated_opts)

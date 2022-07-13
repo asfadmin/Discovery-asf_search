@@ -52,14 +52,14 @@ def search_count(
 
     preprocess_opts(opts)
 
-    subqueries = build_subqueries(opts)
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
     count = 0
-    for query in subqueries:
+    for query in build_subqueries(opts):
         translated_opts = translate_opts(query)
-        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
-        if 'CMR-hits' in response.headers:
-            count += int(response.headers['CMR-hits'])
+        idx = translated_opts.index(('page_size', INTERNAL.CMR_PAGE_SIZE))
+        translated_opts[idx] = ('page_size', 0)
         
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+        count += response.json()['hits']
     return count
