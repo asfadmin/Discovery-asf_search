@@ -21,7 +21,8 @@ def run_test_ASFSearchResults(search_resp):
         search_resp[idx]['properties'].pop('perpendicularBaseline', None)
 
         assert(feature.geojson()['geometry'] == search_resp[idx]['geometry'])
-        assert(feature.geojson()['properties'] == search_resp[idx]['properties'])
+        for key, item in feature.geojson()['properties'].items():
+            assert(item == search_resp[idx]['properties'][key])
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:

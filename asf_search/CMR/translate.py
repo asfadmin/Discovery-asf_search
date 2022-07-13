@@ -1,11 +1,8 @@
 from ast import Tuple
 from datetime import datetime
 from typing import Any, Dict
-from asf_search.ASFSearchOptions import ASFSearchOptions, validators
-from asf_search.WKT.validate_wkt import validate_wkt
-from asf_search.constants import DEFAULT_PROVIDER, CMR_PAGE_SIZE
-# from asf_search.search.search import fix_date
-import dateparser
+from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.constants import CMR_PAGE_SIZE
 import re
 from shapely import wkt
 from shapely.geometry import Polygon
@@ -133,7 +130,7 @@ def translate_product(item: dict) -> dict:
         'centerLon': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0)),
         'faradayRotation': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0)),
         'fileID': get(umm, 'GranuleUR'),
-        'flightDirection': get(umm, 'AdditionalAttributes', ('Name', 'FLIGHT_DIRECTION'), 'Values', 0),
+        'flightDirection': get(umm, 'AdditionalAttributes', ('Name', 'ASCENDING_DESCENDING'), 'Values', 0),
         'groupID': get(umm, 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0),
         'granuleType': get(umm, 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0),
         'insarStackId': get(umm, 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0),
