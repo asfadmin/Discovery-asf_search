@@ -1,0 +1,413 @@
+{
+    "type": "Feature",
+    "geometry": {
+        "coordinates": [
+            [
+                [
+                    -148.460235,
+                    65.57549
+                ],
+                [
+                    -149.081122,
+                    64.627404
+                ],
+                [
+                    -147.094104,
+                    64.38274
+                ],
+                [
+                    -146.403205,
+                    65.324152
+                ],
+                [
+                    -148.460235,
+                    65.57549
+                ]
+            ]
+        ],
+        "type": "Polygon"
+    },
+    "properties": {
+        "beamModeType": "STD",
+        "browse": "https://datapool.asf.alaska.edu/BROWSE/E1/E1_19942_STD_F287.jpg",
+        "bytes": 58750445,
+        "centerLat": 64.9813,
+        "centerLon": -147.7602,
+        "faradayRotation": null,
+        "fileID": "E1_19942_STD_F287-L1",
+        "flightDirection": null,
+        "groupID": null,
+        "granuleType": "E1_STD_FRAME",
+        "insarStackId": "1736495",
+        "md5sum": "612958259af2fa499cd10a12d9e8c9a4",
+        "offNadirAngle": -1.0,
+        "orbit": 19942,
+        "pathNumber": 415,
+        "platform": "ERS-1",
+        "pointingAngle": null,
+        "polarization": "VV",
+        "processingDate": "2010-12-05T11:21:45.000Z",
+        "processingLevel": "L1",
+        "sceneName": "E1_19942_STD_F287",
+        "sensor": "SAR",
+        "startTime": "1995-05-08T21:09:19.000Z",
+        "stopTime": "1995-05-08T21:09:36.000Z",
+        "url": "https://datapool.asf.alaska.edu/L1/E1/E1_19942_STD_F287.zip",
+        "fileName": "E1_19942_STD_F287.zip",
+        "frameNumber": "2291",
+    },
+    "baseline": {
+        "insarBaseline": 0.0
+    },
+    "umm": {
+        "TemporalExtent": {
+            "RangeDateTime": {
+                "BeginningDateTime": "1995-05-08T21:09:19.000Z",
+                "EndingDateTime": "1995-05-08T21:09:36.000Z"
+            }
+        },
+        "OrbitCalculatedSpatialDomains": [
+            {
+                "OrbitNumber": 19942
+            }
+        ],
+        "GranuleUR": "E1_19942_STD_F287-L1",
+        "AdditionalAttributes": [
+            {
+                "Name": "FLIGHT_LINE",
+                "Values": [
+                    "NULL"
+                ]
+            },
+            {
+                "Name": "OFF_NADIR_ANGLE",
+                "Values": [
+                    "-1"
+                ]
+            },
+            {
+                "Name": "MD5SUM",
+                "Values": [
+                    "612958259af2fa499cd10a12d9e8c9a4"
+                ]
+            },
+            {
+                "Name": "GRANULE_TYPE",
+                "Values": [
+                    "E1_STD_FRAME"
+                ]
+            },
+            {
+                "Name": "ASCENDING_DESCENDING",
+                "Values": [
+                    "DESCENDING"
+                ]
+            },
+            {
+                "Name": "FAR_END_LAT",
+                "Values": [
+                    "64.6274"
+                ]
+            },
+            {
+                "Name": "INSAR_STACK_SIZE",
+                "Values": [
+                    "139"
+                ]
+            },
+            {
+                "Name": "BEAM_MODE_TYPE",
+                "Values": [
+                    "STD"
+                ]
+            },
+            {
+                "Name": "INSAR_BASELINE",
+                "Values": [
+                    "0"
+                ]
+            },
+            {
+                "Name": "CENTER_FRAME_ID",
+                "Values": [
+                    "2291"
+                ]
+            },
+            {
+                "Name": "CENTER_ESA_FRAME",
+                "Values": [
+                    "2291"
+                ]
+            },
+            {
+                "Name": "ACQUISITION_DATE",
+                "Values": [
+                    "1995-05-08T21:09:36Z"
+                ]
+            },
+            {
+                "Name": "MISSION_NAME",
+                "Values": [
+                    "NULL"
+                ]
+            },
+            {
+                "Name": "CENTER_LON",
+                "Values": [
+                    "-147.7602"
+                ]
+            },
+            {
+                "Name": "NEAR_START_LAT",
+                "Values": [
+                    "65.3242"
+                ]
+            },
+            {
+                "Name": "BEAM_MODE",
+                "Values": [
+                    "Standard"
+                ]
+            },
+            {
+                "Name": "BEAM_MODE_DESC",
+                "Values": [
+                    "ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"
+                ]
+            },
+            {
+                "Name": "PROCESSING_TYPE",
+                "Values": [
+                    "L1"
+                ]
+            },
+            {
+                "Name": "PROCESSING_DESCRIPTION",
+                "Values": [
+                    "Fully processed SAR data."
+                ]
+            },
+            {
+                "Name": "FRAME_NUMBER",
+                "Values": [
+                    "287"
+                ]
+            },
+            {
+                "Name": "PROCESSING_LEVEL",
+                "Values": [
+                    "L1"
+                ]
+            },
+            {
+                "Name": "PROCESSING_DATE",
+                "Values": [
+                    "2010-12-05 11:21:45.673251"
+                ]
+            },
+            {
+                "Name": "NEAR_START_LON",
+                "Values": [
+                    "-146.4032"
+                ]
+            },
+            {
+                "Name": "DOPPLER",
+                "Values": [
+                    "0"
+                ]
+            },
+            {
+                "Name": "FAR_START_LAT",
+                "Values": [
+                    "65.5755"
+                ]
+            },
+            {
+                "Name": "NEAR_END_LON",
+                "Values": [
+                    "-147.0941"
+                ]
+            },
+            {
+                "Name": "PROCESSING_TYPE_DISPLAY",
+                "Values": [
+                    "Level One Image"
+                ]
+            },
+            {
+                "Name": "POLARIZATION",
+                "Values": [
+                    "VV"
+                ]
+            },
+            {
+                "Name": "FAR_START_LON",
+                "Values": [
+                    "-148.4602"
+                ]
+            },
+            {
+                "Name": "THUMBNAIL_URL",
+                "Values": [
+                    "https://datapool.asf.alaska.edu/THUMBNAIL/E1/E1_19942_STD_F287_THUMBNAIL.jpg"
+                ]
+            },
+            {
+                "Name": "ASF_PLATFORM",
+                "Values": [
+                    "ERS-1"
+                ]
+            },
+            {
+                "Name": "INSAR_STACK_ID",
+                "Values": [
+                    "1736495"
+                ]
+            },
+            {
+                "Name": "LOOK_DIRECTION",
+                "Values": [
+                    "R"
+                ]
+            },
+            {
+                "Name": "PATH_NUMBER",
+                "Values": [
+                    "415"
+                ]
+            },
+            {
+                "Name": "NEAR_END_LAT",
+                "Values": [
+                    "64.3827"
+                ]
+            },
+            {
+                "Name": "FARADAY_ROTATION",
+                "Values": [
+                    "NA"
+                ]
+            },
+            {
+                "Name": "FAR_END_LON",
+                "Values": [
+                    "-149.0811"
+                ]
+            },
+            {
+                "Name": "BYTES",
+                "Values": [
+                    "58750445"
+                ]
+            },
+            {
+                "Name": "CENTER_LAT",
+                "Values": [
+                    "64.9813"
+                ]
+            }
+        ],
+        "SpatialExtent": {
+            "HorizontalSpatialDomain": {
+                "Geometry": {
+                    "GPolygons": [
+                        {
+                            "Boundary": {
+                                "Points": [
+                                    {
+                                        "Longitude": -148.460235,
+                                        "Latitude": 65.57549
+                                    },
+                                    {
+                                        "Longitude": -149.081122,
+                                        "Latitude": 64.627404
+                                    },
+                                    {
+                                        "Longitude": -147.094104,
+                                        "Latitude": 64.38274
+                                    },
+                                    {
+                                        "Longitude": -146.403205,
+                                        "Latitude": 65.324152
+                                    },
+                                    {
+                                        "Longitude": -148.460235,
+                                        "Latitude": 65.57549
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "ProviderDates": [
+            {
+                "Date": "2010-12-05T11:21:45.000Z",
+                "Type": "Insert"
+            },
+            {
+                "Date": "2010-12-05T11:21:45.000Z",
+                "Type": "Update"
+            }
+        ],
+        "CollectionReference": {
+            "EntryTitle": "ERS-1_LEVEL1"
+        },
+        "RelatedUrls": [
+            {
+                "Format": "Not provided",
+                "Type": "GET DATA",
+                "URL": "https://datapool.asf.alaska.edu/L1/E1/E1_19942_STD_F287.zip"
+            },
+            {
+                "Format": "Not provided",
+                "Type": "GET RELATED VISUALIZATION",
+                "URL": "https://datapool.asf.alaska.edu/BROWSE/E1/E1_19942_STD_F287.jpg"
+            }
+        ],
+        "DataGranule": {
+            "DayNightFlag": "Unspecified",
+            "Identifiers": [
+                {
+                    "Identifier": "E1_19942_STD_F287",
+                    "IdentifierType": "ProducerGranuleId"
+                }
+            ],
+            "ProductionDateTime": "2010-12-05T11:21:45.000Z",
+            "ArchiveAndDistributionInformation": [
+                {
+                    "Name": "Not provided",
+                    "Size": 56.02,
+                    "SizeUnit": "MB",
+                    "Format": "Not provided"
+                }
+            ]
+        },
+        "Platforms": [
+            {
+                "ShortName": "ERS-1",
+                "Instruments": [
+                    {
+                        "ShortName": "SAR",
+                        "ComposedOf": [
+                            {
+                                "ShortName": "STD"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "meta": {
+        "concept-type": "granule",
+        "concept-id": "G1213363105-ASF",
+        "revision-id": 1,
+        "native-id": "E1_19942_STD_F287-L1",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-13T18:39:18.230Z"
+    }
+}

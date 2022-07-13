@@ -15,6 +15,10 @@ tests:
     product: S1_response.yml
     stack: S1_baseline_stack.yml
 
+- Test get test-temporal-baseline test-product-stack Params:
+    product: Fairbanks_ers_reference.yml
+    stack: Fairbanks_ers_stack.yml
+
 - test-stack-id empty ID:
     stack_id: ''
     stack_reference: Alos_response.yml
