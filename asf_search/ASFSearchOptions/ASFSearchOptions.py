@@ -55,7 +55,7 @@ class ASFSearchOptions:
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-        no_export = ['host', 'session']  # TODO: remove 'provider' from this list once we're hitting CMR directly
+        no_export = ['host', 'session']
 
         for key in validator_map:
             if key not in no_export:
@@ -107,6 +107,8 @@ class ASFSearchOptions:
         """
         for key in kwargs:
             val = getattr(self, key, None)
-            if val is not None:
+            # Spit out warning if the value is something other than the default:
+            default_val = defaults[key] if key in defaults else None
+            if val != default_val:
                 warnings.warn(f'While merging search options, existing option {key}:{val} overwritten by kwarg with value {kwargs[key]}')
             self.__setattr__(key, kwargs[key])
