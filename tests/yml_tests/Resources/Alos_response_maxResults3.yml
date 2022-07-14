@@ -28,7 +28,7 @@
         "stopTime": "2011-04-21T20:23:36.000Z",
         "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRS279162650-L1.0.zip",
         "fileName": "ALPSRS279162650-L1.0.zip",
-        "frameNumber": "2650",
+        "frameNumber": 2650,
       },
     "geometry":
       {
@@ -237,7 +237,7 @@
         "stopTime": "2011-04-21T20:23:36.000Z",
         "url": "https://datapool.asf.alaska.edu/L1.5/A3/ALPSRS279162650-L1.5.zip",
         "fileName": "ALPSRS279162650-L1.5.zip",
-        "frameNumber": "2650",
+        "frameNumber": 2650,
       },
     "geometry":
       {
@@ -449,7 +449,7 @@
         "stopTime": "2011-04-21T20:22:55.000Z",
         "url": "https://datapool.asf.alaska.edu/L1.0/A3/ALPSRS279162600-L1.0.zip",
         "fileName": "ALPSRS279162600-L1.0.zip",
-        "frameNumber": "2600",
+        "frameNumber": 2600,
       },
     "geometry":
       {
