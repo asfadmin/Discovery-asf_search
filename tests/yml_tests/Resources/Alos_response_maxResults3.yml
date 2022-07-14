@@ -3,7 +3,7 @@
     "properties":
       {
         "beamModeType": "WB1",
-        "browse": "https://datapool.asf.alaska.edu/BROWSE/A3/ALPSRS279162650.jpg",
+        "browse": ["https://datapool.asf.alaska.edu/BROWSE/A3/ALPSRS279162650.jpg"],
         "bytes": 493077369,
         "centerLat": 47.8206,
         "centerLon": -145.828,
@@ -212,7 +212,7 @@
     "properties":
       {
         "beamModeType": "WB1",
-        "browse": "https://datapool.asf.alaska.edu/BROWSE/A3/ALPSRS279162650.jpg",
+        "browse": ["https://datapool.asf.alaska.edu/BROWSE/A3/ALPSRS279162650.jpg"],
         "bytes": 25543487,
         "centerLat": 47.8206,
         "centerLon": -145.828,
@@ -424,7 +424,7 @@
     "properties":
       {
         "beamModeType": "WB1",
-        "browse": "https://datapool.asf.alaska.edu/BROWSE/A3/ALPSRS279162600.jpg",
+        "browse": ["https://datapool.asf.alaska.edu/BROWSE/A3/ALPSRS279162600.jpg"],
         "bytes": 434727854,
         "centerLat": 50.2797,
         "centerLon": -145.1062,

@@ -3,7 +3,7 @@
     "properties":
       {
         "beamModeType": "IW",
-        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.jpg",
+        "browse": ["https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.jpg"],
         "bytes": 902744581,
         "centerLat": 64.9795,
         "centerLon": -147.0829,
@@ -242,7 +242,7 @@
     "properties":
       {
         "beamModeType": "IW",
-        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.jpg",
+        "browse": ["https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.jpg"],
         "bytes": 902676548,
         "centerLat": 64.9796,
         "centerLon": -147.0822,
@@ -481,7 +481,7 @@
     "properties":
       {
         "beamModeType": "IW",
-        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.jpg",
+        "browse": ["https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.jpg"],
         "bytes": 897230195,
         "centerLat": 64.9796,
         "centerLon": -147.0825,
@@ -720,7 +720,7 @@
     "properties":
       {
         "beamModeType": "IW",
-        "browse": "https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.jpg",
+        "browse": ["https://datapool.asf.alaska.edu/BROWSE/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.jpg"],
         "bytes": 885840896,
         "centerLat": 64.9796,
         "centerLon": -147.0848,

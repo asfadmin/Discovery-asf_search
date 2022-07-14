@@ -1,6 +1,6 @@
 from ast import Tuple
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, List
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import CMR_PAGE_SIZE
 import re
@@ -124,7 +124,7 @@ def translate_product(item: dict) -> dict:
 
     properties = {
         'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
-        'browse': get(umm, 'RelatedUrls', ('Type', 'GET RELATED VISUALIZATION'), 'URL'),
+        'browse': get(umm, 'RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])),
         'bytes': cast(int, try_round_float(get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0))),
         'centerLat': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0)),
         'centerLon': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0)),
@@ -204,6 +204,17 @@ def get(item: dict, *args):
             item = item[key] if key < len(item) else None
         elif isinstance(key, tuple):
             (a, b) = key
+            if isinstance(b, List):
+                output = []
+                b = b[0]
+                for child in item:
+                    if get(child, key[0]) == b[0]:
+                        output.append(get(child, b[1]))
+                if len(output):
+                    return output
+
+                return None
+
             found = False
             for child in item:
                 if get(child, a) == b:
