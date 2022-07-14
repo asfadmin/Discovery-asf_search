@@ -1,8 +1,9 @@
 import platform
 import requests
+from requests import __name__ as requests_name, __version__ as requests_version
 from requests.utils import get_netrc_auth
 import http.cookiejar
-from asf_search import __version__
+from asf_search import __name__ as asf_name, __version__ as asf_version
 from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
 from asf_search.exceptions import ASFAuthenticationError
 
@@ -11,14 +12,13 @@ class ASFSession(requests.Session):
 
     def __init__(self):
         super().__init__()
-        self.headers.update({'User-Agent': f'{__name__}.{__version__}'})
-
         user_agent = '; '.join([
-            f"asf-search/{__version__}",
+            f"{asf_name}/{asf_version}",
             f'Python/{platform.python_version()}',
-            self.headers["User-Agent"]])
+            f'{requests_name}/{requests_version}'])
+
         self.headers.update({'User-Agent': user_agent}) # For all hosts
-        self.headers.update({'Client-Id': f"asf-search/{__version__}"}) # For CMR
+        self.headers.update({'Client-Id': f"{asf_name}/{asf_version}"}) # For CMR
 
     def auth_with_creds(self, username: str, password: str):
         """
