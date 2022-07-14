@@ -1,3 +1,4 @@
+import platform
 import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
@@ -5,13 +6,19 @@ from asf_search import __version__
 from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
 from asf_search.exceptions import ASFAuthenticationError
 
-
 class ASFSession(requests.Session):
     AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov']
 
     def __init__(self):
         super().__init__()
         self.headers.update({'User-Agent': f'{__name__}.{__version__}'})
+
+        user_agent = '; '.join([
+            f"asf-search/{__version__}",
+            f'Python/{platform.python_version()}',
+            self.headers["User-Agent"]])
+        self.headers.update({'User-Agent': user_agent}) # For all hosts
+        self.headers.update({'Client-Id': f"asf-search/{__version__}"}) # For CMR
 
     def auth_with_creds(self, username: str, password: str):
         """
