@@ -1,11 +1,10 @@
-from typing import Any, Union, Iterable, Tuple
+from typing import Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import Response
 import datetime
 import dateparser
 import warnings
-import math
 
 from asf_search import __version__
 
