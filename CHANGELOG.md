@@ -25,6 +25,19 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+
+## [5.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.3...v5.0.0)
+### Changed
+- `asf_search` now searches CMR directly, no longer relying on ASF's SearchAPI
+  - This should significantly improve reliability and performance
+  - With this change, ALL metadata fields provided by CMR's UMM JSON format are now available through `ASFProduct`.
+    -  All metadata fields previously available through `ASFProduct.properties` remain where they are
+      - For those and any other fields, the full CMR `umm` and `meta` records are available through `ASFProduct.umm` and `ASFProduct.meta` respectively
+- Some geojson fields were previously presented as strings, they are now more appropriate types such as `int` or `float`:
+  - `bytes`, `centerLat`, `centerLon`, `frame`, `offNadirAngle`, `orbit`, `pathNumber`
+- Timestamps in geojson fields now include an explicit `Z` time zone indicator.
+
+------
 ## [4.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.2...v4.0.3)
 ### Fixed
 - `product_search()` now assigns `product_list` parameter to `ASFSearchOptions.product_list` instead of `ASFSearchOptions.granule_list` 
