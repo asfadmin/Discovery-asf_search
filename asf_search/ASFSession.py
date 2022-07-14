@@ -15,8 +15,8 @@ class ASFSession(requests.Session):
             f'Python/{platform.python_version()}',
             f'{requests.__name__}/{requests.__version__}'])
 
-        self.headers.update({'User-Agent': user_agent}) # For all hosts
-        self.headers.update({'Client-Id': f"{asf_name}/{asf_version}"}) # For CMR
+        self.headers.update({'User-Agent': user_agent})  # For all hosts
+        self.headers.update({'Client-Id': f"{asf_name}_v{asf_version}"})  # For CMR
 
     def auth_with_creds(self, username: str, password: str):
         """
