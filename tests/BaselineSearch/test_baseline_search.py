@@ -15,7 +15,7 @@ def run_test_get_preprocessed_stack_params(product):
     
     assert(params.processingLevel == [get_default_product_type(product['properties']['sceneName'])])
     assert(params.insarStackId == original_properties['insarStackId'])
-    assert(len(dict(params)) == 2)
+    assert(len(dict(params)) == 3)
     
 
 def run_test_get_unprocessed_stack_params(product):
@@ -25,7 +25,7 @@ def run_test_get_unprocessed_stack_params(product):
     original_properties = product['properties']
     assert(original_properties['polarization'] in params.polarization)
     assert(['VV', 'VV+VH'] == params.polarization)
-    assert(len(dict(params)) == 7)
+    assert(len(dict(params)) == 8)
 
 def run_get_stack_opts_invalid_insarStackId(product):
     invalid_reference = ASFProduct(product, opts=None)
