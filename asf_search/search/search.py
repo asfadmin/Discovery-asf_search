@@ -142,7 +142,8 @@ def search(
 
 
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
-    response = session.post(url=url, data=translated_opts)
+    headers = {'Client-Id': f'asf_search_v{__version__}'}
+    response = session.post(url=url, data=translated_opts, headers=headers)
     try:
         response.raise_for_status()
     except HTTPError:
