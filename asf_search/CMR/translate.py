@@ -15,8 +15,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
-    # Dict only copies CMR params. Copy provider over too:
-    dict_opts['provider'] = opts.provider
 
     # Escape commas for each key in the list.
     # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
