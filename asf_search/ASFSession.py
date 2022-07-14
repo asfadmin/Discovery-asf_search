@@ -3,11 +3,10 @@ import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
 from asf_search import __name__ as asf_name, __version__ as asf_version
-from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST
+from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST, AUTH_DOMAINS
 from asf_search.exceptions import ASFAuthenticationError
 
 class ASFSession(requests.Session):
-    AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov']
 
     def __init__(self):
         super().__init__()
@@ -90,8 +89,8 @@ class ASFSession(requests.Session):
             redirect_domain = '.'.join(self._get_domain(url).split('.')[-3:])
 
             if (original_domain != redirect_domain 
-                and (original_domain not in self.AUTH_DOMAINS
-                or redirect_domain not in self.AUTH_DOMAINS)):
+                and (original_domain not in AUTH_DOMAINS
+                or redirect_domain not in AUTH_DOMAINS)):
                 del headers['Authorization']
 
         new_auth = get_netrc_auth(url) if self.trust_env else None

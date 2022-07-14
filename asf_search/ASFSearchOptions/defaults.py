@@ -5,5 +5,4 @@ defaults = {
     'host': INTERNAL.CMR_HOST,
     'provider': INTERNAL.DEFAULT_PROVIDER,
     'session': ASFSession(),
-    'maturity': None
 }

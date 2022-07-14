@@ -10,3 +10,5 @@ EDL_HOST = 'urs.earthdata.nasa.gov'
 EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'
 
 DEFAULT_PROVIDER = 'ASF'
+
+AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov']

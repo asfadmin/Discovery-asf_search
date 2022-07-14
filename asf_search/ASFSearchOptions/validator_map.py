@@ -52,5 +52,4 @@ validator_map = {
     'session':                parse_session,
     'host':                   parse_string,
     'provider':               parse_string,
-    'maturity':               parse_string,
 }
