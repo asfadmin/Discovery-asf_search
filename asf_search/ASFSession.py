@@ -1,6 +1,5 @@
 import platform
 import requests
-from requests import __name__ as requests_name, __version__ as requests_version
 from requests.utils import get_netrc_auth
 import http.cookiejar
 from asf_search import __name__ as asf_name, __version__ as asf_version
@@ -15,7 +14,7 @@ class ASFSession(requests.Session):
         user_agent = '; '.join([
             f"{asf_name}/{asf_version}",
             f'Python/{platform.python_version()}',
-            f'{requests_name}/{requests_version}'])
+            f'{requests.__name__}/{requests.__version__}'])
 
         self.headers.update({'User-Agent': user_agent}) # For all hosts
         self.headers.update({'Client-Id': f"{asf_name}/{asf_version}"}) # For CMR
