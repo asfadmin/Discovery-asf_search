@@ -93,7 +93,7 @@ class ASFSearchOptions:
         Resets all populated search options, exlcuding options that have defined defaults in defaults.py unchanged (host, session, etc)
         """
         for key, _ in self:
-            if key not in defaults.keys():
+            if key not in defaults:
                 super().__setattr__(key, None)
 
     def merge_args(self, **kwargs) -> None:
@@ -111,7 +111,7 @@ class ASFSearchOptions:
 
     def _is_val_default(self, key) -> bool:
         """
-        Returns bool on if the key is the same as it's default value
+        Returns bool on if the key's current value is the same as it's default value
 
         :param key: The key to check
         :return: bool
