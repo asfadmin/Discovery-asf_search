@@ -106,7 +106,7 @@ class ASFSearchOptions:
         for key in kwargs:
             # Spit out warning if the value is something other than the default:
             if not self._is_val_default(key):
-                warnings.warn(f'While merging search options, existing option {key}:{val} overwritten by kwarg with value {kwargs[key]}')
+                warnings.warn(f'While merging search options, existing option {key}:{getattr(self, key, None)} overwritten by kwarg with value {kwargs[key]}')
             self.__setattr__(key, kwargs[key])
 
     def _is_val_default(self, key) -> bool:
