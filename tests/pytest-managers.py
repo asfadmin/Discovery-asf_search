@@ -390,8 +390,8 @@ def test_notebook_examples(**args) -> None:
         ep = ExecutePreprocessor(timeout=600)
         try:
             assert ep.preprocess(notebook) != None, f"Got empty notebook for {notebook_file}"
-        except Exception:
-            assert False, f"Failed executing {notebook_file}"
+        except Exception as e:
+            assert False, f"Failed executing {notebook_file}: {e}"
 
 
 # Testing resource loading utilities
