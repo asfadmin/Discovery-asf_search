@@ -18,6 +18,11 @@ class ASFSession(requests.Session):
         self.headers.update({'User-Agent': user_agent})  # For all hosts
         self.headers.update({'Client-Id': f"{asf_name}_v{asf_version}"})  # For CMR
 
+    def __eq__(self, other):
+        return self.auth == other.auth \
+           and self.headers == other.headers \
+           and self.cookies == other.cookies
+
     def auth_with_creds(self, username: str, password: str):
         """
         Authenticates the session using EDL username/password credentials
