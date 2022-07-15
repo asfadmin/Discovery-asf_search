@@ -57,15 +57,15 @@ class ASFSearchOptions:
         """
         no_export = ['host', 'session']
 
-        for key in validator_map:
-            if key not in no_export:
+        export_keys = [key for key in validator_map if key not in no_export]
+        for key in export_keys:
+            if not self._is_val_default(key):
                 value = self.__getattribute__(key)
-                if value is not None:
-                    yield key, value
+                yield key, value
 
     def __str__(self):
         """
-        What to display if print(opts) is called.
+        What to display if `print(opts)` is called.
         """
         return json.dumps(dict(self), indent=4)
 
@@ -79,14 +79,12 @@ class ASFSearchOptions:
         if key not in validator_map:
             raise KeyError(f"key '{key}' is not a valid key for ASFSearchOptions. (pop)")
 
-        val = getattr(self, key)
-        if val is None:
+        if self._is_val_default(key):
             if default != ...:
-                # Is it right to run the key through validator here?
-                # If something is a list, it casts it, etc...
                 return default
             raise KeyError(f"key '{key}' is set to empty/None. (pop)")
         # Success, delete and return it:
+        val = getattr(self, key)
         self.__delattr__(key)
         return val
 
@@ -106,9 +104,18 @@ class ASFSearchOptions:
         :return: None
         """
         for key in kwargs:
-            val = getattr(self, key, None)
             # Spit out warning if the value is something other than the default:
-            default_val = defaults[key] if key in defaults else None
-            if val != default_val:
+            if not self._is_val_default(key):
                 warnings.warn(f'While merging search options, existing option {key}:{val} overwritten by kwarg with value {kwargs[key]}')
             self.__setattr__(key, kwargs[key])
+
+    def _is_val_default(self, key) -> bool:
+        """
+        Returns bool on if the key is the same as it's default value
+
+        :param key: The key to check
+        :return: bool
+        """
+        default_val = defaults[key] if key in defaults else None
+        current_val = getattr(self, key, None)
+        return current_val == default_val

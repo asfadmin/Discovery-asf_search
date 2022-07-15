@@ -67,11 +67,13 @@ def translate_opts(opts: ASFSearchOptions) -> list:
             cmr_opts = use_asf_frame(cmr_opts)
 
     additional_keys = [
-    ('page_size', CMR_PAGE_SIZE),
-    ('options[temporal][and]', 'true'), 
-    ('sort_key[]', '-end_date'), 
-    ('sort_key[]', 'granule_ur'), 
-    ('options[platform][ignore_case]', 'true')]
+        ('page_size', CMR_PAGE_SIZE),
+        ('options[temporal][and]', 'true'), 
+        ('sort_key[]', '-end_date'), 
+        ('sort_key[]', 'granule_ur'), 
+        ('options[platform][ignore_case]', 'true'),
+        ('provider', opts.provider),
+    ]
     
     cmr_opts.extend(additional_keys)
 
