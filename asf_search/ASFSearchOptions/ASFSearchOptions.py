@@ -90,7 +90,7 @@ class ASFSearchOptions:
 
     def reset(self):
         """
-        Resets all populated search options, exlcuding options that have defined defaults in defaults.py unchanged (host, session, etc)
+        Resets all populated search options, excluding options that have defined defaults in defaults.py unchanged (host, session, etc)
         """
         for key, _ in self:
             if key not in defaults:
