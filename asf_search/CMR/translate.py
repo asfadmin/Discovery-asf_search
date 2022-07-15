@@ -46,6 +46,9 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
+        # If it's "session" or something else CMR doesn't accept, don't send it:
+        if key not in field_map:
+            continue
         if isinstance(val, list):
             for x in val:
                 if key in ['granule_list', 'product_list']:
