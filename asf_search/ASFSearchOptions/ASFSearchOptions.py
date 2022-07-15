@@ -2,7 +2,7 @@ import warnings
 import json
 
 from .validator_map import validator_map, validate
-from .defaults import defaults
+from .config import config
 
 
 class ASFSearchOptions:
@@ -13,7 +13,7 @@ class ASFSearchOptions:
         :param kwargs: any search options to be set immediately
         """
         # init the built in attrs:
-        for key in validator_map.keys():
+        for key in validator_map:
             self.__setattr__(key, None)
         
         # Apply any parameters passed in:
@@ -30,9 +30,9 @@ class ASFSearchOptions:
         # self.* calls custom __setattr__ method, creating inf loop. Use super().*
         # Let values always be None, even if their validator doesn't agree. Used to delete them too:
         if key in validator_map:
-            if value is None:  # always maintain defaults on required fields
-                if key in defaults:
-                    super().__setattr__(key, defaults[key])
+            if value is None:  # always maintain config on required fields
+                if key in config:
+                    super().__setattr__(key, config[key])
                 else:
                     super().__setattr__(key, None)
             else:
@@ -55,10 +55,8 @@ class ASFSearchOptions:
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-        no_export = ['host', 'session']
 
-        export_keys = [key for key in validator_map if key not in no_export]
-        for key in export_keys:
+        for key in validator_map:
             if not self._is_val_default(key):
                 value = self.__getattribute__(key)
                 yield key, value
@@ -69,7 +67,7 @@ class ASFSearchOptions:
         """
         return json.dumps(dict(self), indent=4)
 
-    # Default is set to '...', since 'None' is a very valid default here
+    # Default is set to '...', since 'None' is a very valid value here
     def pop(self, key, default=...):
         """
         Removes 'key' from self and returns it's value. Throws KeyError if doesn't exist
@@ -88,12 +86,12 @@ class ASFSearchOptions:
         self.__delattr__(key)
         return val
 
-    def reset(self):
+    def reset_search(self):
         """
-        Resets all populated search options, excluding options that have defined defaults in defaults.py unchanged (host, session, etc)
+        Resets all populated search options, excluding config options (host, session, etc)
         """
         for key, _ in self:
-            if key not in defaults:
+            if key not in config:
                 super().__setattr__(key, None)
 
     def merge_args(self, **kwargs) -> None:
@@ -116,6 +114,6 @@ class ASFSearchOptions:
         :param key: The key to check
         :return: bool
         """
-        default_val = defaults[key] if key in defaults else None
+        default_val = config[key] if key in config else None
         current_val = getattr(self, key, None)
         return current_val == default_val
