@@ -1,23 +1,20 @@
 --- # test data
 
 empty_parameters: &empty_parameters {
-    'host' : 'api.daac.asf.alaska.edu'
+    # 'host' : 'api.daac.asf.alaska.edu'
 }
 
 alos_parameters: &alos_parameters {
   "platform": "ALOS",
   "maxResults": 3,
-  'host' : 'api.daac.asf.alaska.edu',
+#   'host' : 'api.daac.asf.alaska.edu',
 }
 
 tests:
-- test-ASFSearch ALOS Resp:
+- test-ASFSearch ALOS Resp 1:
     response: Alos_response_maxResults3.yml
 
-- test-ASFSearch ALOS Resp:
-    response: Alos_stack.yml
-
-- test-ASFSearch ALOS Resp:
+- test-ASFSearch S1 Resp 1:
     response: S1_baseline_stack.yml
 
 - test-ASFSearch-search-valid Alos:

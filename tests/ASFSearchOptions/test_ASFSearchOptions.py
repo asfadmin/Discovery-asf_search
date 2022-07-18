@@ -1,4 +1,6 @@
-from asf_search.ASFSearchOptions import validators, ASFSearchOptions, defaults
+import copy
+from asf_search.ASFSearchOptions import validators, ASFSearchOptions
+from asf_search.ASFSearchOptions.config import config
 from asf_search.ASFSearchOptions.validator_map import validate, validator_map
 from pytest import raises
 
@@ -8,7 +10,7 @@ def run_test_validator_map_validate(key, value, output):
         with raises(KeyError) as keyerror:
             validate(key, value)
 
-        if key in [validator_key.lower() for validator_key in list(validator_map.keys())]:
+        if key in [validator_key.lower() for validator_key in list(validator_map.keys()) if key not in config.keys()]:
             assert "Did you mean" in str(keyerror.value) 
 
         return
@@ -26,7 +28,7 @@ def run_test_ASFSearchOptions_validator(validator_name, param, output, error):
         assert error in str(e.value)
 
 def run_test_ASFSearchOptions(**kwargs):
-    test_info = kwargs["test_info"]
+    test_info = copy.copy(kwargs["test_info"])
     exception = test_info["exception"] # Can be "None" for don't.
     if "expect_output" in test_info:
         expect_output = test_info.pop("expect_output")
@@ -48,12 +50,12 @@ def run_test_ASFSearchOptions(**kwargs):
     for key, val in expect_output.items():
         assert getattr(options_obj, key) == val, f"ERROR: options object param '{key}' should have value '{val}'. Got '{getattr(options_obj, key)}'."
 
-    # test ASFSearchOptions.reset()
-    options_obj.reset()
+    # test ASFSearchOptions.reset_search()
+    options_obj.reset_search()
     
-    assert len(dict(options_obj).values()) == 0, "ERROR: ASFSearchOptions.reset() did not clear all non-default searchable params"
+    assert len([val for key, val in dict(options_obj).items() if key not in config.keys()]) == 0, "ERROR: ASFSearchOptions.reset() did not clear all non-default searchable params"
     
-    for key, value in defaults.defaults.items():
+    for key, value in config.items():
         if test_info.get(key) is not None:
             assert getattr(options_obj, key) == test_info[key], f"ERROR: User defined value '{test_info[key]}' for default param '{key}', but value was lost after ASFSearchOptions.reset()"
         else:

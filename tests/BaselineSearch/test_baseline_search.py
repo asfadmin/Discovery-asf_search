@@ -8,7 +8,7 @@ from asf_search.baseline.stack import calculate_temporal_baselines, get_default_
 import pytest
 
 def run_test_get_preprocessed_stack_params(product):
-    reference = ASFProduct(product)
+    reference = ASFProduct(product, opts=None)
     params = get_stack_opts(reference)
 
     original_properties = product['properties']
@@ -19,7 +19,7 @@ def run_test_get_preprocessed_stack_params(product):
     
 
 def run_test_get_unprocessed_stack_params(product):
-    reference = ASFProduct(product)
+    reference = ASFProduct(product, opts=None)
     params = get_stack_opts(reference)
 
     original_properties = product['properties']
@@ -28,7 +28,7 @@ def run_test_get_unprocessed_stack_params(product):
     assert(len(dict(params)) == 7)
 
 def run_get_stack_opts_invalid_insarStackId(product):
-    invalid_reference = ASFProduct(product)
+    invalid_reference = ASFProduct(product, opts=None)
     
     invalid_reference.properties['insarStackId'] = '0'
 
@@ -36,15 +36,15 @@ def run_get_stack_opts_invalid_insarStackId(product):
         get_stack_opts(invalid_reference)
     
 def run_test_get_stack_opts_invalid_platform_raises_error(product):
-    invalid_reference = ASFProduct(product)
+    invalid_reference = ASFProduct(product, opts=None)
     invalid_reference.properties['platform'] = None
     
     with pytest.raises(ASFBaselineError):
         get_stack_opts(invalid_reference)
     
 def run_test_calc_temporal_baselines(reference, stack):
-    reference = ASFProduct(reference)
-    stack = ASFSearchResults(map(ASFProduct, stack))
+    reference = ASFProduct(reference, opts=None)
+    stack = ASFSearchResults([ASFProduct(product, opts=None) for product in stack])
     stackLength = len(stack)
 
     calculate_temporal_baselines(reference, stack)
@@ -54,10 +54,10 @@ def run_test_calc_temporal_baselines(reference, stack):
         assert('temporalBaseline' in secondary.properties)
 
 def run_test_stack_from_product(reference, stack):
-    reference = ASFProduct(reference)
+    reference = ASFProduct(reference, opts=None)
 
     with patch('asf_search.baseline_search.search') as search_mock:
-        search_mock.return_value = ASFSearchResults(map(ASFProduct, stack))    
+        search_mock.return_value = ASFSearchResults([ASFProduct(product, opts=None) for product in stack])  
 
         stack = stack_from_product(reference)
 
@@ -69,14 +69,14 @@ def run_test_stack_from_id(stack_id: str, reference, stack):
         temp = deepcopy(stack)
 
         with patch('asf_search.baseline_search.product_search') as mock_product_search:
-            mock_product_search.return_value = ASFSearchResults(map(ASFProduct, stack))
+            mock_product_search.return_value = ASFSearchResults([ASFProduct(product, opts=None) for product in stack])
         
             if not stack_id:    
                 with pytest.raises(ASFSearchError):
                     stack_from_id(stack_id)
             else:
                 with patch('asf_search.baseline_search.search') as search_mock:
-                    search_mock.return_value = ASFSearchResults(map(ASFProduct, temp))    
+                    search_mock.return_value = ASFSearchResults([ASFProduct(product, opts=None) for product in temp])   
 
                     returned_stack = stack_from_id(stack_id)
                     assert(len(returned_stack) == len(stack))
