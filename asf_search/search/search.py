@@ -138,8 +138,8 @@ def search(
         
         opts.session.headers.pop('CMR-Search-After', None)
 
-    return sorted(results, key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
-
+    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    return results
 
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     response = session.post(url=url, data=translated_opts)
