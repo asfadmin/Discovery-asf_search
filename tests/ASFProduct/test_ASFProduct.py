@@ -1,18 +1,28 @@
 from asf_search.search.search import ASFProduct, ASFSearchResults, ASFSearchOptions
 from unittest.mock import patch
-
+from shapely.geometry import shape
+from shapely.ops import orient
 def run_test_ASFProduct_Geo_Search(geographic_response):
-    product = ASFProduct(geographic_response)
+    opts = geographic_response.pop('opts', None)
+    product = ASFProduct(geographic_response, opts)
 
     geojson = product.geojson()
-    assert(geojson['geometry'] == geographic_response['geometry'])
-    assert(geojson['properties'] == geographic_response['properties'])
+    expected_shape = orient(shape(geographic_response['geometry']))
+    output_shape = orient(shape(geojson['geometry'])) 
+
+    assert(output_shape.equals(expected_shape))
+    assert(product.umm == geographic_response["umm"])
+    assert(product.meta == geographic_response["meta"])
 
 def run_test_stack(reference, pre_processed_stack, processed_stack):
-    product = ASFProduct(reference)
+    opts = reference.pop('opts', None)
+    product = ASFProduct(reference, opts=opts)
     
     with patch('asf_search.baseline_search.search') as search_mock:
-        search_mock.return_value = ASFSearchResults(map(ASFProduct, pre_processed_stack))
+        temp = ASFSearchResults([ASFProduct(prod, None) for prod in pre_processed_stack])
+        for idx, prod in enumerate(temp):
+            prod.baseline = pre_processed_stack[idx]['baseline']
+        search_mock.return_value = temp
         stack = product.stack()
 
 
@@ -29,7 +39,7 @@ def run_test_stack(reference, pre_processed_stack, processed_stack):
             assert(secondary.properties['perpendicularBaseline'] == processed_stack[idx]['properties']['perpendicularBaseline'])
 
 def run_test_product_get_stack_options(reference, options):
-    product = ASFProduct(reference)
+    product = ASFProduct(reference, None)
     expected_options = dict(ASFSearchOptions(**options))
 
     product_options = dict(product.get_stack_opts())

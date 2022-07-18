@@ -1,0 +1,12 @@
+tests:
+- Test Basic-Overview notebook:
+    notebook: 1-Basic_Overview.ipynb
+
+- Test Geographic-Search notebook:
+    notebook: 2-Geographic_Search.ipynb
+
+- Test Granule-Search notebook:
+    notebook: 3-Granule_Search.ipynb
+
+- Test Baseline-Search notebook:
+    notebook: 4-Baseline_Search.ipynb

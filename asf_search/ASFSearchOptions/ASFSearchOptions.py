@@ -1,7 +1,8 @@
+import warnings
+import json
+
 from .validator_map import validator_map, validate
-from .defaults import defaults
-from asf_search import ASFSession
-from asf_search.constants import INTERNAL
+from .config import config
 
 
 class ASFSearchOptions:
@@ -12,7 +13,7 @@ class ASFSearchOptions:
         :param kwargs: any search options to be set immediately
         """
         # init the built in attrs:
-        for key in validator_map.keys():
+        for key in validator_map:
             self.__setattr__(key, None)
         
         # Apply any parameters passed in:
@@ -22,15 +23,16 @@ class ASFSearchOptions:
     def __setattr__(self, key, value):
         """
         Set a search option, restricting to the keys in validator_map only, and applying validation to the value before setting
+        
         :param key: the name of the option to be set
         :param value: the value to which to set the named option
         """
         # self.* calls custom __setattr__ method, creating inf loop. Use super().*
         # Let values always be None, even if their validator doesn't agree. Used to delete them too:
         if key in validator_map:
-            if value is None:  # always maintain defaults on required fields
-                if key in defaults:
-                    super().__setattr__(key, defaults[key])
+            if value is None:  # always maintain config on required fields
+                if key in config:
+                    super().__setattr__(key, config[key])
                 else:
                     super().__setattr__(key, None)
             else:
@@ -53,17 +55,65 @@ class ASFSearchOptions:
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-        no_export = ['host', 'session', 'provider', 'maturity']  # TODO: remove 'provider' from this list once we're hitting CMR directly
-        for key in validator_map:
-            if key not in no_export:
-                value = self.__getattribute__(key)
-                if value is not None:
-                    yield key, value
 
-    def reset(self):
+        for key in validator_map:
+            if not self._is_val_default(key):
+                value = self.__getattribute__(key)
+                yield key, value
+
+    def __str__(self):
         """
-        Resets all populated search options, exlcuding options that have defined defaults in defaults.py unchanged (host, session, etc)
+        What to display if `print(opts)` is called.
+        """
+        return json.dumps(dict(self), indent=4)
+
+    # Default is set to '...', since 'None' is a very valid value here
+    def pop(self, key, default=...):
+        """
+        Removes 'key' from self and returns it's value. Throws KeyError if doesn't exist
+
+        :param key: name of key to return value of, and delete
+        """
+        if key not in validator_map:
+            raise KeyError(f"key '{key}' is not a valid key for ASFSearchOptions. (pop)")
+
+        if self._is_val_default(key):
+            if default != ...:
+                return default
+            raise KeyError(f"key '{key}' is set to empty/None. (pop)")
+        # Success, delete and return it:
+        val = getattr(self, key)
+        self.__delattr__(key)
+        return val
+
+    def reset_search(self):
+        """
+        Resets all populated search options, excluding config options (host, session, etc)
         """
         for key, _ in self:
-            if key not in defaults.keys():
+            if key not in config:
                 super().__setattr__(key, None)
+
+    def merge_args(self, **kwargs) -> None:
+        """
+        Merges all keyword args into this ASFSearchOptions object. Emits a warning for any options that are over-written by the operation.
+
+        :param kwargs: The search options to merge into the object
+        :return: None
+        """
+        for key in kwargs:
+            # Spit out warning if the value is something other than the default:
+            if not self._is_val_default(key):
+                warnings.warn(f'While merging search options, existing option {key}:{getattr(self, key, None)} overwritten by kwarg with value {kwargs[key]}')
+            self.__setattr__(key, kwargs[key])
+
+    def _is_val_default(self, key) -> bool:
+        """
+        Returns bool on if the key's current value is the same as it's default value
+
+        :param key: The key to check
+        :return: bool
+        """
+        default_val = config[key] if key in config else None
+        current_val = getattr(self, key, None)
+        return current_val == default_val

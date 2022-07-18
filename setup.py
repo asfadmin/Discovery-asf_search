@@ -18,6 +18,9 @@ test_requirements = [
     "pytest-xdist",
     "coverage",
     "requests-mock",
+    "nbformat",
+    "nbconvert",
+    "ipykernel", 
 ]
 
 with open("README.md", "r") as readme_file:
