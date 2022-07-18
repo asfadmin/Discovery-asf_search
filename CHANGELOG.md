@@ -36,6 +36,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Some geojson fields were previously presented as strings, they are now more appropriate types such as `int` or `float`:
   - `bytes`, `centerLat`, `centerLon`, `frame`, `offNadirAngle`, `orbit`, `pathNumber`
 - Timestamps in geojson fields now include an explicit `Z` time zone indicator.
+- `ASFSearchOptions.reset()` has been renamed to `reset_search()` for clarity of purpose and to make room for future similar functionality regarding search opts configuration.
 
 ------
 ## [4.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.2...v4.0.3)
