@@ -1,4 +1,3 @@
-from ast import Tuple
 from datetime import datetime
 from typing import Any, Dict, List
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -10,6 +9,7 @@ from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 
 import logging
+
 
 def translate_opts(opts: ASFSearchOptions) -> list:
     # Need to add params which ASFSearchOptions cant support (like temporal),
@@ -65,7 +65,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
 
-
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
 
@@ -82,6 +81,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     return cmr_opts
 
+
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
 
@@ -89,6 +89,7 @@ def should_use_asf_frame(cmr_opts):
         p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
         for p in cmr_opts
     ])
+
 
 def use_asf_frame(cmr_opts):
     """
@@ -118,12 +119,16 @@ def use_asf_frame(cmr_opts):
     
     return cmr_opts
 
-def translate_product(item: dict) -> dict:
-    coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
-    coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
-    geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
 
-    umm = item['umm']
+def translate_product(item: dict) -> dict:
+    try:
+        coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
+        coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
+        geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
+    except KeyError as e:
+        geometry = {'coordinates': None, 'type': 'Polygon'}
+
+    umm = item.get('umm')
 
     properties = {
         'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
@@ -153,7 +158,6 @@ def translate_product(item: dict) -> dict:
         'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
     }
 
-    stateVectors = {}
     positions = {}
     velocities = {}
     positions['prePosition'], positions['prePositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
@@ -179,8 +183,10 @@ def translate_product(item: dict) -> dict:
     else:
         baseline = None
 
-
-    properties['fileName'] = properties['url'].split('/')[-1]
+    if properties['url'] is not None:
+        properties['fileName'] = properties['url'].split('/')[-1]
+    else:
+        properties['fileName'] = None
 
     if properties['platform'] is None:
         properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
@@ -202,6 +208,8 @@ def cast(f, v):
 
 
 def get(item: dict, *args):
+    if item is None:
+        return None
     for key in args:
         if isinstance(key, int):
             item = item[key] if key < len(item) else None
@@ -234,19 +242,22 @@ def get(item: dict, *args):
         item = None
     return item
 
+
 def get_state_vector(state_vector: str):
     if state_vector is None:
         return None, None
     
     return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
 
+
 # some products don't have integer values in BYTES fields, round to nearest int
 def try_round_float(value: str):
-    if value != None:
+    if value is not None:
         value = float(value)
         return round(value)
     
     return value
+
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
@@ -262,6 +273,7 @@ def fix_date(fixed_params: Dict[str, Any]):
         fixed_params.pop('season', None)
         
     return fixed_params
+
 
 def should_use_bbox(shape: BaseGeometry):
     """
