@@ -1,11 +1,9 @@
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
-from collections import UserList
 
-from asf_search.download import download_url
-
-from asf_search import ASFSession
+from asf_search import ASFSession, ASFSearchResults
 from asf_search import ASFSearchOptions
+from asf_search.download import download_url
 from asf_search.CMR import translate_product
 
 class ASFProduct:
@@ -43,7 +41,7 @@ class ASFProduct:
         if filename is None:
             filename = self.properties['fileName']
         
-        if session is None and self.session is not None:
+        if session is None:
             session = self.session
 
         download_url(url=self.properties['url'], path=path, filename=filename, session=session)
@@ -51,7 +49,7 @@ class ASFProduct:
     def stack(
             self,
             opts: ASFSearchOptions = None
-    ) -> UserList:
+    ) -> ASFSearchResults:
         """
         Builds a baseline stack from this product.
 
