@@ -128,7 +128,7 @@ def translate_product(item: dict) -> dict:
     except KeyError as e:
         geometry = {'coordinates': None, 'type': 'Polygon'}
 
-    umm = item['umm']
+    umm = item.get('umm')
 
     properties = {
         'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
@@ -208,6 +208,8 @@ def cast(f, v):
 
 
 def get(item: dict, *args):
+    if item is None:
+        return None
     for key in args:
         if isinstance(key, int):
             item = item[key] if key < len(item) else None

@@ -6,10 +6,11 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.download import download_url
 from asf_search.CMR import translate_product
 
+
 class ASFProduct:
     def __init__(self, args: dict, session: ASFSession=ASFSession()):
-        self.meta = args['meta']
-        self.umm = args['umm']
+        self.meta = args.get('meta')
+        self.umm = args.get('umm')
 
         translated = translate_product(args)
 
