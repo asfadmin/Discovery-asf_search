@@ -26,6 +26,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+## [5.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v5.0.0...v5.0.1)
+### Changed
+- `ASFProduct` is now aware of the session used during search (if available) and will use that by default to download. A session can still be explicitly provided as before.
+- `ASFProduct.stack()` now accepts a `session` argument. The object's own session is used by default.
+- `ASFProduct` more gracefully handles missing or malformed metadata during instantiation.
+
+------
 ## [5.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v4.0.3...v5.0.0)
 ### Changed
 - `asf_search` now searches CMR directly, no longer relying on ASF's SearchAPI
