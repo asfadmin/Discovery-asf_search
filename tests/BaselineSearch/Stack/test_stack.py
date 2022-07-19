@@ -11,7 +11,7 @@ def run_test_find_new_reference(stack: List, output_index: Number) -> None:
     if stack == []:
         assert(find_new_reference(stack) == None)
     else:
-        products = [ASFProduct(product, opts=None) for product in stack]
+        products = [ASFProduct(product) for product in stack]
         for idx, product in enumerate(products):
             product = clear_baseline(stack[idx], product)
         assert find_new_reference(products).properties['sceneName'] == stack[output_index]['properties']['sceneName']
@@ -20,8 +20,8 @@ def run_test_get_default_product_type(scene_name: str, product_type: str) -> Non
     assert get_default_product_type(scene_name) == product_type
     
 def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
-    reference = ASFProduct(reference, opts=None)
-    stack = ASFSearchResults([ASFProduct(product, opts=None) for product in stack])
+    reference = ASFProduct(reference)
+    stack = ASFSearchResults([ASFProduct(product) for product in stack])
     
     if error == None:
         stack, warnings = get_baseline_from_stack(reference, stack)
@@ -47,7 +47,7 @@ def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
 
 def run_test_valid_state_vectors(reference, output):
     if reference != None:
-        product = ASFProduct(reference, opts=None)
+        product = ASFProduct(reference)
         clear_baseline(reference, product)
         assert output == valid_state_vectors(product)
         return

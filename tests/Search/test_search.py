@@ -9,7 +9,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 import requests_mock
 
 def run_test_ASFSearchResults(search_resp):
-    search_results = ASFSearchResults([ASFProduct(product, opts=None) for product in search_resp])
+    search_results = ASFSearchResults([ASFProduct(product) for product in search_resp])
 
     assert(len(search_results) == len(search_resp))
     assert(search_results.geojson()['type'] == 'FeatureCollection')
