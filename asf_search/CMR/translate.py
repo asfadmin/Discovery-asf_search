@@ -1,4 +1,3 @@
-from ast import Tuple
 from datetime import datetime
 from typing import Any, Dict, List
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -10,6 +9,7 @@ from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 
 import logging
+
 
 def translate_opts(opts: ASFSearchOptions) -> list:
     # Need to add params which ASFSearchOptions cant support (like temporal),
@@ -65,7 +65,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     for i, opt in enumerate(cmr_opts):
         cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
 
-
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
 
@@ -82,6 +81,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     return cmr_opts
 
+
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
 
@@ -89,6 +89,7 @@ def should_use_asf_frame(cmr_opts):
         p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
         for p in cmr_opts
     ])
+
 
 def use_asf_frame(cmr_opts):
     """
@@ -117,6 +118,7 @@ def use_asf_frame(cmr_opts):
         )
     
     return cmr_opts
+
 
 def translate_product(item: dict) -> dict:
     coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
@@ -153,7 +155,6 @@ def translate_product(item: dict) -> dict:
         'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
     }
 
-    stateVectors = {}
     positions = {}
     velocities = {}
     positions['prePosition'], positions['prePositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
@@ -248,6 +249,7 @@ def try_round_float(value: str):
     
     return value
 
+
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
         fixed_params["start"] = fixed_params["start"] if "start" in fixed_params else "1978-01-01T00:00:00Z"
@@ -262,6 +264,7 @@ def fix_date(fixed_params: Dict[str, Any]):
         fixed_params.pop('season', None)
         
     return fixed_params
+
 
 def should_use_bbox(shape: BaseGeometry):
     """
