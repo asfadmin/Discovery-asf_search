@@ -121,9 +121,12 @@ def use_asf_frame(cmr_opts):
 
 
 def translate_product(item: dict) -> dict:
-    coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
-    coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
-    geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
+    try:
+        coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
+        coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
+        geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
+    except KeyError as e:
+        geometry = {'coordinates': None, 'type': 'Polygon'}
 
     umm = item['umm']
 
@@ -180,8 +183,10 @@ def translate_product(item: dict) -> dict:
     else:
         baseline = None
 
-
-    properties['fileName'] = properties['url'].split('/')[-1]
+    if properties['url'] is not None:
+        properties['fileName'] = properties['url'].split('/')[-1]
+    else:
+        properties['fileName'] = None
 
     if properties['platform'] is None:
         properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
@@ -235,11 +240,13 @@ def get(item: dict, *args):
         item = None
     return item
 
+
 def get_state_vector(state_vector: str):
     if state_vector is None:
         return None, None
     
     return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
+
 
 # some products don't have integer values in BYTES fields, round to nearest int
 def try_round_float(value: str):
