@@ -113,7 +113,7 @@ def search(
 
         response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
 
-        hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
+        hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
 
         if maxResults != None:
             results.extend(hits[:min(maxResults - len(results), len(hits))])
@@ -127,7 +127,7 @@ def search(
 
             response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
 
-            hits = [ASFProduct(f, opts=query) for f in response.json()['items']]
+            hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
             
             if maxResults != None:
                 results.extend(hits[:min(maxResults - len(results), len(hits))])
