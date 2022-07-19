@@ -8,7 +8,7 @@ from asf_search.CMR import translate_product
 
 
 class ASFProduct:
-    def __init__(self, args: dict, session: ASFSession=ASFSession()):
+    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')
         self.umm = args.get('umm')
 
