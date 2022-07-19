@@ -2,7 +2,7 @@ from shapely.geometry import shape, Point, Polygon, mapping
 import json
 
 from asf_search import ASFSession, ASFSearchResults
-from asf_search import ASFSearchOptions
+from asf_search.ASFSearchOptions import ASFSearchOptions 
 from asf_search.download import download_url
 from asf_search.CMR import translate_product
 
@@ -58,6 +58,10 @@ class ASFProduct:
         :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
+
+        if opts is None:
+            opts = ASFSearchOptions()
+            opts.session = self.session
 
         return stack_from_product(self, opts=opts)
 
