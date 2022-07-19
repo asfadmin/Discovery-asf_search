@@ -250,7 +250,7 @@ def get_state_vector(state_vector: str):
 
 # some products don't have integer values in BYTES fields, round to nearest int
 def try_round_float(value: str):
-    if value != None:
+    if value is not None:
         value = float(value)
         return round(value)
     
