@@ -60,8 +60,7 @@ class ASFProduct:
         from .search.baseline_search import stack_from_product
 
         if opts is None:
-            opts = ASFSearchOptions()
-            opts.session = self.session
+            opts = ASFSearchOptions(session=self.session)
 
         return stack_from_product(self, opts=opts)
 
