@@ -13,3 +13,12 @@ tests:
 
 - Test ASFSearchResults_intersection linestring:
     wkt: LINESTRING (0 0, 5 0, 5 2.5, 5 5, 2.5 5, 0 5)
+
+- Test ASFSearchResults_intersection linestring-equator:
+    wkt: LINESTRING(-59 0, 59 0)
+
+- Test ASFSearchResults_intersection prime-meridian:
+    wkt: LINESTRING(0 -89,0 89)
+
+- Test ASFSearchResults_intersection antimeridian:
+    wkt: LINESTRING(179 -89, 179 89)
