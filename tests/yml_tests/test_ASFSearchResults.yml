@@ -21,4 +21,4 @@ tests:
     wkt: LINESTRING(0 -89,0 89)
 
 - Test ASFSearchResults_intersection antimeridian:
-    wkt: LINESTRING(179 -89, 179 89)
+    wkt: POLYGON((-181 -89, -179 -89, -179 89, -181 89, -181 -89))
