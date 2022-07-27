@@ -175,6 +175,10 @@ test_types:
     required_in_title: test-ASFSearchOptions
     method: test_ASFSearchOptions
 
+- For running serialization tests:
+    required_in_title: serialization
+    method: test_serialization
+
 - For running jupyter notebook example tests:
     required_keys: notebook
     method: test_notebook_examples

@@ -23,7 +23,7 @@ from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptio
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 
 from tests.download.test_download import run_test_download_url_auth_error
-
+from tests.Serialization.test_serialization import run_test_serialization
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
@@ -379,6 +379,11 @@ def test_ASFSearchOptions_validator(**args) -> None:
 def test_ASFSearchOptions(**kwargs) -> None:
     run_test_ASFSearchOptions(**kwargs)
 
+def test_serialization(**args) -> None:
+    test_info = args['test_info']
+    product = get_resource(test_info.get('product'))
+    results = get_resource(test_info.get('results'))
+    run_test_serialization(product, results)
 
 def test_notebook_examples(**args) -> None:
     test_info = args['test_info']

@@ -1,0 +1,12 @@
+tests:
+- test serialization single ASFProduct:
+    product: Fairbanks_SLC.yml
+
+- test serialization single ASFSearchResults:
+    results: Fairbanks_L1.yml
+
+- test serialization single ASFSearchResults:
+    results: Fairbanks_ers_stack.yml
+
+- test serialization single ASFSearchResults:
+    results: Alos_response.yml
