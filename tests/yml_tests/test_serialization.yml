@@ -1,12 +1,15 @@
 tests:
-- test serialization single ASFProduct:
+- test serialization single SLC ASFProduct:
     product: Fairbanks_SLC.yml
 
-- test serialization single ASFSearchResults:
-    results: Fairbanks_L1.yml
+- test serialization single L1 ASFProduct:
+    product: Fairbanks_L1.yml
+
+- test serialization single Alos ASFProduct:
+    product: Alos_response.yml
 
 - test serialization single ASFSearchResults:
     results: Fairbanks_ers_stack.yml
-
-- test serialization single ASFSearchResults:
-    results: Alos_response.yml
+    searchOpts:
+        maxResults: 3
+        platform: ["ERS-1", "ERS-2"]

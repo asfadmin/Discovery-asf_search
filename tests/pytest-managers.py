@@ -1,4 +1,5 @@
 from typing import Dict, List
+from asf_search import ASFSearchOptions
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_product_get_stack_options, run_test_stack
@@ -383,7 +384,10 @@ def test_serialization(**args) -> None:
     test_info = args['test_info']
     product = get_resource(test_info.get('product'))
     results = get_resource(test_info.get('results'))
-    run_test_serialization(product, results)
+    search_opts = get_resource(test_info.get('searchOpts'))
+    options = ASFSearchOptions(**search_opts if search_opts else {})
+
+    run_test_serialization(product, results, options)
 
 def test_notebook_examples(**args) -> None:
     test_info = args['test_info']
