@@ -27,13 +27,12 @@ empty: &empty {
   }
 
 tests:
-# - Test Empty ASFProduct:
-#     products: *empty
-
+- Test Empty ASFProduct:
+    products: null
 
 # bug in CMR/translate.py, invalid literal for int() with base 10
-#   - Test SMAP ASFProduct:
-#       products: SMAP_response.yml
+- Test SMAP ASFProduct:
+    products: SMAP_response.yml
 
 - Test S1 ASFProduct:
     products: Fairbanks_SLC.yml
