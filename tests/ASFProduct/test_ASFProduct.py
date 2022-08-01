@@ -2,6 +2,7 @@ from asf_search.search.search import ASFProduct, ASFSearchResults, ASFSearchOpti
 from unittest.mock import patch
 from shapely.geometry import shape
 from shapely.ops import orient
+
 def run_test_ASFProduct(product_json):
     if product_json is None:
         product = ASFProduct()
@@ -17,10 +18,15 @@ def run_test_ASFProduct(product_json):
     product = ASFProduct(product_json, opts)
 
     geojson = product.geojson()
-    expected_shape = orient(shape(product_json['geometry']))
-    output_shape = orient(shape(geojson['geometry'])) 
+    
+    if  geojson['geometry']['coordinates'] is not None:
+        expected_shape = orient(shape(product_json['geometry']))
+        output_shape = orient(shape(geojson['geometry'])) 
+        assert(output_shape.equals(expected_shape))
+    elif product.meta != {}:
+        assert product.properties == product_json['properties']
+        assert product.geometry == product_json['geometry']
 
-    assert(output_shape.equals(expected_shape))
     assert(product.umm == product_json["umm"])
     assert(product.meta == product_json["meta"])
 

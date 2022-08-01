@@ -30,7 +30,9 @@ tests:
 - Test Empty ASFProduct:
     products: null
 
-# bug in CMR/translate.py, invalid literal for int() with base 10
+- Test S1 ASFProduct Incomplete SLC:
+    products: Fairbanks_SLC_Incomplete_Meta.yml
+
 - Test SMAP ASFProduct:
     products: SMAP_response.yml
 
