@@ -30,8 +30,11 @@ tests:
 - Test Empty ASFProduct:
     products: null
 
-- Test S1 ASFProduct Incomplete SLC:
+- Test S1 ASFProduct SLC missing meta and umm:
     products: Fairbanks_SLC_Incomplete_Meta.yml
+
+- Test S1 ASFProduct SLC missing statevectors:
+    products: Fairbanks_SLC_no_stateVectors.yml
 
 - Test SMAP ASFProduct:
     products: SMAP_response.yml
