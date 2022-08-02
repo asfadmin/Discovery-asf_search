@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+## [5.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v5.0.1...v5.0.2)
+### Fixed
+- non-rectangular polygons are now sent to CMR instead of their bounding boxes
+
+------
 ## [5.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v5.0.0...v5.0.1)
 ### Changed
 - `ASFProduct` is now aware of the session used during search (if available) and will use that by default to download. A session can still be explicitly provided as before.

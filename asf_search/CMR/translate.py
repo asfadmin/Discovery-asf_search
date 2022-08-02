@@ -282,7 +282,13 @@ def should_use_bbox(shape: BaseGeometry):
     we should use the bounding box to search instead
     """
     if isinstance(shape, Polygon):
-        return shape.equals(Polygon(shape.boundary.coords))
+        coords = [
+            [shape.bounds[0], shape.bounds[1]], 
+            [shape.bounds[2], shape.bounds[1]],
+            [shape.bounds[2], shape.bounds[3]],
+            [shape.bounds[0], shape.bounds[3]],
+        ]
+        return shape.equals(Polygon(shell=coords))
     
     return False
 
