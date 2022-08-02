@@ -1,4 +1,7 @@
 tests:
+- test serialization single SLC ASFProduct Empty:
+    product: {meta: {}, umm: {}, properties: {}, geometry: {}}
+
 - test serialization single SLC ASFProduct:
     product: Fairbanks_SLC.yml
 
@@ -10,6 +13,10 @@ tests:
 
 - test serialization single Alos ASFProduct:
     product: Alos_response.yml
+
+- test serialization ASFSearchResults Empty:
+    results: []
+    searchOpts: null
 
 - test serialization ASFSearchResults ers stack:
     results: Fairbanks_ers_stack.yml

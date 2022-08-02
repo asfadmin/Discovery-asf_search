@@ -31,6 +31,8 @@ def run_test_serialization(product=None, results=None, opts=ASFSearchOptions()):
     for idx, original in enumerate(to_serialize):
         assert deserialized_results['features'][idx]['properties'] == original.properties
         assert deserialized_results['features'][idx]['geometry'] == original.geometry
+    
+    assert deserialized_results['type'] == 'FeatureCollection'
 
 
 def json_to_product(product):
