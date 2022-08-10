@@ -19,7 +19,7 @@ def run_test_ASFProduct(product_json):
 
     geojson = product.geojson()
     
-    if  geojson['geometry']['coordinates'] is not None:
+    if geojson['geometry']['coordinates'] is not None:
         expected_shape = orient(shape(product_json['geometry']))
         output_shape = orient(shape(geojson['geometry'])) 
         assert(output_shape.equals(expected_shape))
