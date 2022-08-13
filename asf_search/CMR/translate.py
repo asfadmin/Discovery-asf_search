@@ -199,6 +199,8 @@ def translate_product(item: dict) -> dict:
 
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 
+def get_additional_fields(umm, *field_path):
+    return get(umm, *field_path)
 
 def cast(f, v):
     try:

@@ -2,6 +2,7 @@ from collections import UserList
 from multiprocessing import Pool
 import json
 from asf_search import ASFSession, ASFSearchOptions
+from asf_search.export import output_translators
 
 
 class ASFSearchResults(UserList):
@@ -16,6 +17,9 @@ class ASFSearchResults(UserList):
             'type': 'FeatureCollection',
             'features': [product.geojson() for product in self]
         }
+
+    def csv(self):
+        return output_translators().get('csv')[0](self)
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
