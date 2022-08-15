@@ -21,6 +21,12 @@ class ASFSearchResults(UserList):
     def csv(self):
         return output_translators().get('csv')[0](self)
 
+    def kml(self):
+        return output_translators().get('kml')[0](self)
+    
+    def metalink(self):
+        return output_translators().get('metalink')[0](self)
+
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 

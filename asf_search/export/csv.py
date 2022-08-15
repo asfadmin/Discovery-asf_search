@@ -1,3 +1,4 @@
+from typing import Dict, List
 from asf_search import ASFSearchResults
 from asf_search.CMR import get_additional_fields
 import logging
@@ -30,29 +31,14 @@ def get_additional_csv_fields(product):
 
     return additional_fields
 
-def ASFSearchResults_to_csv(results: ASFSearchResults, includeBaseline=False, addendum=None):
+def ASFSearchResults_to_csv(results_properties: List[Dict], includeBaseline=False, addendum=None):
     logging.debug('translating: csv')
 
-    property_list = []
-    for product in results:
-        product.properties
     templateEnv = Environment(
         loader=PackageLoader('asf_search.export', 'templates'),
         autoescape=True
     )
-    
-    for product in results:
-        additional_fields = get_additional_csv_fields(product)
-        properties = {**product.properties, **additional_fields}
-        property_list.append(properties)
-    
-    for product in property_list:
-        for key, data in product.items():
-            if 'date' in key.lower() or 'time' in key.lower():
-                time = data[:-1] if data.endswith("Z") else data 
-                time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.%f')
-                product[key] = time
 
     template = templateEnv.get_template('template.csv')
-    for l in template.stream(includeBaseline=includeBaseline, results=property_list):
+    for l in template.stream(includeBaseline=includeBaseline, results=results_properties):
         yield l
