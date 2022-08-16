@@ -27,6 +27,12 @@ class ASFSearchResults(UserList):
     def metalink(self):
         return output_translators().get('metalink')[0](self)
 
+    def jsonlite(self):
+        return output_translators().get('jsonlite')[0](self)
+
+    def jsonlite2(self):
+        return output_translators().get('jsonlite2')[0](self)  
+
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
