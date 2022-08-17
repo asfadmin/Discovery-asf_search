@@ -23,8 +23,8 @@
           <ul>
             <li>Processing type: {{r['processingTypeDisplay']}}</li>
             <li>Frame: {{r['frameNumber']}}</li>
-            <li>Path: {{r['relativeOrbit']}}</li>
-            <li>Orbit: {{r['absoluteOrbit']}}</li>
+            <li>Path: {{r['pathNumber']}}</li>
+            <li>Orbit: {{r['orbit']}}</li>
             <li>Start time: {{r['startTime']}}</li>
             <li>End time: {{r['stopTime']}}</li>
             {% if r['faradayRotation'] %}

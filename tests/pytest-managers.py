@@ -3,6 +3,7 @@ from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASF
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_product_get_stack_options, run_test_stack
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
+from ASFSearchResults.test_ASFSearchResults import run_test_output_format
 from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
@@ -408,6 +409,12 @@ def safe_load_tuple(param):
             param = tuple(param['tuple'])
     
     return param
+
+def test_output_format(**args) -> None:
+    test_info = args['test_info']
+    results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in get_resource(test_info['results'])])
+    expected_file = test_info['expected']
+    run_test_output_format(results, expected_file)
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
