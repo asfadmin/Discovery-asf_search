@@ -24,8 +24,8 @@ def get_additional_jsonlite_fields(product: ASFProduct):
         additional_fields[key] = get_additional_fields(umm, *path)
 
     if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
-        insarGrouping = get_additional_fields(umm, (['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]))
-        insarStackSize = get_additional_fields(umm, (['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0]))
+        insarGrouping = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
+        insarStackSize = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
         
         if insarGrouping not in [None, 0, '0', 'NA', 'NULL']:
             additional_fields['canInsar'] = True
@@ -33,8 +33,8 @@ def get_additional_jsonlite_fields(product: ASFProduct):
         else:
             additional_fields['canInsar'] = False
     else:
-        additional_fields['canInsar'] = False
-        
+        additional_fields['canInsar'] = product.baseline is not None
+
     additional_fields['geometry'] = product.geometry
 
     return additional_fields
@@ -137,7 +137,7 @@ class JSONLiteStreamArray(list):
         wrapped, unwrapped = get_wkts(p['geometry'])
         result = {
             'beamMode': p['beamModeType'],
-            'browse': p['browse'],
+            'browse': [] if p.get('browse') is None else p.get('browse'),
             'canInSAR': p['canInsar'],
             'dataset': p['platform'],
             'downloadUrl': p['url'],
@@ -151,7 +151,7 @@ class JSONLiteStreamArray(list):
             'instrument': p['sensor'],
             'missionName': p['missionName'],
             'offNadirAngle': p['offNadirAngle'], # ALOS
-            'orbit': p['orbit'],
+            'orbit': [str(p['orbit'])],
             'path': p['pathNumber'],
             'polarization': p['polarization'],
             'pointingAngle': p['pointingAngle'],
