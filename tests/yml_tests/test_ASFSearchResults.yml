@@ -1,4 +1,12 @@
 tests:
 - Test ASFSearchResults-format kml Fairbanks slc:
     results: ["Fairbanks_SLC.yml"]
-    expected: S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC.kml
+    expected: Fairbanks_SLC.kml
+
+- Test ASFSearchResults-format jsonlite Fairbanks slc:
+    results: ["Fairbanks_SLC.yml"]
+    expected: Fairbanks_SLC_jsonlite.json
+
+- Test ASFSearchResults-format jsonlite2 Fairbanks slc:
+    results: ["Fairbanks_SLC.yml"]
+    expected: Fairbanks_SLC_jsonlite2.json
