@@ -1,12 +1,35 @@
 tests:
 - Test ASFSearchResults-format kml Fairbanks slc:
     results: ["Fairbanks_SLC.yml"]
+    output_type: kml
     expected: Fairbanks_SLC.kml
 
 - Test ASFSearchResults-format jsonlite Fairbanks slc:
     results: ["Fairbanks_SLC.yml"]
+    output_type: jsonlite
     expected: Fairbanks_SLC_jsonlite.json
 
 - Test ASFSearchResults-format jsonlite2 Fairbanks slc:
     results: ["Fairbanks_SLC.yml"]
+    output_type: jsonlite2
+    expected: Fairbanks_SLC_jsonlite2.json
+
+- Test ASFSearchResults-format jsonlite Fairbanks S1 Stack slc:
+    results: "Fairbanks_S1_stack.yml"
+    output_type: jsonlite
+    expected: Fairbanks_SLC_jsonlite2.json
+
+- Test ASFSearchResults-format jsonlite2 Fairbanks S1 Stack slc:
+    results: "Fairbanks_S1_stack.yml"
+    output_type: jsonlite2
+    expected: Fairbanks_SLC_jsonlite2.json
+
+- Test ASFSearchResults-format jsonlite Alos:
+    results: "Alos_response.yml"
+    output_type: jsonlite
+    expected: Fairbanks_SLC_jsonlite2.json
+
+- Test ASFSearchResults-format jsonlite2 Alos:
+    results: "Alos_response.yml"
+    output_type: jsonlite2
     expected: Fairbanks_SLC_jsonlite2.json

@@ -412,9 +412,14 @@ def safe_load_tuple(param):
 
 def test_output_format(**args) -> None:
     test_info = args['test_info']
-    results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in get_resource(test_info['results'])])
+    
+    products = get_resource(test_info['results'])
+    if not isinstance(products, List):
+        products = [products]
+    results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in products])
     expected_file = test_info['expected']
-    run_test_output_format(results, expected_file)
+    output_type = test_info['output_type']
+    run_test_output_format(results, output_type, expected_file)
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):

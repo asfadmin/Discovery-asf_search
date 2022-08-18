@@ -150,7 +150,7 @@ class JSONLiteStreamArray(list):
             'groupID': p['groupID'],
             'instrument': p['sensor'],
             'missionName': p['missionName'],
-            'offNadirAngle': p['offNadirAngle'], # ALOS
+            'offNadirAngle': str(p['offNadirAngle']) if p['offNadirAngle'] is not None else None, # ALOS
             'orbit': [str(p['orbit'])],
             'path': p['pathNumber'],
             'polarization': p['polarization'],
@@ -166,6 +166,10 @@ class JSONLiteStreamArray(list):
             'wkt': wrapped,
             'wkt_unwrapped': unwrapped
         }
+        
+        for key in result.keys():
+            if result[key] in [ 'NA', 'NULL']:
+                result[key] = None
 
         if self.includeBaseline:
             result['temporalBaseline'] = p['temporalBaseline']
