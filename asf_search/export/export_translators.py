@@ -36,7 +36,10 @@ def get_properties_list(results: ASFSearchResults, get_additional_fields):
                 if is_S1:
                     time = datetime.strptime(data[:-1], '%Y-%m-%dT%H:%M:%S.%f')
                 else:
-                    time = datetime.strptime(data, '%Y-%m-%dT%H:%M:%S.%fZ').replace(microsecond=0)
+                    if len(data.split('.')) == 2:
+                        d = len(data.split('.')[0])
+                        data = data[:d] + 'Z'
+                    time = datetime.strptime(data, '%Y-%m-%dT%H:%M:%SZ')
 
                 product[key] = time.strftime('%Y-%m-%dT%H:%M:%S.%f')if  is_S1 else time.strftime('%Y-%m-%dT%H:%M:%SZ')
     

@@ -1,3 +1,4 @@
+from math import floor
 from typing import Dict, List
 from asf_search import ASFSearchResults
 from asf_search.CMR import get_additional_fields
@@ -34,6 +35,9 @@ def get_additional_csv_fields(product):
 def ASFSearchResults_to_csv(results_properties: List[Dict], includeBaseline=False, addendum=None):
     logging.debug('translating: csv')
 
+    for product in results_properties:
+        product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
+        product['pointingAngle'] = '' if product['pointingAngle'] == None else product['pointingAngle']
     templateEnv = Environment(
         loader=PackageLoader('asf_search.export', 'templates'),
         autoescape=True

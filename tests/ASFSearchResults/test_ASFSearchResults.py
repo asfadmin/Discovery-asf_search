@@ -7,19 +7,21 @@ import os
 import json
 import shapely.wkt as WKT
 import requests
-from datetime import datetime
+import csv
 API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?' #product_list='
 
 # ref = S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC
 def run_test_output_format(results: ASFSearchResults, output_type: str, expected_file: str):
     expected_format = expected_file.split('.').pop()
-
+    product_list_str = ','.join([product.properties['fileID'] for product in results])
+    expected = get_SearchAPI_Output(product_list_str, output_type)
     base_path = os.path.join(os.getcwd(), 'tests', 'yml_tests', 'Resources/')
     with open(os.path.join(base_path, expected_file), 'r') as f:
         data = f.read()
 
     if expected_format == 'csv':
         results_csv = results.csv()
+        check_csv(results, expected)
     elif expected_format == 'kml':
         results_kml = results.kml()
         check_kml(results, data)
@@ -27,7 +29,7 @@ def run_test_output_format(results: ASFSearchResults, output_type: str, expected
         results_metalink = results.metalink()
     elif expected_format == 'json':
         results_jsonlite = results.jsonlite()
-        check_jsonLite(results, output_type, data)
+        check_jsonLite(results, expected, output_type)
 
     pass
 
@@ -39,11 +41,15 @@ def check_kml(results: ASFSearchResults, expected_str: str):
     for idx, element in enumerate(placemarks):
         assert element.text == results[idx].properties['sceneName']
 
-def check_jsonLite(results: ASFSearchResults, output_type: str, expected_str: str):
-    # isjsonlite2 = expected_format.split('_')[-1] == "jsonlite2.json"
-    product_list = ','.join([product.properties['fileID'] for product in results])
-    expected = get_SearchAPI_Output(product_list, output_type)
-    
+def check_csv(results: ASFSearchResults, expected: str):
+    expected = [product for product in csv.reader(expected.split('\n')) if product != []][1:]
+    for idx, product in enumerate([prod for prod in csv.reader(results.csv()) if prod != []][1:]):
+        assert expected[idx] == product
+        # print(expected)
+    pass
+
+def check_jsonLite(results: ASFSearchResults, expected: str, output_type: str):
+    expected = json.loads(expected)['results']
     sort_key = 'gn' if output_type == 'jsonlite2' else 'productID'
     # expected = json.loads(expected_str)['results']
     expected.sort(key=lambda product: product[sort_key])
@@ -76,6 +82,6 @@ def get_SearchAPI_Output(product_list: List[str], output_type: str) -> List[Dict
     response = requests.get(API_URL, [('product_list', product_list), ('output', output_type)])
     response.raise_for_status()
     
-    expected = json.loads(response.text)['results']
+    expected = response.text
     
     return expected
