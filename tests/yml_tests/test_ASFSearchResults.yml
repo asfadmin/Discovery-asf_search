@@ -33,3 +33,13 @@ tests:
     results: "Alos_response.yml"
     output_type: jsonlite2
     expected: Fairbanks_SLC_jsonlite2.json
+
+- Test ASFSearchResults-format jsonlite ERS:
+    results: Fairbanks_ers_stack.yml
+    output_type: jsonlite
+    expected: Fairbanks_SLC_jsonlite2.json
+
+- Test ASFSearchResults-format jsonlite2 ERS:
+    results: Fairbanks_ers_stack.yml
+    output_type: jsonlite2
+    expected: Fairbanks_SLC_jsonlite2.json

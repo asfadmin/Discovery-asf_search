@@ -30,10 +30,14 @@ def get_properties_list(results: ASFSearchResults, get_additional_fields):
         property_list.append(properties)
     
     for product in property_list:
+        is_S1 = product['platform'].upper() in ['SENTINEL-1', 'SENTINEL-1B', 'SENTINEL-1A']
         for key, data in product.items():
             if 'date' in key.lower() or 'time' in key.lower():
-                time = data[:-1] if data.endswith("Z") else data 
-                time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.%f')
-                product[key] = time.strftime('%Y-%m-%dT%H:%M:%S.%f')
+                if is_S1:
+                    time = datetime.strptime(data[:-1], '%Y-%m-%dT%H:%M:%S.%f')
+                else:
+                    time = datetime.strptime(data, '%Y-%m-%dT%H:%M:%S.%fZ').replace(microsecond=0)
+
+                product[key] = time.strftime('%Y-%m-%dT%H:%M:%S.%f')if  is_S1 else time.strftime('%Y-%m-%dT%H:%M:%SZ')
     
     return property_list

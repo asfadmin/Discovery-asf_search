@@ -65,14 +65,7 @@ def check_jsonLite(results: ASFSearchResults, output_type: str, expected_str: st
         wkt = expected_product.pop(wkt_key)
         wkt_unwrapped = expected_product.pop(wkt_unwrapped_key)
         
-        for key, data in expected_product.items():
-            if 'date' in key.lower() or 'time' in key.lower() or key in ['st', 'stp']:
-                #slice microseconds, strip timezone
-                actual[idx][key] = actual[idx][key].split('.')[0]
-                actual[idx][key] = actual[idx][key][:-1] if actual[idx][key].endswith('Z') else actual[idx][key]
-                expected_product[key] = data.split('.')[0]
-                expected_product[key] = expected_product[key][:-1] if expected_product[key].endswith('Z') else expected_product[key]
-
+        for key in expected_product.keys():
             assert  actual[idx][key] == expected_product[key]
         
         assert WKT.loads(actual[idx][wkt_key]).equals(WKT.loads(wkt))
