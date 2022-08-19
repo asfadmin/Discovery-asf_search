@@ -1,9 +1,7 @@
 from math import floor
 from typing import Dict, List
-from asf_search import ASFSearchResults
 from asf_search.CMR import get_additional_fields
 import logging
-from datetime import datetime
 from jinja2 import Environment, PackageLoader
 
 def get_additional_csv_fields(product):

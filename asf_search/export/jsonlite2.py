@@ -1,7 +1,7 @@
 from typing import List, Dict
 import logging
 import json
-from .jsonlite import JSONLiteStreamArray, get_wkts
+from .jsonlite import JSONLiteStreamArray
 
 def ASFSearchResults_to_jsonlite2(results_properties: List[Dict], includeBaseline=False, addendum=None):
     logging.debug('translating: jsonlite')
@@ -14,7 +14,6 @@ def ASFSearchResults_to_jsonlite2(results_properties: List[Dict], includeBaselin
 
 class JSONLite2StreamArray(JSONLiteStreamArray):
     def getItem(self, p):
-        wrapped, unwrapped = get_wkts(p['geometry'])
          # pre-processing of the result is the same as in the base jsonlite streamer,
          # so use that and then rename/substitute fields
         p = super().getItem(p)

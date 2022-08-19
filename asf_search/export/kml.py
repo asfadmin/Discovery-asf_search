@@ -1,6 +1,4 @@
-from datetime import datetime
 from math import floor
-from asf_search import ASFSearchResults
 from asf_search.CMR import get_additional_fields
 import logging
 from jinja2 import Environment, PackageLoader

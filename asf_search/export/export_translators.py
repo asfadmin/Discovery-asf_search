@@ -1,11 +1,10 @@
-# from .count import count, req_fields_count
+from types import FunctionType
+from datetime import datetime
+
 from asf_search import ASFSearchResults
 from .csv import ASFSearchResults_to_csv, get_additional_csv_fields
 from .kml import ASFSearchResults_to_kml, get_additional_kml_fields
 from .metalink import get_additional_metalink_fields, ASFSearchResults_to_metalink
-from types import FunctionType
-from datetime import datetime
-# from .download import cmr_to_download, req_fields_download
 from .jsonlite import get_additional_jsonlite_fields, ASFSearchResults_to_jsonlite
 from .jsonlite2 import ASFSearchResults_to_jsonlite2
 
