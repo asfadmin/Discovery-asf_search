@@ -36,7 +36,8 @@ def ASFSearchResults_to_csv(results_properties: List[Dict], includeBaseline=Fals
     logging.debug('translating: csv')
 
     for product in results_properties:
-        product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
+        if product['offNadirAngle'] != None:
+            product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
         product['pointingAngle'] = '' if product['pointingAngle'] == None else product['pointingAngle']
     templateEnv = Environment(
         loader=PackageLoader('asf_search.export', 'templates'),

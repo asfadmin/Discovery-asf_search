@@ -3,55 +3,90 @@ from itertools import product
 from typing import Dict, List
 from asf_search import ASFSearchResults
 import xml.etree.ElementTree as ETree
+
 import os
 import json
 import shapely.wkt as WKT
 import requests
 import csv
-API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?' #product_list='
+from shapely.geometry import Polygon
 
-# ref = S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC
-def run_test_output_format(results: ASFSearchResults, output_type: str, expected_file: str):
-    expected_format = expected_file.split('.').pop()
+# when this replaces SearchAPI change values to cached
+API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?'
+
+def run_test_output_format(results: ASFSearchResults, output_type: str):
     product_list_str = ','.join([product.properties['fileID'] for product in results])
     expected = get_SearchAPI_Output(product_list_str, output_type)
-    base_path = os.path.join(os.getcwd(), 'tests', 'yml_tests', 'Resources/')
-    with open(os.path.join(base_path, expected_file), 'r') as f:
-        data = f.read()
 
-    if expected_format == 'csv':
-        results_csv = results.csv()
+    if output_type == 'csv':
         check_csv(results, expected)
-    elif expected_format == 'kml':
-        results_kml = results.kml()
-        check_kml(results, data)
-    elif expected_format == 'metalink':
+    elif output_type == 'kml':
+        check_kml(results, expected)
+    elif output_type == 'metalink':
         results_metalink = results.metalink()
-    elif expected_format == 'json':
-        results_jsonlite = results.jsonlite()
+    elif output_type  in ['jsonlite', 'jsonlite2']:
         check_jsonLite(results, expected, output_type)
 
     pass
 
 def check_kml(results: ASFSearchResults, expected_str: str):
     namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
-    xpath = ".//kml:Placemark/kml:name"
+    placemarks_path = ".//kml:Placemark"
     root = ETree.fromstring(expected_str)
-    placemarks = root.findall(xpath, namespaces)
-    for idx, element in enumerate(placemarks):
-        assert element.text == results[idx].properties['sceneName']
+    placemarks = root.findall(placemarks_path, namespaces)
 
-def check_csv(results: ASFSearchResults, expected: str):
-    expected = [product for product in csv.reader(expected.split('\n')) if product != []][1:]
-    for idx, product in enumerate([prod for prod in csv.reader(results.csv()) if prod != []][1:]):
-        assert expected[idx] == product
-        # print(expected)
+    tags = ['name', 'description', 'styleUrl']
+    actual_root = ETree.fromstring(''.join([line for line in results.kml()]))
+    actual = actual_root.findall(placemarks_path, namespaces)
+
+    placemarks.sort(key=lambda x: x[0].text)
+    actual.sort(key=lambda x: x[0].text)
+    for idx, element in enumerate(placemarks):
+        for idy, field in enumerate(element):
+            if field.tag.split('}')[-1] in tags:
+                expected_el = str(ETree.tostring(field))
+                actual_el = str(ETree.tostring(actual[idx][idy]))
+                assert expected_el == actual_el
+            elif field.tag.split('}')[-1] == 'Polygon':
+                expected_coords = get_coordinates_from_kml(ETree.tostring(field))
+                actual_coords = get_coordinates_from_kml(ETree.tostring(actual[idx][idy]))
+                expected_polygon = Polygon(expected_coords)
+                actual_polygon = Polygon(actual_coords)
+
+                assert actual_polygon.equals(expected_polygon)
+
+
+def get_coordinates_from_kml(data: str):
+    namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
+
+    coords = []
+    coords_lon_lat_path = ".//kml:outerBoundaryIs/kml:LinearRing/kml:coordinates"
+    root = ETree.fromstring(data)
+    
+    coordinates_elements = root.findall(coords_lon_lat_path, namespaces)
+    for lon_lat_z in coordinates_elements[0].text.split('\n'):
+        if len(lon_lat_z.split(',')) == 3:
+            lon, lat, _ = lon_lat_z.strip().split(',')
+            coords.append([float(lon), float(lat)])
+
+    return coords
+    
+
+def check_csv(results: ASFSearchResults, expected_str: str):
+    expected = [product for product in csv.reader(expected_str.split('\n')) if product != []]
+    actual = [prod for prod in csv.reader(results.csv()) if prod != []]
+    
+    assert expected.pop(0) == actual.pop(0)
+
+    expected.sort(key=lambda product: product[0])
+    
+    for idx, product in enumerate(expected):
+        assert actual[idx] == product
     pass
 
 def check_jsonLite(results: ASFSearchResults, expected: str, output_type: str):
     expected = json.loads(expected)['results']
     sort_key = 'gn' if output_type == 'jsonlite2' else 'productID'
-    # expected = json.loads(expected_str)['results']
     expected.sort(key=lambda product: product[sort_key])
 
     if expected:
