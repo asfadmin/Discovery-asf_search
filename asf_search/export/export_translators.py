@@ -11,11 +11,11 @@ from .jsonlite2 import ASFSearchResults_to_jsonlite2
 
 def output_translators():
     return {
-        'csv':          [results_to_format(get_additional_csv_fields, ASFSearchResults_to_csv), 'text/csv; charset=utf-8', 'csv'],
-        'kml':          [results_to_format(get_additional_kml_fields, ASFSearchResults_to_kml), 'application/vnd.google-earth.kml+xml; charset=utf-8', 'kmz'],
-        'metalink':     [results_to_format(get_additional_metalink_fields, ASFSearchResults_to_metalink), 'application/metalink+xml; charset=utf-8', 'metalink'],
-        'jsonlite':     [results_to_format(get_additional_jsonlite_fields, ASFSearchResults_to_jsonlite), 'application/json; charset=utf-8', 'json'],
-        'jsonlite2':     [results_to_format(get_additional_jsonlite_fields, ASFSearchResults_to_jsonlite2), 'application/json; charset=utf-8', 'json'],
+        'csv':          results_to_format(get_additional_csv_fields, ASFSearchResults_to_csv),
+        'kml':          results_to_format(get_additional_kml_fields, ASFSearchResults_to_kml),
+        'metalink':     results_to_format(get_additional_metalink_fields, ASFSearchResults_to_metalink),
+        'jsonlite':     results_to_format(get_additional_jsonlite_fields, ASFSearchResults_to_jsonlite),
+        'jsonlite2':     results_to_format(get_additional_jsonlite_fields, ASFSearchResults_to_jsonlite2),
     }
 
 def results_to_format(get_additional_fields: FunctionType, to_export_format: FunctionType):
