@@ -417,9 +417,8 @@ def test_output_format(**args) -> None:
     if not isinstance(products, List):
         products = [products]
     results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in products])
-    output_type = test_info['output_type']
 
-    run_test_output_format(results, output_type)
+    run_test_output_format(results)
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):

@@ -1,68 +1,15 @@
 tests:
-- Test ASFSearchResults-format kml Fairbanks slc:
+- Test ASFSearchResults-format Fairbanks slc:
     results: [Fairbanks_SLC.yml]
-    output_type: kml
 
-- Test ASFSearchResults-format jsonlite Fairbanks slc:
-    results: [Fairbanks_SLC.yml]
-    output_type: jsonlite
-
-- Test ASFSearchResults-format jsonlite2 Fairbanks slc:
-    results: [Fairbanks_SLC.yml]
-    output_type: jsonlite2
-
-- Test ASFSearchResults-format jsonlite2 Fairbanks csv:
-    results: [Fairbanks_SLC.yml]
-    output_type: csv
-
-- Test ASFSearchResults-format kml Fairbanks S1 Stack slc:
+- Test ASFSearchResults-format Fairbanks S1 Stack:
     results: Fairbanks_S1_stack.yml
-    output_type: kml
 
-- Test ASFSearchResults-format jsonlite Fairbanks S1 Stack slc:
-    results: Fairbanks_S1_stack.yml
-    output_type: jsonlite
-
-- Test ASFSearchResults-format jsonlite2 Fairbanks S1 Stack slc:
-    results: Fairbanks_S1_stack.yml
-    output_type: jsonlite2 
-
-- Test ASFSearchResults-format jsonlite Alos:
+- Test ASFSearchResults-format Alos:
     results: Alos_response.yml
-    output_type: jsonlite
 
-- Test ASFSearchResults-format jsonlite2 Alos:
-    results: Alos_response.yml
-    output_type: jsonlite2
+- Test ASFSearchResults-format L1:
+    results: Fairbanks_L1.yml
 
-- Test ASFSearchResults-format jsonlite ERS:
+- Test ASFSearchResults-format ERS Stack:
     results: Fairbanks_ers_stack.yml
-    output_type: jsonlite
-
-- Test ASFSearchResults-format jsonlite2 ERS:
-    results: Fairbanks_ers_stack.yml
-    output_type: jsonlite2
-
-- Test ASFSearchResults-format jsonlite L1:
-    results: Fairbanks_L1.yml
-    output_type: jsonlite
-
-- Test ASFSearchResults-format jsonlite2 L1:
-    results: Fairbanks_L1.yml
-    output_type: jsonlite2
-
-- Test ASFSearchResults-format jsonlite L1:
-    results: Fairbanks_L1.yml
-    output_type: jsonlite
-
-- Test ASFSearchResults-format jsonlite2 L1:
-    results: Fairbanks_L1.yml
-    output_type: jsonlite2
-
-- Test ASFSearchResults-format csv L1:
-    results: Fairbanks_L1.yml
-    output_type: csv
-
-- Test ASFSearchResults-format csv ERS:
-    results: Fairbanks_ers_stack.yml
-    output_type: csv

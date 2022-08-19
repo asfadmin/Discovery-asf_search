@@ -177,7 +177,7 @@ test_types:
 
 - For running ASFSearchOptions tests:
     required_in_title: ASFSearchResults-format
-    required_keys: ['results', 'output_type'] 
+    required_keys: results 
     method: test_output_format
 
 - For running jupyter notebook example tests:

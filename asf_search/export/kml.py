@@ -1,4 +1,5 @@
 from datetime import datetime
+from math import floor
 from asf_search import ASFSearchResults
 from asf_search.CMR import get_additional_fields
 import logging
@@ -24,7 +25,7 @@ def get_additional_kml_fields(product):
 
     return additional_fields
 
-def ASFSearchResults_to_kml(results, includeBaseline=False, addendum=None):
+def ASFSearchResults_to_kml(results_properties, includeBaseline=False, addendum=None):
     logging.debug('translating: kml')
 
     templateEnv = Environment(
@@ -32,6 +33,10 @@ def ASFSearchResults_to_kml(results, includeBaseline=False, addendum=None):
         autoescape=True
     )
 
+    for product in results_properties:
+        if product['offNadirAngle'] != None:
+            product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
     template = templateEnv.get_template('template.kml')
-    for l in template.stream(includeBaseline=includeBaseline, results=results):
+
+    for l in template.stream(includeBaseline=includeBaseline, results=results_properties):
         yield l

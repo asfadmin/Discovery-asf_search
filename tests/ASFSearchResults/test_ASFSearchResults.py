@@ -14,20 +14,24 @@ from shapely.geometry import Polygon
 # when this replaces SearchAPI change values to cached
 API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?'
 
-def run_test_output_format(results: ASFSearchResults, output_type: str):
+def run_test_output_format(results: ASFSearchResults):
     product_list_str = ','.join([product.properties['fileID'] for product in results])
-    expected = get_SearchAPI_Output(product_list_str, output_type)
 
-    if output_type == 'csv':
-        check_csv(results, expected)
-    elif output_type == 'kml':
-        check_kml(results, expected)
-    elif output_type == 'metalink':
-        results_metalink = results.metalink()
-    elif output_type  in ['jsonlite', 'jsonlite2']:
-        check_jsonLite(results, expected, output_type)
+    for output_type in ['csv', 'kml', 'metalink', 'jsonlite', 'josnlite2']:
+        expected = get_SearchAPI_Output(product_list_str, output_type)
+        if output_type == 'csv':
+            check_csv(results, expected)
+        if output_type == 'kml':
+            check_kml(results, expected)
+        elif output_type == 'metalink':
+            check_metalink(results, expected)
+        elif output_type in ['jsonlite', 'jsonlite2']:
+            check_jsonLite(results, expected, output_type)
 
-    pass
+def check_metalink(results: ASFSearchResults, expected_str: str):
+    results.sort(key=lambda product: product.properties['sceneName'], reverse=True)
+    actual = ''.join([l for l in results.metalink()])
+    assert actual == expected_str
 
 def check_kml(results: ASFSearchResults, expected_str: str):
     namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
