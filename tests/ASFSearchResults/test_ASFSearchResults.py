@@ -13,7 +13,7 @@ API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?'
 def run_test_output_format(results: ASFSearchResults):
     product_list_str = ','.join([product.properties['fileID'] for product in results])
 
-    for output_type in ['csv', 'kml', 'metalink', 'jsonlite', 'josnlite2']:
+    for output_type in ['csv', 'kml', 'metalink', 'jsonlite', 'jsonlite2']:
         expected = get_SearchAPI_Output(product_list_str, output_type)
         if output_type == 'csv':
             check_csv(results, expected)
@@ -84,20 +84,19 @@ def check_csv(results: ASFSearchResults, expected_str: str):
         assert actual[idx] == product
     pass
 
-def check_jsonLite(results: ASFSearchResults, expected: str, output_type: str):
-    expected = json.loads(expected)['results']
-    sort_key = 'gn' if output_type == 'jsonlite2' else 'productID'
+def check_jsonLite(results: ASFSearchResults, expected_str: str, output_type: str):
+    jsonlite2 = output_type == 'jsonlite2'
+    
+    expected = json.loads(expected_str)['results']
+    sort_key = 'gn' if jsonlite2 else 'productID'
     expected.sort(key=lambda product: product[sort_key])
 
-    if expected:
-        if 'wkt' in expected[0].keys():
-            wkt_key = 'wkt'
-            wkt_unwrapped_key = 'wkt_unwrapped'
-            jsonlite2 = False
-        else:
-            wkt_key = 'w'
-            wkt_unwrapped_key = 'wu'
-            jsonlite2 = True
+    if jsonlite2:
+        wkt_key = 'w'
+        wkt_unwrapped_key = 'wu'
+    else:
+        wkt_key = 'wkt'
+        wkt_unwrapped_key = 'wkt_unwrapped'
 
     actual = json.loads(''.join(results.jsonlite2() if jsonlite2 else results.jsonlite()))['results']
     actual.sort(key=lambda product: product[sort_key])
