@@ -43,5 +43,5 @@ def ASFSearchResults_to_csv(results_properties: List[Dict], includeBaseline=Fals
     )
 
     template = templateEnv.get_template('template.csv')
-    for l in template.stream(includeBaseline=includeBaseline, results=results_properties):
-        yield l
+    for line in template.stream(includeBaseline=includeBaseline, results=results_properties):
+        yield line

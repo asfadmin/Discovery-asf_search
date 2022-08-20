@@ -26,7 +26,7 @@ def run_test_output_format(results: ASFSearchResults):
 
 def check_metalink(results: ASFSearchResults, expected_str: str):
     results.sort(key=lambda product: product.properties['sceneName'], reverse=True)
-    actual = ''.join([l for l in results.metalink()])
+    actual = ''.join([line for line in results.metalink()])
     assert actual == expected_str
 
 def check_kml(results: ASFSearchResults, expected_str: str):
@@ -107,7 +107,7 @@ def check_jsonLite(results: ASFSearchResults, expected: str, output_type: str):
         wkt_unwrapped = expected_product.pop(wkt_unwrapped_key)
         
         for key in expected_product.keys():
-            assert  actual[idx][key] == expected_product[key]
+            assert actual[idx][key] == expected_product[key]
         
         assert WKT.loads(actual[idx][wkt_key]).equals(WKT.loads(wkt))
         assert WKT.loads(actual[idx][wkt_unwrapped_key]).equals(WKT.loads(wkt_unwrapped))

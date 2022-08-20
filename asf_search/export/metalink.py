@@ -16,5 +16,5 @@ def ASFSearchResults_to_metalink(products: List[Dict], includeBaseline=False, ad
     )
 
     template = templateEnv.get_template('template.metalink')
-    for l in template.stream(results=products):
-        yield l
+    for line in template.stream(results=products):
+        yield line

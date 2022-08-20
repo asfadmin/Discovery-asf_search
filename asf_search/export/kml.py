@@ -36,5 +36,5 @@ def ASFSearchResults_to_kml(results_properties, includeBaseline=False, addendum=
             product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
     template = templateEnv.get_template('template.kml')
 
-    for l in template.stream(includeBaseline=includeBaseline, results=results_properties):
-        yield l
+    for line in template.stream(includeBaseline=includeBaseline, results=results_properties):
+        yield line
