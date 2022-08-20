@@ -1,10 +1,6 @@
-from ast import Lambda
-from itertools import product
 from typing import Dict, List
 from asf_search import ASFSearchResults
-import xml.etree.ElementTree as ETree
-
-import os
+import defusedxml.ElementTree as ETree
 import json
 import shapely.wkt as WKT
 import requests
