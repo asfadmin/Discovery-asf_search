@@ -30,9 +30,10 @@ def get_additional_csv_fields(product):
 
     return additional_fields
 
-def ASFSearchResults_to_csv(results_properties: List[Dict], includeBaseline=False, addendum=None):
+def ASFSearchResults_to_csv(results_properties: List[Dict]):
     logging.debug('translating: csv')
 
+    includeBaseline=False
     for product in results_properties:
         if product['offNadirAngle'] != None:
             product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']

@@ -23,7 +23,7 @@ def get_additional_kml_fields(product):
 
     return additional_fields
 
-def ASFSearchResults_to_kml(results_properties, includeBaseline=False, addendum=None):
+def ASFSearchResults_to_kml(results_properties):
     logging.debug('translating: kml')
 
     templateEnv = Environment(
@@ -31,6 +31,8 @@ def ASFSearchResults_to_kml(results_properties, includeBaseline=False, addendum=
         autoescape=True
     )
 
+    includeBaseline=False
+    
     for product in results_properties:
         if product['offNadirAngle'] != None:
             product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']

@@ -3,10 +3,10 @@ import logging
 import json
 from .jsonlite import JSONLiteStreamArray
 
-def ASFSearchResults_to_jsonlite2(results_properties: List[Dict], includeBaseline=False, addendum=None):
+def ASFSearchResults_to_jsonlite2(results_properties: List[Dict]):
     logging.debug('translating: jsonlite')
 
-    streamer = JSONLite2StreamArray(results_properties, includeBaseline)
+    streamer = JSONLite2StreamArray(results_properties)
 
     for p in json.JSONEncoder(sort_keys=True, separators=(',', ':')).iterencode({'results': streamer}):
         yield p

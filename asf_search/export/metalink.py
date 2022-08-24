@@ -7,7 +7,7 @@ def get_additional_metalink_fields(_: ASFProduct):
     return {}
 
 
-def ASFSearchResults_to_metalink(products: List[Dict], includeBaseline=False, addendum=None):
+def ASFSearchResults_to_metalink(products: List[Dict]):
     logging.debug('translating: metalink')
 
     templateEnv = Environment(

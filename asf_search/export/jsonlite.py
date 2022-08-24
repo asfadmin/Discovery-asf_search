@@ -39,13 +39,11 @@ def get_additional_jsonlite_fields(product: ASFProduct):
 
     return additional_fields
 
-def ASFSearchResults_to_jsonlite(results, includeBaseline=False, addendum=None):
+def ASFSearchResults_to_jsonlite(results):
     logging.debug('translating: jsonlite')
 
-    streamer = JSONLiteStreamArray(results, includeBaseline)
+    streamer = JSONLiteStreamArray(results)
     jsondata = {'results': streamer}
-    if addendum is not None:
-        jsondata.update(addendum)
 
     for p in json.JSONEncoder(indent=2, sort_keys=True).iterencode(jsondata):
         yield p
@@ -67,9 +65,8 @@ def get_wkts(geometry) -> Tuple[str, str]:
     return wrapped.wkt, unwrapped.wkt
 
 class JSONLiteStreamArray(list):
-    def __init__(self, results, includeBaseline):
+    def __init__(self, results):
         self.results = results
-        self.includeBaseline = includeBaseline
 
         # need to make sure we actually have results so we can intelligently set __len__, otherwise
         # iterencode behaves strangely and will output invalid json
