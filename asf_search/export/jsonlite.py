@@ -171,7 +171,7 @@ class JSONLiteStreamArray(list):
             if result[key] in [ 'NA', 'NULL']:
                 result[key] = None
 
-        if self.includeBaseline:
+        if 'temporalBaseline' in p.keys() or 'perpendicularBaseline' in p.keys():
             result['temporalBaseline'] = p['temporalBaseline']
             result['perpendicularBaseline'] = p['perpendicularBaseline']
 

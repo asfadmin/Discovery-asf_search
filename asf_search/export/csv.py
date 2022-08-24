@@ -37,6 +37,9 @@ def ASFSearchResults_to_csv(results_properties: List[Dict], includeBaseline=Fals
         if product['offNadirAngle'] != None:
             product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
         product['pointingAngle'] = '' if product['pointingAngle'] == None else product['pointingAngle']
+        if 'temporalBaseline' in product.keys() or 'perpendicularBaseline' in product.keys():
+            includeBaseline = True
+
     templateEnv = Environment(
         loader=PackageLoader('asf_search.export', 'templates'),
         autoescape=True

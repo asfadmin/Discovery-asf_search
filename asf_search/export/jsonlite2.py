@@ -49,7 +49,7 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             'wu': p['wkt_unwrapped']
         }
 
-        if self.includeBaseline:
+        if 'temporalBaseline' in p.keys() or 'perpendicularBaseline' in p.keys():
             result['tb'] = p['temporalBaseline']
             result['pb'] = p['perpendicularBaseline']
 
