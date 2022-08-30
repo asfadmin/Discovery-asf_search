@@ -6,6 +6,7 @@ from .jsonlite import JSONLiteStreamArray
 def ASFSearchResults_to_jsonlite2(results_properties: List[Dict]):
     logging.debug('translating: jsonlite')
 
+    results_properties.sort(key=lambda product: product['fileID'], reverse=True)
     streamer = JSONLite2StreamArray(results_properties)
 
     for p in json.JSONEncoder(sort_keys=True, separators=(',', ':')).iterencode({'results': streamer}):

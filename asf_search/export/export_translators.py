@@ -25,7 +25,6 @@ def results_to_format(get_additional_fields: FunctionType, to_export_format: Fun
 def ASFSearchResults_to_properties_list(results: ASFSearchResults, get_additional_fields: FunctionType):
     property_list = []
     
-    
     for product in results:
         additional_fields = get_additional_fields(product)
         properties = {**product.properties, **additional_fields}

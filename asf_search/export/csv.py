@@ -41,6 +41,8 @@ def ASFSearchResults_to_csv(results_properties: List[Dict]):
         if 'temporalBaseline' in product.keys() or 'perpendicularBaseline' in product.keys():
             includeBaseline = True
 
+    results_properties.sort(key=lambda product: product['sceneName'], reverse=True)
+
     templateEnv = Environment(
         loader=PackageLoader('asf_search.export', 'templates'),
         autoescape=True

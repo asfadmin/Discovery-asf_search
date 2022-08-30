@@ -1,4 +1,5 @@
 from math import floor
+from typing import List, Dict
 from asf_search.CMR import get_additional_fields
 import logging
 from jinja2 import Environment, PackageLoader
@@ -23,7 +24,7 @@ def get_additional_kml_fields(product):
 
     return additional_fields
 
-def ASFSearchResults_to_kml(results_properties):
+def ASFSearchResults_to_kml(results_properties: List[Dict]):
     logging.debug('translating: kml')
 
     templateEnv = Environment(
@@ -39,6 +40,8 @@ def ASFSearchResults_to_kml(results_properties):
 
         if 'temporalBaseline' in product.keys() or 'perpendicularBaseline' in product.keys():
             includeBaseline = True
+
+    results_properties.sort(key=lambda product: product['sceneName'], reverse=True)
 
     template = templateEnv.get_template('template.kml')
 
