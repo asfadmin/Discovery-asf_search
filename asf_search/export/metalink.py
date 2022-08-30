@@ -15,8 +15,6 @@ def ASFSearchResults_to_metalink(products: List[Dict]):
         autoescape=True
     )
 
-    products.sort(key=lambda product: product['fileName'], reverse=True)
-
     template = templateEnv.get_template('template.metalink')
     for line in template.stream(results=products):
         yield line

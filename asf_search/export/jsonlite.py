@@ -40,7 +40,6 @@ def get_additional_jsonlite_fields(product: ASFProduct):
     return additional_fields
 
 def ASFSearchResults_to_jsonlite(results):
-    results.sort(key=lambda product: product['fileID'], reverse=True)
     logging.debug('translating: jsonlite')
 
     streamer = JSONLiteStreamArray(results)
