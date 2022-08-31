@@ -41,7 +41,7 @@ def ASFSearchResults_to_kml(results_properties: List[Dict]):
         if 'temporalBaseline' in product.keys() or 'perpendicularBaseline' in product.keys():
             includeBaseline = True
 
-    template = templateEnv.get_template('template.kml')
+    template = templateEnv.get_template('template.kmz')
 
     for line in template.stream(includeBaseline=includeBaseline, results=results_properties):
         yield line
