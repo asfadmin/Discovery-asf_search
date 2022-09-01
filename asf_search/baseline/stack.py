@@ -82,7 +82,7 @@ def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults)
         secondary_time = parse(secondary.properties['startTime'])
         if secondary_time.tzinfo is None:
             secondary_time = pytz.utc.localize(secondary_time)
-        secondary.properties['temporalBaseline'] = (secondary_time.date() - reference_time.date()).days
+        secondary.properties['temporalBaseline'] = (secondary_time - reference_time).days
     
     return stack
 

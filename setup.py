@@ -8,8 +8,7 @@ requirements = [
     "pytz",
     "importlib_metadata",
     "numpy",
-    "dateparser",
-    "jinja2"
+    "dateparser"
 ]
 
 test_requirements = [
