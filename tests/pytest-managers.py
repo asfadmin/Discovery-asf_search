@@ -16,7 +16,6 @@ from unittest.mock import patch
 import os
 import pathlib
 import yaml
-from tests.ASFSearchResults.test_ASFSearchResults import run_test_ASFSearchResults_intersection
 
 from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_simplify_aoi
 import requests
@@ -380,9 +379,6 @@ def test_ASFSearchOptions_validator(**args) -> None:
 def test_ASFSearchOptions(**kwargs) -> None:
     run_test_ASFSearchOptions(**kwargs)
 
-def test_ASFSearchResults_intersection(**kwargs) -> None:
-    wkt = get_resource(kwargs['test_info']['wkt'])
-    run_test_ASFSearchResults_intersection(wkt)
 
 def test_notebook_examples(**args) -> None:
     test_info = args['test_info']
