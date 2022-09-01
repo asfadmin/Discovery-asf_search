@@ -10,7 +10,7 @@ from .validators import (
 def validate(key, value):
     if key not in validator_map:
         error_msg = f"Key '{key}' is not a valid search option."
-        ## See if they just missed up case sensitivity:
+        # See if they just missed up case sensitivity:
         for valid_key in validator_map:
             if key.lower() == valid_key.lower():
                 error_msg += f" (Did you mean '{valid_key}'?)"
@@ -18,12 +18,14 @@ def validate(key, value):
         raise KeyError(error_msg)
     return validator_map[key](value)
 
+
 validator_map = {
     # Search parameters       Parser
     'maxResults':             int,
     'absoluteOrbit':          parse_int_or_range_list,
     'asfFrame':               parse_int_or_range_list,
     'beamMode':               parse_string_list,
+    'beamSwath':              parse_string_list,
     'campaign':               parse_string,
     'maxDoppler':             parse_float,
     'minDoppler':             parse_float,
