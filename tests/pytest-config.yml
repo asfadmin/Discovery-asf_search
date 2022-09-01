@@ -136,6 +136,11 @@ test_types:
     required_in_title: test-validate-wkt-get-shape-coords
     method: test_validate_wkt_get_shape_coords
 
+- For running ASFSearchResults_intersection tests:
+    required_keys: ["wkt"]
+    required_in_title: ASFSearchResults_intersection
+    method: test_ASFSearchResults_intersection
+
 - For running download_url tests:
     required_keys: ["url", "path", "filename"]
     required_in_title: test-download-url
@@ -174,6 +179,11 @@ test_types:
 - For running ASFSearchOptions tests:
     required_in_title: test-ASFSearchOptions
     method: test_ASFSearchOptions
+
+- For running ASFSearchOptions tests:
+    required_in_title: ASFSearchResults-format
+    required_keys: results
+    method: test_output_format
 
 - For running jupyter notebook example tests:
     required_keys: notebook
