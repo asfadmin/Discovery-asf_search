@@ -4,7 +4,6 @@ from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASF
 from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_product_get_stack_options, run_test_stack
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
 from ASFSearchResults.test_ASFSearchResults import run_test_output_format
-from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
