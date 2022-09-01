@@ -503,7 +503,7 @@
             "sensor": "C-SAR",
             "startTime": "2021-01-14T03:20:30.000Z",
             "stopTime": "2021-01-14T03:20:57.000Z",
-            "temporalBaseline": 11,
+            "temporalBaseline": 12,
             "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
             "fileName": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
             "frameNumber": "210"
@@ -952,7 +952,7 @@
             "sensor": "C-SAR",
             "startTime": "2021-01-26T03:20:30.000Z",
             "stopTime": "2021-01-26T03:20:57.000Z",
-            "temporalBaseline": 23,
+            "temporalBaseline": 24,
             "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
             "fileName": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
             "frameNumber": "210",

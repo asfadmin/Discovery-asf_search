@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<metalink xmlns="http://www.metalinker.org/" version="3.0">
+    <publisher><name>Alaska Satellite Facility</name><url>http://www.asf.alaska.edu/</url></publisher>
+    <files>
+        {%- for r in results %}
+        <file name="{{ r['fileName'] }}"><resources><url type="http">{{ r['url'] }}</url></resources>{% if r['md5sum'] and r['md5sum'] != 'NA' %}<verification><hash type="md5">{{ r['md5sum'] }}</hash></verification>{% endif %}{% if r['bytes'] and r['bytes'] != 'NA' %}<size>{{ r['bytes'] }}</size>{% endif %}</file>
+        {%- endfor %}
+    </files>
+</metalink>
