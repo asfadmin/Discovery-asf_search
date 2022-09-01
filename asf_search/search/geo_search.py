@@ -12,7 +12,6 @@ def geo_search(
         absoluteOrbit: Iterable[Union[int, range]] = None,
         asfFrame: Iterable[Union[int, range]] = None,
         beamMode: Iterable[str] = None,
-        beamSwath: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
         end: Union[datetime.datetime, str] = None,
         flightDirection: Iterable[str] = None,
@@ -34,7 +33,6 @@ def geo_search(
     :param absoluteOrbit: For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B this value corresponds to the orbit count within the orbit cycle. For UAVSAR it is the Flight ID.
     :param asfFrame: This is primarily an ASF / JAXA frame reference. However, some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
     :param beamMode: The beam mode used to acquire the data.
-    :param beamSwath: Encompasses a look angle and beam mode.
     :param campaign: For UAVSAR and AIRSAR data collections only. Search by general location, site description, or data grouping as supplied by flight agency or project.
     :param end: End date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
     :param flightDirection: Satellite orbit direction during data acquisition
