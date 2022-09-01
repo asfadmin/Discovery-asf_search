@@ -87,7 +87,7 @@ test_types:
     method: test_ASFSearch_Search_Error
 
 - For running WKT Validation invalid wkt error tests:
-    required_keys: ["wkt"]
+    required_keys: wkt
     required_in_title: 'test-validate-wkt-invalid-error'
     method: test_wkt_validation_Invalid_WKT_Error
 
@@ -135,6 +135,11 @@ test_types:
     required_keys: ["wkt", "coordinates"]
     required_in_title: test-validate-wkt-get-shape-coords
     method: test_validate_wkt_get_shape_coords
+
+- For running ASFSearchResults_intersection tests:
+    required_keys: ["wkt"]
+    required_in_title: ASFSearchResults_intersection
+    method: test_ASFSearchResults_intersection
 
 - For running download_url tests:
     required_keys: ["url", "path", "filename"]
