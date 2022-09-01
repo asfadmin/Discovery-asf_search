@@ -7,20 +7,20 @@ from shapely.ops import transform
 from asf_search.CMR.translate import get_additional_fields
 from asf_search import ASFProduct
 
+extra_jsonlite_fields = [
+    ('processingTypeDisplay', ['AdditionalAttributes', ('Name', 'PROCESSING_TYPE_DISPLAY'), 'Values', 0]),
+    ('thumb', ['AdditionalAttributes', ('Name', 'THUMBNAIL_URL'), 'Values', 0]),
+    ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
+    ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
+    ('flightLine', ['AdditionalAttributes', ('Name', 'FLIGHT_LINE'), 'Values', 0]),
+    ('missionName', ['AdditionalAttributes', ('Name', 'MISSION_NAME'), 'Values', 0]),
+]
+
 def get_additional_jsonlite_fields(product: ASFProduct):
     umm = product.umm
-
-    extra_fields = [
-        ('processingTypeDisplay', ['AdditionalAttributes', ('Name', 'PROCESSING_TYPE_DISPLAY'), 'Values', 0]),
-        ('thumb', ['AdditionalAttributes', ('Name', 'THUMBNAIL_URL'), 'Values', 0]),
-        ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
-        ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
-        ('flightLine', ['AdditionalAttributes', ('Name', 'FLIGHT_LINE'), 'Values', 0]),
-        ('missionName', ['AdditionalAttributes', ('Name', 'MISSION_NAME'), 'Values', 0]),
-    ]
     
     additional_fields = {}
-    for key, path in extra_fields:
+    for key, path in extra_jsonlite_fields:
         additional_fields[key] = get_additional_fields(umm, *path)
 
     if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
