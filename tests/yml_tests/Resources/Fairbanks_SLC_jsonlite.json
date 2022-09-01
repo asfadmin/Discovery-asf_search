@@ -1,0 +1,37 @@
+{
+  "results": [
+    {
+      "beamMode": "IW",
+      "browse": [],
+      "canInSAR": true,
+      "dataset": "Sentinel-1B",
+      "downloadUrl": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
+      "faradayRotation": null,
+      "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
+      "flightDirection": "ASCENDING",
+      "flightLine": null,
+      "frame": 210,
+      "granuleName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081",
+      "groupID": "S1B_IWDV_0209_0216_024970_094",
+      "instrument": "C-SAR",
+      "missionName": null,
+      "offNadirAngle": null,
+      "orbit": [
+        "24970"
+      ],
+      "path": 94,
+      "pointingAngle": null,
+      "polarization": "VV+VH",
+      "productID": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC",
+      "productType": "SLC",
+      "productTypeDisplay": "L1 Single Look Complex (SLC)",
+      "sizeMB": 3999.446469306946,
+      "stackSize": null,
+      "startTime": "2021-01-02T03:20:31.000000",
+      "stopTime": "2021-01-02T03:20:58.000000",
+      "thumb": null,
+      "wkt": "POLYGON((-144.751495 65.990250,-144.136368 64.386414,-149.246063 63.942123,-150.172562 65.531250,-144.751495 65.990250))",
+      "wkt_unwrapped": "POLYGON ((-144.751495 65.990250, -144.136368 64.386414, -149.246063 63.942123, -150.172562 65.531250, -144.751495 65.990250))"
+    }
+  ]
+}
