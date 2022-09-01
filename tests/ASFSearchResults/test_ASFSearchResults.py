@@ -13,7 +13,6 @@ API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?'
 def run_test_output_format(results: ASFSearchResults): 
     #search results are always sorted this way when returned from asf_search.search(), 
     # but not all test case resources are
-    results = product_search(product_list=[product.properties['fileID'] for product in results])
     results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     product_list_str = ','.join([product.properties['fileID'] for product in results])
 
