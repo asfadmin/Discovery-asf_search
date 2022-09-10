@@ -10,6 +10,7 @@ class ASFSearchResults(UserList):
         # Store it JUST so the user can access it (There might be zero products)
         # Each product will use their own reference to opts (but points to the same obj)
         self.searchOptions = opts
+        self.searchComplete = False
 
     def geojson(self):
         return {
@@ -45,6 +46,19 @@ class ASFSearchResults(UserList):
             pool.map(_download_product, args)
             pool.close()
             pool.join()
+
+    def resume_search(self):
+        from asf_search.search.search import search
+        maxResults = self.searchOptions.maxResults - len(self)
+        if self.searchComplete or maxResults <= 0:
+            return
+
+        remainder = search(opts=self.searchOptions, maxResults=maxResults)
+        self.extend(remainder)
+        # self.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+
+        if len(self) == self.searchOptions.maxResults or 'CMR-Search-After' not in self.searchOptions.session.headers:
+            self.searchComplete = True
 
 
 def _download_product(args):

@@ -13,7 +13,7 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
-from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
+from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, ASFServerError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 
@@ -115,6 +115,9 @@ def search(
 
         hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
 
+        if 'CMR-Search-After' in response.headers:
+            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
+
         if maxResults != None:
             results.extend(hits[:min(maxResults - len(results), len(hits))])
             if len(results) == maxResults:
@@ -125,7 +128,12 @@ def search(
         while('CMR-Search-After' in response.headers):
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
-            response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+            try:
+                response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+            except ASFSearch5xxError:
+                warnings.warn("Search Results incomplete due to unforseen CMR error. Use \"resume_search()\" method on current results to try again")
+                results.searchOptions.maxResults = maxResults
+                return results
 
             hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
             
@@ -136,22 +144,28 @@ def search(
             else:
                 results.extend(hits)
         
-        opts.session.headers.pop('CMR-Search-After', None)
+        # opts.session.headers.pop('CMR-Search-After', None)
 
-    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    # results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     return results
 
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
-    response = session.post(url=url, data=translated_opts)
-    try:
-        response.raise_for_status()
-    except HTTPError:
-        if 400 <= response.status_code <= 499:
-            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-        if 500 <= response.status_code <= 599:
-            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+    max_retries = 3
     
+    for attempt in range(max_retries):
+        response = session.post(url=url, data=translated_opts)
+
+        try:
+            response.raise_for_status()
+        except HTTPError:
+            if 400 <= response.status_code <= 499:
+                raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+            if 500 <= response.status_code <= 599:
+                raise ASFSearch5xxError(f'Server error') # Change back when actual test with mock Response objects written
+                # raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+            raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        else:
+            return response
     return response
 
 
