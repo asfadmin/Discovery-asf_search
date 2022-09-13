@@ -1,0 +1,38 @@
+tests:
+- test serialization single SLC ASFProduct Empty:
+    product: {meta: {}, umm: {}, properties: {}, geometry: {}}
+
+- test serialization single SLC ASFProduct:
+    product: Fairbanks_SLC.yml
+
+- test serialization single SLC ASFProduct missing-state-vectors:
+    product: Fairbanks_SLC_no_stateVectors.yml
+
+- test serialization single L1 ASFProduct:
+    product: Fairbanks_L1.yml
+
+- test serialization single Alos ASFProduct:
+    product: Alos_response.yml
+
+- test serialization ASFSearchResults Empty:
+    results: []
+    searchOpts: null
+
+- test serialization ASFSearchResults ers stack:
+    results: Fairbanks_ers_stack.yml
+    searchOpts:
+        maxResults: 3
+        platform: ["ERS-1", "ERS-2"]
+
+- test serialization ASFSearchResults incomplete s1 stack:
+    results: Fairbanks_S1_stack incomplete.yml
+    searchOpts:
+        maxResults: 3
+        platform: ["SENTINEL-1A", "SENTINEL-1B"]
+
+- test serialization ASFSearchResults non-default config-opts:
+    results: Fairbanks_ers_stack preprocessed.yml
+    searchOpts:
+        session: null
+        host: cmr.uat.earthdata.nasa.gov
+        provider: Not-ASF

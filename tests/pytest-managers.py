@@ -1,4 +1,5 @@
 from typing import Dict, List
+from asf_search import ASFSearchOptions
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_product_get_stack_options, run_test_stack
@@ -24,7 +25,7 @@ from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptio
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 
 from tests.download.test_download import run_test_download_url_auth_error
-
+from tests.Serialization.test_serialization import run_test_serialization
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
@@ -383,6 +384,15 @@ def test_ASFSearchOptions(**kwargs) -> None:
 def test_ASFSearchResults_intersection(**kwargs) -> None:
     wkt = get_resource(kwargs['test_info']['wkt'])
     run_test_ASFSearchResults_intersection(wkt)
+
+def test_serialization(**args) -> None:
+    test_info = args['test_info']
+    product = get_resource(test_info.get('product'))
+    results = get_resource(test_info.get('results'))
+    search_opts = get_resource(test_info.get('searchOpts'))
+    options = ASFSearchOptions(**search_opts if search_opts else {})
+
+    run_test_serialization(product, results, options)
 
 def test_notebook_examples(**args) -> None:
     test_info = args['test_info']
