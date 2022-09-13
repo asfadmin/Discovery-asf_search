@@ -54,7 +54,7 @@
         "stopTime": "2021-01-02T03:20:58.000Z",
         "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
         "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
-        "frameNumber": "210"
+        "frameNumber": 210
     },
     "baseline": {
         "stateVectors": {

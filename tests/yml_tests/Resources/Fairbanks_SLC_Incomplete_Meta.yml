@@ -1,0 +1,96 @@
+{
+    "type": "Feature",
+    "geometry": {
+        "coordinates": [
+            [
+                [
+                    -150.172562,
+                    65.53125
+                ],
+                [
+                    -149.246063,
+                    63.942123
+                ],
+                [
+                    -144.136368,
+                    64.386414
+                ],
+                [
+                    -144.751495,
+                    65.99025
+                ],
+                [
+                    -150.172562,
+                    65.53125
+                ]
+            ]
+        ],
+        "type": "Polygon"
+    },
+    "properties": {
+        "beamModeType": "IW",
+        "browse": null,
+        "bytes": 4193723581,
+        "centerLat": 64.9861,
+        "centerLon": -147.0909,
+        "faradayRotation": null,
+        "fileID": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC",
+        "flightDirection": null,
+        "groupID": "S1B_IWDV_0209_0216_024970_094",
+        "granuleType": "SENTINEL_1B_FRAME",
+        "insarStackId": null,
+        "md5sum": "6dd7f6a56ed98ba7037dfeb833217d5b",
+        "offNadirAngle": null,
+        "orbit": 24970,
+        "pathNumber": 94,
+        "platform": "Sentinel-1B",
+        "pointingAngle": null,
+        "polarization": "VV+VH",
+        "processingDate": "2021-01-02T03:20:31.000Z",
+        "processingLevel": "SLC",
+        "sceneName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081",
+        "sensor": "C-SAR",
+        "startTime": "2021-01-02T03:20:31.000Z",
+        "stopTime": "2021-01-02T03:20:58.000Z",
+        "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
+        "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
+        "frameNumber": 210
+    },
+    "baseline": {
+        "stateVectors": {
+            "positions": {
+                "prePosition": [
+                    -2893767.065414,
+                    -1235752.268405,
+                    6327528.043215
+                ],
+                "prePositionTime": "2021-01-02T03:20:43.000000",
+                "postPosition": [
+                    -2845284.115433,
+                    -1186496.621016,
+                    6358798.348458
+                ],
+                "postPositionTime": "2021-01-02T03:20:53.000000"
+            },
+            "velocities": {
+                "preVelocity": [
+                    4828.593801,
+                    4922.268943,
+                    3162.776438
+                ],
+                "preVelocityTime": "2021-01-02T03:20:43.000000",
+                "postVelocity": [
+                    4867.907153,
+                    4928.758938,
+                    3091.226142
+                ],
+                "postVelocityTime": "2021-01-02T03:20:53.000000"
+            }
+        },
+        "ascendingNodeTime": "2021-01-02T03:02:58.934857"
+    },
+    "umm": {
+    },
+    "meta": {
+    }
+}
