@@ -43,7 +43,7 @@
         "centerLon": -124.694724358625,
         "faradayRotation": null,
         "fileID": "SP_37287_A_008-L1A_Radar_RO_HDF5",
-        "flightDirection": 'DESCENDING',
+        "flightDirection": null,
         "groupID": "SP_37287_A_008",
         "granuleType": "SMAP_SWATH",
         "insarStackId": "-1",
@@ -62,7 +62,7 @@
         "stopTime": "2022-01-24T02:42:10.000Z",
         "url": "https://datapool.asf.alaska.edu/L1A_Radar_RO_HDF5/SP/SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5",
         "fileName": "SMAP_L1A_RADAR_37287_A_20220124T015142_R18240_001.h5",
-        "frameNumber": 1860
+        "frameNumber": "1860"
     },
     "baseline": {
         "insarBaseline": 0.0

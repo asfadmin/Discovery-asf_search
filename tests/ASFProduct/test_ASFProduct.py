@@ -2,33 +2,17 @@ from asf_search.search.search import ASFProduct, ASFSearchResults, ASFSearchOpti
 from unittest.mock import patch
 from shapely.geometry import shape
 from shapely.ops import orient
-
-def run_test_ASFProduct(product_json):
-    if product_json is None:
-        product = ASFProduct()
-        geojson = product.geojson()
-        assert geojson['type'] == 'Feature'
-        assert geojson['geometry'] == {'coordinates': None, 'type': 'Polygon'}
-        for val in geojson['properties'].values():
-            assert val is None
-
-        return
-
-    opts = product_json.pop('opts', None)
-    product = ASFProduct(product_json, opts)
+def run_test_ASFProduct_Geo_Search(geographic_response):
+    opts = geographic_response.pop('opts', None)
+    product = ASFProduct(geographic_response, opts)
 
     geojson = product.geojson()
-    
-    if geojson['geometry']['coordinates'] is not None:
-        expected_shape = orient(shape(product_json['geometry']))
-        output_shape = orient(shape(geojson['geometry'])) 
-        assert(output_shape.equals(expected_shape))
-    elif product.meta != {}:
-        assert product.properties == product_json['properties']
-        assert product.geometry == product_json['geometry']
+    expected_shape = orient(shape(geographic_response['geometry']))
+    output_shape = orient(shape(geojson['geometry'])) 
 
-    assert(product.umm == product_json["umm"])
-    assert(product.meta == product_json["meta"])
+    assert(output_shape.equals(expected_shape))
+    assert(product.umm == geographic_response["umm"])
+    assert(product.meta == geographic_response["meta"])
 
 def run_test_stack(reference, pre_processed_stack, processed_stack):
     product = ASFProduct(reference)
