@@ -26,6 +26,19 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+## [5.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v5.0.2...v5.1.0)
+### Added
+- Adds export support to ASFSearchResults for `csv`, `jsonlite`, `jsonlite2`, `kml`, `metalink`
+  - example availabe in /examples/1-Basic_Overview.ipynb
+- Adds `beamSwath` as a searchable parameter
+
+### Fixed
+- `count()` type hinting changed to `int`
+
+### Changed
+- Improved testing coverage of `ASFSearchResults`
+
+------
 ## [5.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v5.0.1...v5.0.2)
 ### Fixed
 - non-rectangular polygons are now sent to CMR instead of their bounding boxes
