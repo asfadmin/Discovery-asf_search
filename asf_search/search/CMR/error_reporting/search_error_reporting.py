@@ -3,7 +3,7 @@ from asf_search import ASFSearchOptions
 import requests
 import logging
 
-def report_search_error(search_options: ASFSearchOptions, message: Dict):
+def report_search_error(search_options: ASFSearchOptions, message: str):
     """Reports CMR concept-id errorsReports"""
 
     end_point_url = "https://search-error-report.asf.alaska.edu"
