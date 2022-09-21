@@ -18,10 +18,10 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
     try:
         r.raise_for_status()
     except requests.exceptions.HTTPError as e:
-        logging.warning("asf-search failed to automatically report an error, if you have any questions email uso@asf.alaska.edu")
+        logging.error("asf-search failed to automatically report an error, if you have any questions email uso@asf.alaska.edu")
         return
     if r.status_code == 200:
-        logging.warning("The asf-search module ecountered an error with CMR, and the following message was automatically reported to ASF:\n\n" + 
+        logging.error("The asf-search module ecountered an error with CMR, and the following message was automatically reported to ASF:\n\n" + 
                         "\"\n" +
                         message + 
                         "\n\"" +

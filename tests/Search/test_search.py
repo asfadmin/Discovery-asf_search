@@ -1,9 +1,7 @@
 from numbers import Number
 from asf_search.ASFProduct import ASFProduct
-from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import INTERNAL
 from asf_search.search import search
-from asf_search.CMR import translate_opts
 from asf_search.ASFSearchResults import ASFSearchResults
 
 import requests_mock
@@ -38,5 +36,7 @@ def run_test_search(search_parameters, answer):
 def run_test_search_http_error(search_parameters, status_code: Number, report: str):
     with requests_mock.Mocker() as m:
         m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}})
+        m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", status_code=200, json={})
         
         search(**search_parameters)
+            
