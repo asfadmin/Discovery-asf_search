@@ -36,7 +36,7 @@ def run_test_search(search_parameters, answer):
 def run_test_search_http_error(search_parameters, status_code: Number, report: str):
     with requests_mock.Mocker() as m:
         m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}})
-        m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", status_code=200, json={})
+        m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", real_http=True)
         
         search(**search_parameters)
             
