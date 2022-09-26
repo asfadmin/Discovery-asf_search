@@ -156,7 +156,7 @@ def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: 
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(error_message)
 
-        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+        raise ASFServerError(error_message)
     
     return response
 
