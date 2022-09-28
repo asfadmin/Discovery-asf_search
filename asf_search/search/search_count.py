@@ -1,17 +1,18 @@
 import datetime
 from typing import Iterable, Tuple, Union
 from copy import copy
-from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR.subquery import build_subqueries
 from asf_search.CMR import translate_opts
 from asf_search.search.search import get_page, preprocess_opts
 from asf_search import INTERNAL
 
+
 def search_count(        
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         beamMode: Union[str, Iterable[str]] = None,
+        beamSwath: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
@@ -38,7 +39,7 @@ def search_count(
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
-) -> ASFSearchResults:
+) -> int:
     # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:
     kwargs = locals()
     opts = (ASFSearchOptions() if kwargs["opts"] is None else copy(opts))

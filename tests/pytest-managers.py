@@ -1,9 +1,10 @@
 from typing import Dict, List
+from asf_search import ASFSearchOptions
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
-from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_product_get_stack_options, run_test_stack
+from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_product_get_stack_options, run_test_stack
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
-from ASFProduct.test_ASFProduct import run_test_ASFProduct_Geo_Search, run_test_stack
+from ASFSearchResults.test_ASFSearchResults import run_test_output_format
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
@@ -16,6 +17,7 @@ from unittest.mock import patch
 import os
 import pathlib
 import yaml
+from tests.ASFSearchResults.test_ASFSearchResults import run_test_ASFSearchResults_intersection
 
 from tests.WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_simplify_aoi
 import requests
@@ -23,7 +25,7 @@ from tests.ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptio
 from tests.BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 
 from tests.download.test_download import run_test_download_url_auth_error
-
+from tests.Serialization.test_serialization import run_test_serialization
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
@@ -35,7 +37,7 @@ def test_ASFProduct(**args) -> None:
     """
     test_info = args["test_info"]
     geographic_response = get_resource(test_info["products"])
-    run_test_ASFProduct_Geo_Search(geographic_response)
+    run_test_ASFProduct(geographic_response)
 
 def test_ASFProduct_Stack(**args) -> None:
     """
@@ -379,6 +381,18 @@ def test_ASFSearchOptions_validator(**args) -> None:
 def test_ASFSearchOptions(**kwargs) -> None:
     run_test_ASFSearchOptions(**kwargs)
 
+def test_ASFSearchResults_intersection(**kwargs) -> None:
+    wkt = get_resource(kwargs['test_info']['wkt'])
+    run_test_ASFSearchResults_intersection(wkt)
+
+def test_serialization(**args) -> None:
+    test_info = args['test_info']
+    product = get_resource(test_info.get('product'))
+    results = get_resource(test_info.get('results'))
+    search_opts = get_resource(test_info.get('searchOpts'))
+    options = ASFSearchOptions(**search_opts if search_opts else {})
+
+    run_test_serialization(product, results, options)
 
 def test_notebook_examples(**args) -> None:
     test_info = args['test_info']
@@ -408,6 +422,16 @@ def safe_load_tuple(param):
             param = tuple(param['tuple'])
     
     return param
+
+def test_output_format(**args) -> None:
+    test_info = args['test_info']
+    
+    products = get_resource(test_info['results'])
+    if not isinstance(products, List):
+        products = [products]
+    results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in products])
+
+    run_test_output_format(results)
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
