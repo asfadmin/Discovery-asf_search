@@ -30,9 +30,13 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         # instead of the wkt for better responses from CMR 
         # This will provide better results with AOI's near poles
         if should_use_bbox(shape):
-            boundary = shape.boundary
-            bottom_left = [str(coord) for coord in boundary.bounds[:2]]
-            top_right = [str(coord) for coord in boundary.bounds[2:]]
+            bounds = shape.boundary.bounds
+            if bounds[0] > 180 or bounds[2] > 180:
+                bounds = [(x + 180) % 360 - 180 if idx % 2 == 0 and abs(x) > 180 else x for idx, x in enumerate(bounds)] 
+
+            bottom_left = [str(coord) for coord in bounds[:2]]
+            top_right = [str(coord) for coord in bounds[2:]]
+
             bbox = ','.join([*bottom_left, *top_right])
             dict_opts['bbox'] = bbox
         else:
@@ -199,6 +203,8 @@ def translate_product(item: dict) -> dict:
 
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 
+def get_additional_fields(umm, *field_path):
+    return get(umm, *field_path)
 
 def cast(f, v):
     try:

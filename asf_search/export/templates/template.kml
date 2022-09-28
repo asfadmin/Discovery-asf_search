@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>ASF Datapool Search Results</name>
+    <description>Search Performed: {{search_time}}</description>
+    <Style id="yellowLineGreenPoly">
+      <LineStyle>
+        <color>30ff8800</color>
+        <width>4</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>
+    {%- for r in results %}
+    <Placemark>
+      <name>{{r['sceneName']}}</name>
+      <description> &lt;![CDATA[
+        <h1>{{r['platform']}} ({{r['configurationName']}}), acquired {{r['sceneDate']}}</h1>
+        <h2>{{r['url']}}</h2>
+        <div style="position:absolute;left:20px;top:200px">
+          <h3>Metadata</h3>
+          <ul>
+            <li>Processing type: {{r['processingTypeDisplay']}}</li>
+            <li>Frame: {{r['frameNumber']}}</li>
+            <li>Path: {{r['pathNumber']}}</li>
+            <li>Orbit: {{r['orbit']}}</li>
+            <li>Start time: {{r['startTime']}}</li>
+            <li>End time: {{r['stopTime']}}</li>
+            {% if r['faradayRotation'] is defined %}
+            <li>Faraday Rotation: {{r['faradayRotation']}}</li>
+            {% endif %}
+            <li>Ascending/Descending: {{r['flightDirection']}}</li>
+            {% if r['offNadirAngle'] is defined %}
+            <li>Off Nadir Angle: {{r['offNadirAngle']}}</li>
+            {% endif %}
+            {% if r['pointingAngle'] is defined %}
+            <li>Pointing Angle: {{r['pointingAngle']}}</li>
+            {% endif %}
+            {% if includeBaseline %}
+            <li>Temporal Baseline: {{r['temporalBaseline']}}</li>
+            <li>Perpendicular Baseline: {{r['perpendicularBaseline']}}</li>
+            {% endif %}
+          </ul>
+        </div>
+        <div style="position:absolute;left:300px;top:250px">
+          <a href="{{r['browse'][0]}}">
+            <img src="{{r['thumbnailUrl']}}"/>
+          </a>
+        </div>
+      </description>
+      <styleUrl>#yellowLineGreenPoly</styleUrl>
+      <Polygon>
+        <extrude>1</extrude>
+        <altitudeMode>relativeToGround</altitudeMode>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>
+            {%- for p in r['shape'] %}
+              {{p['Longitude']}},{{p['Latitude']}},2000
+            {%- endfor %}
+            </coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>
+    {%- endfor %}
+  </Document>
+</kml>
