@@ -39,4 +39,5 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
     with requests_mock.Mocker() as m:
         m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}})
         
-        search(**search_parameters)
+        results = search(**search_parameters)
+        assert results is not None
