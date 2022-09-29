@@ -1,3 +1,4 @@
+import logging
 from typing import Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
@@ -113,9 +114,10 @@ def search(
     for query in build_subqueries(opts):
         translated_opts = translate_opts(query)
 
-        response, error = get_page(session=opts.session, url=url, translated_opts=translated_opts)
-        if error:
-            warnings.warn(str(error))
+        try:
+            response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+        except ASFError as e:
+            logging.error(str(e))
             opts.session.headers.pop('CMR-Search-After', None)
             return results
 
@@ -134,10 +136,11 @@ def search(
         while('CMR-Search-After' in response.headers):
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
-            response, error = get_page(session=opts.session, url=url, translated_opts=translated_opts)
-            if error:
-                warnings.warn(str(error))
-                # opts.session.headers.pop('CMR-Search-After', None)
+            try:
+                response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+            except ASFError as e:
+                logging.error(str(e))
+                opts.session.headers.pop('CMR-Search-After', None)
                 return results
 
             hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
@@ -151,10 +154,11 @@ def search(
         
         opts.session.headers.pop('CMR-Search-After', None)
 
-    # results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    results.searchComplete = True
     return results
 
-def get_page(session: ASFSession, url: str, translated_opts: list) -> Tuple[Response, ASFSearchError]:
+def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     max_retries = 3
     
     error = None
@@ -171,9 +175,9 @@ def get_page(session: ASFSession, url: str, translated_opts: list) -> Tuple[Resp
             else:
                 error= ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
         else:
-            return response, None
+            return response
     
-    return None, error
+    raise error
 
 
 def preprocess_opts(opts: ASFSearchOptions):
