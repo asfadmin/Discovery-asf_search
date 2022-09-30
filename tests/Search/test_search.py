@@ -1,10 +1,9 @@
 from numbers import Number
 from unittest.mock import Mock
+from asf_search import ASFSearchOptions
 from asf_search.ASFProduct import ASFProduct
-from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import INTERNAL
 from asf_search.search import search
-from asf_search.CMR import translate_opts
 from asf_search.ASFSearchResults import ASFSearchResults
 
 import requests_mock
@@ -41,7 +40,8 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
     
     if not len(search_parameters.keys()):
         with requests_mock.Mocker() as m:
-            m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}}) 
+            m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}})
+            m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", real_http=True)
             searchOptions = ASFSearchOptions(**search_parameters)
             results = search(opts=searchOptions)
             assert len(results) == 0
@@ -59,9 +59,13 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
     with requests_mock.Mocker() as m:
         m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", real_http=True)
         m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", additional_matcher=custom_matcher, status_code=status_code, json={'errors': {'report': report}})
+        m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", real_http=True)
+
         search_parameters['maxResults'] = INTERNAL.CMR_PAGE_SIZE + 1
         searchOptions = ASFSearchOptions(**search_parameters)
         results = search(opts=searchOptions)
         
         assert results is not None
         assert 0 < len(results) <= INTERNAL.CMR_PAGE_SIZE
+
+            
