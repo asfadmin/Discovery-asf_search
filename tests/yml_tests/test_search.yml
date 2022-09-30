@@ -27,7 +27,7 @@ tests:
     report: "Client Error"
 
 - test-ASFSearch-search-error 400-Error non-empty-results:
-    parameters: 
+    parameters:
         platform: "Sentinel-1"
     status_code: 400
     report: "Client Error"
@@ -38,7 +38,7 @@ tests:
     report: "Server Error"
 
 - test-ASFSearch-search-error 500-Error non-empty-results:
-    parameters: 
+    parameters:
         platform: "Sentinel-1"
     status_code: 500
     report: "Server Error"
