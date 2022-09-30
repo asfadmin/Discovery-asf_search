@@ -16,7 +16,7 @@ from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFServerError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
-
+from asf_search.search.CMR.error_reporting.search_error_reporting import report_search_error
 
 def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
@@ -113,7 +113,7 @@ def search(
     for query in build_subqueries(opts):
         translated_opts = translate_opts(query)
 
-        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
 
         hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
 
@@ -127,7 +127,7 @@ def search(
         while('CMR-Search-After' in response.headers):
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
-            response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+            response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
 
             hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
             
@@ -143,16 +143,18 @@ def search(
     results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     return results
 
-def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
+def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
     response = session.post(url=url, data=translated_opts)
     try:
         response.raise_for_status()
     except HTTPError:
+        error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
+        report_search_error(search_opts, error_message)
+
         if 400 <= response.status_code <= 499:
-            raise ASFSearch4xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+            raise ASFSearch4xxError(error_message)
         if 500 <= response.status_code <= 599:
-            raise ASFSearch5xxError(f'HTTP {response.status_code}: {response.json()["errors"]}')
-        raise ASFServerError(f'HTTP {response.status_code}: {response.json()["errors"]}')
+            raise ASFSearch5xxError(error_message)
     
     return response
 
