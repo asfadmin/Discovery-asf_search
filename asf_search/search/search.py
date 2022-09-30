@@ -160,6 +160,7 @@ def search(
 
 def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
     max_retries = 3
+    error_message = ''
 
     for _ in range(max_retries):
         response = session.post(url=url, data=translated_opts)
@@ -168,7 +169,6 @@ def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: 
             response.raise_for_status()
         except HTTPError:
             error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
-            report_search_error(search_opts, error_message)
             if 400 <= response.status_code <= 499:
                 error = ASFSearch4xxError(error_message)
             if 500 <= response.status_code <= 599:
@@ -176,6 +176,7 @@ def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: 
         else:
             return response
     
+    report_search_error(search_opts, error_message)
     raise error
 
 
