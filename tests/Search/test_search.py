@@ -1,13 +1,16 @@
 from numbers import Number
-from unittest.mock import Mock
 from asf_search import ASFSearchOptions
 from asf_search.ASFProduct import ASFProduct
 from asf_search.constants import INTERNAL
+from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
 
-import requests_mock
 import requests
+
+from pytest import raises
+
+import requests_mock
 
 def run_test_ASFSearchResults(search_resp):
     search_results = ASFSearchResults([ASFProduct(product) for product in search_resp])
@@ -45,6 +48,8 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
             searchOptions = ASFSearchOptions(**search_parameters)
             results = search(opts=searchOptions)
             assert len(results) == 0
+            with raises(ASFSearchError):
+                results.raise_if_incomplete()
             return
 
     # If we're not doing an empty search we want to fire off one real query to CMR, then interrupt it with an error
@@ -67,5 +72,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         
         assert results is not None
         assert 0 < len(results) <= INTERNAL.CMR_PAGE_SIZE
+        with raises(ASFSearchError):
+            results.raise_if_incomplete()
 
             
