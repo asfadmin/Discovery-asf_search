@@ -2,6 +2,7 @@ from collections import UserList
 from multiprocessing import Pool
 import json
 from asf_search import ASFSession, ASFSearchOptions
+from asf_search.exceptions import ASFSearchError
 from asf_search.export import output_translators
 
 
@@ -11,6 +12,7 @@ class ASFSearchResults(UserList):
         # Store it JUST so the user can access it (There might be zero products)
         # Each product will use their own reference to opts (but points to the same obj)
         self.searchOptions = opts
+        self.searchComplete = False
 
     def geojson(self):
         return {
@@ -61,7 +63,10 @@ class ASFSearchResults(UserList):
             pool.map(_download_product, args)
             pool.close()
             pool.join()
-
+        
+    def raise_if_incomplete(self):
+        if not self.searchComplete:
+            raise ASFSearchError("Results are incomplete due to a search error. See logging for more details.")
 
 def _download_product(args):
     product, path, session = args
