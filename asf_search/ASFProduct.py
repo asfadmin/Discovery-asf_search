@@ -5,7 +5,7 @@ from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions 
 from asf_search.download import download_url
 from asf_search.CMR import translate_product
-
+from remotezip import RemoteZip
 
 class ASFProduct:
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -87,3 +87,6 @@ class ASFProduct:
             unwrapped_coords = [a for a in coords]
 
         return Polygon(unwrapped_coords).centroid
+
+    def remotezip(self, session: ASFSession):
+        return RemoteZip(self.properties['url'], session=session)
