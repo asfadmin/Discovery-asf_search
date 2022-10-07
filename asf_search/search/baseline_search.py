@@ -36,8 +36,11 @@ def stack_from_product(
     stack_opts = get_stack_opts(reference, opts=opts)
 
     stack = search(opts=stack_opts)
+    is_complete = stack.searchComplete
+
     stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
-    # calc_temporal_baselines(reference, stack)
+    stack.searchComplete = is_complete # preserve final outcome of earlier search()
+
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     return stack
