@@ -17,7 +17,7 @@ from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFError, ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, ASFServerError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
-from asf_search.search.CMR.error_reporting.search_error_reporting import report_search_error
+from asf_search.search.error_reporting import report_search_error
 
 def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
