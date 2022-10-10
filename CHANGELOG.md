@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+------
+## [5.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v5.1.0...v5.1.1)
+### Changed
+- `CMR_PAGE_SIZE` reduced from 2000 to 500
+
+------
 ## [5.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v5.0.2...v5.1.0)
 ### Added
 - Adds export support to ASFSearchResults for `csv`, `jsonlite`, `jsonlite2`, `kml`, `metalink`
