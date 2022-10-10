@@ -24,9 +24,21 @@ tests:
 - test-ASFSearch-search-error 400-Error:
     parameters: *empty_parameters
     status_code: 400
-    report: "Client Error"
+    report: "Client Error: This is a Test Error"
+
+- test-ASFSearch-search-error 400-Error non-empty-results:
+    parameters:
+        platform: "Sentinel-1"
+    status_code: 400
+    report: "Client Error: This is a Test Error"
 
 - test-ASFSearch-search-error 500-Error:
     parameters: *empty_parameters
     status_code: 500
-    report: "Server Error"
+    report: "Server Error: This is a Test Error"
+
+- test-ASFSearch-search-error 500-Error non-empty-results:
+    parameters:
+        platform: "Sentinel-1"
+    status_code: 500
+    report: "Server Error: This is a Test Error"

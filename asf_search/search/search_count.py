@@ -61,6 +61,6 @@ def search_count(
         idx = translated_opts.index(('page_size', INTERNAL.CMR_PAGE_SIZE))
         translated_opts[idx] = ('page_size', 0)
         
-        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
         count += response.json()['hits']
     return count
