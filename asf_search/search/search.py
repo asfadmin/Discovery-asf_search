@@ -7,17 +7,15 @@ import datetime
 import dateparser
 import warnings
 
-from asf_search import __version__
-
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
-from asf_search.exceptions import ASFError, ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, ASFServerError
+from asf_search.exceptions import ASFError, ASFSearch4xxError, ASFSearch5xxError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
-from asf_search.search.CMR.error_reporting.search_error_reporting import report_search_error
+from asf_search.search.error_reporting import report_search_error
 
 def search(
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
