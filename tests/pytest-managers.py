@@ -218,12 +218,8 @@ def test_ASFSearch_Search_Error(**args) -> None:
     parameters = test_info["parameters"]
     report = test_info["report"]
     error_code = test_info["status_code"]
-    if error_code == 400:
-        with raises(ASFSearch4xxError):
-            run_test_search_http_error(parameters, error_code, report)
-    if error_code == 500:
-        with raises(ASFSearch5xxError):
-            run_test_search_http_error(parameters, error_code, report)
+
+    run_test_search_http_error(parameters, error_code, report)
 
 def test_wkt_validation_Invalid_WKT_Error(**args) -> None:
     """
