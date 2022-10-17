@@ -5,7 +5,7 @@ import urllib.parse
 from requests.exceptions import HTTPError
 import warnings
 
-from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError, ASFSearch4xxError
+from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError
 from asf_search import ASFSession
 from remotezip import RemoteZip
 

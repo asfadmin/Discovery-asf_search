@@ -7,7 +7,6 @@ from asf_search.download import download_url
 from asf_search.CMR import translate_product
 from remotezip import RemoteZip
 
-import urllib.parse
 
 class ASFProduct:
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
