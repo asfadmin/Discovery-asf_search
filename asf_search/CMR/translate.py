@@ -6,12 +6,14 @@ import re
 from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
-from .field_map import field_map
 
+from asf_search.constants import PRODUCT_TYPE # import METADATA_SLC, METADATA_SLC_BURST
+from .field_map import field_map
+from asf_search.constants.COLLECTIONS import COLLECTIONS_BY_PLATFORM
 import logging
 
 
-def translate_opts(opts: ASFSearchOptions) -> list:
+def translate_opts(opts: ASFSearchOptions, useCollections: bool) -> list:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
@@ -58,6 +60,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
                 if key in ['granule_list', 'product_list']:
                     for y in x.split(','):
                         cmr_opts.append((key, y))
+                elif key == 'platform' and useCollections:
+                    concept_ids = [collection['concept-id'] for collection in COLLECTIONS_BY_PLATFORM[x]]
+                    for concept_id in concept_ids:
+                        cmr_opts.append(('collection_concept_id[]', concept_id))
                 else:
                     if isinstance(x, tuple):
                         cmr_opts.append((key, ','.join([str(t) for t in x])))                    
@@ -67,7 +73,8 @@ def translate_opts(opts: ASFSearchOptions) -> list:
             cmr_opts.append((key, val))
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
-        cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
+        if opt[0] != 'collection_concept_id[]':
+            cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
 
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
@@ -80,9 +87,8 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         ('options[platform][ignore_case]', 'true'),
         ('provider', opts.provider),
     ]
-    
-    cmr_opts.extend(additional_keys)
 
+    cmr_opts.extend(additional_keys)
     return cmr_opts
 
 
@@ -200,6 +206,17 @@ def translate_product(item: dict) -> dict:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
     else:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0))
+    
+    
+    if get(umm, 'CollectionReference', 'ShortName') == 'Sentinel-1_Burst_Map':
+        burst = {
+            'absoluteID': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_FULL'), 'Values', 0),
+            'relativeID': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_RELATIVE'), 'Values', 0)),
+            'timeFromAnxSec': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'TIME_FROM_ANX_SEC'), 'Values', 0)),
+        }
+        
+        properties['burst'] = burst
+        
 
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 

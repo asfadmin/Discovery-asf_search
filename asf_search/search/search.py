@@ -50,6 +50,7 @@ def search(
         start: Union[datetime.datetime, str] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
+        useCollections: bool = False,
 ) -> ASFSearchResults:
     """
     Performs a generic search using the ASF SearchAPI. Accepts a number of search parameters, and/or an ASFSearchOptions object. If an ASFSearchOptions object is provided as well as other specific parameters, the two sets of options will be merged, preferring the specific keyword arguments.
@@ -90,6 +91,10 @@ def search(
 
     # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:
     kwargs = locals()
+    if 'useCollections' in kwargs.keys():
+        useCollections = kwargs['useCollections']
+        del kwargs['useCollections']
+
     opts = (ASFSearchOptions() if kwargs["opts"] is None else copy(opts))
     del kwargs["opts"]
 
@@ -112,7 +117,7 @@ def search(
     results = ASFSearchResults(opts=opts)
 
     for query in build_subqueries(opts):
-        translated_opts = translate_opts(query)
+        translated_opts = translate_opts(query, useCollections)
 
         try:
             response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
