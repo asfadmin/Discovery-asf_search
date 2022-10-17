@@ -96,13 +96,6 @@ class ASFProduct:
         
         :param session: an authenticated ASFSession
         """
-        
-        def strip_auth_if_aws(r, *args, **kwargs):
-            if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc:
-                location = r.headers['location']
-                r.headers.clear()
-                r.headers['location'] = location
+        from .download.download import remotezip
 
-        session.hooks['response'].append(strip_auth_if_aws)
-
-        return RemoteZip(self.properties['url'], session=session)
+        return remotezip(self.properties['url'], session=session)

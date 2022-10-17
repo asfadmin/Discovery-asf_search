@@ -7,7 +7,7 @@ import warnings
 
 from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError, ASFSearch4xxError
 from asf_search import ASFSession
-
+from remotezip import RemoteZip
 
 def _download_url(arg):
     url, path, session = arg
@@ -65,13 +65,6 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     if session is None:
         session = ASFSession()
 
-
-    def strip_auth_if_aws(r, *args, **kwargs):
-        if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc:
-            location = r.headers['location']
-            r.headers.clear()
-            r.headers['location'] = location
-
     response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
 
     try:
@@ -85,3 +78,18 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     with open(os.path.join(path, filename), 'wb') as f:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
+
+def remotezip(url: str, session: ASFSession) -> RemoteZip:
+    """
+    :param url: the url to the zip product
+    :param session: the authenticated ASFSession to read and download from the zip file
+    """
+
+    session.hooks['response'].append(strip_auth_if_aws)
+    return RemoteZip(url, session=session)
+
+def strip_auth_if_aws(r, *args, **kwargs):
+    if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc:
+        location = r.headers['location']
+        r.headers.clear()
+        r.headers['location'] = location
