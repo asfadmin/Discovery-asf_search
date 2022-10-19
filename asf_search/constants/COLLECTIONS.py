@@ -95,18 +95,6 @@ COLLECTIONS_BY_PLATFORM = {
             "concept-id": "C1209373626-ASF"
         }
     ],
-    "Sentinel-1A": [
-        {
-            "collection": "Global Sentinel-1 Burst ID Map",
-            "concept-id": "C2450786986-ASF"
-        }
-    ],
-    "Sentinel-1B": [
-        {
-            "collection": "Global Sentinel-1 Burst ID Map",
-            "concept-id": "C2450786986-ASF"
-        }
-    ],
     "JERS-1": [
         {
             "collection": "JERS-1_LEVEL0",
