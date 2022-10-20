@@ -203,11 +203,15 @@ def translate_product(item: dict) -> dict:
 
     if properties['processingLevel'] == 'BURST':
         burst = {
-            'absoluteID': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0),
+            'absoluteID': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0)),
             'relativeID': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_RELATIVE'), 'Values', 0)),
-            # 'timeFromAnxSec': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'TIME_FROM_ANX_SEC'), 'Values', 0)),
             'fullID': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_FULL'), 'Values', 0),
+            'burstIndex': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_INDEX'), 'Values', 0)),
+            'linesPerBurst': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'LINES_PER_BURST'), 'Values', 0)), 
+            'samplesPerBurst': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'SAMPLES_PER_BURST'), 'Values', 0)),
             'subswath': get(umm, 'AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0),
+            'burstAnxTimeDelta': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ANX_TIME_DELTA'), 'Values', 0)),
+            'burstAnxTime': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ANX_TIME'), 'Values', 0),
         }
         properties['burst'] = burst
 
