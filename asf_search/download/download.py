@@ -8,6 +8,9 @@ import warnings
 from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError, ASFSearch4xxError
 from asf_search import ASFSession
 
+#from pathlib import Path
+#import ipywidgets
+from tqdm.auto import tqdm
 
 def _download_url(arg):
     url, path, session = arg
@@ -16,11 +19,9 @@ def _download_url(arg):
         path=path,
         session=session)
 
-
 def download_urls(urls: Iterable[str], path: str, session: ASFSession = None, processes: int = 1):
     """
     Downloads all products from the specified URLs to the specified location.
-
     :param urls: List of URLs from which to download
     :param path: Local path in which to save the product
     :param session: The session to use, in most cases should be authenticated beforehand
@@ -41,39 +42,30 @@ def download_urls(urls: Iterable[str], path: str, session: ASFSession = None, pr
         pool.join()
 
 
-def download_url(url: str, path: str, filename: str = None, session: ASFSession = None) -> None:
+def download_url(url: str, path: str, filename: str = None, session: ASFSession = None ) -> None:
     """
     Downloads a product from the specified URL to the specified location and (optional) filename.
-
     :param url: URL from which to download
     :param path: Local path in which to save the product
     :param filename: Optional filename to be used, extracted from the URL by default
     :param session: The session to use, in most cases should be authenticated beforehand
     :return:
     """
-
     if filename is None:
         filename = os.path.split(urllib.parse.urlparse(url).path)[1]
-
     if not os.path.isdir(path):
         raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
-
     if os.path.isfile(os.path.join(path, filename)):
         warnings.warn(f'File already exists, skipping download: {os.path.join(path, filename)}')
         return
-
     if session is None:
         session = ASFSession()
-
-
     def strip_auth_if_aws(r, *args, **kwargs):
         if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc:
             location = r.headers['location']
             r.headers.clear()
             r.headers['location'] = location
-
     response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
-
     try:
         response.raise_for_status()
     except HTTPError as e:
@@ -82,6 +74,11 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
         
         raise e   
 
-    with open(os.path.join(path, filename), 'wb') as f:
-        for chunk in response.iter_content(chunk_size=8192):
+    #with open(os.path.join(path, filename), 'wb') as f:
+    with tqdm.wrapattr(open(os.path.join(path, filename),'wb'), 
+                        'write', miniters=1, 
+                        desc=filename,
+                        total=int(response.headers.get('content-length', 0))) as f:
+        #for chunk in response.iter_content(chunk_size=8192):
+        for chunk in response.iter_content(chunk_size=31457280):
             f.write(chunk)
