@@ -195,7 +195,7 @@ def translate_product(item: dict) -> dict:
     if properties['platform'] is None:
         properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
 
-    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS']
+    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B']
     if properties['platform'] in asf_frame_platforms:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
     else:
