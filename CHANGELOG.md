@@ -34,11 +34,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `ASFSearchResults` now has `raise_if_incomplete()` method, raises `ASFSearchError()` if a search encountered an error and was unable to return all results from CMR
 - `ASFProduct` now has a `remotezip()` method, which takes a user's pre-authenticated `ASFSession` and returns a `RemoteZip` object. This can be used to list and download specific files from a product's zip archive, rather than the whole zip file. 
   - Example available in /examples/5-Download.ipynb
-  - see https://github.com/gtsystem/python-remotezip for further details on how to use the `RemoteZip` class
-- Adds `3FP` product type constant `THREEFP`
+  - see https://github.com/gtsystem/python-remotezip for further details on how to use the `RemoteZip` class.
+- Adds `3FP` product type constant `THREEFP`.
 
 ### Changed
-- `search()` will retry request to CMR 3 times, and return previously gathered results if all retries fail. An error will be logged warning the user and the returned results will be marked as incomplete
+- `search()` no longer raises search errors. Instead, `search()` will retry the request 3 times. If all 3 attempts fail:
+  -  `search()` will return all the results it managed to find instead of raising an error.
+  -  An error will be logged warning the user, and the returned results will be marked as incomplete. Use `raise_if_incomplete()` to raise an error when the returned `ASFSearchResults` are incomplete.
 
 ------
 ## [5.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v5.1.0...v5.1.2)
