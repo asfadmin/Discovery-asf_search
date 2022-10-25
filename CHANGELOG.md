@@ -32,6 +32,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Search errors are now automatically reported to ASF, users can opt out by changing `asf_search.REPORT_ERRORS` after import
   - Example and information available in "Usage" section of /examples/1-Basic_Overview.ipynb
 - `ASFSearchResults` now has `raise_if_incomplete()` method, raises `ASFSearchError()` if a search encountered an error and was unable to return all results from CMR
+- `ASFProduct` now has a `remotezip()` method, which takes a user's pre-authenticated `ASFSession` and returns a `RemoteZip` object. This can be used to list and download specific files from a product's zip archive, rather than the whole zip file. 
+  - Example available in /examples/5-Download.ipynb
+  - see https://github.com/gtsystem/python-remotezip for further details on how to use the `RemoteZip` class
 
 ### Changed
 - `search()` will retry request to CMR 3 times, and return previously gathered results if all retries fail. An error will be logged warning the user and the returned results will be marked as incomplete
