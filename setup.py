@@ -10,7 +10,7 @@ requirements = [
     "numpy",
     "dateparser",
     "jinja2",
-    "remotezip"
+    "remotezip >= 0.10.0"
 ]
 
 test_requirements = [
