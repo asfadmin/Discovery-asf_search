@@ -9,7 +9,8 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "jinja2"
+    "jinja2",
+    "remotezip >= 0.10.0"
 ]
 
 test_requirements = [

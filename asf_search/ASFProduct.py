@@ -5,6 +5,7 @@ from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions 
 from asf_search.download import download_url
 from asf_search.CMR import translate_product
+from remotezip import RemoteZip
 
 
 class ASFProduct:
@@ -87,3 +88,13 @@ class ASFProduct:
             unwrapped_coords = [a for a in coords]
 
         return Polygon(unwrapped_coords).centroid
+
+    def remotezip(self, session: ASFSession) -> RemoteZip:
+        """Returns a RemoteZip object which can be used to download a part of an ASFProduct's zip archive.
+        (See example in examples/5-Download.ipynb)
+        
+        :param session: an authenticated ASFSession
+        """
+        from .download.download import remotezip
+
+        return remotezip(self.properties['url'], session=session)
