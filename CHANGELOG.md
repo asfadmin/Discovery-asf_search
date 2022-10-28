@@ -35,7 +35,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `ASFProduct` now has a `remotezip()` method, which takes a user's pre-authenticated `ASFSession` and returns a `RemoteZip` object. This can be used to list and download specific files from a product's zip archive, rather than the whole zip file. 
   - Example available in /examples/5-Download.ipynb
   - see https://github.com/gtsystem/python-remotezip for further details on how to use the `RemoteZip` class.
-- Adds `3FP` product type constant `THREEFP`.
+- Adds `GRD_FD`, `PROJECTED_ML3X3`, `THREEFP` product type constants.
 
 ### Changed
 - `search()` no longer raises search errors. Instead, `search()` will retry the request 3 times. If all 3 attempts fail:
