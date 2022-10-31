@@ -38,8 +38,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Adds `GRD_FD`, `PROJECTED_ML3X3`, `THREEFP` product type constants.
 
 ### Changed
-- `search()` no longer raises search errors. Instead, `search()` will retry the request 3 times. If all 3 attempts fail:
-  -  `search()` will return all the results it managed to find instead of raising an error.
+- While returning results, `search()` will no longer throw. Instead, `search()` will retry the request 3 times. If all 3 attempts fail:
+  -  `search()` will return the results it found before the search error
   -  An error will be logged warning the user, and the returned results will be marked as incomplete. Use `raise_if_incomplete()` to raise an error when the returned `ASFSearchResults` are incomplete.
 
 ------
