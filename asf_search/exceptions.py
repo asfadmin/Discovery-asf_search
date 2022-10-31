@@ -34,3 +34,6 @@ class ASFWKTError(ASFError):
 
 class CMRError(Exception):
     """Base CMR Exception"""
+
+class CMRConceptIDError(CMRError):
+    """Raise when CMR encounters a concept-id error"""
