@@ -53,7 +53,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         # If it's "session" or something else CMR doesn't accept, don't send it:
         if key not in field_map:
             continue
-        if isinstance(val, list):
+        if isinstance(val, list) and field_map[key].get('attr') == None:
             for x in val:
                 if key in ['granule_list', 'product_list']:
                     for y in x.split(','):
@@ -66,13 +66,28 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         else:
             cmr_opts.append((key, val))
     # translate the above tuples to CMR key/values
+    
+    xml_queries = []
     for i, opt in enumerate(cmr_opts):
-        cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
+        if field_map[opt[0]].get('attr'):
+            if type(opt[1]) is list:
+                xml_queries.append(to_aql_attribute_field(opt[1], field_map[opt[0]].get('attr')))
+            else:
+                xml_queries.append(to_aql_attribute_field([opt[1]], field_map[opt[0]].get('attr')))
+        else:
+            if type(opt[1]) is list:
+                xml_queries.append(to_aql_attribute_field(opt[1], field_map[opt[0]]['key']))
+            else:
+                if opt[0] in ['polygon', 'point', 'line']:
+                    xml_queries.append(wkt_to_spatial(field_map[opt[0]]['key'], opt[1]))    
+                else:
+                    xml_queries.append(to_aql_attribute_field([opt[1]], field_map[opt[0]]['key']))
+        # cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
 
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
 
-    additional_keys = [
+    url_param_keys = [
         ('page_size', CMR_PAGE_SIZE),
         ('options[temporal][and]', 'true'), 
         ('sort_key[]', '-end_date'), 
@@ -81,10 +96,28 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         ('provider', opts.provider),
     ]
     
-    cmr_opts.extend(additional_keys)
+    # for data in [val for val in field_map.values() if val.has('attr') != None]:
+    #     print data
+    # cmr_opts.extend(additional_keys)
 
-    return cmr_opts
+    return xml_queries, url_param_keys
 
+def to_aql_attribute_field(param_list: List, attribute_name: str):
+    return f'<additionalAttribute><additionalAttributeName>{attribute_name.upper()}</additionalAttributeName><additionalAttributeValue><list>' + ''.join(list(map(lambda param: '<value>{0}</value>'.format(param), param_list))) + '</list></additionalAttributeValue></additionalAttribute>'
+
+def wkt_to_spatial(param: str, val):
+    key = 'IIMSPoint'
+    if param == 'point':
+        key = 'IIMSPoint'
+        long, lat  = val.split(',')
+        # long = f'<lat>{long}</lat>'
+        # lat = f'<long>{lat}</long>'
+        return f'<granuleCondition><spatial><IIMSPoint lat=\'{lat}\' long=\'{long}\'></IIMSPoint></spatial></granuleCondition>'
+    elif param == 'polygon':
+        key = 'IIMSPolygon'
+    elif param == 'line':
+        key = 'IIMSLine'
+    
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']

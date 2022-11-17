@@ -111,48 +111,52 @@ def search(
 
     results = ASFSearchResults(opts=opts)
 
-    for query in build_subqueries(opts):
-        translated_opts = translate_opts(query)
+    # for query in build_subqueries(opts):
+    xml_query, additional_params = translate_opts(opts)
+
+    try:
+        response = get_page(session=opts.session, url=url, translated_opts=xml_query, search_opts=opts)
+    except ASFError as e:
+        logging.error(str(e))
+        opts.session.headers.pop('CMR-Search-After', None)
+        return results
+
+    hits = [ASFProduct(f, session=opts.session) for f in response.json()['items']]
+
+    if 'CMR-Search-After' in response.headers:
+        opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
+
+    if maxResults != None:
+        results.extend(hits[:min(maxResults - len(results), len(hits))])
+        if len(results) == maxResults:
+            opts.session.headers.pop('CMR-Search-After', None)
+
+            results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+            results.searchComplete = True
+            return results
+    else:
+        results.extend(hits)
+
+    while('CMR-Search-After' in response.headers):
+        opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
         try:
-            response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
+            response = get_page(session=opts.session, url=url, translated_opts=xml_query, search_opts=opts)
         except ASFError as e:
             logging.error(str(e))
             opts.session.headers.pop('CMR-Search-After', None)
             return results
 
-        hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
-
-        if 'CMR-Search-After' in response.headers:
-            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
-
+        hits = [ASFProduct(f, session=opts.session) for f in response.json()['items']]
+        
         if maxResults != None:
             results.extend(hits[:min(maxResults - len(results), len(hits))])
             if len(results) == maxResults:
                 break
         else:
             results.extend(hits)
-
-        while('CMR-Search-After' in response.headers):
-            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
-
-            try:
-                response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-            except ASFError as e:
-                logging.error(str(e))
-                opts.session.headers.pop('CMR-Search-After', None)
-                return results
-
-            hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
-            
-            if maxResults != None:
-                results.extend(hits[:min(maxResults - len(results), len(hits))])
-                if len(results) == maxResults:
-                    break
-            else:
-                results.extend(hits)
-        
-        opts.session.headers.pop('CMR-Search-After', None)
+    
+    opts.session.headers.pop('CMR-Search-After', None)
 
     results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     results.searchComplete = True
@@ -161,9 +165,30 @@ def search(
 def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
     max_retries = 3
     error_message = ''
+    
+    platform = '<granuleCondition><additionalAttributes operator="OR">'
+    spatial = None
+    for idx, opt in enumerate(translated_opts):
+        if 'ASF_PLATFORM' in opt:
+            platform += translated_opts.pop(idx) + '</additionalAttributes></granuleCondition>'
+            break
 
+    for idx, opt in enumerate(translated_opts):
+        if 'spatial' in opt:
+            spatial = translated_opts.pop(idx)
+            break
+        
+    data = '<?xml version="1.0" encoding="UTF-8"?> \
+    <query><for value="granules"/><dataCenterId><value>ASF</value></dataCenterId> \
+        <where> \
+            <granuleCondition><additionalAttributes operator="AND">{0}</additionalAttributes></granuleCondition>'.format(''.join(translated_opts)) \
+                + (spatial if spatial != None else '') + platform + \
+         '</where> \
+    </query>'
+
+    # session.headers.update({'Content-Type': 'application/xml'})
     for _ in range(max_retries):
-        response = session.post(url=url, data=translated_opts)
+        response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={INTERNAL.CMR_PAGE_SIZE}', data=data)
 
         try:
             response.raise_for_status()

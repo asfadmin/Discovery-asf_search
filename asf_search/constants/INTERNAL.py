@@ -4,6 +4,7 @@ CMR_HOST = 'cmr.earthdata.nasa.gov'
 CMR_FORMAT_EXT = 'umm_json_v1_4'
 CMR_GRANULE_PATH = f'/search/granules.{CMR_FORMAT_EXT}'
 CMR_COLLECTIONS_PATH = f'/search/collections.{CMR_FORMAT_EXT}'
+CMR_CONCEPTS_PATH = f'/search/concepts/search.{CMR_FORMAT_EXT}'
 CMR_HEALTH_PATH = f'/search/health'
 CMR_PAGE_SIZE = 500
 EDL_HOST = 'urs.earthdata.nasa.gov'
