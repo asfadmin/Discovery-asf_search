@@ -9,7 +9,7 @@ from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 
 import logging
-
+from .aql_map import aql_field_map
 
 def translate_opts(opts: ASFSearchOptions) -> list:
     # Need to add params which ASFSearchOptions cant support (like temporal),
@@ -67,22 +67,15 @@ def translate_opts(opts: ASFSearchOptions) -> list:
             cmr_opts.append((key, val))
     # translate the above tuples to CMR key/values
     
-    xml_queries = []
+    cmr_defined_fields = []
+    additional_attributes = []
     for i, opt in enumerate(cmr_opts):
-        if field_map[opt[0]].get('attr'):
-            if type(opt[1]) is list:
-                xml_queries.append(to_aql_attribute_field(opt[1], field_map[opt[0]].get('attr')))
+        if aql_field_map[opt[0]].get('conv'):
+            k = aql_field_map[opt[0]]
+            if k.get('key') == 'attribute[]':
+                additional_attributes.append(k.get('conv')(opt[1], k.get('attr', k.get('key'))))
             else:
-                xml_queries.append(to_aql_attribute_field([opt[1]], field_map[opt[0]].get('attr')))
-        else:
-            if type(opt[1]) is list:
-                xml_queries.append(to_aql_attribute_field(opt[1], field_map[opt[0]]['key']))
-            else:
-                if opt[0] in ['polygon', 'point', 'line']:
-                    xml_queries.append(wkt_to_spatial(field_map[opt[0]]['key'], opt[1]))    
-                else:
-                    xml_queries.append(to_aql_attribute_field([opt[1]], field_map[opt[0]]['key']))
-        # cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
+                cmr_defined_fields.append(k.get('conv')(opt[1], k.get('attr', k.get('key'))))
 
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
@@ -100,24 +93,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     #     print data
     # cmr_opts.extend(additional_keys)
 
-    return xml_queries, url_param_keys
-
-def to_aql_attribute_field(param_list: List, attribute_name: str):
-    return f'<additionalAttribute><additionalAttributeName>{attribute_name.upper()}</additionalAttributeName><additionalAttributeValue><list>' + ''.join(list(map(lambda param: '<value>{0}</value>'.format(param), param_list))) + '</list></additionalAttributeValue></additionalAttribute>'
-
-def wkt_to_spatial(param: str, val):
-    key = 'IIMSPoint'
-    if param == 'point':
-        key = 'IIMSPoint'
-        long, lat  = val.split(',')
-        # long = f'<lat>{long}</lat>'
-        # lat = f'<long>{lat}</long>'
-        return f'<granuleCondition><spatial><IIMSPoint lat=\'{lat}\' long=\'{long}\'></IIMSPoint></spatial></granuleCondition>'
-    elif param == 'polygon':
-        key = 'IIMSPolygon'
-    elif param == 'line':
-        key = 'IIMSLine'
-    
+    return additional_attributes, cmr_defined_fields, url_param_keys
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
