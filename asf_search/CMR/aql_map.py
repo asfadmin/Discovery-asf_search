@@ -28,16 +28,16 @@ def to_temporal(val, key):
     endDay = endDay.split('T')[0]
     return f'<granuleCondition><{key}>' + ('' if startDate == None else  f'<startDate><Date YYYY=\"{startyear}\" MM=\"{startMonth}\" DD=\"{startDay}\"></Date></startDate>') + ('' if endDate == None else  f'<stopDate><Date YYYY=\"{endYear}\" MM=\"{endMonth}\" DD=\"{endDay}\"></Date></stopDate>') + f'</{key}></granuleCondition>'
 
-def to_defined_aql_field(param, key):
+def to_defined_aql_field(param, key, operator=None):
     # for non-additional attribute format (CMR defined fields)
     if not type(param) is list:
         param = [param]
     values = ''.join(list(map(lambda p: '<value>{0}</value>'.format(p), param)))
 
-    return f'<granuleCondition><{key}><list>'  + values + f'</list></{key}></granuleCondition>'
+    return f'<granuleCondition><{key}' + ((f' operator=' + f'\"{operator}\"') if operator else '') + '><list>'  + values + f'</list></{key}></granuleCondition>'
 
 def to_platform_field(val, key):
-    return to_defined_aql_field(val, key)
+    return to_defined_aql_field(val, key, 'OR')
 
 aql_field_map = {
     # API parameter               CMR keyword                       CMR format strings

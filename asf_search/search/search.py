@@ -126,6 +126,9 @@ def search(
     if 'CMR-Search-After' in response.headers:
         opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
+    if maxResults == None:
+        maxResults = response.json()['hits']
+    
     if maxResults != None or len(hits) == response.json()['hits']:
         results.extend(hits[:min(maxResults - len(results), len(hits))])
         if len(results) == maxResults or len(results) == response.json()['hits']:
