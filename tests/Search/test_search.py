@@ -12,6 +12,9 @@ from pytest import raises
 
 import requests_mock
 
+
+param_path =  f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={INTERNAL.CMR_PAGE_SIZE}'
+            
 def run_test_ASFSearchResults(search_resp):
     search_results = ASFSearchResults([ASFProduct(product) for product in search_resp])
 
@@ -30,7 +33,7 @@ def run_test_ASFSearchResults(search_resp):
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
-        m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", json={'items': answer})
+        m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_CONCEPTS_PATH}{param_path}", json={'items': answer})
         response = search(**search_parameters)
 
         if search_parameters.get("maxResults", False):
@@ -43,7 +46,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
     
     if not len(search_parameters.keys()):
         with requests_mock.Mocker() as m:
-            m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}})
+            m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_CONCEPTS_PATH}{param_path}", status_code=status_code, json={'errors': {'report': report}})
             m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", real_http=True)
             searchOptions = ASFSearchOptions(**search_parameters)
             results = search(opts=searchOptions)
@@ -62,8 +65,8 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         return None
 
     with requests_mock.Mocker() as m:
-        m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", real_http=True)
-        m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", additional_matcher=custom_matcher, status_code=status_code, json={'errors': {'report': report}})
+        m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_CONCEPTS_PATH}{param_path}", real_http=True)
+        m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_CONCEPTS_PATH}{param_path}", additional_matcher=custom_matcher, status_code=status_code, json={'errors': {'report': report}})
         m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", real_http=True)
 
         search_parameters['maxResults'] = INTERNAL.CMR_PAGE_SIZE + 1
