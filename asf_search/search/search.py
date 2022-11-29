@@ -172,7 +172,7 @@ def get_page(session: ASFSession, url: str, translated_opts, search_opts: ASFSea
     max_retries = 3
     error_message = ''
 
-    add =  '<granuleCondition><additionalAttributes operator="AND">{0}</additionalAttributes></granuleCondition>'.format(''.join(additional_attributes))
+    add =  '<granuleCondition><additionalAttributes operator="OR">{0}</additionalAttributes></granuleCondition>'.format(''.join(additional_attributes))
     
     data = '<?xml version="1.0" encoding="UTF-8"?> \
     <query><for value="granules"/><dataCenterId><value>ASF</value></dataCenterId> \
@@ -232,6 +232,7 @@ def set_default_dates(opts: ASFSearchOptions):
         opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
     if opts.end is not None:
         opts.end = opts.end.strftime('%Y-%m-%dT%H:%M:%SZ')
+    
 
 
 def set_platform_alias(opts: ASFSearchOptions):

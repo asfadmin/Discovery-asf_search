@@ -53,16 +53,16 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         # If it's "session" or something else CMR doesn't accept, don't send it:
         if key not in field_map:
             continue
-        if isinstance(val, list) and field_map[key].get('attr') == None:
+        if isinstance(val, list) and aql_field_map[key].get('attr') == None:
             for x in val:
-                if key in ['granule_list', 'product_list']:
-                    for y in x.split(','):
-                        cmr_opts.append((key, y))
+                # if key in ['granule_list', 'product_list']:
+                #     for y in x.split(','):
+                #         cmr_opts.append((key, y))
+                # else:
+                if isinstance(x, tuple):
+                    cmr_opts.append((key, ','.join([str(t) for t in x])))                    
                 else:
-                    if isinstance(x, tuple):
-                        cmr_opts.append((key, ','.join([str(t) for t in x])))                    
-                    else:
-                        cmr_opts.append((key, x))
+                    cmr_opts.append((key, x))
         else:
             cmr_opts.append((key, val))
     # translate the above tuples to CMR key/values
