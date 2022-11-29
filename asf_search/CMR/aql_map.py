@@ -5,8 +5,10 @@ def to_aql_attribute_field(param, attribute_name: str):
         param = [param]
     # If the attribute is an "additional" attribute, use this format
     values = ''.join(list(map(lambda p: '<value>{0}</value>'.format(p), param)))
-    return f'<additionalAttribute><additionalAttributeName>{attribute_name.upper()}</additionalAttributeName><additionalAttributeValue><list>' + values + '</list></additionalAttributeValue></additionalAttribute>'
-
+    if len(param) > 1:
+        return f'<additionalAttribute><additionalAttributeName>{attribute_name.upper()}</additionalAttributeName><additionalAttributeValue><list>' + values + '</list></additionalAttributeValue></additionalAttribute>'
+    else:
+        return f'<additionalAttribute><additionalAttributeName>{attribute_name.upper()}</additionalAttributeName><additionalAttributeValue>' + values + '</additionalAttributeValue></additionalAttribute>'
 
 def cmr_format_to_spatial(val, param: str):
     if param == 'point':
@@ -69,7 +71,10 @@ def to_defined_aql_field(param, key, operator=None):
         param = [param]
     values = ''.join(list(map(lambda p: '<value>{0}</value>'.format(p), param)))
 
-    return f'<granuleCondition><{key}' + ((f' operator=' + f'\"{operator}\"') if operator else '') + '><list>'  + values + f'</list></{key}></granuleCondition>'
+    if len(param) > 1:
+        return f'<granuleCondition><{key}' + ((f' operator=' + f'\"{operator}\"') if operator else '') + '><list>'  + values + f'</list></{key}></granuleCondition>'
+    else:
+        return f'<granuleCondition><{key}>'  + values + f'</{key}></granuleCondition>'
 
 def to_range_aql_field(param, key):
     lower = param[0]
