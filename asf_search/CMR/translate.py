@@ -79,21 +79,12 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
-
-    url_param_keys = [
-        ('page_size', CMR_PAGE_SIZE),
-        ('options[temporal][and]', 'true'), 
-        ('sort_key[]', '-end_date'), 
-        ('sort_key[]', 'granule_ur'), 
-        ('options[platform][ignore_case]', 'true'),
-        ('provider', opts.provider),
-    ]
     
     # for data in [val for val in field_map.values() if val.has('attr') != None]:
     #     print data
     # cmr_opts.extend(additional_keys)
 
-    return additional_attributes, cmr_defined_fields, url_param_keys
+    return additional_attributes, cmr_defined_fields
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']

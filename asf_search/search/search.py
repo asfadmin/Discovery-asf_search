@@ -112,7 +112,7 @@ def search(
     results = ASFSearchResults(opts=opts)
 
     # for query in build_subqueries(opts):
-    additional_query_params, cmr_defined_params, additional_params = translate_opts(opts)
+    additional_query_params, cmr_defined_params = translate_opts(opts)
 
     try:
         response = get_page(session=opts.session, url=url, translated_opts={'additional_attributes': additional_query_params, 'defined_attributes': cmr_defined_params}, search_opts=opts)
@@ -165,7 +165,7 @@ def search(
     results.searchComplete = True
     return results
 
-def get_page(session: ASFSession, url: str, translated_opts, search_opts: ASFSearchOptions) -> Response:
+def get_page(session: ASFSession, url: str, translated_opts, search_opts: ASFSearchOptions, page_size: int = INTERNAL.CMR_PAGE_SIZE) -> Response:
     additional_attributes =translated_opts['additional_attributes']
     aql_specific = translated_opts['defined_attributes']
     
@@ -184,7 +184,7 @@ def get_page(session: ASFSession, url: str, translated_opts, search_opts: ASFSea
 
     print(data)
     for _ in range(max_retries):
-        response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={INTERNAL.CMR_PAGE_SIZE}', data=data)
+        response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={page_size}', data=data)
 
         try:
             response.raise_for_status()
