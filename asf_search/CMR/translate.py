@@ -1,15 +1,13 @@
 from datetime import datetime
 from typing import Any, Dict, List
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.constants import CMR_PAGE_SIZE
 import re
 from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
-from .field_map import field_map
 
 import logging
-from .aql_map import aql_field_map
+from .aql_map import additional_attributes_map, cmr_attributes_map
 
 def translate_opts(opts: ASFSearchOptions) -> list:
     # Need to add params which ASFSearchOptions cant support (like temporal),
@@ -48,41 +46,17 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         dict_opts = fix_date(dict_opts)
 
     # convert the above parameters to a list of key/value tuples
-    cmr_opts = []
-    for (key, val) in dict_opts.items():
-        # If it's "session" or something else CMR doesn't accept, don't send it:
-        if key not in field_map:
-            continue
-        if isinstance(val, list) and aql_field_map[key].get('attr') == None:
-            for x in val:
-                # if key in ['granule_list', 'product_list']:
-                #     for y in x.split(','):
-                #         cmr_opts.append((key, y))
-                # else:
-                if isinstance(x, tuple):
-                    cmr_opts.append((key, ','.join([str(t) for t in x])))                    
-                else:
-                    cmr_opts.append((key, x))
-        else:
-            cmr_opts.append((key, val))
-    # translate the above tuples to CMR key/values
     
     cmr_defined_fields = []
     additional_attributes = []
-    for i, opt in enumerate(cmr_opts):
-        if aql_field_map[opt[0]].get('conv'):
-            k = aql_field_map[opt[0]]
-            if k.get('key') == 'attribute[]':
-                additional_attributes.append(k.get('conv')(opt[1], k.get('attr', k.get('key'))))
-            else:
-                cmr_defined_fields.append(k.get('conv')(opt[1], k.get('attr', k.get('key'))))
 
-    if should_use_asf_frame(cmr_opts):
-            cmr_opts = use_asf_frame(cmr_opts)
-    
-    # for data in [val for val in field_map.values() if val.has('attr') != None]:
-    #     print data
-    # cmr_opts.extend(additional_keys)
+    for key, val in dict_opts.items():
+        if key in cmr_attributes_map.keys():
+            k = cmr_attributes_map[key]
+            cmr_defined_fields.append(k.get('conv')(val, k.get('key')))
+        elif key in additional_attributes_map.keys():
+            k = additional_attributes_map[key]
+            additional_attributes.append(k.get('conv')(val, k.get('key')))
 
     return additional_attributes, cmr_defined_fields
 
