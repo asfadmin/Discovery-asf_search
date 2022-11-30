@@ -53,10 +53,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     for key, val in dict_opts.items():
         if key in cmr_attributes_map.keys():
             k = cmr_attributes_map[key]
-            cmr_defined_fields.append(k.get('conv')(val, k.get('key')))
+            cmr_defined_fields.append('<granuleCondition>' + k.get('conv')(val, k.get('aql_key')) + '</granuleCondition>')
         elif key in additional_attributes_map.keys():
             k = additional_attributes_map[key]
-            additional_attributes.append(k.get('conv')(val, k.get('key')))
+            additional_attributes.append(k.get('conv')(val, k.get('aql_key')))
 
     return additional_attributes, cmr_defined_fields
 
