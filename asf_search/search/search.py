@@ -11,7 +11,7 @@ from asf_search import __version__
 
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.CMR import build_subqueries, translate_opts
+from asf_search.CMR import translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFError, ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, ASFServerError
