@@ -13,7 +13,7 @@ from pytest import raises
 import requests_mock
 
 
-param_path =  f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={INTERNAL.CMR_PAGE_SIZE}'
+param_path = f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={INTERNAL.CMR_PAGE_SIZE}'
             
 def run_test_ASFSearchResults(search_resp):
     search_results = ASFSearchResults([ASFProduct(product) for product in search_resp])

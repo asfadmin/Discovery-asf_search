@@ -172,7 +172,7 @@ def get_page(session: ASFSession, url: str, translated_opts, search_opts: ASFSea
     max_retries = 3
     error_message = ''
 
-    add =  '<granuleCondition><additionalAttributes operator="OR">{0}</additionalAttributes></granuleCondition>'.format(''.join(additional_attributes))
+    add = '<granuleCondition><additionalAttributes operator="OR">{0}</additionalAttributes></granuleCondition>'.format(''.join(additional_attributes))
     
     data = '<?xml version="1.0" encoding="UTF-8"?> \
     <query><for value="granules"/><dataCenterId><value>ASF</value></dataCenterId> \

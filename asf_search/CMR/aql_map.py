@@ -24,8 +24,8 @@ def cmr_format_to_spatial(val, param: str):
         return spatial.format(to_IIMSLine(val))
 
 def to_IIMSPoint(val: str):
-    long, lat  = val.split(',')
-    return f'<IIMSPoint lat=\"{lat}\" long=\"{long}\"></IIMSPoint>'
+    lon, lat = val.split(',')
+    return f'<IIMSPoint lat=\"{lat}\" long=\"{lon}\"></IIMSPoint>'
 
 def to_IIMSPoints(val: str):
     coords = val.split(',')
@@ -54,31 +54,31 @@ def to_IIMSBox(val: str):
 
 def to_temporal(val, key):
     temporal_vals = val.split(',')
-    startDate, endDate, season_range = (temporal_vals[0], temporal_vals[1], temporal_vals[2:])
+    start_date, end_date, season_range = (temporal_vals[0], temporal_vals[1], temporal_vals[2:])
     
-    startYear, startMonth, startDay = startDate.split('-')[0:3]
-    startDay = startDay.split('T')[0]
+    start_year, start_month, start_day = start_date.split('-')[0:3]
+    start_day = start_day.split('T')[0]
     
-    endYear, endMonth, endDay = endDate.split('-')[0:3]
-    endDay = endDay.split('T')[0]
+    end_year, end_month, end_day = end_date.split('-')[0:3]
+    end_day = end_day.split('T')[0]
     
     season = ''
     if len(season_range) > 1:
         season_start, season_end = season_range
         season = f'<startDay value=\'{season_start}\'></startDay><endDay value=\'{season_end}\'></endDay>'
     
-    start = to_date_aql_field(startYear, startMonth, startDay, 'startDate')
-    end = to_date_aql_field(endYear, endMonth, endDay, 'stopDate')
+    start = to_date_aql_field(start_year, start_month, start_day, 'startDate')
+    end = to_date_aql_field(end_year, end_month, end_day, 'stopDate')
     return f'<{key}>{start}{end}{season}</{key}>'
 
 def to_date_aql_field(year, month, day, dateName):
     return f'<{dateName}><Date YYYY=\"{year}\" MM=\"{month}\" DD=\"{day}\"></Date></{dateName}>'
 
 def default_enddate(val: datetime, key):
-    startyear  = val.year
-    startMonth = val.month
-    startDay = val.day
-    return f'<{key}><dateRange>' + to_date_aql_field(startyear, startMonth, startDay, 'startDate') + f'</dateRange></{key}>'
+    start_year = val.year
+    start_month = val.month
+    start_day = val.day
+    return f'<{key}><dateRange>' + to_date_aql_field(start_year, start_month, start_day, 'startDate') + f'</dateRange></{key}>'
 
 
 def to_defined_aql_field(param, key, operator=None):
@@ -88,9 +88,9 @@ def to_defined_aql_field(param, key, operator=None):
     values = ''.join(list(map(lambda p: '<value>{0}</value>'.format(p), param)))
 
     if len(param) > 1:
-        return f'<{key}' + ((f' operator=' + f'\"{operator}\"') if operator else '') + '><list>'  + values + f'</list></{key}>'
+        return f'<{key}' + ((f' operator=' + f'\"{operator}\"') if operator else '') + '><list>' + values + f'</list></{key}>'
     else:
-        return f'<{key}>'  + values + f'</{key}>'
+        return f'<{key}>' + values + f'</{key}>'
 
 def to_range_aql_field(param, key):
     lower = param[0]
