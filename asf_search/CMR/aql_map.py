@@ -9,7 +9,7 @@ def additional_attribute_to_aql_field(param, attribute_name: str) -> str:
 
     if not type(param) is list:
         e = ET.Element('value')
-        e.text=p
+        e.text=param
         attribute_values.append(e)
         # param = [param]
     else:
