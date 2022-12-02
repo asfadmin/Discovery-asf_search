@@ -9,7 +9,7 @@ def additional_attribute_to_aql_field(param, attribute_name: str) -> str:
 
     if not type(param) is list:
         e = ET.Element('value')
-        e.text = str(p)
+        e.text = str(param)
         attribute_values.append(e)
         # param = [param]
     else:
@@ -45,7 +45,7 @@ def cmr_format_to_spatial(val, param: str):
 
 def to_IIMSPoint(val: str):
     lon, lat = val.split(',')
-    return ET.Element('IIMSPoint', {'lat': lat, 'lon': lon})
+    return ET.Element('IIMSPoint', {'lat': lat, 'long': lon})
     # return f'<IIMSPoint lat=\"{lat}\" long=\"{lon}\"></IIMSPoint>'
 
 def to_IIMSPoints(val: str):
