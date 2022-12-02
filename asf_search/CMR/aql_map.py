@@ -9,14 +9,14 @@ def additional_attribute_to_aql_field(param, attribute_name: str) -> str:
 
     if not type(param) is list:
         e = ET.Element('value')
-        e.text=param
+        e.text = str(p)
         attribute_values.append(e)
         # param = [param]
     else:
         l = ET.Element('list')
         for p in param:
             e = ET.Element('value')
-            e.text=p
+            e.text = str(p)
             l.append(e)
         attribute_values.append(l)
     
@@ -144,14 +144,14 @@ def to_defined_aql_field(param, key, operator=None):
 
     if not type(param) is list:
         e = ET.Element('value', {})
-        e.text = param
+        e.text = str(param)
         root.append(e)
     else:
         param_list = ET.Element('list')
         root.append(param_list)
         for p in param:
             e = ET.Element('value')
-            e.text = p
+            e.text = str(p)
             param_list.append(e)
     #     param = [param]
         
