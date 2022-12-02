@@ -1,3 +1,6 @@
+
+import xml.etree.ElementTree as ET
+
 import logging
 from typing import Union, Iterable, Tuple
 from copy import copy
@@ -112,10 +115,10 @@ def search(
     results = ASFSearchResults(opts=opts)
 
     # for query in build_subqueries(opts):
-    additional_query_params, cmr_defined_params = translate_opts(opts)
+    xml_query_tree = translate_opts(opts)
 
     try:
-        response = get_page(session=opts.session, url=url, translated_opts={'additional_attributes': additional_query_params, 'defined_attributes': cmr_defined_params}, search_opts=opts)
+        response = get_page(session=opts.session, url=url, translated_opts=xml_query_tree, search_opts=opts)
     except ASFError as e:
         logging.error(str(e))
         opts.session.headers.pop('CMR-Search-After', None)
@@ -144,7 +147,7 @@ def search(
         opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
         try:
-            response = get_page(session=opts.session, url=url, translated_opts={'additional_attributes': additional_query_params, 'defined_attributes': cmr_defined_params}, search_opts=opts)
+            response = get_page(session=opts.session, url=url, translated_opts=xml_query_tree, search_opts=opts)
         except ASFError as e:
             logging.error(str(e))
             opts.session.headers.pop('CMR-Search-After', None)
@@ -165,26 +168,28 @@ def search(
     results.searchComplete = True
     return results
 
-def get_page(session: ASFSession, url: str, translated_opts, search_opts: ASFSearchOptions, page_size: int = INTERNAL.CMR_PAGE_SIZE) -> Response:
-    additional_attributes =translated_opts['additional_attributes']
-    aql_specific = translated_opts['defined_attributes']
+def get_page(session: ASFSession, url: str, translated_opts: ET.ElementTree, search_opts: ASFSearchOptions, page_size: int = INTERNAL.CMR_PAGE_SIZE) -> Response:
+    # additional_attributes =translated_opts['additional_attributes']
+    # aql_specific = translated_opts['defined_attributes']
     
     max_retries = 3
     error_message = ''
 
-    add = '<granuleCondition><additionalAttributes operator="OR">{0}</additionalAttributes></granuleCondition>'.format(''.join(additional_attributes))
+    # add = '<granuleCondition><additionalAttributes operator="OR">{0}</additionalAttributes></granuleCondition>'.format(''.join(additional_attributes))
     
-    data = '<?xml version="1.0" encoding="UTF-8"?> \
-    <query><for value="granules"/><dataCenterId><value>ASF</value></dataCenterId> \
-        <where>' \
-            + (add if len(additional_attributes) else '') + \
-            ''.join(aql_specific) +\
-         '</where> \
-    </query>'
+    # data = '<?xml version="1.0" encoding="UTF-8"?> \
+    # <query><for value="granules"/><dataCenterId><value>ASF</value></dataCenterId> \
+    #     <where>' \
+    #         + (add if len(additional_attributes) else '') + \
+    #         ''.join(aql_specific) +\
+    #      '</where> \
+    # </query>'
 
-    print(data)
+    # print(data)
+    
+    xmlstr = ET.tostring(translated_opts.getroot(), encoding='utf8', method='xml')
     for _ in range(max_retries):
-        response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={page_size}', data=data)
+        response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={page_size}', data=xmlstr)
 
         try:
             response.raise_for_status()

@@ -1,4 +1,5 @@
 from datetime import datetime
+import xml.etree.ElementTree as ET
 from typing import Any, Dict, List
 from asf_search.ASFSearchOptions import ASFSearchOptions
 import re
@@ -9,7 +10,7 @@ from shapely.geometry.base import BaseGeometry
 import logging
 from .aql_map import additional_attributes_map, cmr_attributes_map
 
-def translate_opts(opts: ASFSearchOptions) -> list:
+def translate_opts(opts: ASFSearchOptions) -> ET.ElementTree:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
@@ -48,17 +49,41 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # convert the above parameters to a list of key/value tuples
     
     cmr_defined_fields = []
-    additional_attributes = []
+    additional_attributes = ET.Element('granuleCondition')
+    additional_attributes_list = ET.Element('additionalAttributes', {'operator': 'OR'})
+    additional_attributes.append(additional_attributes_list)
+    
 
     for key, val in dict_opts.items():
         if key in cmr_attributes_map.keys():
             k = cmr_attributes_map[key]
-            cmr_defined_fields.append('<granuleCondition>' + k.get('conv')(val, k.get('aql_key')) + '</granuleCondition>')
+            condition = ET.Element('granuleCondition')
+            condition.append(k.get('conv')(val, k.get('aql_key')))
+            cmr_defined_fields.append(condition)
         elif key in additional_attributes_map.keys():
             k = additional_attributes_map[key]
-            additional_attributes.append(k.get('conv')(val, k.get('aql_key')))
+            additional_attributes_list.append(k.get('conv')(val, k.get('aql_key')))
 
-    return additional_attributes, cmr_defined_fields
+    # root = '<?xml version="1.0" encoding="UTF-8"?>'
+    query = ET.Element('query')
+    condition = ET.Element('for', {'value': 'granules'})
+    
+    datacenter_id = ET.Element('dataCenterId')
+    value = ET.Element('value', {}, text='ASF')
+    datacenter_id.append(value)
+    
+    where = ET.Element('where')
+    where.extend([additional_attributes, *cmr_defined_fields])
+    
+    query.extend([condition, datacenter_id, where])
+    # <dataCenterId><value>ASF</value></dataCenterId>
+    root = ET.ElementTree(query)
+
+    
+    return root
+
+# def to_additional_attributes():
+#     <granuleCondition><additionalAttributes operator="OR">
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
