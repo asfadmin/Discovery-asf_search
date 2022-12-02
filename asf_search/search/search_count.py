@@ -54,8 +54,8 @@ def search_count(
 
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
-    additional_query_params, cmr_defined_params = translate_opts(opts)
+    xml_query_tree = translate_opts(opts)
         
-    response = get_page(session=opts.session, url=url, translated_opts={'additional_attributes': additional_query_params, 'defined_attributes': cmr_defined_params}, search_opts=opts, page_size=0)
+    response = get_page(session=opts.session, url=url, translated_opts=xml_query_tree, search_opts=opts, page_size=0)
     count = response.json()['hits']
     return count
