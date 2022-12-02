@@ -69,11 +69,16 @@ def translate_opts(opts: ASFSearchOptions) -> ET.ElementTree:
     condition = ET.Element('for', {'value': 'granules'})
     
     datacenter_id = ET.Element('dataCenterId')
-    value = ET.Element('value', {}, text='ASF')
+    value = ET.Element('value')
+    value.text = 'ASF'
     datacenter_id.append(value)
     
     where = ET.Element('where')
-    where.extend([additional_attributes, *cmr_defined_fields])
+    
+    if len(list(additional_attributes_list)) > 0:
+        where.append(additional_attributes)
+    if len(cmr_defined_fields) > 0:
+        where.extend(cmr_defined_fields)
     
     query.extend([condition, datacenter_id, where])
     # <dataCenterId><value>ASF</value></dataCenterId>

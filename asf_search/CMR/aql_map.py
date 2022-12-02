@@ -3,18 +3,24 @@ import xml.etree.ElementTree as ET
 # use for CMR "additional attribute" fields
 def additional_attribute_to_aql_field(param, attribute_name: str) -> str:
     root = ET.Element('additionalAttribute')
-    attribute_name = ET.Element('additionalAttributeName', {}, text=attribute_name.upper())
+    attribute_name_element = ET.Element('additionalAttributeName')
+    attribute_name_element.text = attribute_name.upper()
     attribute_values = ET.Element('additionalAttributeValue')
 
     if not type(param) is list:
-        attribute_values.append(ET.Element('value', {}, text=param))
+        e = ET.Element('value')
+        e.text=p
+        attribute_values.append(e)
         # param = [param]
     else:
         l = ET.Element('list')
-        l.extend([ET.Element('value', text=param)])
+        for p in param:
+            e = ET.Element('value')
+            e.text=p
+            l.append(e)
         attribute_values.append(l)
     
-    root.append(attribute_name)
+    root.append(attribute_name_element)
     root.append(attribute_values)
     return root
     # values = ''.join(list(map(lambda p: '<value>{0}</value>'.format(p), param)))
@@ -137,12 +143,16 @@ def to_defined_aql_field(param, key, operator=None):
         root.attrib['operator'] = operator
 
     if not type(param) is list:
-        root.append(ET.Element('value', {}, text=param))
+        e = ET.Element('value', {})
+        e.text = param
+        root.append(e)
     else:
         param_list = ET.Element('list')
         root.append(param_list)
         for p in param:
-            param_list.append(ET.Element('value', {}, text=p))
+            e = ET.Element('value')
+            e.text = p
+            param_list.append(e)
     #     param = [param]
         
     # for p in param:
