@@ -189,7 +189,7 @@ def get_page(session: ASFSession, url: str, translated_opts: ET.ElementTree, sea
     
     xmlstr = ET.tostring(translated_opts.getroot(), encoding='utf8', method='xml')
     for _ in range(max_retries):
-        response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={page_size}', data=xmlstr, timeout=10)
+        response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={page_size}', data=xmlstr, timeout=30)
 
         try:
             response.raise_for_status()
