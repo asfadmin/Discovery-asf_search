@@ -75,10 +75,10 @@ def translate_opts(opts: ASFSearchOptions) -> ET.ElementTree:
     
     where = ET.Element('where')
     
-    if len(cmr_defined_fields) > 0:
-        where.extend(cmr_defined_fields)
     if len(list(additional_attributes_list)) > 0:
         where.append(additional_attributes)
+    if len(cmr_defined_fields) > 0:
+        where.extend(cmr_defined_fields)
 
     query.extend([condition, datacenter_id, where])
     # <dataCenterId><value>ASF</value></dataCenterId>
