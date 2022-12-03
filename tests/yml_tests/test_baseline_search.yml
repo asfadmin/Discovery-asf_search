@@ -23,3 +23,9 @@ tests:
     stack_id: ''
     stack_reference: Alos_response.yml
     stack: []
+
+- test-stack-response-properties S1:
+    reference: S1A_IW_SLC__1SDV_20220215T225119_20220215T225146_041930_04FE2E_9252-SLC
+
+- test-stack-response-properties ERS:
+    reference: E2_84699_STD_F309-L0

@@ -161,6 +161,11 @@ test_types:
     required_in_title: test-get-baseline-from-stack
     method: test_get_baseline_from_stack
 
+- For running test_stack_response_properties tests:
+    required_keys: 'reference'
+    required_in_title: test-stack-response-properties
+    method: test_stack_response_properties
+
 - For running test_get_default_product_type tests:
     required_keys: ["reference", "output"]
     required_in_title: test-valid-state-vectors

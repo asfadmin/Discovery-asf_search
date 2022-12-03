@@ -1,10 +1,12 @@
 from copy import deepcopy
 from unittest.mock import patch
+from asf_search import product_search, search
 from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.search.search import ASFProduct
 from asf_search.search.baseline_search import get_stack_opts, stack_from_id, stack_from_product
 from asf_search.baseline.stack import calculate_temporal_baselines, get_default_product_type
+from asf_search.constants import PLATFORM
 import pytest
 
 def run_test_get_preprocessed_stack_params(product):
@@ -84,3 +86,26 @@ def run_test_stack_from_id(stack_id: str, reference, stack):
                     for (idx, secondary) in enumerate(returned_stack):
                         if(idx > 0):
                             assert(secondary.properties['temporalBaseline'] >= stack[idx - 1]["properties"]['temporalBaseline'])
+
+def run_test_stack_response_properties(reference_id: str):
+    reference = product_search(product_list=reference_id)[0]
+    
+    stack_opts = get_stack_opts(reference)
+    
+    stack_results = search(opts=stack_opts)
+    
+    is_sentinel = reference.properties in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
+    
+    platforms =  [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B] if reference.properties in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B] else [reference.properties['platform']]
+    for product in stack_results:
+        if is_sentinel:
+            assert product.properties['beamModeType'] in stack_opts.beamMode
+            assert product.properties['flightDirection'] == stack_opts.flightDirection
+            assert product.properties['polarization'] in stack_opts.polarization
+            assert product.properties['processingLevel'] in stack_opts.processing_level
+            assert product.properties['pathNumber'] in stack_opts.relativeOrbit
+            assert product.properties['platform'] in platforms
+        else:
+            assert product.properties['insarStackId'] == reference.properties['insarStackId']
+            assert product.properties['platform'] == reference.properties['platform']
+            # assert product.properties['']

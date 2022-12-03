@@ -157,7 +157,7 @@ def test_temporal_baseline(**args) -> None:
     reference = get_resource(test_info["product"])
     stack = get_resource(test_info["stack"])
     run_test_calc_temporal_baselines(reference, stack)
-    
+
 def test_stack_from_product(**args) -> None:
     """
     Test asf_search.search.baseline_search.stack_from_product, asserting stack returned is ordered
@@ -186,6 +186,14 @@ def test_stack_from_id(**args) -> None:
         stack = get_resource(stack_data)
 
     run_test_stack_from_id(stack_id, stack_reference, stack)
+
+def test_stack_response_properties(**args) -> None:
+    """
+    Creates a basline stack from a reference product and asserts properties are as expected
+    """
+    test_info = args["test_info"]
+    reference = test_info['reference']
+    run_test_stack_response_properties(reference)
 
 # asf_search.ASFSearchResults Tests
 def test_ASFSearchResults(**args) -> None:
