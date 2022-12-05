@@ -187,8 +187,8 @@ def get_page(session: ASFSession, url: str, translated_opts: ET.ElementTree, sea
 
     # print(data)
     
-    xmlstr = ET.tostring(translated_opts.getroot(), encoding='unicode', method='xml')
-    headers = {'Content-Type':'text/xml'}
+    xmlstr = '<?xml version="1.0" encoding="UTF-8"?>' + ET.tostring(translated_opts.getroot(), encoding='unicode', method='xml')
+    headers = {'Content-Type':'application/xml'}
     for _ in range(max_retries):
         response = session.post(url='https://' + INTERNAL.CMR_HOST + INTERNAL.CMR_CONCEPTS_PATH + f'?options[temporal][and]=true&sort_key[]=-end_date&options[platform][ignore_case]=true&page_size={page_size}', data=xmlstr, headers=headers, timeout=170)
 
