@@ -96,7 +96,7 @@ def run_test_stack_response_properties(reference_id: str):
     
     is_sentinel = reference.properties in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
     
-    platforms =  [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B] if reference.properties in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B] else [reference.properties['platform']]
+    platforms = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B] if reference.properties in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B] else [reference.properties['platform']]
     for product in stack_results:
         if is_sentinel:
             assert product.properties['beamModeType'] in stack_opts.beamMode

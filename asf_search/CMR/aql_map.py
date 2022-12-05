@@ -13,12 +13,12 @@ def additional_attribute_to_aql_field(param, attribute_name: str) -> str:
         attribute_values.append(e)
         # param = [param]
     else:
-        l = ET.Element('list')
+        param_list = ET.Element('list')
         for p in param:
             e = ET.Element('value')
             e.text = str(p)
-            l.append(e)
-        attribute_values.append(l)
+            param_list.append(e)
+        attribute_values.append(param_list)
     
     root.append(attribute_name_element)
     root.append(attribute_values)
@@ -139,14 +139,13 @@ def to_defined_aql_field(param, key, operator=None):
     
     root = ET.Element(key)
 
-    if operator != None:
-        root.attrib['operator'] = operator
-
     if not type(param) is list:
         e = ET.Element('value', {})
         e.text = str(param)
         root.append(e)
     else:
+        if operator != None:
+            root.attrib['operator'] = operator
         param_list = ET.Element('list')
         root.append(param_list)
         for p in param:
@@ -199,6 +198,7 @@ cmr_attributes_map = {
 
 # ADDITIONAL ATTRIBUTES
 additional_attributes_map = {
+    # 'platform':             {'aql_key': 'ASF_PLATFORM',               'conv': additional_attribute_to_aql_field},
     'asfFrame':             {'aql_key': 'FRAME_NUMBER',             'conv': additional_attribute_to_aql_field},
     'asfPlatform':          {'aql_key': 'ASF_PLATFORM',             'conv': additional_attribute_to_aql_field},
     'maxBaselinePerp':      {'aql_key': 'INSAR_BASELINE',           'conv': additional_attribute_to_aql_field},
