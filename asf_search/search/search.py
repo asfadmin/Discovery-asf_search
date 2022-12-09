@@ -109,8 +109,9 @@ def search(
 
     url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
-    results = ASFSearchResults(opts=opts)
-
+    # results = ASFSearchResults(opts=opts)
+    count = 0
+    
     for query in build_subqueries(opts):
         translated_opts = translate_opts(query)
 
@@ -119,7 +120,7 @@ def search(
         except ASFError as e:
             logging.error(str(e))
             opts.session.headers.pop('CMR-Search-After', None)
-            return results
+            return ASFSearchResults([])
 
         hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
 
@@ -127,11 +128,20 @@ def search(
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
         if maxResults != None:
-            results.extend(hits[:min(maxResults - len(results), len(hits))])
-            if len(results) == maxResults:
-                break
+            last_page = ASFSearchResults(hits[:min(maxResults - count, len(hits))])
+            count += len(last_page)
+            
+            # results.extend(hits[:min(maxResults - len(results), len(hits))])
+            if count == maxResults:
+                last_page.searchComplete = True
+                yield last_page
+                return
+            else:
+                yield last_page
         else:
-            results.extend(hits)
+            count += len(hits)
+            yield ASFSearchResults(hits)
+            # results.extend(hits)
 
         while('CMR-Search-After' in response.headers):
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
@@ -141,22 +151,37 @@ def search(
             except ASFError as e:
                 logging.error(str(e))
                 opts.session.headers.pop('CMR-Search-After', None)
-                return results
+                return ASFSearchResults([])
 
             hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
-            
+
             if maxResults != None:
-                results.extend(hits[:min(maxResults - len(results), len(hits))])
-                if len(results) == maxResults:
-                    break
+                last_page = ASFSearchResults(hits[:min(maxResults - count, len(hits))])
+                count += len(last_page)
+                # results.extend(hits[:min(maxResults - len(results), len(hits))])
+                if count == maxResults:
+                    last_page.searchComplete = True
+                    yield last_page
+                    return
+                else:
+                    yield last_page
             else:
-                results.extend(hits)
+                count += len(hits)
+                yield ASFSearchResults(hits)
+                # results.extend(hits)
         
+                # if maxResults != None:
+                #     results.extend(hits[:min(maxResults - len(results), len(hits))])
+                #     if len(results) == maxResults:
+                #         break
+                # else:
+                #     results.extend(hits)
+            
         opts.session.headers.pop('CMR-Search-After', None)
 
-    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
-    results.searchComplete = True
-    return results
+    # results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    # results.searchComplete = True
+    # return results
 
 def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
     max_retries = 3
