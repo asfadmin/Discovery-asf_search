@@ -142,7 +142,10 @@ def run_test_ASFSearchResults_intersection(wkt: str):
         return s1.overlaps(s2) or s1.touches(s2) or s2.distance(s1) <= 0.005
 
     for platform in platforms:
-        results = asf.geo_search(intersectsWith=wkt, platform=platform, maxResults=250)
+        pages = []
+        for page in asf.geo_search(intersectsWith=wkt, platform=platform, maxResults=250):
+            pages.extend(page)
+        results = ASFSearchResults(pages)
     
         for product in results:
             if shape(product.geometry).is_valid:

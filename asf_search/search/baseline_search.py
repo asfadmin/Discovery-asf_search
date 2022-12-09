@@ -35,7 +35,7 @@ def stack_from_product(
 
     stack_opts = get_stack_opts(reference, opts=opts)
 
-    stack = search(opts=stack_opts)
+    stack = ASFSearchResults([product for product in search(opts=stack_opts)])
     is_complete = stack.searchComplete
 
     stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)

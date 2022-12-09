@@ -23,4 +23,4 @@ def product_search(
 
     opts.merge_args(product_list=product_list)
   
-    return search(opts=opts)
+    yield from search(opts=opts)
