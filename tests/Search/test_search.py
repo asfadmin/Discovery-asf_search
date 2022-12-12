@@ -31,7 +31,7 @@ def run_test_ASFSearchResults(search_resp):
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
         m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", json={'items': answer})
-        response = ASFSearchResults(*[res for res in search(**search_parameters)])
+        response = search(**search_parameters)
 
         if search_parameters.get("maxResults", False):
             assert(len(response) == search_parameters["maxResults"])
@@ -46,7 +46,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
             m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}})
             m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", real_http=True)
             searchOptions = ASFSearchOptions(**search_parameters)
-            results = ASFSearchResults(*[res for res in search(opts=searchOptions)])
+            results = search(opts=searchOptions)
             assert len(results) == 0
             with raises(ASFSearchError):
                 results.raise_if_incomplete()
@@ -68,7 +68,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
 
         search_parameters['maxResults'] = INTERNAL.CMR_PAGE_SIZE + 1
         searchOptions = ASFSearchOptions(**search_parameters)
-        results = ASFSearchResults([res for res in search(opts=searchOptions)])
+        results = search(opts=searchOptions)
         
         assert results is not None
         assert 0 < len(results) <= INTERNAL.CMR_PAGE_SIZE
