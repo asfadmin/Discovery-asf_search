@@ -8,6 +8,7 @@ from ASFSearchResults.test_ASFSearchResults import run_test_output_format
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
 from Search.test_search import run_test_ASFSearchResults, run_test_search, run_test_search_http_error
+from Search.test_search_generator import run_test_search_generator
 from CMR.test_MissionList import run_test_get_project_names
 
 
@@ -208,7 +209,16 @@ def test_ASFSearch_Search(**args) -> None:
     answer = get_resource(test_info["answer"])
 
     run_test_search(parameters, answer)
-    
+
+def test_ASFSearch_Search_Generator(**args) -> None:
+    test_info = args["test_info"]
+    params = get_resource(test_info['parameters'])
+    opts = ASFSearchOptions(**params)
+
+    run_test_search_generator(opts)
+
+    pass
+
 def test_ASFSearch_Search_Error(**args) -> None:
     """
     Test asf_search.search errors,

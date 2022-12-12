@@ -81,6 +81,11 @@ test_types:
     required_in_title: test-ASFSearch-search-valid
     method: test_ASFSearch_Search
 
+- For ASFSearch search_generator with parameters tests:
+    required_keys: parameters
+    required_in_title: test-ASFSearch-search-valid
+    method: test_ASFSearch_Search_Generator
+
 - For running ASFSearch search error tests:
     required_keys: ["parameters", "status_code", "report"]
     required_in_title: test-ASFSearch-search-error

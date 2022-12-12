@@ -1,0 +1,6 @@
+tests:
+- test-ASFSearch-search-valid ALOS Resp 1:
+    parameters: {
+      maxResults: 1250,
+      platform: 'Sentinel-1'
+    }
