@@ -22,5 +22,5 @@ def product_search(
     opts = (ASFSearchOptions() if opts is None else copy(opts))
 
     opts.merge_args(product_list=product_list)
-  
-    yield from search(opts=opts)
+    
+    return search(opts=opts)

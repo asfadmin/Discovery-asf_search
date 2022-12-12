@@ -23,4 +23,4 @@ def granule_search(
     
     opts.merge_args(granule_list=granule_list)
     
-    yield from search(opts=opts)
+    return search(opts=opts)

@@ -60,4 +60,4 @@ def geo_search(
     opts = (ASFSearchOptions() if opts is None else copy(opts))
     opts.merge_args(**data)
 
-    yield from search(opts=opts)
+    return search(opts=opts)
