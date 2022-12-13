@@ -152,7 +152,7 @@ def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: 
     error_message = ''
 
     for _ in range(max_retries):
-        response = session.post(url=url, data=translated_opts)
+        response = session.post(url=url, data=translated_opts, timeout=170)
 
         try:
             response.raise_for_status()

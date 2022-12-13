@@ -127,16 +127,10 @@ def run_test_ASFSearchResults_intersection(wkt: str):
 
     # exclude SMAP products
     platforms = [
-                 PLATFORM.AIRSAR, 
-                 PLATFORM.ALOS, 
-                 PLATFORM.ERS, 
-                 PLATFORM.JERS, 
-                 PLATFORM.RADARSAT, 
-                 PLATFORM.SEASAT, 
-                 PLATFORM.SENTINEL1, 
-                 PLATFORM.SIRC, 
+                 PLATFORM.ALOS,
+                 PLATFORM.SENTINEL1,
                  PLATFORM.UAVSAR
-                 ]   
+                 ]
     
     def overlap_check(s1: BaseGeometry, s2: BaseGeometry):
         return s1.overlaps(s2) or s1.touches(s2) or s2.distance(s1) <= 0.005

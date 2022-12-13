@@ -1,6 +1,60 @@
 tests:
-- test-ASFSearch-search-valid ALOS Resp 1:
-    parameters: {
-      maxResults: 1250,
-      platform: 'Sentinel-1'
-    }
+- test-ASFSearch-search-valid S1:
+    parameters:
+      {
+        maxResults: 1250,
+        platform: 'Sentinel-1'
+      }
+
+- test-ASFSearch-search-valid S1A S1B:
+    parameters:
+      [
+      {
+        maxResults: 1001,
+        platform: 'Sentinel-1A'
+      },
+      {
+        maxResults: 575,
+        platform: 'Sentinel-1B'
+      }
+      ]
+
+- test-ASFSearch-search-valid S1:
+    parameters:
+      {
+        maxResults: 250,
+        platform: 'UAVSAR'
+      }
+
+- test-ASFSearch-search-valid S1 ALOS:
+    parameters: [
+      {
+        maxResults: 750,
+        platform: 'Sentinel-1'
+      },
+      {
+        maxResults: 750,
+        platform: 'ALOS'
+      },
+    ]
+
+
+- test-ASFSearch-search-valid S1 ALOS UAVSAR JERS:
+    parameters: [
+      {
+        maxResults: 750,
+        platform: 'Sentinel-1'
+      },
+      {
+        maxResults: 750,
+        platform: 'ALOS'
+      },
+      {
+        maxResults: 275,
+        platform: 'UAVSAR'
+      },
+      {
+        maxResults: 50,
+        platform: 'JERS'
+      }
+    ]
