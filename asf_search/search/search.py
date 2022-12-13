@@ -94,12 +94,14 @@ def search(
     opts = (ASFSearchOptions() if opts is None else copy(opts))
     opts.merge_args(**data)
 
-    results = ASFSearchResults([], opts=opts)
+    results = ASFSearchResults([])
     
     # The last page will be marked as complete if results sucessful
     for page in search_generator(opts=opts):
         results.extend(page)
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
+    
+    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     
     return results
