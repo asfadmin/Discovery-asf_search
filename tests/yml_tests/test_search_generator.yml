@@ -39,7 +39,7 @@ tests:
     ]
 
 
-- test-ASFSearch-search-valid S1 ALOS UAVSAR JERS:
+- test-ASFSearch-search-valid S1 ALOS JERS:
     parameters: [
       {
         maxResults: 750,
@@ -50,11 +50,7 @@ tests:
         platform: 'ALOS'
       },
       {
-        maxResults: 275,
-        platform: 'UAVSAR'
-      },
-      {
         maxResults: 50,
-        platform: 'JERS'
+        platform: 'JERS-1'
       }
     ]

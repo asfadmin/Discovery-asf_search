@@ -13,9 +13,16 @@ def run_test_search_generator_multi(search_opts: List[ASFSearchOptions]):
     combined_results = []
     
     page_count = 0
-    complete_searches = 0
+    searches = {}
+    
+    for opt in search_opts:
+        if isinstance(opt.platform, list):
+            for platform in opt.platform:
+                searches[platform] = False
+        else:
+            searches[opt.platform] = False
+
     while(len(queries)):
-        
         queries_iter = iter(queries)
         for idx, query in enumerate(queries_iter):  # Alternate pages between results
             page = next(query, None)
@@ -23,36 +30,19 @@ def run_test_search_generator_multi(search_opts: List[ASFSearchOptions]):
                 combined_results.extend(page)
                 page_count += 1
                 if page.searchComplete:
-                    complete_searches += 1
+                    if isinstance(page.searchOptions.platform, list):
+                        for platform in page.searchOptions.platform:
+                            searches[platform] = True
+                    else:
+                        searches[page.searchOptions.platform] = True
             else:
-                queries.pop(idx)
+                queries[idx] = None
 
-    assert page_count <= expected_page_count
-    assert len(combined_results) <= expected_results_size
-    assert complete_searches == len(search_opts)
+        queries = [query for query in queries if query != None]
 
-    for opt in search_opts:
-        preprocess_opts(opt)
-
-    
-
-def get_latest_page(pages_iter: Generator):
-    for page in pages_iter:
-        yield page
-        # results.extend(page)
-        # results.searchComplete = page.searchComplete
-        # results.searchOptions = page.searchOptions
-        # page_idx += 1
-
-    # assert page_count <= page_idx
-    # assert len(results) <= opts.maxResults
-    # assert results.searchComplete == True
-
-    # preprocess_opts(opts)
-
-    # for key, val in opts:
-    #     if key != 'maxResults':
-    #         assert getattr(results.searchOptions, key) == val
+    assert page_count == expected_page_count
+    assert len(combined_results) == expected_results_size
+    assert len([completed for completed in searches if completed]) >= len(search_opts)
 
 def run_test_search_generator(search_opts: ASFSearchOptions):
     pages_iter = search_generator(opts=search_opts)
