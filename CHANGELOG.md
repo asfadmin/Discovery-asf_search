@@ -30,6 +30,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v6.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.0...v6.0.1)
 ### Added
 - `search_generator()` allows querying CMR page-by-page, yielding each page as an `ASFSearchResults` object The last page . See /examples/1-Basic_Overview.ipynb for an example.
+### Fixed
+- `csv()`, `metalink()`, and `kml()` output formats should now work properly when installed from pip
 
 ## [v6.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v5.1.2...v6.0.0)
 ### Added
