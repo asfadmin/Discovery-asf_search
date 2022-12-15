@@ -27,6 +27,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
+## [v6.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.0...v6.0.1)
+### Fixed
+- `csv()`, `metalink()`, and `kml()` output formats should now work properly when installed from pip
+
 ## [v6.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v5.1.2...v6.0.0)
 ### Added
 - Search errors are now automatically reported to ASF, users can opt out by changing `asf_search.REPORT_ERRORS` after import
