@@ -42,6 +42,7 @@ setup(
     },
     packages=find_packages(exclude=["tests.*", "tests", "examples.*", "examples"]),
     package_dir={'asf_search': 'asf_search'},
+    package_data={"export.templates": ["template.csv", "template.kmz", "template.metalink"]},
     python_requires='>=3.6',
     install_requires=requirements,
     extras_require={ "test": test_requirements },
