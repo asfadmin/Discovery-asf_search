@@ -27,6 +27,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
+## [v6.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.1...v6.0.2)
+### Fixed
+- Fixed Setuptools not including csv, kml, and metalink export templates
+
 ## [v6.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.0...v6.0.1)
 ### Fixed
 - `csv()`, `metalink()`, and `kml()` output formats should now work properly when installed from pip
