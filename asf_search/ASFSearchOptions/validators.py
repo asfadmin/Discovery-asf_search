@@ -19,7 +19,7 @@ def parse_string(value: str) -> str:
     try:
         value = f'{value}'
     except ValueError as e: # If this happens, printing v's value would fail too...
-        raise ValueError(f"Invalid string: Can't cast {type(value)} to string.") from e
+        raise ValueError(f"Invalid string: Can't cast type '{type(value)}' to string.") from e
     if len(value) == 0:
         raise ValueError(f'Invalid string: Empty.')
     return value

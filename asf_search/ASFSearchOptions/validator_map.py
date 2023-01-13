@@ -1,11 +1,12 @@
 
+from asf_search import ASF_LOGGER
+
 from .validators import (
     parse_string, parse_float, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
     parse_float_or_range_list,
     parse_session
 )
-
 
 def validate(key, value):
     if key not in validator_map:
@@ -15,9 +16,13 @@ def validate(key, value):
             if key.lower() == valid_key.lower():
                 error_msg += f" (Did you mean '{valid_key}'?)"
                 break
+        ASF_LOGGER.error(error_msg)
         raise KeyError(error_msg)
-    return validator_map[key](value)
-
+    try:
+        return validator_map[key](value)
+    except ValueError:
+        ASF_LOGGER.exception(f"Failed to parse item in ASFSearchOptions: {key=} {value=}")
+        raise
 
 validator_map = {
     # Search parameters       Parser
