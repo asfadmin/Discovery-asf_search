@@ -9,11 +9,12 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "jinja2"
+    "jinja2",
+    "remotezip >= 0.10.0"
 ]
 
 test_requirements = [
-    "pytest",
+    "pytest < 7.2.0",
     "pytest-automation",
     "pytest-cov",
     "pytest-xdist",
@@ -41,6 +42,7 @@ setup(
     },
     packages=find_packages(exclude=["tests.*", "tests", "examples.*", "examples"]),
     package_dir={'asf_search': 'asf_search'},
+    include_package_data=True,
     python_requires='>=3.6',
     install_requires=requirements,
     extras_require={ "test": test_requirements },
