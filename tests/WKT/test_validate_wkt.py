@@ -26,9 +26,11 @@ def run_test_validate_wkt_invalid_wkt_error(wkt: str):
 
 def run_test_validate_wkt_valid_wkt(wkt: str, validated_wkt: str):
     expected_aoi = loads(validated_wkt)
-
-    assert validate_wkt(wkt).equals(expected_aoi), f"expected, {expected_aoi.wkt}, got {validate_wkt(wkt).wkt}"
-    assert validate_wkt(loads(wkt)).equals(expected_aoi)
+    actual, _ = validate_wkt(wkt)
+    assert actual.equals(expected_aoi), f"expected, {expected_aoi.wkt}, got {actual.wkt}"
+    
+    actual_from_geom, _ = validate_wkt(loads(wkt))
+    assert actual_from_geom.equals(expected_aoi)
 
 def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_count: Number, wrapped_count: Number):
     resp = _get_clamped_and_wrapped_geometry(loads(wkt))

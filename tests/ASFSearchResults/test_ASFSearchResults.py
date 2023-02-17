@@ -122,7 +122,7 @@ def get_SearchAPI_Output(product_list: List[str], output_type: str) -> List[Dict
     return expected
 
 def run_test_ASFSearchResults_intersection(wkt: str):
-    aoi = asf.validate_wkt(wkt)
+    aoi, _ = asf.validate_wkt(wkt)
     unchanged_aoi = loads(wkt) # sometimes geometries don't come back with wrapping in mind
 
     # exclude SMAP products
@@ -141,7 +141,7 @@ def run_test_ASFSearchResults_intersection(wkt: str):
 
         for product in results:
             if shape(product.geometry).is_valid:
-                product_geom = asf.validate_wkt(shape(product.geometry))
+                product_geom, _ = asf.validate_wkt(shape(product.geometry))
                 original_shape = unchanged_aoi
 
                 # Shapes crossing antimeridian might have coordinates starting from other side
