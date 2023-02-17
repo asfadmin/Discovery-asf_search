@@ -172,4 +172,7 @@ class JSONLiteStreamArray(list):
             result['temporalBaseline'] = p['temporalBaseline']
             result['perpendicularBaseline'] = p['perpendicularBaseline']
 
+        if p.get('processingLevel') == 'BURST': # is a burst product
+            result['burst'] = p['burst']
+
         return result
