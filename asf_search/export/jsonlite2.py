@@ -53,4 +53,7 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             result['tb'] = p['temporalBaseline']
             result['pb'] = p['perpendicularBaseline']
 
+        if p.get('burst') is not None: # is a burst product
+            result['s1b'] = p['burst']
+        
         return result

@@ -35,7 +35,7 @@ def ASFSearchResults_to_properties_list(results: ASFSearchResults, get_additiona
         # S1 date properties are formatted differently from other platforms
         is_S1 = product['platform'].upper() in ['SENTINEL-1', 'SENTINEL-1B', 'SENTINEL-1A']
         for key, data in product.items():
-            if 'date' in key.lower() or 'time' in key.lower():
+            if ('date' in key.lower() or 'time' in key.lower()) and data is not None:
                 if is_S1:
                     time = datetime.strptime(data[:-1], '%Y-%m-%dT%H:%M:%S.%f')
                     product[key] = time.strftime('%Y-%m-%dT%H:%M:%S.%f')
