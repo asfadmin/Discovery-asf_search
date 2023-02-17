@@ -28,8 +28,16 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ------
 ## [v6.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.2...v6.0.3)
+### Added
+- Burst metadata available in `ASFProduct.properties['burst']`, also available in `csv`, `kml`, `jsonlite`, and `jsonlite2` output formats.
+- Added `BURST` to `PRODUCT_TYPE.py` constants
+
+### Changed
+- Decreased the scope of tested platforms used in platform test cases
+
 ### Fixed
 - Adds markupsafe<=2.0.1 as package requirement (Jinja2 requires this version)
+- CMR url will now actually use the `host` property in `ASFSearchOptions` object
 
 ------
 ## [v6.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.1...v6.0.2)
