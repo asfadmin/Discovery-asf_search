@@ -5,6 +5,7 @@ from asf_search import ASFSession, ASFSearchOptions
 from asf_search.exceptions import ASFSearchError
 from asf_search.export import output_translators
 
+from asf_search import ASF_LOGGER
 
 class ASFSearchResults(UserList):
     def __init__(self, *args, opts: ASFSearchOptions = None):
@@ -53,21 +54,25 @@ class ASFSearchResults(UserList):
 
         :return: None
         """
-
+        ASF_LOGGER.info(f"Started downloading ASFSearchResults of size {len(self)}.")
         if processes == 1:
             for product in self:
                 product.download(path=path, session=session)
         else:
+            ASF_LOGGER.info(f"Using {processes} threads - starting up pool.")
             pool = Pool(processes=processes)
             args = [(product, path, session) for product in self]
             pool.map(_download_product, args)
             pool.close()
             pool.join()
+        ASF_LOGGER.info(f"Finished downloading ASFSearchResults of size {len(self)}.")
         
-    def raise_if_incomplete(self):
+    def raise_if_incomplete(self) -> None:
         if not self.searchComplete:
-            raise ASFSearchError("Results are incomplete due to a search error. See logging for more details.")
+            msg = "Results are incomplete due to a search error. See logging for more details. (ASFSearchResults.raise_if_incomplete called)"
+            ASF_LOGGER.error(msg)
+            raise ASFSearchError(msg)
 
-def _download_product(args):
+def _download_product(args) -> None:
     product, path, session = args
     product.download(path=path, session=session)

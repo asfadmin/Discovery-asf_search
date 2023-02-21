@@ -3,7 +3,7 @@ import json
 
 from .validator_map import validator_map, validate
 from .config import config
-
+from asf_search import ASF_LOGGER
 
 class ASFSearchOptions:
     def __init__(self, **kwargs):
@@ -38,7 +38,9 @@ class ASFSearchOptions:
             else:
                 super().__setattr__(key, validate(key, value))
         else:
-            raise KeyError(f"key '{key}' is not a valid search option (setattr)")
+            msg = f"key '{key}' is not a valid search option (setattr)"
+            ASF_LOGGER.error(msg)
+            raise KeyError(msg)
 
     def __delattr__(self, item):
         """
@@ -49,7 +51,9 @@ class ASFSearchOptions:
         if item in validator_map:
             self.__setattr__(item, None)
         else:
-            raise KeyError(f"key '{item}' is not a valid search option (delattr)")
+            msg = f"key '{item}' is not a valid search option (delattr)"
+            ASF_LOGGER.error(msg)
+            raise KeyError(msg)
 
     def __iter__(self):
         """
@@ -75,12 +79,17 @@ class ASFSearchOptions:
         :param key: name of key to return value of, and delete
         """
         if key not in validator_map:
-            raise KeyError(f"key '{key}' is not a valid key for ASFSearchOptions. (pop)")
+            msg = f"key '{key}' is not a valid key for ASFSearchOptions. (pop)"
+            ASF_LOGGER.error(msg)
+            raise KeyError(msg)
 
         if self._is_val_default(key):
             if default != ...:
                 return default
-            raise KeyError(f"key '{key}' is set to empty/None. (pop)")
+            msg = f"key '{key}' is set to empty/None. (pop)"
+            ASF_LOGGER.error(msg)
+            raise KeyError(msg)
+
         # Success, delete and return it:
         val = getattr(self, key)
         self.__delattr__(key)
@@ -104,7 +113,9 @@ class ASFSearchOptions:
         for key in kwargs:
             # Spit out warning if the value is something other than the default:
             if not self._is_val_default(key):
-                warnings.warn(f'While merging search options, existing option {key}:{getattr(self, key, None)} overwritten by kwarg with value {kwargs[key]}')
+                msg = f'While merging search options, existing option {key}:{getattr(self, key, None)} overwritten by kwarg with value {kwargs[key]}'
+                ASF_LOGGER.warging(msg)
+                warnings.warn(msg)
             self.__setattr__(key, kwargs[key])
 
     def _is_val_default(self, key) -> bool:

@@ -18,8 +18,8 @@ def parse_string(value: str) -> str:
     # Convert to string first, so length is checked against only str types:
     try:
         value = f'{value}'
-    except ValueError as e: # If this happens, printing v's value would fail too...
-        raise ValueError(f"Invalid string: Can't cast {type(value)} to string.") from e
+    except ValueError as exc: # If this happens, printing v's value would fail too...
+        raise ValueError(f"Invalid string: Can't cast type '{type(value)}' to string.") from exc
     if len(value) == 0:
         raise ValueError(f'Invalid string: Empty.')
     return value
@@ -33,8 +33,8 @@ def parse_float(value: float) -> float:
     """
     try:
         value = float(value)
-    except ValueError as e:
-        raise ValueError(f'Invalid float: {value}')
+    except ValueError as exc:
+        raise ValueError(f'Invalid float: {value}') from exc
     if math.isinf(value):
         raise ValueError(f'Float values must be finite: got {value}')
     return value
@@ -49,8 +49,8 @@ def parse_date(value: Union[str, datetime.datetime]) -> str:
     """
     if isinstance(value, datetime.datetime):
         return value
-    d = dateparser.parse(str(value))
-    if d is None:
+    date = dateparser.parse(str(value))
+    if date is None:
         raise ValueError(f"Invalid date: '{value}'.")
     return str(value)
 
@@ -99,8 +99,8 @@ def parse_list(value: list, h) -> list:
         value = [value]
     try:
         return [h(a) for a in value]
-    except ValueError as e:
-        raise ValueError(f'Invalid {h.__name__} list: {e}') from e
+    except ValueError as exc:
+        raise ValueError(f'Invalid {h.__name__} list: {e}') from exc
 
 # Parse and validate a list of strings: "foo,bar,baz"
 def parse_string_list(value: List[str]) -> List[str]:
@@ -147,11 +147,11 @@ def parse_float_or_range_list(value: list) -> list:
 def parse_coord_list(value: List[float]) -> List[float]:
     if not isinstance(value, list):
         raise ValueError(f'Invalid coord list list: Must pass in a list. Got {type(value)}.')
-    for c in value:
+    for coord in value:
         try:
-            float(c)
-        except ValueError as e:
-            raise ValueError(f'Invalid coordinate: {c}') from e
+            float(coord)
+        except ValueError as exc:
+            raise ValueError(f'Invalid coordinate: {coord}') from exc
     if len(value) % 2 != 0:
         raise ValueError(f'Invalid coordinate list, odd number of values provided: {value}')
     return value
@@ -162,8 +162,8 @@ def parse_bbox_list(value: List[float]) -> List[float]:
     try:
         # This also makes sure v is a list:
         value = parse_coord_list(value)
-    except ValueError as e:
-        raise ValueError(f'Invalid bbox: {e}') from e
+    except ValueError as exc:
+        raise ValueError(f'Invalid bbox: {exc}') from exc
     if len(value) != 4:
         raise ValueError(f'Invalid bbox, must be 4 values: {value}')
     return value
@@ -174,8 +174,8 @@ def parse_point_list(value: List[float]) -> List[float]:
     try:
         # This also makes sure v is a list:
         value = parse_coord_list(value)
-    except ValueError as e:
-        raise ValueError(f'Invalid point: {e}') from e
+    except ValueError as exc:
+        raise ValueError(f'Invalid point: {exc}') from exc
     if len(value) != 2:
         raise ValueError(f'Invalid point, must be 2 values: {value}')
     return value
@@ -185,8 +185,8 @@ def parse_point_list(value: List[float]) -> List[float]:
 def parse_wkt(value: str) -> str:
     try:
         value = wkt.loads(value)
-    except errors.WKTReadingError as e:
-        raise ValueError(f'Invalid wkt: {e}') from e
+    except errors.WKTReadingError as exc:
+        raise ValueError(f'Invalid wkt: {exc}') from exc
     return wkt.dumps(value)
 
 # Take "requests.Session", or anything that subclasses it:
