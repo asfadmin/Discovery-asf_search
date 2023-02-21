@@ -100,7 +100,7 @@ def parse_list(value: list, h) -> list:
     try:
         return [h(a) for a in value]
     except ValueError as exc:
-        raise ValueError(f'Invalid {h.__name__} list: {e}') from exc
+        raise ValueError(f'Invalid {h.__name__} list: {exc}') from exc
 
 # Parse and validate a list of strings: "foo,bar,baz"
 def parse_string_list(value: List[str]) -> List[str]:
@@ -122,8 +122,8 @@ def parse_number_or_range(value: Union[list, Tuple[number, number]], h):
         if isinstance(value, tuple):
             return parse_range(value, h)
         return h(value)
-    except ValueError as e:
-        raise ValueError(f'Invalid {h.__name__} or range: {e}') from e
+    except ValueError as exc:
+        raise ValueError(f'Invalid {h.__name__} or range: {exc}') from exc
 
 
 # Parse and validate a list of numbers or number ranges, using h() to validate each value: "1,2,3-5", "1.1,1.4,5.1-6.7"
