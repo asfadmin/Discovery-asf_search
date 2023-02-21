@@ -124,3 +124,36 @@ Further examples of all of the above can be found in `examples/`
 </table>
 
 For an extended description of our workflow, see https://gist.github.com/digitaljhelms/4287848
+
+### Enable Logging
+
+We use standard the standard `logging` in our package for output.
+
+Heres a basic example for hooking into it with your application:
+
+```python
+import asf_search as asf
+import logging
+ASF_LOGGER = logging.getLogger("asf_search")
+formatter = logging.Formatter('[ %(asctime)s (%(name)s)] %(levelname)s - %(message)s')
+
+# Get output to the console:
+stream_handle = logging.StreamHandler()
+stream_handle.setFormatter(formatter)
+ASF_LOGGER.addHandler(stream_handle)
+
+# If you want it write to a file too:
+file_handle = logging.FileHandler('MyCustomApp.log')
+file_handle.setFormatter(formatter)
+ASF_LOGGER.addHandler(file_handle)
+
+# Only see messages that might affect you
+ASF_LOGGER.setLevel(logging.WARNING)
+
+# Test if the logger throws an error, you see it as expected:
+ASF_LOGGER.error("This is only a drill. Please do not panic.")
+# Should output this:
+# [ 2023-01-17 10:04:53,780 (asf_search)] ERROR - This is only a drill. Please do not panic.
+```
+
+For more configure options on `logging`, please visit [their howto page](https://docs.python.org/3/howto/logging.html).

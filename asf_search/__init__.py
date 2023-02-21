@@ -3,14 +3,14 @@ import logging
 ASF_LOGGER = logging.getLogger(__name__)
 # Add null handle so we do nothing by default. It's up to the application
 # to enable our logger.
-# ASF_LOGGER.addHandler(logging.NullHandler())
+ASF_LOGGER.addHandler(logging.NullHandler())
 
 # For testing the logger looks right:
-ch = logging.StreamHandler()
-formatter = logging.Formatter('[ %(asctime)s (%(name)s)] %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-ASF_LOGGER.addHandler(ch)
-ASF_LOGGER.error("This is only a drill. Please do not panic.")
+# ch = logging.StreamHandler()
+# formatter = logging.Formatter('[ %(asctime)s (%(name)s)] %(levelname)s - %(message)s')
+# ch.setFormatter(formatter)
+# ASF_LOGGER.addHandler(ch)
+# ASF_LOGGER.error("This is only a drill. Please do not panic.")
 
 # backport of importlib.metadata for python < 3.8
 from importlib_metadata import PackageNotFoundError, version

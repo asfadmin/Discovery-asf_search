@@ -5,6 +5,7 @@ from asf_search import ASFSession, ASFSearchOptions
 from asf_search.exceptions import ASFSearchError
 from asf_search.export import output_translators
 
+from asf_search import ASF_LOGGER
 
 class ASFSearchResults(UserList):
     def __init__(self, *args, opts: ASFSearchOptions = None):
@@ -13,6 +14,8 @@ class ASFSearchResults(UserList):
         # Each product will use their own reference to opts (but points to the same obj)
         self.searchOptions = opts
         self.searchComplete = False
+        ASF_LOGGER.debug(f"Created ASFSearchResults of size {len(args)} with options: {opts}")
+        ASF_LOGGER.info(f"Created ASFSearchResults of size {len(args)}")
 
     def geojson(self):
         return {
@@ -53,19 +56,22 @@ class ASFSearchResults(UserList):
 
         :return: None
         """
-
+        ASF_LOGGER.info(f"Started downloading ASFSearchResults of size {len(self)}.")
         if processes == 1:
             for product in self:
                 product.download(path=path, session=session)
         else:
+            ASF_LOGGER.info("More than one product - Using threads.")
             pool = Pool(processes=processes)
             args = [(product, path, session) for product in self]
             pool.map(_download_product, args)
             pool.close()
             pool.join()
+        ASF_LOGGER.info(f"Finished downloading ASFSearchResults of size {len(self)}.")
         
     def raise_if_incomplete(self):
         if not self.searchComplete:
+            ASF_LOGGER.error("Results never finished coming in, and 'ASFSearchResults.raise_if_incomplete' was called.")
             raise ASFSearchError("Results are incomplete due to a search error. See logging for more details.")
 
 def _download_product(args):
