@@ -31,7 +31,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Burst metadata available in `ASFProduct.properties['burst']`, also available in `csv`, `kml`, `jsonlite`, and `jsonlite2` output formats.
 - Added `BURST` to `PRODUCT_TYPE.py` constants
-- `search_generator()` allows querying CMR page-by-page, yielding each page as an `ASFSearchResults` object The last page . See /examples/1-Basic_Overview.ipynb for an example.
+- `search_generator()` returns a generator, adn returns results from CMR page-by-page, yielding each page as an `ASFSearchResults` object. See /examples/1-Basic_Overview.ipynb for an example.
 
 ### Changed
 - Decreased the scope of tested platforms used in platform test cases
