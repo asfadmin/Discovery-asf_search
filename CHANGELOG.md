@@ -27,10 +27,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
-## [v6.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.2...v6.0.3)
+## [v6.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.0.2...v6.1.0)
 ### Added
 - Burst metadata available in `ASFProduct.properties['burst']`, also available in `csv`, `kml`, `jsonlite`, and `jsonlite2` output formats.
 - Added `BURST` to `PRODUCT_TYPE.py` constants
+- Added python `logging` support, for easier debugging and reporting when using asf_search inside an application.
 
 ### Changed
 - Decreased the scope of tested platforms used in platform test cases
