@@ -41,6 +41,16 @@
             <li>Temporal Baseline: {{r['temporalBaseline']}}</li>
             <li>Perpendicular Baseline: {{r['perpendicularBaseline']}}</li>
             {% endif %}
+            {% if r['processingLevel'] == 'BURST'%}
+            <li> Absolute Burst ID: {{r['burst']['absoluteBurstID']}}</li>
+            <li> Relative Burst ID: {{r['burst']['relativeBurstID']}}</li>
+            <li> Full Burst ID: {{r['burst']['fullBurstID']}}</li>
+            <li> Burst Index: {{r['burst']['burstIndex']}}</li>
+            <li> Burst Anx Time: {{r['burst']['burstAnxTime']}}</li>
+            <li> Time from Anx (seconds): {{r['burst']['timeFromAnxSeconds']}}</li>
+            <li> Samples per Burst: {{r['burst']['samplesPerBurst']}}</li>
+            <li> Subswath: {{r['burst']['subswath']}}</li>
+            {% endif %}
           </ul>
         </div>
         <div style="position:absolute;left:300px;top:250px">

@@ -27,12 +27,12 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         shape = wkt.loads(dict_opts.pop('intersectsWith', None))
 
         # If a wide rectangle is provided, make sure to use the bounding box
-        # instead of the wkt for better responses from CMR 
+        # instead of the wkt for better responses from CMR
         # This will provide better results with AOI's near poles
         if should_use_bbox(shape):
             bounds = shape.boundary.bounds
             if bounds[0] > 180 or bounds[2] > 180:
-                bounds = [(x + 180) % 360 - 180 if idx % 2 == 0 and abs(x) > 180 else x for idx, x in enumerate(bounds)] 
+                bounds = [(x + 180) % 360 - 180 if idx % 2 == 0 and abs(x) > 180 else x for idx, x in enumerate(bounds)]
 
             bottom_left = [str(coord) for coord in bounds[:2]]
             top_right = [str(coord) for coord in bounds[2:]]
@@ -195,11 +195,25 @@ def translate_product(item: dict) -> dict:
     if properties['platform'] is None:
         properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
 
-    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS']
+    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B']
     if properties['platform'] in asf_frame_platforms:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
     else:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0))
+
+    if properties['processingLevel'] == 'BURST':
+        burst = {
+            'absoluteBurstID': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0)),
+            'relativeBurstID': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_RELATIVE'), 'Values', 0)),
+            'fullBurstID': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_FULL'), 'Values', 0),
+            'burstIndex': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_INDEX'), 'Values', 0)),
+            'samplesPerBurst': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'SAMPLES_PER_BURST'), 'Values', 0)),
+            'subswath': get(umm, 'AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0),
+            'timeFromAnxSeconds': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'TIME_FROM_ANX_SEC'), 'Values', 0)),
+            'burstAnxTime': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ANX_TIME'), 'Values', 0),
+        }
+        properties['burst'] = burst
+        properties['sceneName'] = properties['fileID']
 
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 

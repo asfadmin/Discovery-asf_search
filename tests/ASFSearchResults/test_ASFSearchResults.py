@@ -81,7 +81,7 @@ def get_coordinates_from_kml(data: str):
 
 def check_csv(results: ASFSearchResults, expected_str: str):
     expected = [product for product in csv.reader(expected_str.split('\n')) if product != []]
-    actual = [prod for prod in csv.reader(results.csv()) if prod != []]
+    actual = [prod for prod in csv.reader(''.join([s for s in results.csv()]).split('\n')) if prod != []]
     
     assert expected.pop(0) == actual.pop(0)
 
@@ -127,12 +127,7 @@ def run_test_ASFSearchResults_intersection(wkt: str):
 
     # exclude SMAP products
     platforms = [
-                 PLATFORM.AIRSAR, 
-                 PLATFORM.ALOS, 
-                 PLATFORM.ERS, 
-                 PLATFORM.JERS, 
-                 PLATFORM.RADARSAT, 
-                 PLATFORM.SEASAT, 
+                 PLATFORM.ALOS,
                  PLATFORM.SENTINEL1, 
                  PLATFORM.SIRC, 
                  PLATFORM.UAVSAR

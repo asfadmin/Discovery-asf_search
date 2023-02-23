@@ -107,7 +107,7 @@ def search(
 
     preprocess_opts(opts)
 
-    url = '/'.join(s.strip('/') for s in [f'https://{INTERNAL.CMR_HOST}', f'{INTERNAL.CMR_GRANULE_PATH}'])
+    url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
     results = ASFSearchResults(opts=opts)
 
