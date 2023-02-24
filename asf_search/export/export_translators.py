@@ -15,7 +15,7 @@ def output_translators():
         'kml':          results_to_format(get_additional_kml_fields, ASFSearchResults_to_kml),
         'metalink':     results_to_format(get_additional_metalink_fields, ASFSearchResults_to_metalink),
         'jsonlite':     results_to_format(get_additional_jsonlite_fields, ASFSearchResults_to_jsonlite),
-        'jsonlite2':     results_to_format(get_additional_jsonlite_fields, ASFSearchResults_to_geojson),
+        'jsonlite2':     results_to_format(get_additional_jsonlite_fields, ASFSearchResults_to_jsonlite2),
         'geojson':      results_to_format(get_additional_geojson_fields, ASFSearchResults_to_geojson)
     }
 
