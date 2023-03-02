@@ -9,8 +9,8 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "markupsafe<=2.0.1", # jinja2 requires this version for soft_unicode
-    "jinja2",
+    # "markupsafe<=2.0.1", # jinja2 requires this version for soft_unicode
+    # "jinja2",
     "remotezip >= 0.10.0"
 ]
 

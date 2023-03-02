@@ -2,7 +2,9 @@ from math import floor
 from typing import List, Dict
 from asf_search.CMR import get_additional_fields
 import logging
-from jinja2 import Environment, PackageLoader
+# from jinja2 import Environment, PackageLoader
+from asf_search.export.metalink import XMLStreamArray
+import xml.etree.ElementTree as ETree
 
 extra_kml_fields = [
     ('configurationName', ['AdditionalAttributes', ('Name', 'BEAM_MODE_DESC'), 'Values', 0]),
@@ -14,6 +16,38 @@ extra_kml_fields = [
     ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
 ]
 
+def metadata_fields(item: dict):
+    required = {
+        'Processing type: ': item['processingTypeDisplay'],
+        'Frame: ': item['frameNumber'],
+        'Path: ': item['pathNumber'],
+        'Orbit: ': item['orbit'],
+        'Start time: ': item['startTime'],
+        'End time: ': item['stopTime'],
+    }
+    
+    optional = {}
+    for text, key in [('Faraday Rotation: ', 'faradayRotation'), ('Ascending/Descending: ', 'flightDirection'), ('Off Nadir Angle: ', 'offNadirAngle'), ('Temporal Baseline: ', 'temporalBaseline'), ('Perpendicular Baseline: ', 'perpendicularBaseline')]:
+        if item.get(key) is not None:
+            optional[text] = item[key]
+    
+    output = { **required, **optional }
+    if item['processingLevel'] == 'BURST':
+        burst = {
+            'Absolute Burst ID: ' :  item['burst']['absoluteBurstID'],
+            'Relative Burst ID: ' :  item['burst']['relativeBurstID'],
+            'Full Burst ID: ':  item['burst']['fullBurstID'],
+            'Burst Index: ': item['burst']['burstIndex'],
+            'Burst Anx Time: ': item['burst']['burstAnxTime'],
+            'Time from Anx (seconds): ': item['burst']['timeFromAnxSeconds'],
+            'Samples per Burst: ': item['burst']['samplesPerBurst'],
+            'Subswath: ': item['burst']['subswath']
+        }
+        
+        output = { **output, **burst}
+    
+    return output
+
 def get_additional_kml_fields(product):
     umm = product.umm
     
@@ -23,24 +57,146 @@ def get_additional_kml_fields(product):
 
     return additional_fields
 
-def ASFSearchResults_to_kml(results_properties: List[Dict]):
-    logging.debug('translating: kml')
+# def ASFSearchResults_to_kml(results_properties: List[Dict]):
+#     logging.debug('translating: kml')
 
-    templateEnv = Environment(
-        loader=PackageLoader('asf_search.export', 'templates'),
-        autoescape=True
-    )
+#     templateEnv = Environment(
+#         loader=PackageLoader('asf_search.export', 'templates'),
+#         autoescape=True
+#     )
 
-    includeBaseline=False
+#     includeBaseline=False
     
-    for product in results_properties:
-        if product['offNadirAngle'] != None:
-            product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
+#     for product in results_properties:
+#         if product['offNadirAngle'] != None:
+#             product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
 
-        if 'temporalBaseline' in product.keys() or 'perpendicularBaseline' in product.keys():
-            includeBaseline = True
+#         if 'temporalBaseline' in product.keys() or 'perpendicularBaseline' in product.keys():
+#             includeBaseline = True
 
-    template = templateEnv.get_template('template.kml')
+#     template = templateEnv.get_template('template.kml')
 
-    for line in template.stream(includeBaseline=includeBaseline, results=results_properties):
-        yield line
+#     for line in template.stream(includeBaseline=includeBaseline, results=results_properties):
+#         yield line
+
+class KMLStreamArray(XMLStreamArray):
+    def __init__(self, results):
+        XMLStreamArray.__init__(self, results)
+        self.header = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>ASF Datapool Search Results</name>
+    <description>Search Performed: {{search_time}}</description>
+    <Style id="yellowLineGreenPoly">
+      <LineStyle>
+        <color>30ff8800</color>
+        <width>4</width>
+      </LineStyle>
+      <PolyStyle>
+        <color>7f00ff00</color>
+      </PolyStyle>
+    </Style>"""
+
+        self.footer = """</Document></kml>"""
+        
+    def get_additional_fields(self, product):
+        umm = product.umm
+        additional_fields = {}
+        for key, path in extra_kml_fields:
+            additional_fields[key] = get_additional_fields(umm, *path)
+        return additional_fields
+
+    def getItem(self, p):
+        placemark = ETree.Element("Placemark")
+        name = ETree.Element('name')
+        name.text = p['sceneName']
+        placemark.append(name)
+        
+        description = ETree.Element('description')
+        description.text = """&lt;![CDATA["""
+        placemark.append(description)
+        
+        h1 = ETree.Element('h1')
+        h1.text = f"{p['platform']} {p['configurationName']} acquired {p['sceneDate']}"
+        h2 = ETree.Element('h2')
+        h2.text = p.get('url', '')
+        description.append(h1)
+        description.append(h2)
+        
+        div = ETree.Element('div', attrib={'style': 'position:absolute;left:20px;top:200px'})
+        placemark.append(div)
+
+        h3 = ETree.Element('h3')
+        h3.text = 'Metadata'
+        div.append(h3)
+        
+        ul = ETree.Element('ul')
+        div.append(ul)
+        
+        for text, value in metadata_fields(p).items():
+            li = ETree.Element('li')
+            li.text = text + str(value)
+            ul.append(li)
+        
+        d = ETree.Element('div', attrib={'style': "position:absolute;left:300px;top:250px"})
+        description.append(d)
+        
+        a = ETree.Element('a')
+        if p.get('browse') is not None:
+            a.set('href', p.get('browse')[0])
+        
+        d.append(a)
+        
+        img = ETree.Element('img')
+        if p.get('thumbnailUrl') is not None:
+            img.set('src', p['thumbnailUrl'])
+        a.append(img)
+        
+        styleUrl = ETree.Element('styleUrl')
+        styleUrl.text = '#yellowLineGreenPoly'
+        placemark.append(styleUrl)
+        
+        polygon = ETree.Element('Polygon')
+        placemark.append(polygon)
+
+        extrude = ETree.Element('extrude')
+        extrude.text = '1'
+        polygon.append(extrude)
+        
+        altitudeMode = ETree.Element('altitudeMode')
+        altitudeMode.text = 'relativeToGround'
+        polygon.append(altitudeMode)
+        
+        outerBondaryIs = ETree.Element('outerBoundaryIs')
+        polygon.append(outerBondaryIs)
+        
+        linearRing = ETree.Element("LinearRing")
+        outerBondaryIs.append(linearRing)
+        
+        coordinates = ETree.Element('coordinates')
+        coordinates.text = '\n'.join([f"{c['Longitude']},{c['Latitude']},2000" for c in p['shape']])
+        linearRing.append(coordinates)
+
+        ETree.indent(placemark)
+        return '\n' + ETree.tostring(placemark, encoding='unicode')
+                
+        # url = ETree.Element('url', attrib={'type': 'http'})
+        # url.text = p['url']
+        # resources.append(url)
+        # file.append(resources)
+        
+        # if p['md5sum'] and p['md5sum'] != 'NA':
+        #     verification = ETree.Element('verification')
+        #     h = ETree.Element('hash', {'type': 'md5'})
+        #     h.text = p['md5sum']
+        #     verification.append(h)
+        #     file.append(verification)
+            
+        # if p['bytes'] and p['bytes'] != 'NA':
+        #     size = ETree.Element('size')
+        #     size.text = str(p['bytes'])
+        #     file.append(size)
+        
+        # return '\n' + ETree.tostring(file, encoding='unicode')
+    
+    
