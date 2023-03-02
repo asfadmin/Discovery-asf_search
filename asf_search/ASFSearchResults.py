@@ -6,6 +6,9 @@ from asf_search.exceptions import ASFSearchError
 from asf_search.export import output_translators
 
 from asf_search import ASF_LOGGER
+from asf_search.export.csv import CSVStreamArray
+from asf_search.export.kml import KMLStreamArray
+from asf_search.export.metalink import XMLStreamArray
 
 class ASFSearchResults(UserList):
     def __init__(self, *args, opts: ASFSearchOptions = None):
@@ -22,13 +25,13 @@ class ASFSearchResults(UserList):
         }
 
     def csv(self):
-        return output_translators().get('csv')(self)
+        return CSVStreamArray(self)
 
     def kml(self):
-        return output_translators().get('kml')(self)
+        return KMLStreamArray(self)
     
     def metalink(self):
-        return output_translators().get('metalink')(self)
+        return XMLStreamArray(self)
 
     def jsonlite(self):
         return output_translators().get('jsonlite')(self)
