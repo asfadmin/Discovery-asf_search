@@ -1,10 +1,5 @@
 import csv
-from io import StringIO
-from math import floor
-from typing import Dict, List
-from asf_search.CMR import get_additional_fields
-import logging
-# from jinja2 import Environment, PackageLoader
+from typing import Dict
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
@@ -24,25 +19,6 @@ extra_csv_fields = [
     ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
     ('insarStackSize', ['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0]),
 ]
-    
-# def get_additional_csv_fields(product):
-#     umm = product.umm
-    
-#     additional_fields = {}
-#     for key, path in extra_csv_fields:
-#         additional_fields[key] = get_additional_fields(umm, *path)
-
-#     return additional_fields
-
-# def ASFSearchResults_to_csv(results_properties: List[Dict]):
-#     logging.debug('translating: csv')
-
-#     pseudo_buffer = CSVStreamArray()
-#     writer = csv.DictWriter(pseudo_buffer, quoting=csv.QUOTE_ALL, fieldnames=fieldnames)
-#     yield writer.writeheader()
-#     for p in results_properties:
-#         yield writer.writerow(properties_to_row(p))
-    
 
 fieldnames = (
 "Granule Name",
@@ -149,16 +125,11 @@ class CSVStreamArray(list):
     def streamRows(self):
         
         f = CSVBuffer()
-        writer = csv.DictWriter(f, quoting=csv.QUOTE_ALL, fieldnames=fieldnames)  
-        # logging.warn("AHHHH")      
+        writer = csv.DictWriter(f, quoting=csv.QUOTE_ALL, fieldnames=fieldnames)     
         yield writer.writeheader()
-        # logging.warn("OKAY")
-        for idx, page in enumerate(self.pages):
-            logging.warn('page: ' + str(idx))
+        for page in self.pages:
             properties_list = ASFSearchResults_to_properties_list(page, get_additional_csv_fields)
             yield [writer.writerow(self.getItem(p)) for p in properties_list]
-                # if p is not None:
-                #     yield writer.writerow(self.getItem(p))
 
     def getItem(self, p):
         return {

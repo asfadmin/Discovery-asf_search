@@ -1,8 +1,4 @@
-from math import floor
-from typing import List, Dict
 from asf_search.CMR import get_additional_fields
-import logging
-# from jinja2 import Environment, PackageLoader
 from asf_search.export.metalink import XMLStreamArray
 import xml.etree.ElementTree as ETree
 
@@ -56,28 +52,6 @@ def get_additional_kml_fields(product):
         additional_fields[key] = get_additional_fields(umm, *path)
 
     return additional_fields
-
-# def ASFSearchResults_to_kml(results_properties: List[Dict]):
-#     logging.debug('translating: kml')
-
-#     templateEnv = Environment(
-#         loader=PackageLoader('asf_search.export', 'templates'),
-#         autoescape=True
-#     )
-
-#     includeBaseline=False
-    
-#     for product in results_properties:
-#         if product['offNadirAngle'] != None:
-#             product['offNadirAngle'] = floor(product['offNadirAngle']) if product['offNadirAngle'] == floor(product['offNadirAngle']) else product['offNadirAngle']
-
-#         if 'temporalBaseline' in product.keys() or 'perpendicularBaseline' in product.keys():
-#             includeBaseline = True
-
-#     template = templateEnv.get_template('template.kml')
-
-#     for line in template.stream(includeBaseline=includeBaseline, results=results_properties):
-#         yield line
 
 class KMLStreamArray(XMLStreamArray):
     def __init__(self, results):
@@ -179,24 +153,3 @@ class KMLStreamArray(XMLStreamArray):
 
         ETree.indent(placemark)
         return '\n' + ETree.tostring(placemark, encoding='unicode')
-                
-        # url = ETree.Element('url', attrib={'type': 'http'})
-        # url.text = p['url']
-        # resources.append(url)
-        # file.append(resources)
-        
-        # if p['md5sum'] and p['md5sum'] != 'NA':
-        #     verification = ETree.Element('verification')
-        #     h = ETree.Element('hash', {'type': 'md5'})
-        #     h.text = p['md5sum']
-        #     verification.append(h)
-        #     file.append(verification)
-            
-        # if p['bytes'] and p['bytes'] != 'NA':
-        #     size = ETree.Element('size')
-        #     size.text = str(p['bytes'])
-        #     file.append(size)
-        
-        # return '\n' + ETree.tostring(file, encoding='unicode')
-    
-    
