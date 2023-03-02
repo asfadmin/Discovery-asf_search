@@ -49,5 +49,21 @@ class XMLStreamArray(list):
             size.text = str(p['bytes'])
             file.append(size)
         
-        ETree.indent(file)
         return '\n' + ETree.tostring(file, encoding='unicode')
+
+    def indent(self, elem, level=0):
+        # Only Python 3.9+ has a built-in indent function for element tree.
+        # https://stackoverflow.com/a/33956544
+        i = "\n" + level*"  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.indent(elem, level+1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i

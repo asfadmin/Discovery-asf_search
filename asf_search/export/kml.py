@@ -151,5 +151,5 @@ class KMLStreamArray(XMLStreamArray):
         coordinates.text = '\n'.join([f"{c['Longitude']},{c['Latitude']},2000" for c in p['shape']])
         linearRing.append(coordinates)
 
-        ETree.indent(placemark)
+        self.indent(placemark)
         return '\n' + ETree.tostring(placemark, encoding='unicode')
