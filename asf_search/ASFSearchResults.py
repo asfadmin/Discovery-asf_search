@@ -25,13 +25,13 @@ class ASFSearchResults(UserList):
         }
 
     def csv(self):
-        return CSVStreamArray(self)
+        return CSVStreamArray([self])
 
     def kml(self):
-        return KMLStreamArray(self)
+        return KMLStreamArray([self])
     
     def metalink(self):
-        return XMLStreamArray(self)
+        return XMLStreamArray([self])
 
     def jsonlite(self):
         return output_translators().get('jsonlite')(self)
