@@ -1,5 +1,6 @@
 import csv
 from typing import Dict
+from asf_search.CMR.translate import get_additional_fields
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
@@ -65,51 +66,15 @@ fieldnames = (
 "subswath"
 )
 
-def properties_to_row(p: Dict):
-        return {
-            "Granule Name":p['sceneName'],
-            "Platform":p['platform'],
-            "Sensor":p['sensor'],
-            "Beam Mode":p['beamModeType'],
-            "Beam Mode Description":p['configurationName'],
-            "Orbit":p['orbit'],
-            "Path Number":p['pathNumber'],
-            "Frame Number":p['frameNumber'],
-            "Acquisition Date":p['sceneDate'],
-            "Processing Date":p['processingDate'],
-            "Processing Level":p['processingLevel'],
-            "Start Time":p['startTime'],
-            "End Time":p['stopTime'],
-            "Center Lat":p['centerLat'],
-            "Center Lon":p['centerLon'],
-            "Near Start Lat":p['nearStartLat'],
-            "Near Start Lon":p['nearStartLon'],
-            "Far Start Lat":p['farStartLat'],
-            "Far Start Lon":p['farStartLon'],
-            "Near End Lat":p['nearEndLat'],
-            "Near End Lon":p['nearEndLon'],
-            "Far End Lat":p['farEndLat'],
-            "Far End Lon":p['farEndLon'],
-            "Faraday Rotation":p['faradayRotation'],
-            "Ascending or Descending?":p['flightDirection'],
-            "URL":p['url'],
-            "Size (MB)":p['sizeMB'],
-            "Off Nadir Angle":p['offNadirAngle'],
-            "Stack Size":p['insarStackSize'],
-            "Doppler":p['doppler'],
-            "GroupID":p['groupID'],
-            "Pointing Angle":p['pointingAngle'],
-            "TemporalBaseline":p.get('teporalBaseline', ''),
-            "PerpendicularBaseline":p.get('pependicularBaseline', ''),
-            "relativeBurstID":  p['burst']['relativeBurstID'] if p['processingLevel'] == 'BURST' else None,
-            "absoluteBurstID":  p['burst']['absoluteBurstID'] if p['processingLevel'] == 'BURST' else None,
-            "fullBurstID":  p['burst']['fullBurstID'] if p['processingLevel'] == 'BURST' else None,
-            "burstIndex":   p['burst']['burstIndex'] if p['processingLevel'] == 'BURST' else None,
-            "burstAnxTime": p['burst']['burstAnxTime'] if p['processingLevel'] == 'BURST' else None,
-            "timeFromAnxSeconds":   p['burst']['timeFromAnxSeconds'] if p['processingLevel'] == 'BURST' else None,
-            "samplesPerBurst":  p['burst']['samplesPerBurst'] if p['processingLevel'] == 'BURST' else None,
-            "subswath": p['burst']['subswath'] if p['processingLevel'] == 'BURST' else None
-        }
+
+def get_additional_csv_fields(product):
+    umm = product.umm
+
+    additional_fields = {}
+    for key, path in extra_csv_fields:
+        additional_fields[key] = get_additional_fields(umm, *path)
+
+    return additional_fields
 
 class CSVStreamArray(list):
     def __init__(self, results):
