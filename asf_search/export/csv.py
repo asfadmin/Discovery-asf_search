@@ -92,9 +92,10 @@ class CSVStreamArray(list):
         f = CSVBuffer()
         writer = csv.DictWriter(f, quoting=csv.QUOTE_ALL, fieldnames=fieldnames)     
         yield writer.writeheader()
+        
         for page in self.pages:
             properties_list = ASFSearchResults_to_properties_list(page, get_additional_csv_fields)
-            yield [writer.writerow(self.getItem(p)) for p in properties_list]
+            yield from [writer.writerow(self.getItem(p)) for p in properties_list]
 
     def getItem(self, p):
         return {
@@ -130,8 +131,8 @@ class CSVStreamArray(list):
             "Doppler":p['doppler'],
             "GroupID":p['groupID'],
             "Pointing Angle":p['pointingAngle'],
-            "TemporalBaseline":p.get('teporalBaseline', ''),
-            "PerpendicularBaseline":p.get('pependicularBaseline', ''),
+            "TemporalBaseline":p.get('teporalBaseline'),
+            "PerpendicularBaseline":p.get('pependicularBaseline'),
             "relativeBurstID":  p['burst']['relativeBurstID'] if p['processingLevel'] == 'BURST' else None,
             "absoluteBurstID":  p['burst']['absoluteBurstID'] if p['processingLevel'] == 'BURST' else None,
             "fullBurstID":  p['burst']['fullBurstID'] if p['processingLevel'] == 'BURST' else None,

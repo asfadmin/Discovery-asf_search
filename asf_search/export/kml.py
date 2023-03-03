@@ -23,9 +23,11 @@ def metadata_fields(item: dict):
     }
     
     optional = {}
-    for text, key in [('Faraday Rotation: ', 'faradayRotation'), ('Ascending/Descending: ', 'flightDirection'), ('Off Nadir Angle: ', 'offNadirAngle'), ('Temporal Baseline: ', 'temporalBaseline'), ('Perpendicular Baseline: ', 'perpendicularBaseline')]:
+    for text, key in [('Faraday Rotation: ', 'faradayRotation'), ('Ascending/Descending: ', 'flightDirection'), ('Off Nadir Angle: ', 'offNadirAngle'), ('Pointing Angle: ', 'pointingAngle'), ('Temporal Baseline: ', 'temporalBaseline'), ('Perpendicular Baseline: ', 'perpendicularBaseline')]:
         if item.get(key) is not None:
             optional[text] = item[key]
+        elif key not in ['temporalBaseline', 'perpendicularBaseline']:
+            optional[text] = 'None'
     
     output = { **required, **optional }
     if item['processingLevel'] == 'BURST':
@@ -60,7 +62,7 @@ class KMLStreamArray(XMLStreamArray):
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
     <name>ASF Datapool Search Results</name>
-    <description>Search Performed: {{search_time}}</description>
+    <description>Search Performed:</description>
     <Style id="yellowLineGreenPoly">
       <LineStyle>
         <color>30ff8800</color>
@@ -91,14 +93,14 @@ class KMLStreamArray(XMLStreamArray):
         placemark.append(description)
         
         h1 = ETree.Element('h1')
-        h1.text = f"{p['platform']} {p['configurationName']} acquired {p['sceneDate']}"
+        h1.text = f"{p['platform']} ({p['configurationName']}), acquired {p['sceneDate']}"
         h2 = ETree.Element('h2')
         h2.text = p.get('url', '')
         description.append(h1)
         description.append(h2)
         
         div = ETree.Element('div', attrib={'style': 'position:absolute;left:20px;top:200px'})
-        placemark.append(div)
+        description.append(div)
 
         h3 = ETree.Element('h3')
         h3.text = 'Metadata'
@@ -118,12 +120,16 @@ class KMLStreamArray(XMLStreamArray):
         a = ETree.Element('a')
         if p.get('browse') is not None:
             a.set('href', p.get('browse')[0])
+        else:
+            a.set('href', "")
         
         d.append(a)
         
         img = ETree.Element('img')
         if p.get('thumbnailUrl') is not None:
-            img.set('src', p['thumbnailUrl'])
+            img.set('src', p.get('thumbnailUrl'))
+        else:
+            img.set('src', "None")
         a.append(img)
         
         styleUrl = ETree.Element('styleUrl')
@@ -152,4 +158,5 @@ class KMLStreamArray(XMLStreamArray):
         linearRing.append(coordinates)
 
         self.indent(placemark)
-        return '\n' + ETree.tostring(placemark, encoding='unicode')
+        return ETree.tostring(placemark, encoding='unicode').replace('&amp;', '&')
+    

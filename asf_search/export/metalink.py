@@ -24,7 +24,7 @@ class XMLStreamArray(list):
         yield self.header
         for page in self.pages:
             properties_list = ASFSearchResults_to_properties_list(page, self.get_additional_fields)
-            yield [self.getItem(p) for p in properties_list]
+            yield from [self.getItem(p) for p in properties_list]
         
         yield self.footer
 

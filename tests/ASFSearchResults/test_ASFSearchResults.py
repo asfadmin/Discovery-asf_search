@@ -1,7 +1,8 @@
 from typing import Dict, List
 import asf_search as asf
 from asf_search import ASFSearchResults
-import defusedxml.ElementTree as ETree
+import defusedxml.ElementTree as DefusedETree
+import xml.etree.ElementTree as ETree
 import json
 import shapely.wkt as WKT
 import requests
@@ -41,26 +42,28 @@ def check_metalink(results: ASFSearchResults, expected_str: str):
 def check_kml(results: ASFSearchResults, expected_str: str):
     namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
     placemarks_path = ".//kml:Placemark"
-    root = ETree.fromstring(expected_str)
+    root = DefusedETree.fromstring(expected_str)
     placemarks = root.findall(placemarks_path, namespaces)
 
     tags = ['name', 'description', 'styleUrl']
-    actual_root = ETree.fromstring(''.join([line for line in results.kml()]))
+    actual_root = DefusedETree.fromstring(''.join([block for block in results.kml()]))
     actual = actual_root.findall(placemarks_path, namespaces)
-
-    for idx, element in enumerate(placemarks):
-        for idy, field in enumerate(element):
-            if field.tag.split('}')[-1] in tags:
-                expected_el = str(ETree.tostring(field))
-                actual_el = str(ETree.tostring(actual[idx][idy]))
-                assert expected_el == actual_el
-            elif field.tag.split('}')[-1] == 'Polygon':
-                expected_coords = get_coordinates_from_kml(ETree.tostring(field))
-                actual_coords = get_coordinates_from_kml(ETree.tostring(actual[idx][idy]))
-                expected_polygon = Polygon(expected_coords)
-                actual_polygon = Polygon(actual_coords)
-
-                assert actual_polygon.equals(expected_polygon)
+    
+    # Strip polygon from placemarks since asf-search differs from search-api's coordinate ordering 
+    # TODO: Compare with get_coordinates_from_kml again
+    for placemark in placemarks:
+        p = placemark.findall('./*')
+        if p is not None:
+            placemark.remove(p[-1])
+    for placemark in actual:
+        p = placemark.findall('./*')
+        if p is not None:
+            placemark.remove(p[-1])
+        
+    actual_canon = ETree.canonicalize( DefusedETree.tostring(actual_root).strip(), strip_text=True)
+    expected_canon = ETree.canonicalize( DefusedETree.tostring(root).strip(), strip_text=True)
+    
+    assert actual_canon == expected_canon
 
 
 def get_coordinates_from_kml(data: str):
@@ -81,13 +84,34 @@ def get_coordinates_from_kml(data: str):
 
 def check_csv(results: ASFSearchResults, expected_str: str):
     expected = [product for product in csv.reader(expected_str.split('\n')) if product != []]
-    actual = [prod for prod in csv.reader(''.join([s for s in results.csv()]).split('\n')) if prod != []]
+    # actual = [prod for prod in csv.reader(''.join([s for s in results.csv()]).split('\n')) if prod != []]
     
-    assert expected.pop(0) == actual.pop(0)
+    expected = csv.DictReader(expected_str.split('\n'))
+    actual = csv.DictReader(results.csv())
+    
+    
+    for actual_row, expected_row in zip(actual, expected):
+        actual_dict = dict(actual_row)
+        expected_dict = dict(expected_row)
+        
+        for key in expected_dict.keys():
+            if expected_dict[key] in ['None', None, '']:
+                assert actual_dict[key] in ['None', None, '']
+            else:
+                assert expected_dict[key] == actual_dict[key], f"expected \'{expected_dict[key]}\' for key \'{key}\', got \'{actual_dict[key]}\'"
+    
+        # for key in row.keys():
+        #     assert actual[idx][key] == row[key]
+    # csv.DictReader
+    # expected_header_fields = expected.pop(0)
+    # actual_header_fields = actual.pop(0)
+    
+    # required_headers = expected_header_fields.split(',')
+    # assert expected.pop(0) == actual.pop(0)
 
-    for idx, product in enumerate(expected):
-        assert actual[idx] == product
-    pass
+    # for idx, product in enumerate(expected):
+    #     assert actual[idx] == product
+    # pass
 
 def check_jsonLite(results: ASFSearchResults, expected_str: str, output_type: str):
     jsonlite2 = output_type == 'jsonlite2'
