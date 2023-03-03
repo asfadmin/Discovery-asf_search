@@ -78,7 +78,7 @@ def get_coordinates_from_kml(data: str):
 
     coords = []
     coords_lon_lat_path = ".//kml:outerBoundaryIs/kml:LinearRing/kml:coordinates"
-    root = ETree.fromstring(data)
+    root = DefusedETree.fromstring(data)
     
     coordinates_elements = root.findall(coords_lon_lat_path, namespaces)
     for lon_lat_z in coordinates_elements[0].text.split('\n'):
