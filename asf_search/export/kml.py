@@ -25,7 +25,10 @@ def metadata_fields(item: dict):
     optional = {}
     for text, key in [('Faraday Rotation: ', 'faradayRotation'), ('Ascending/Descending: ', 'flightDirection'), ('Off Nadir Angle: ', 'offNadirAngle'), ('Pointing Angle: ', 'pointingAngle'), ('Temporal Baseline: ', 'temporalBaseline'), ('Perpendicular Baseline: ', 'perpendicularBaseline')]:
         if item.get(key) is not None:
-            optional[text] = item[key]
+            if type(item[key]) == float and key == 'offNadirAngle':
+                optional[text] = f'{item[key]:g}' #trim trailing zeros    
+            else:
+                optional[text] = item[key]
         elif key not in ['temporalBaseline', 'perpendicularBaseline']:
             optional[text] = 'None'
     
