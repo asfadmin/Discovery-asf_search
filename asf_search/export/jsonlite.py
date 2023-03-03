@@ -6,6 +6,7 @@ from shapely.ops import transform
 
 from asf_search.CMR.translate import get_additional_fields
 from asf_search import ASFProduct
+from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
 extra_jsonlite_fields = [
     ('processingTypeDisplay', ['AdditionalAttributes', ('Name', 'PROCESSING_TYPE_DISPLAY'), 'Values', 0]),
@@ -85,7 +86,7 @@ class JSONLiteStreamArray(list):
         return self.len
 
     def streamDicts(self):
-        for p in self.results:
+        for p in ASFSearchResults_to_properties_list(self.results, get_additional_jsonlite_fields):
             if p is not None:
                 yield self.getItem(p)
 

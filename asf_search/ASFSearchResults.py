@@ -7,6 +7,8 @@ from asf_search.export import output_translators
 
 from asf_search import ASF_LOGGER
 from asf_search.export.csv import CSVStreamArray
+from asf_search.export.jsonlite import ASFSearchResults_to_jsonlite
+from asf_search.export.jsonlite2 import ASFSearchResults_to_jsonlite2
 from asf_search.export.kml import KMLStreamArray
 from asf_search.export.metalink import XMLStreamArray
 
@@ -34,10 +36,11 @@ class ASFSearchResults(UserList):
         return XMLStreamArray([self])
 
     def jsonlite(self):
-        return output_translators().get('jsonlite')(self)
+        return ASFSearchResults_to_jsonlite(self)
+        # return output_translators().get('jsonlite')(self)
 
     def jsonlite2(self):
-        return output_translators().get('jsonlite2')(self)  
+        return ASFSearchResults_to_jsonlite2(self)  
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
