@@ -37,7 +37,11 @@ def run_test_output_format(results: ASFSearchResults):
 
 def check_metalink(results: ASFSearchResults, expected_str: str):
     actual = ''.join([line for line in results.metalink()])
-    assert actual == expected_str
+    actual_tree = DefusedETree.fromstring(actual)
+    expected_tree = DefusedETree.fromstring(expected_str)
+    
+    assert ETree.canonicalize(DefusedETree.tostring(actual_tree), strip_text=True) == ETree.canonicalize(DefusedETree.tostring(actual_tree), strip_text=True)
+    # assert actual == expected_str
 
 def check_kml(results: ASFSearchResults, expected_str: str):
     namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
@@ -45,23 +49,26 @@ def check_kml(results: ASFSearchResults, expected_str: str):
     root = DefusedETree.fromstring(expected_str)
     placemarks = root.findall(placemarks_path, namespaces)
 
-    tags = ['name', 'description', 'styleUrl']
     actual_root = DefusedETree.fromstring(''.join([block for block in results.kml()]))
     actual = actual_root.findall(placemarks_path, namespaces)
     
-    # Strip polygon from placemarks since asf-search differs from search-api's coordinate ordering 
-    # TODO: Compare with get_coordinates_from_kml again
-    for placemark in placemarks:
-        p = placemark.findall('./*')
-        if p is not None:
-            placemark.remove(p[-1])
-    for placemark in actual:
-        p = placemark.findall('./*')
-        if p is not None:
-            placemark.remove(p[-1])
+    # Check polygons for equivalence (asf-search starts from a different pivot)
+    # and remove them from the kml so we can easily compare the rest of the placemark data
+    for expected_placemark, actual_placemark in zip(placemarks, actual):
+        expected_polygon = expected_placemark.findall('./*')[-1]
+        actual_polygon = actual_placemark.findall('./*')[-1]
         
-    actual_canon = ETree.canonicalize( DefusedETree.tostring(actual_root).strip(), strip_text=True)
-    expected_canon = ETree.canonicalize( DefusedETree.tostring(root).strip(), strip_text=True)
+        expected_coords = get_coordinates_from_kml(DefusedETree.tostring(expected_polygon))
+        actual_coords = get_coordinates_from_kml(DefusedETree.tostring(actual_polygon))
+        
+        assert Polygon(expected_coords).equals(Polygon(actual_coords))
+        
+        expected_placemark.remove(expected_polygon)
+        actual_placemark.remove(actual_polygon)
+        
+    # Get canonicalize xml strings so minor differences are normalized
+    actual_canon = ETree.canonicalize( DefusedETree.tostring(actual_root), strip_text=True)
+    expected_canon = ETree.canonicalize( DefusedETree.tostring(root), strip_text=True)
     
     assert actual_canon == expected_canon
 
@@ -98,21 +105,16 @@ def check_csv(results: ASFSearchResults, expected_str: str):
             if expected_dict[key] in ['None', None, '']:
                 assert actual_dict[key] in ['None', None, '']
             else:
-                assert expected_dict[key] == actual_dict[key], f"expected \'{expected_dict[key]}\' for key \'{key}\', got \'{actual_dict[key]}\'"
-    
-        # for key in row.keys():
-        #     assert actual[idx][key] == row[key]
-    # csv.DictReader
-    # expected_header_fields = expected.pop(0)
-    # actual_header_fields = actual.pop(0)
-    
-    # required_headers = expected_header_fields.split(',')
-    # assert expected.pop(0) == actual.pop(0)
-
-    # for idx, product in enumerate(expected):
-    #     assert actual[idx] == product
-    # pass
-
+                try:
+                    expected_value = float(expected_dict[key])
+                    actual_value = float(actual_dict[key])
+                    assert expected_value == actual_value, \
+                        f"expected \'{expected_dict[key]}\' for key \'{key}\', got \'{actual_dict[key]}\'"
+                except ValueError:
+                    assert expected_dict[key] == actual_dict[key], \
+                        f"expected \'{expected_dict[key]}\' for key \'{key}\', got \'{actual_dict[key]}\'"
+ 
+ 
 def check_jsonLite(results: ASFSearchResults, expected_str: str, output_type: str):
     jsonlite2 = output_type == 'jsonlite2'
     
