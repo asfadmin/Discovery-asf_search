@@ -3,7 +3,6 @@ from multiprocessing import Pool
 import json
 from asf_search import ASFSession, ASFSearchOptions
 from asf_search.exceptions import ASFSearchError
-from asf_search.export import output_translators
 
 from asf_search import ASF_LOGGER
 from asf_search.export.csv import CSVStreamArray
@@ -36,11 +35,10 @@ class ASFSearchResults(UserList):
         return XMLStreamArray([self])
 
     def jsonlite(self):
-        return ASFSearchResults_to_jsonlite(self)
-        # return output_translators().get('jsonlite')(self)
+        return ASFSearchResults_to_jsonlite([self])
 
     def jsonlite2(self):
-        return ASFSearchResults_to_jsonlite2(self)  
+        return ASFSearchResults_to_jsonlite2([self])  
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)

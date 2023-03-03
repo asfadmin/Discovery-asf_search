@@ -71,13 +71,7 @@ class JSONLiteStreamArray(list):
 
         # need to make sure we actually have results so we can intelligently set __len__, otherwise
         # iterencode behaves strangely and will output invalid json
-        self.first_result = None
-        self.len = 0
-        for p in self.results:
-            if p is not None:
-                self.first_result = p
-                self.len = 1
-                break
+        self.len = 1
 
     def __iter__(self):
         return self.streamDicts()
@@ -86,9 +80,10 @@ class JSONLiteStreamArray(list):
         return self.len
 
     def streamDicts(self):
-        for p in ASFSearchResults_to_properties_list(self.results, get_additional_jsonlite_fields):
-            if p is not None:
-                yield self.getItem(p)
+        for page in self.results:
+            yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, get_additional_jsonlite_fields) if p is not None]
+            # if p is not None:
+                # yield 
 
     def getItem(self, p):
         for i in p.keys():
