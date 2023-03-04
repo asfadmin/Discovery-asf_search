@@ -1,6 +1,6 @@
 import logging
 import json
-from typing import Tuple
+from typing import Generator, Tuple
 from shapely.geometry import shape
 from shapely.ops import transform
 
@@ -20,6 +20,9 @@ extra_jsonlite_fields = [
 def ASFSearchResults_to_jsonlite(results):
     logging.debug('translating: jsonlite')
 
+    if type(results) is not Generator:
+        results = [results]
+    
     streamer = JSONLiteStreamArray(results)
     jsondata = {'results': streamer}
 

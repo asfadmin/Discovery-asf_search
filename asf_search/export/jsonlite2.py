@@ -1,12 +1,15 @@
-from typing import List, Dict
+from typing import Generator
 import logging
 import json
 from .jsonlite import JSONLiteStreamArray
 
-def ASFSearchResults_to_jsonlite2(results_properties: List[Dict]):
+def ASFSearchResults_to_jsonlite2(results):
     logging.debug('translating: jsonlite')
 
-    streamer = JSONLite2StreamArray(results_properties)
+    if type(results) is not Generator:
+        results = [results]
+    
+    streamer = JSONLite2StreamArray(results)
 
     for p in json.JSONEncoder(sort_keys=True, separators=(',', ':')).iterencode({'results': streamer}):
         yield p
