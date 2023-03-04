@@ -1,5 +1,6 @@
 import csv
-from typing import Dict
+import logging
+from typing import Generator
 from asf_search.CMR.translate import get_additional_fields
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
@@ -66,15 +67,13 @@ fieldnames = (
 "subswath"
 )
 
-
-def get_additional_csv_fields(product):
-    umm = product.umm
-
-    additional_fields = {}
-    for key, path in extra_csv_fields:
-        additional_fields[key] = get_additional_fields(umm, *path)
-
-    return additional_fields
+def ASFSearchResults_to_csv(results):
+    logging.debug('translating: csv')
+    
+    if type(results) is Generator:    
+        return CSVStreamArray(results)
+    
+    return CSVStreamArray([results])
 
 class CSVStreamArray(list):
     def __init__(self, results):
@@ -87,6 +86,15 @@ class CSVStreamArray(list):
     def __len__(self):
         return self.len
 
+    def get_additional_output_fields(product):
+        umm = product.umm
+
+        additional_fields = {}
+        for key, path in extra_csv_fields:
+            additional_fields[key] = get_additional_fields(umm, *path)
+
+        return additional_fields
+
     def streamRows(self):
         
         f = CSVBuffer()
@@ -94,7 +102,7 @@ class CSVStreamArray(list):
         yield writer.writeheader()
         
         for page in self.pages:
-            properties_list = ASFSearchResults_to_properties_list(page, get_additional_csv_fields)
+            properties_list = ASFSearchResults_to_properties_list(page, get_additional_output_fields)
             yield from [writer.writerow(self.getItem(p)) for p in properties_list]
 
     def getItem(self, p):

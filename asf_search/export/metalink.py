@@ -1,5 +1,15 @@
+import logging
+from typing import Generator
 import xml.etree.ElementTree as ETree
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
+
+def ASFSearchResults_to_metalink(results):
+    logging.debug('translating: metalink')
+    
+    if type(results) is Generator:    
+        return XMLStreamArray(results)
+    
+    return XMLStreamArray([results])
 
 class XMLStreamArray(list):
     def __init__(self, results):

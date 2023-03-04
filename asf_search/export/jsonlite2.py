@@ -11,7 +11,6 @@ def ASFSearchResults_to_jsonlite2(results_properties: List[Dict]):
     for p in json.JSONEncoder(sort_keys=True, separators=(',', ':')).iterencode({'results': streamer}):
         yield p
 
-
 class JSONLite2StreamArray(JSONLiteStreamArray):
     def getItem(self, p):
          # pre-processing of the result is the same as in the base jsonlite streamer,

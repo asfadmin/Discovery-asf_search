@@ -17,29 +17,6 @@ extra_jsonlite_fields = [
     ('missionName', ['AdditionalAttributes', ('Name', 'MISSION_NAME'), 'Values', 0]),
 ]
 
-def get_additional_jsonlite_fields(product: ASFProduct):
-    umm = product.umm
-    
-    additional_fields = {}
-    for key, path in extra_jsonlite_fields:
-        additional_fields[key] = get_additional_fields(umm, *path)
-
-    if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
-        insarGrouping = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
-        insarStackSize = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
-        
-        if insarGrouping not in [None, 0, '0', 'NA', 'NULL']:
-            additional_fields['canInsar'] = True
-            additional_fields['insarStackSize'] = insarStackSize
-        else:
-            additional_fields['canInsar'] = False
-    else:
-        additional_fields['canInsar'] = product.baseline is not None
-
-    additional_fields['geometry'] = product.geometry
-
-    return additional_fields
-
 def ASFSearchResults_to_jsonlite(results):
     logging.debug('translating: jsonlite')
 
@@ -79,11 +56,30 @@ class JSONLiteStreamArray(list):
     def __len__(self):
         return self.len
 
+    def get_additional_output_fields(product: ASFProduct):
+        umm = product.umm
+        
+        additional_fields = {}
+        for key, path in extra_jsonlite_fields:
+            additional_fields[key] = get_additional_fields(umm, *path)
+
+        if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
+            insarGrouping = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
+            insarStackSize = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
+            
+            if insarGrouping not in [None, 0, '0', 'NA', 'NULL']:
+                additional_fields['canInsar'] = True
+                additional_fields['insarStackSize'] = insarStackSize
+            else:
+                additional_fields['canInsar'] = False
+        else:
+            additional_fields['canInsar'] = product.baseline is not None
+
+        additional_fields['geometry'] = product.geometry
+
     def streamDicts(self):
         for page in self.results:
-            yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, get_additional_jsonlite_fields) if p is not None]
-            # if p is not None:
-                # yield 
+            yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, get_additional_output_fields) if p is not None]
 
     def getItem(self, p):
         for i in p.keys():

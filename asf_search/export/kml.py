@@ -1,3 +1,5 @@
+import logging
+from typing import Generator
 from asf_search.CMR import get_additional_fields
 from asf_search.export.metalink import XMLStreamArray
 import xml.etree.ElementTree as ETree
@@ -12,69 +14,31 @@ extra_kml_fields = [
     ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
 ]
 
-def metadata_fields(item: dict):
-    required = {
-        'Processing type: ': item['processingTypeDisplay'],
-        'Frame: ': item['frameNumber'],
-        'Path: ': item['pathNumber'],
-        'Orbit: ': item['orbit'],
-        'Start time: ': item['startTime'],
-        'End time: ': item['stopTime'],
-    }
+def ASFSearchResults_to_kml(results):
+    logging.debug('translating: kml')
     
-    optional = {}
-    for text, key in [('Faraday Rotation: ', 'faradayRotation'), ('Ascending/Descending: ', 'flightDirection'), ('Off Nadir Angle: ', 'offNadirAngle'), ('Pointing Angle: ', 'pointingAngle'), ('Temporal Baseline: ', 'temporalBaseline'), ('Perpendicular Baseline: ', 'perpendicularBaseline')]:
-        if item.get(key) is not None:
-            if type(item[key]) == float and key == 'offNadirAngle':
-                optional[text] = f'{item[key]:g}' #trim trailing zeros    
-            else:
-                optional[text] = item[key]
-        elif key not in ['temporalBaseline', 'perpendicularBaseline']:
-            optional[text] = 'None'
+    if type(results) is Generator:    
+        return KMLStreamArray(results)
     
-    output = { **required, **optional }
-    if item['processingLevel'] == 'BURST':
-        burst = {
-            'Absolute Burst ID: ' :  item['burst']['absoluteBurstID'],
-            'Relative Burst ID: ' :  item['burst']['relativeBurstID'],
-            'Full Burst ID: ':  item['burst']['fullBurstID'],
-            'Burst Index: ': item['burst']['burstIndex'],
-            'Burst Anx Time: ': item['burst']['burstAnxTime'],
-            'Time from Anx (seconds): ': item['burst']['timeFromAnxSeconds'],
-            'Samples per Burst: ': item['burst']['samplesPerBurst'],
-            'Subswath: ': item['burst']['subswath']
-        }
-        
-        output = { **output, **burst}
-    
-    return output
-
-def get_additional_kml_fields(product):
-    umm = product.umm
-    
-    additional_fields = {}
-    for key, path in extra_kml_fields:
-        additional_fields[key] = get_additional_fields(umm, *path)
-
-    return additional_fields
+    return KMLStreamArray([results])
 
 class KMLStreamArray(XMLStreamArray):
     def __init__(self, results):
         XMLStreamArray.__init__(self, results)
         self.header = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Document>
-    <name>ASF Datapool Search Results</name>
-    <description>Search Performed:</description>
-    <Style id="yellowLineGreenPoly">
-      <LineStyle>
-        <color>30ff8800</color>
-        <width>4</width>
-      </LineStyle>
-      <PolyStyle>
-        <color>7f00ff00</color>
-      </PolyStyle>
-    </Style>"""
+            <kml xmlns="http://www.opengis.net/kml/2.2">
+              <Document>
+                <name>ASF Datapool Search Results</name>
+                <description>Search Performed:</description>
+                <Style id="yellowLineGreenPoly">
+                  <LineStyle>
+                    <color>30ff8800</color>
+                    <width>4</width>
+                  </LineStyle>
+                  <PolyStyle>
+                    <color>7f00ff00</color>
+                  </PolyStyle>
+                </Style>"""
 
         self.footer = """</Document></kml>"""
         
@@ -161,5 +125,44 @@ class KMLStreamArray(XMLStreamArray):
         linearRing.append(coordinates)
 
         self.indent(placemark)
+        
+        # for CDATA section, manually replace &amp; escape character with &
         return ETree.tostring(placemark, encoding='unicode').replace('&amp;', '&')
     
+    # Helper method for getting additional fields in <ul> tag
+    def metadata_fields(item: dict):
+        required = {
+            'Processing type: ': item['processingTypeDisplay'],
+            'Frame: ': item['frameNumber'],
+            'Path: ': item['pathNumber'],
+            'Orbit: ': item['orbit'],
+            'Start time: ': item['startTime'],
+            'End time: ': item['stopTime'],
+        }
+        
+        optional = {}
+        for text, key in [('Faraday Rotation: ', 'faradayRotation'), ('Ascending/Descending: ', 'flightDirection'), ('Off Nadir Angle: ', 'offNadirAngle'), ('Pointing Angle: ', 'pointingAngle'), ('Temporal Baseline: ', 'temporalBaseline'), ('Perpendicular Baseline: ', 'perpendicularBaseline')]:
+            if item.get(key) is not None:
+                if type(item[key]) == float and key == 'offNadirAngle':
+                    optional[text] = f'{item[key]:g}' #trim trailing zeros    
+                else:
+                    optional[text] = item[key]
+            elif key not in ['temporalBaseline', 'perpendicularBaseline']:
+                optional[text] = 'None'
+        
+        output = { **required, **optional }
+        if item['processingLevel'] == 'BURST':
+            burst = {
+                'Absolute Burst ID: ' :  item['burst']['absoluteBurstID'],
+                'Relative Burst ID: ' :  item['burst']['relativeBurstID'],
+                'Full Burst ID: ':  item['burst']['fullBurstID'],
+                'Burst Index: ': item['burst']['burstIndex'],
+                'Burst Anx Time: ': item['burst']['burstAnxTime'],
+                'Time from Anx (seconds): ': item['burst']['timeFromAnxSeconds'],
+                'Samples per Burst: ': item['burst']['samplesPerBurst'],
+                'Subswath: ': item['burst']['subswath']
+            }
+            
+            output = { **output, **burst}
+        
+        return output
