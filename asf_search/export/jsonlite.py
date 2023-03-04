@@ -79,6 +79,8 @@ class JSONLiteStreamArray(list):
             additional_fields['canInsar'] = product.baseline is not None
 
         additional_fields['geometry'] = product.geometry
+        
+        return additional_fields
 
     def streamDicts(self):
         for page in self.results:
