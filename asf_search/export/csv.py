@@ -86,7 +86,7 @@ class CSVStreamArray(list):
     def __len__(self):
         return self.len
 
-    def get_additional_output_fields(product):
+    def get_additional_output_fields(self, product):
         umm = product.umm
 
         additional_fields = {}
@@ -102,7 +102,7 @@ class CSVStreamArray(list):
         yield writer.writeheader()
         
         for page in self.pages:
-            properties_list = ASFSearchResults_to_properties_list(page, get_additional_output_fields)
+            properties_list = ASFSearchResults_to_properties_list(page, self.get_additional_output_fields)
             yield from [writer.writerow(self.getItem(p)) for p in properties_list]
 
     def getItem(self, p):
