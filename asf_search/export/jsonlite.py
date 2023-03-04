@@ -56,7 +56,7 @@ class JSONLiteStreamArray(list):
     def __len__(self):
         return self.len
 
-    def get_additional_output_fields(product: ASFProduct):
+    def get_additional_output_fields(self, product: ASFProduct):
         umm = product.umm
         
         additional_fields = {}
@@ -79,7 +79,7 @@ class JSONLiteStreamArray(list):
 
     def streamDicts(self):
         for page in self.results:
-            yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, get_additional_output_fields) if p is not None]
+            yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, self.get_additional_output_fields) if p is not None]
 
     def getItem(self, p):
         for i in p.keys():
