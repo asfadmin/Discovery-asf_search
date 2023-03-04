@@ -76,7 +76,7 @@ class KMLStreamArray(XMLStreamArray):
         ul = ETree.Element('ul')
         div.append(ul)
         
-        for text, value in metadata_fields(p).items():
+        for text, value in self.metadata_fields(p).items():
             li = ETree.Element('li')
             li.text = text + str(value)
             ul.append(li)
@@ -130,7 +130,7 @@ class KMLStreamArray(XMLStreamArray):
         return ETree.tostring(placemark, encoding='unicode').replace('&amp;', '&')
     
     # Helper method for getting additional fields in <ul> tag
-    def metadata_fields(item: dict):
+    def metadata_fields(self, item: dict):
         required = {
             'Processing type: ': item['processingTypeDisplay'],
             'Frame: ': item['frameNumber'],
