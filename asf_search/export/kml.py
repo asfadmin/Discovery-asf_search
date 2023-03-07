@@ -26,21 +26,20 @@ class KMLStreamArray(XMLStreamArray):
     def __init__(self, results):
         XMLStreamArray.__init__(self, results)
         self.header = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-            <kml xmlns="http://www.opengis.net/kml/2.2">
-              <Document>
-                <name>ASF Datapool Search Results</name>
-                <description>Search Performed:</description>
-                <Style id="yellowLineGreenPoly">
-                  <LineStyle>
-                    <color>30ff8800</color>
-                    <width>4</width>
-                  </LineStyle>
-                  <PolyStyle>
-                    <color>7f00ff00</color>
-                  </PolyStyle>
-                </Style>"""
-
-        self.footer = """</Document></kml>"""
+ <kml xmlns="http://www.opengis.net/kml/2.2">
+   <Document>
+     <name>ASF Datapool Search Results</name>
+     <description>Search Performed:</description>
+     <Style id="yellowLineGreenPoly">
+         <LineStyle>
+         <color>30ff8800</color>
+         <width>4</width>
+         </LineStyle>
+         <PolyStyle>
+         <color>7f00ff00</color>
+         </PolyStyle>
+     </Style>\n     """
+        self.footer = """</Document>\n</kml>"""
         
     def get_additional_fields(self, product):
         umm = product.umm
@@ -121,10 +120,10 @@ class KMLStreamArray(XMLStreamArray):
         outerBondaryIs.append(linearRing)
         
         coordinates = ETree.Element('coordinates')
-        coordinates.text = '\n'.join([f"{c['Longitude']},{c['Latitude']},2000" for c in p['shape']])
+        coordinates.text = '\n' + (14 * ' ') + ('\n' + (14 * ' ')).join([f"{c['Longitude']},{c['Latitude']},2000" for c in p['shape']]) + '\n' + (14 * ' ')
         linearRing.append(coordinates)
 
-        self.indent(placemark)
+        self.indent(placemark, 3)
         
         # for CDATA section, manually replace &amp; escape character with &
         return ETree.tostring(placemark, encoding='unicode').replace('&amp;', '&')

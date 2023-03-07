@@ -15,11 +15,13 @@ class XMLStreamArray(list):
     def __init__(self, results):
         self.pages = results
         self.len = 1
-        self.header = """<?xml version="1.0"?><metalink xmlns="http://www.metalinker.org/" version="3.0">
-        <publisher><name>Alaska Satellite Facility</name><url>http://www.asf.alaska.edu/</url></publisher>
-        <files>"""
+        self.header = """<?xml version="1.0"?>
+<metalink xmlns="http://www.metalinker.org/" version="3.0">
+    <publisher><name>Alaska Satellite Facility</name><url>http://www.asf.alaska.edu/</url></publisher>
+    <files>"""
 
-        self.footer = "</files>\n</metalink>"
+        self.footer = """
+    </files>\n</metalink>"""
 
     def get_additional_fields(self, product):
         return {}
@@ -59,7 +61,7 @@ class XMLStreamArray(list):
             size.text = str(p['bytes'])
             file.append(size)
         
-        return '\n' + ETree.tostring(file, encoding='unicode')
+        return '\n' + (8*' ') + ETree.tostring(file, encoding='unicode')
 
     def indent(self, elem, level=0):
         # Only Python 3.9+ has a built-in indent function for element tree.
