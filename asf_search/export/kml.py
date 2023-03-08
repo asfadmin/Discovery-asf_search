@@ -15,7 +15,7 @@ extra_kml_fields = [
     ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
 ]
 
-def ASFSearchResults_to_kml(results):
+def results_to_kml(results):
     logging.debug('translating: kml')
     
     if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):

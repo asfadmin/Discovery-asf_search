@@ -19,7 +19,7 @@ extra_jsonlite_fields = [
     ('missionName', ['AdditionalAttributes', ('Name', 'MISSION_NAME'), 'Values', 0]),
 ]
 
-def ASFSearchResults_to_jsonlite(results):
+def results_to_jsonlite(results):
     logging.debug('translating: jsonlite')
 
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):

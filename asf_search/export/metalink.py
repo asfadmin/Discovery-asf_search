@@ -4,7 +4,7 @@ from types import GeneratorType
 import xml.etree.ElementTree as ETree
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
-def ASFSearchResults_to_metalink(results):
+def results_to_metalink(results):
     logging.debug('translating: metalink')
     
     if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):

@@ -3,7 +3,7 @@ import logging
 import json
 from types import GeneratorType
 
-def ASFSearchResults_to_geojson(results):
+def results_to_geojson(results):
     logging.debug('translating: geojson')
 
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):

@@ -30,7 +30,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v6.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.1.0...v6.1.1)
 ### Added
 - `search_generator()` returns a generator, which returns results from CMR page-by-page, yielding each page as an `ASFSearchResults` object. See /examples/1-Basic_Overview.ipynb for an example.
-  - The generator can be passed to different output formats via `ASFSearchResults_to_[format]()` methods, allowing users to stream results to different formats as they're received from CMR
+  - The generator can be passed to different output formats via `results_to_[format]()` methods, allowing users to stream results to different formats as they're received from CMR
 ### Changed
 - Removed Jinja2 as a dependency for metalink, kml, and csv output formats.
 ------

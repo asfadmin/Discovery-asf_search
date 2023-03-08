@@ -68,7 +68,7 @@ fieldnames = (
 "subswath"
 )
 
-def ASFSearchResults_to_csv(results):
+def results_to_csv(results):
     logging.debug('translating: csv')
     
     if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):

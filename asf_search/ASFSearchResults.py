@@ -5,11 +5,11 @@ from asf_search import ASFSession, ASFSearchOptions
 from asf_search.exceptions import ASFSearchError
 
 from asf_search import ASF_LOGGER
-from asf_search.export.csv import ASFSearchResults_to_csv
-from asf_search.export.jsonlite import ASFSearchResults_to_jsonlite
-from asf_search.export.jsonlite2 import ASFSearchResults_to_jsonlite2
-from asf_search.export.kml import ASFSearchResults_to_kml
-from asf_search.export.metalink import ASFSearchResults_to_metalink
+from asf_search.export.csv import results_to_csv
+from asf_search.export.jsonlite import results_to_jsonlite
+from asf_search.export.jsonlite2 import results_to_jsonlite2
+from asf_search.export.kml import results_to_kml
+from asf_search.export.metalink import results_to_metalink
 
 class ASFSearchResults(UserList):
     def __init__(self, *args, opts: ASFSearchOptions = None):
@@ -26,19 +26,19 @@ class ASFSearchResults(UserList):
         }
 
     def csv(self):
-        return ASFSearchResults_to_csv(self)
+        return results_to_csv(self)
 
     def kml(self):
-        return ASFSearchResults_to_kml(self)
+        return results_to_kml(self)
     
     def metalink(self):
-        return ASFSearchResults_to_metalink(self)
+        return results_to_metalink(self)
 
     def jsonlite(self):
-        return ASFSearchResults_to_jsonlite(self)
+        return results_to_jsonlite(self)
 
     def jsonlite2(self):
-        return ASFSearchResults_to_jsonlite2(self)  
+        return results_to_jsonlite2(self)  
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
