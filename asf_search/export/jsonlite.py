@@ -88,10 +88,10 @@ class JSONLiteStreamArray(list):
         completed = False
         for page_idx, page in enumerate(self.results):
             ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")
-            completed = page.searchCompleted
+            completed = page.searchComplete
             
             yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, self.get_additional_output_fields) if p is not None]
-        
+
         if not completed:
             ASF_LOGGER.warn('Failed to download all results from CMR')
 
