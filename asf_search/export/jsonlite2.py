@@ -6,7 +6,7 @@ from .jsonlite import JSONLiteStreamArray
 def ASFSearchResults_to_jsonlite2(results):
     logging.debug('translating: jsonlite')
 
-    if not inspect.isgeneratorfunction(results):
+    if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
         results = [results]
     
     streamer = JSONLite2StreamArray(results)

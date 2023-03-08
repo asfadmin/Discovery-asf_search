@@ -1,17 +1,18 @@
 import inspect
 import logging
+from types import GeneratorType
 import xml.etree.ElementTree as ETree
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
 def ASFSearchResults_to_metalink(results):
     logging.debug('translating: metalink')
     
-    if inspect.isgeneratorfunction(results):
-        return XMLStreamArray(results)
+    if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):
+        return MetalinkStreamArray(results)
     
-    return XMLStreamArray([results])
+    return MetalinkStreamArray([results])
 
-class XMLStreamArray(list):
+class MetalinkStreamArray(list):
     def __init__(self, results):
         self.pages = results
         self.len = 1

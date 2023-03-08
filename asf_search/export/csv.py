@@ -1,6 +1,6 @@
-from collections import UserList
 import csv
 import logging
+from types import GeneratorType
 from asf_search.CMR.translate import get_additional_fields
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
@@ -71,7 +71,7 @@ fieldnames = (
 def ASFSearchResults_to_csv(results):
     logging.debug('translating: csv')
     
-    if inspect.isgeneratorfunction(results):
+    if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):
         return CSVStreamArray(results)
     
     return CSVStreamArray([results])

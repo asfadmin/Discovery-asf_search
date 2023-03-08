@@ -1,10 +1,12 @@
+import inspect
 import logging
 import json
+from types import GeneratorType
 
 def ASFSearchResults_to_geojson(results):
     logging.debug('translating: geojson')
 
-    if isinstance(results, list):
+    if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
         results = [results]
     
     streamer = GeoJSONStreamArray(results)

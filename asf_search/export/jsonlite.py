@@ -1,6 +1,7 @@
 import inspect
 import logging
 import json
+from types import GeneratorType
 from typing import Tuple
 from shapely.geometry import shape
 from shapely.ops import transform
@@ -21,7 +22,7 @@ extra_jsonlite_fields = [
 def ASFSearchResults_to_jsonlite(results):
     logging.debug('translating: jsonlite')
 
-    if not inspect.isgeneratorfunction(results):
+    if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
         results = [results]
     
     streamer = JSONLiteStreamArray(results)

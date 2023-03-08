@@ -1,7 +1,8 @@
 import inspect
 import logging
+from types import GeneratorType
 from asf_search.CMR import get_additional_fields
-from asf_search.export.metalink import XMLStreamArray
+from asf_search.export.metalink import MetalinkStreamArray
 import xml.etree.ElementTree as ETree
 
 extra_kml_fields = [
@@ -17,14 +18,14 @@ extra_kml_fields = [
 def ASFSearchResults_to_kml(results):
     logging.debug('translating: kml')
     
-    if inspect.isgeneratorfunction(results):
+    if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):
         return KMLStreamArray(results)
     
     return KMLStreamArray([results])
 
-class KMLStreamArray(XMLStreamArray):
+class KMLStreamArray(MetalinkStreamArray):
     def __init__(self, results):
-        XMLStreamArray.__init__(self, results)
+        MetalinkStreamArray.__init__(self, results)
         self.header = """<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
  <kml xmlns="http://www.opengis.net/kml/2.2">
    <Document>
