@@ -16,8 +16,20 @@ def results_to_geojson(results):
         yield p
 
 class GeoJSONStreamArray(list):
+    def __init__(self, results):
+        self.results = results
+
+        # need to make sure we actually have results so we can intelligently set __len__, otherwise
+        # iterencode behaves strangely and will output invalid json
+        self.len = 1
+
+    def __iter__(self):
+        return self.streamDicts()
+
+    def __len__(self):
+        return self.len
+    
     def streamDicts(self):
-        
         completed = False
         for page_idx, page in enumerate(self.results):
             ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")

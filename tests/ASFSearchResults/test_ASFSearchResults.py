@@ -24,7 +24,7 @@ def run_test_output_format(results: ASFSearchResults):
     results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     product_list_str = ','.join([product.properties['fileID'] for product in results])
 
-    for output_type in ['csv', 'kml', 'metalink', 'jsonlite', 'jsonlite2']:
+    for output_type in ['csv', 'kml', 'metalink', 'jsonlite', 'jsonlite2', 'geojson']:
         expected = get_SearchAPI_Output(product_list_str, output_type)
         if output_type == 'csv':
             check_csv(results, expected)
@@ -34,6 +34,8 @@ def run_test_output_format(results: ASFSearchResults):
             check_metalink(results, expected)
         elif output_type in ['jsonlite', 'jsonlite2']:
             check_jsonLite(results, expected, output_type)
+        elif output_type == 'geojson':
+            check_geojson(results)
 
 def check_metalink(results: ASFSearchResults, expected_str: str):
     actual = ''.join([line for line in results.metalink()])
@@ -141,6 +143,12 @@ def check_jsonLite(results: ASFSearchResults, expected_str: str, output_type: st
         assert WKT.loads(actual[idx][wkt_key]).equals(WKT.loads(wkt))
         assert WKT.loads(actual[idx][wkt_unwrapped_key]).equals(WKT.loads(wkt_unwrapped))
 
+def check_geojson(results: ASFSearchResults):
+    expected = results.geojson()
+    actual = asf.export.results_to_geojson(results)
+    
+    assert json.loads(*actual) == expected
+    
 def get_SearchAPI_Output(product_list: List[str], output_type: str) -> List[Dict]:
     response = requests.get(API_URL, [('product_list', product_list), ('output', output_type)])
     response.raise_for_status()
