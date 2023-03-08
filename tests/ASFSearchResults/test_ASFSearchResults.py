@@ -24,6 +24,8 @@ def run_test_output_format(results: ASFSearchResults):
     results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     product_list_str = ','.join([product.properties['fileID'] for product in results])
 
+    results.searchComplete = True
+    
     for output_type in ['csv', 'kml', 'metalink', 'jsonlite', 'jsonlite2', 'geojson']:
         expected = get_SearchAPI_Output(product_list_str, output_type)
         if output_type == 'csv':
@@ -147,7 +149,7 @@ def check_geojson(results: ASFSearchResults):
     expected = results.geojson()
     actual = asf.export.results_to_geojson(results)
     
-    assert json.loads(*actual) == expected
+    assert json.loads(''.join(actual)) == expected
     
 def get_SearchAPI_Output(product_list: List[str], output_type: str) -> List[Dict]:
     response = requests.get(API_URL, [('product_list', product_list), ('output', output_type)])
@@ -164,7 +166,7 @@ def run_test_ASFSearchResults_intersection(wkt: str):
     # exclude SMAP products
     platforms = [
                  PLATFORM.ALOS,
-                 PLATFORM.SENTINEL1, 
+                 PLATFORM.SENTINEL1,
                  PLATFORM.SIRC, 
                  PLATFORM.UAVSAR
                  ]
