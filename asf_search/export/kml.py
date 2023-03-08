@@ -1,5 +1,5 @@
+import inspect
 import logging
-from typing import Generator
 from asf_search.CMR import get_additional_fields
 from asf_search.export.metalink import XMLStreamArray
 import xml.etree.ElementTree as ETree
@@ -17,7 +17,7 @@ extra_kml_fields = [
 def ASFSearchResults_to_kml(results):
     logging.debug('translating: kml')
     
-    if type(results) is Generator:    
+    if inspect.isgeneratorfunction(results):
         return KMLStreamArray(results)
     
     return KMLStreamArray([results])

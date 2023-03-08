@@ -37,24 +37,27 @@ def run_test_output_format(results: ASFSearchResults):
 
 def check_metalink(results: ASFSearchResults, expected_str: str):
     actual = ''.join([line for line in results.metalink()])
+    
     actual_tree = DefusedETree.fromstring(actual)
     expected_tree = DefusedETree.fromstring(expected_str)
     
-    assert ETree.canonicalize(DefusedETree.tostring(actual_tree), strip_text=True) == ETree.canonicalize(DefusedETree.tostring(actual_tree), strip_text=True)
-    # assert actual == expected_str
+    canon_actual = ETree.canonicalize(DefusedETree.tostring(actual_tree), strip_text=True)
+    canon_expected = ETree.canonicalize(DefusedETree.tostring(expected_tree), strip_text=True)
+    
+    assert canon_actual == canon_expected
 
 def check_kml(results: ASFSearchResults, expected_str: str):
     namespaces = {'kml': 'http://www.opengis.net/kml/2.2'}
     placemarks_path = ".//kml:Placemark"
-    root = DefusedETree.fromstring(expected_str)
-    placemarks = root.findall(placemarks_path, namespaces)
+    expected_root = DefusedETree.fromstring(expected_str)
+    expected_placemarks = expected_root.findall(placemarks_path, namespaces)
 
     actual_root = DefusedETree.fromstring(''.join([block for block in results.kml()]))
-    actual = actual_root.findall(placemarks_path, namespaces)
+    actual_placemarks = actual_root.findall(placemarks_path, namespaces)
     
     # Check polygons for equivalence (asf-search starts from a different pivot)
     # and remove them from the kml so we can easily compare the rest of the placemark data
-    for expected_placemark, actual_placemark in zip(placemarks, actual):
+    for expected_placemark, actual_placemark in zip(expected_placemarks, actual_placemarks):
         expected_polygon = expected_placemark.findall('./*')[-1]
         actual_polygon = actual_placemark.findall('./*')[-1]
         
@@ -68,7 +71,7 @@ def check_kml(results: ASFSearchResults, expected_str: str):
         
     # Get canonicalize xml strings so minor differences are normalized
     actual_canon = ETree.canonicalize( DefusedETree.tostring(actual_root), strip_text=True)
-    expected_canon = ETree.canonicalize( DefusedETree.tostring(root), strip_text=True)
+    expected_canon = ETree.canonicalize( DefusedETree.tostring(expected_root), strip_text=True)
     
     assert actual_canon == expected_canon
 
@@ -94,8 +97,7 @@ def check_csv(results: ASFSearchResults, expected_str: str):
     # actual = [prod for prod in csv.reader(''.join([s for s in results.csv()]).split('\n')) if prod != []]
     
     expected = csv.DictReader(expected_str.split('\n'))
-    actual = csv.DictReader(results.csv())
-    
+    actual = csv.DictReader([s for s in results.csv()])
     
     for actual_row, expected_row in zip(actual, expected):
         actual_dict = dict(actual_row)

@@ -1,4 +1,4 @@
-from typing import Generator
+import inspect
 import logging
 import json
 from .jsonlite import JSONLiteStreamArray
@@ -6,7 +6,7 @@ from .jsonlite import JSONLiteStreamArray
 def ASFSearchResults_to_jsonlite2(results):
     logging.debug('translating: jsonlite')
 
-    if type(results) is not Generator:
+    if not inspect.isgeneratorfunction(results):
         results = [results]
     
     streamer = JSONLite2StreamArray(results)

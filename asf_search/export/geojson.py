@@ -1,11 +1,10 @@
 import logging
 import json
-from typing import Generator
 
 def ASFSearchResults_to_geojson(results):
     logging.debug('translating: geojson')
 
-    if type(results) is not Generator:
+    if isinstance(results, list):
         results = [results]
     
     streamer = GeoJSONStreamArray(results)
@@ -20,4 +19,3 @@ class GeoJSONStreamArray(list):
 
     def getItem(self, p):
         return p.geojson()
-    

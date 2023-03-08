@@ -1,9 +1,10 @@
+from collections import UserList
 import csv
 import logging
-from typing import Generator
 from asf_search.CMR.translate import get_additional_fields
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
+import inspect
 
 extra_csv_fields = [
     ('sceneDate', ['AdditionalAttributes', ('Name', 'ACQUISITION_DATE'), 'Values', 0]),
@@ -70,7 +71,7 @@ fieldnames = (
 def ASFSearchResults_to_csv(results):
     logging.debug('translating: csv')
     
-    if type(results) is Generator:    
+    if inspect.isgeneratorfunction(results):
         return CSVStreamArray(results)
     
     return CSVStreamArray([results])
