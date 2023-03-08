@@ -18,7 +18,7 @@ from asf_search.constants import PLATFORM
 # when this replaces SearchAPI change values to cached
 API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?'
 
-def run_test_output_format(results: ASFSearchResults): 
+def run_test_output_format(results: ASFSearchResults):
     #search results are always sorted this way when returned from asf_search.search(), 
     # but not all test case resources are
     results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
