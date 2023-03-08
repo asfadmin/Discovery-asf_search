@@ -1,6 +1,6 @@
 import inspect
-import logging
 from types import GeneratorType
+from asf_search import ASF_LOGGER
 from asf_search.CMR import get_additional_fields
 from asf_search.export.metalink import MetalinkStreamArray
 import xml.etree.ElementTree as ETree
@@ -16,7 +16,7 @@ extra_kml_fields = [
 ]
 
 def results_to_kml(results):
-    logging.debug('translating: kml')
+    ASF_LOGGER.info('Started translating results to kml format')
     
     if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):
         return KMLStreamArray(results)
@@ -49,6 +49,9 @@ class KMLStreamArray(MetalinkStreamArray):
             additional_fields[key] = get_additional_fields(umm, *path)
         return additional_fields
 
+    def getOutputType(self) -> str:
+        return 'kml'
+    
     def getItem(self, p):
         placemark = ETree.Element("Placemark")
         name = ETree.Element('name')

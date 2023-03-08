@@ -1,6 +1,6 @@
 import csv
-import logging
 from types import GeneratorType
+from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import get_additional_fields
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
@@ -69,7 +69,7 @@ fieldnames = (
 )
 
 def results_to_csv(results):
-    logging.debug('translating: csv')
+    ASF_LOGGER.info("started translating results to csv format")
     
     if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):
         return CSVStreamArray(results)
@@ -97,15 +97,24 @@ class CSVStreamArray(list):
         return additional_fields
 
     def streamRows(self):
-        
+
         f = CSVBuffer()
         writer = csv.DictWriter(f, quoting=csv.QUOTE_ALL, fieldnames=fieldnames)     
         yield writer.writeheader()
         
-        for page in self.pages:
+        completed = False
+        for page_idx, page in self.pages:
+            ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")
+            completed = page.searchComplete
+            
             properties_list = ASFSearchResults_to_properties_list(page, self.get_additional_output_fields)
             yield from [writer.writerow(self.getItem(p)) for p in properties_list]
 
+        if not completed:
+            ASF_LOGGER.warn('Failed to download all results from CMR')
+        
+        ASF_LOGGER.info('Finished streaming csv results')
+            
     def getItem(self, p):
         return {
             "Granule Name":p['sceneName'],

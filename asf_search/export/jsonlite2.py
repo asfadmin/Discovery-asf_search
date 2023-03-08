@@ -1,11 +1,12 @@
 import inspect
-import logging
 import json
 from types import GeneratorType
+
+from asf_search import ASF_LOGGER
 from .jsonlite import JSONLiteStreamArray
 
 def results_to_jsonlite2(results):
-    logging.debug('translating: jsonlite')
+    ASF_LOGGER.info('started translating results to jsonlite2 format')
 
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
         results = [results]
@@ -60,3 +61,6 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             result['s1b'] = p['burst']
         
         return result
+
+    def getOutputType(self) -> str:
+        return 'jsonlite2'

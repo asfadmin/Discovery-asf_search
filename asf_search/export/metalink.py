@@ -1,11 +1,11 @@
 import inspect
-import logging
 from types import GeneratorType
 import xml.etree.ElementTree as ETree
+from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
 def results_to_metalink(results):
-    logging.debug('translating: metalink')
+    ASF_LOGGER.info('Started translating results to metalink format')
     
     if inspect.isgeneratorfunction(results) or isinstance(results, GeneratorType):
         return MetalinkStreamArray(results)
@@ -35,12 +35,26 @@ class MetalinkStreamArray(list):
 
     def streamPages(self):
         yield self.header
-        for page in self.pages:
+        
+        completed = False
+        for page_idx, page in enumerate(self.pages):
+            ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")
+            completed = page.searchComplete
+            
             properties_list = ASFSearchResults_to_properties_list(page, self.get_additional_fields)
             yield from [self.getItem(p) for p in properties_list]
         
+        if not completed:
+            ASF_LOGGER.warn('Failed to download all results from CMR')
+        
         yield self.footer
+        
+        ASF_LOGGER.info(f"Finished streaming {self.getOutputType()} results")
+        
 
+    def getOutputType(self) -> str:
+        return 'metalink'
+    
     def getItem(self, p):
         file = ETree.Element("file", attrib={'name': p['fileName']})
         resources = ETree.Element('resources')

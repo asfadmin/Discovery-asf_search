@@ -1,5 +1,4 @@
 import inspect
-import logging
 import json
 from types import GeneratorType
 from typing import Tuple
@@ -7,7 +6,7 @@ from shapely.geometry import shape
 from shapely.ops import transform
 
 from asf_search.CMR.translate import get_additional_fields
-from asf_search import ASFProduct
+from asf_search import ASF_LOGGER, ASFProduct
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
 extra_jsonlite_fields = [
@@ -20,7 +19,7 @@ extra_jsonlite_fields = [
 ]
 
 def results_to_jsonlite(results):
-    logging.debug('translating: jsonlite')
+    ASF_LOGGER.info('started translating results to jsonlite format')
 
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
         results = [results]
@@ -85,9 +84,19 @@ class JSONLiteStreamArray(list):
         return additional_fields
 
     def streamDicts(self):
-        for page in self.results:
+        
+        completed = False
+        for page_idx, page in enumerate(self.results):
+            ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")
+            completed = page.searchCompleted
+            
             yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, self.get_additional_output_fields) if p is not None]
+        
+        if not completed:
+            ASF_LOGGER.warn('Failed to download all results from CMR')
 
+        ASF_LOGGER.info(f"Finished streaming {self.getOutputType()} results")
+    
     def getItem(self, p):
         for i in p.keys():
             if p[i] == 'NA' or p[i] == '':
@@ -175,3 +184,7 @@ class JSONLiteStreamArray(list):
             result['burst'] = p['burst']
 
         return result
+
+    def getOutputType(self) -> str:
+        return 'jsonlite'
+    
