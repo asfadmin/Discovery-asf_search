@@ -1,6 +1,7 @@
 import inspect
 import logging
 import json
+from types import GeneratorType
 from .jsonlite import JSONLiteStreamArray
 
 def ASFSearchResults_to_jsonlite2(results):
