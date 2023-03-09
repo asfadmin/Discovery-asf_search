@@ -1,16 +1,20 @@
-from typing import List, Dict
-import logging
+import inspect
 import json
+from types import GeneratorType
+
+from asf_search import ASF_LOGGER
 from .jsonlite import JSONLiteStreamArray
 
-def ASFSearchResults_to_jsonlite2(results_properties: List[Dict]):
-    logging.debug('translating: jsonlite')
+def results_to_jsonlite2(results):
+    ASF_LOGGER.info('started translating results to jsonlite2 format')
 
-    streamer = JSONLite2StreamArray(results_properties)
+    if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
+        results = [results]
+    
+    streamer = JSONLite2StreamArray(results)
 
     for p in json.JSONEncoder(sort_keys=True, separators=(',', ':')).iterencode({'results': streamer}):
         yield p
-
 
 class JSONLite2StreamArray(JSONLiteStreamArray):
     def getItem(self, p):
@@ -57,3 +61,6 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             result['s1b'] = p['burst']
         
         return result
+
+    def getOutputType(self) -> str:
+        return 'jsonlite2'

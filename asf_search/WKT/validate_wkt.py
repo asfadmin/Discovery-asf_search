@@ -11,7 +11,7 @@ from .RepairEntry import RepairEntry
 from asf_search.exceptions import ASFWKTError
 
 
-def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
+def validate_wkt(aoi: Union[str, BaseGeometry]) -> Tuple[BaseGeometry, List[RepairEntry]]:
     """
     Param aoi: the WKT string or Shapely Geometry to validate and prepare for the CMR query
     Validates the given area of interest, and returns a validated and simplified WKT string
@@ -35,9 +35,9 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> BaseGeometry:
     if aoi_shape.is_empty:
         raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" empty WKT is not a valid AOI')
         
-    simplified = _simplify_geometry(aoi_shape)
+    simplified, reports = _simplify_geometry(aoi_shape)
     
-    return simplified
+    return simplified, [report for report in reports if report != None]
 
 
 def _search_wkt_prep(shape: BaseGeometry):
@@ -52,7 +52,7 @@ def _search_wkt_prep(shape: BaseGeometry):
     if isinstance(shape, Polygon):
         return orient(Polygon(shape.exterior), sign=1.0)
 
-def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
+def _simplify_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, List[RepairEntry]]:
     """
     param geometry: AOI Shapely Geometry to be prepped for CMR 
     prepares geometry for CMR by:
@@ -85,7 +85,7 @@ def _simplify_geometry(geometry: BaseGeometry) -> BaseGeometry:
             logging.info(f"{report}")
 
     validated = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
-    return validated
+    return validated, repair_reports
 
 
 def _flatten_multipart_geometry(unflattened_geometry: BaseGeometry) -> BaseGeometry:

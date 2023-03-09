@@ -3,9 +3,13 @@ from multiprocessing import Pool
 import json
 from asf_search import ASFSession, ASFSearchOptions
 from asf_search.exceptions import ASFSearchError
-from asf_search.export import output_translators
 
 from asf_search import ASF_LOGGER
+from asf_search.export.csv import results_to_csv
+from asf_search.export.jsonlite import results_to_jsonlite
+from asf_search.export.jsonlite2 import results_to_jsonlite2
+from asf_search.export.kml import results_to_kml
+from asf_search.export.metalink import results_to_metalink
 
 class ASFSearchResults(UserList):
     def __init__(self, *args, opts: ASFSearchOptions = None):
@@ -22,19 +26,19 @@ class ASFSearchResults(UserList):
         }
 
     def csv(self):
-        return output_translators().get('csv')(self)
+        return results_to_csv(self)
 
     def kml(self):
-        return output_translators().get('kml')(self)
+        return results_to_kml(self)
     
     def metalink(self):
-        return output_translators().get('metalink')(self)
+        return results_to_metalink(self)
 
     def jsonlite(self):
-        return output_translators().get('jsonlite')(self)
+        return results_to_jsonlite(self)
 
     def jsonlite2(self):
-        return output_translators().get('jsonlite2')(self)  
+        return results_to_jsonlite2(self)  
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
