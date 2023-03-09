@@ -69,11 +69,10 @@ class JSONLiteStreamArray(list):
 
         if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
             insarGrouping = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
-            insarStackSize = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
             
             if insarGrouping not in [None, 0, '0', 'NA', 'NULL']:
                 additional_fields['canInsar'] = True
-                additional_fields['insarStackSize'] = insarStackSize
+                additional_fields['insarStackSize'] = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
             else:
                 additional_fields['canInsar'] = False
         else:
