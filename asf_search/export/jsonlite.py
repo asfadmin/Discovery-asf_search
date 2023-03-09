@@ -1,11 +1,13 @@
-import logging
+import inspect
 import json
+from types import GeneratorType
 from typing import Tuple
 from shapely.geometry import shape
 from shapely.ops import transform
 
 from asf_search.CMR.translate import get_additional_fields
-from asf_search import ASFProduct
+from asf_search import ASF_LOGGER, ASFProduct
+from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
 extra_jsonlite_fields = [
     ('processingTypeDisplay', ['AdditionalAttributes', ('Name', 'PROCESSING_TYPE_DISPLAY'), 'Values', 0]),
@@ -16,32 +18,12 @@ extra_jsonlite_fields = [
     ('missionName', ['AdditionalAttributes', ('Name', 'MISSION_NAME'), 'Values', 0]),
 ]
 
-def get_additional_jsonlite_fields(product: ASFProduct):
-    umm = product.umm
+def results_to_jsonlite(results):
+    ASF_LOGGER.info('started translating results to jsonlite format')
+
+    if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
+        results = [results]
     
-    additional_fields = {}
-    for key, path in extra_jsonlite_fields:
-        additional_fields[key] = get_additional_fields(umm, *path)
-
-    if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
-        insarGrouping = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
-        insarStackSize = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
-        
-        if insarGrouping not in [None, 0, '0', 'NA', 'NULL']:
-            additional_fields['canInsar'] = True
-            additional_fields['insarStackSize'] = insarStackSize
-        else:
-            additional_fields['canInsar'] = False
-    else:
-        additional_fields['canInsar'] = product.baseline is not None
-
-    additional_fields['geometry'] = product.geometry
-
-    return additional_fields
-
-def ASFSearchResults_to_jsonlite(results):
-    logging.debug('translating: jsonlite')
-
     streamer = JSONLiteStreamArray(results)
     jsondata = {'results': streamer}
 
@@ -70,13 +52,7 @@ class JSONLiteStreamArray(list):
 
         # need to make sure we actually have results so we can intelligently set __len__, otherwise
         # iterencode behaves strangely and will output invalid json
-        self.first_result = None
-        self.len = 0
-        for p in self.results:
-            if p is not None:
-                self.first_result = p
-                self.len = 1
-                break
+        self.len = 1
 
     def __iter__(self):
         return self.streamDicts()
@@ -84,11 +60,42 @@ class JSONLiteStreamArray(list):
     def __len__(self):
         return self.len
 
-    def streamDicts(self):
-        for p in self.results:
-            if p is not None:
-                yield self.getItem(p)
+    def get_additional_output_fields(self, product: ASFProduct):
+        umm = product.umm
+        
+        additional_fields = {}
+        for key, path in extra_jsonlite_fields:
+            additional_fields[key] = get_additional_fields(umm, *path)
 
+        if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
+            insarGrouping = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
+            
+            if insarGrouping not in [None, 0, '0', 'NA', 'NULL']:
+                additional_fields['canInsar'] = True
+                additional_fields['insarStackSize'] = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
+            else:
+                additional_fields['canInsar'] = False
+        else:
+            additional_fields['canInsar'] = product.baseline is not None
+
+        additional_fields['geometry'] = product.geometry
+        
+        return additional_fields
+
+    def streamDicts(self):
+        
+        completed = False
+        for page_idx, page in enumerate(self.results):
+            ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")
+            completed = page.searchComplete
+            
+            yield from [self.getItem(p) for p in ASFSearchResults_to_properties_list(page, self.get_additional_output_fields) if p is not None]
+
+        if not completed:
+            ASF_LOGGER.warn('Failed to download all results from CMR')
+
+        ASF_LOGGER.info(f"Finished streaming {self.getOutputType()} results")
+    
     def getItem(self, p):
         for i in p.keys():
             if p[i] == 'NA' or p[i] == '':
@@ -176,3 +183,7 @@ class JSONLiteStreamArray(list):
             result['burst'] = p['burst']
 
         return result
+
+    def getOutputType(self) -> str:
+        return 'jsonlite'
+    
