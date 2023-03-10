@@ -166,8 +166,8 @@ def preprocess_opts(opts: ASFSearchOptions):
 
 def wrap_wkt(opts: ASFSearchOptions):
     if opts.intersectsWith is not None:
-        repaired, _ = validate_wkt(opts.intersectsWith)
-        opts.intersectsWith = repaired.wkt
+        wrapped, _, __ = validate_wkt(opts.intersectsWith)
+        opts.intersectsWith = wrapped.wkt
 
 
 def set_default_dates(opts: ASFSearchOptions):

@@ -1,6 +1,6 @@
 from typing import Dict, List
 from asf_search import ASFSearchOptions
-from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
+from asf_search.exceptions import ASFAuthenticationError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_product_get_stack_options, run_test_stack
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
@@ -20,7 +20,6 @@ import pathlib
 import yaml
 
 from WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_simplify_aoi
-import requests
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 

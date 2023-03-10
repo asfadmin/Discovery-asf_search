@@ -1,4 +1,4 @@
-from asf_search.search.search import ASFProduct, ASFSearchResults, ASFSearchOptions
+from asf_search import ASFProduct, ASFSearchResults, ASFSearchOptions
 from unittest.mock import patch
 from shapely.geometry import shape
 from shapely.ops import orient
