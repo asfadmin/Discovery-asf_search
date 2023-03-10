@@ -37,10 +37,10 @@ def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_cou
     assert resp[0].wkt == clamped_wkt
     
     if clamped_count > 0:
-        assert resp[1][0].report.split(' ')[2] == str(clamped_count)
+        assert resp[2][0].report.split(' ')[2] == str(clamped_count)
     
     if wrapped_count > 0:
-        assert resp[1][1].report.split(' ')[2] == str(wrapped_count)
+        assert resp[2][1].report.split(' ')[2] == str(wrapped_count)
 
 def run_test_validate_wkt_convex_hull(wkt: str, corrected_wkt: str):
     shape = loads(wkt)
