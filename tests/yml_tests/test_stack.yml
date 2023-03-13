@@ -12,19 +12,19 @@ tests:
     output_index: 1
 
 - test-get_default_product_type empty:
-    scene_name: " "
+    product: {'meta': {}, 'umm': {}}
     product_type: null
 
 - test-get_default_product_type S1:
-    scene_name: S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081
+    product: Fairbanks_SLC.yml
     product_type: SLC
 
 - test-get_default_product_type ALOS:
-    scene_name: ALPSRP111041130
+    product: Alos_response.yml
     product_type: L1.1
 
 - test-get_default_product_type ERS:
-    scene_name: E1_19942_STD_F287
+    product: Fairbanks_L1.yml
     product_type: L0
 
 - test-get-baseline-from-stack error:

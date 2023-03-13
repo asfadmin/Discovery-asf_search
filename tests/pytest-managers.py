@@ -354,7 +354,12 @@ def test_get_default_product_type(**args) -> None:
     test_info = args["test_info"]
     product = get_resource(test_info["product"])
     product_type = get_resource(test_info["product_type"])
-    run_test_get_default_product_type(ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}), product_type)
+    
+    product = ASFProduct(args={'meta': product['meta'], 'umm': product['umm']})
+    if product.properties.get('sceneName') is None:
+        product.properties['sceneName'] = 'BAD_SCENE'
+        
+    run_test_get_default_product_type(product, product_type)
 
 def test_get_baseline_from_stack(**args) -> None:
     test_info = args["test_info"]
