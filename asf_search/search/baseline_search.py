@@ -75,7 +75,7 @@ def get_stack_opts(
 ) -> ASFSearchOptions:
 
     stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-    stack_opts.processingLevel = get_default_product_type(reference.properties['sceneName'])
+    stack_opts.processingLevel = get_default_product_type(reference)
 
     if reference.properties['platform'] in precalc_platforms:
         if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
@@ -84,9 +84,11 @@ def get_stack_opts(
         raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
-    if reference.properties['platform'] in [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]:
-        stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
-        stack_opts.beamMode = [reference.properties['beamModeType']]
+    if reference.properties['platform'].upper() in [PLATFORM.SENTINEL1A.upper(), PLATFORM.SENTINEL1B.upper()]:
+        stack_opts.platform = [reference.properties['platform'], PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
+        
+        if reference.properties['processingLevel'] != 'BURST':
+            stack_opts.beamMode = [reference.properties['beamModeType']]
         stack_opts.flightDirection = reference.properties['flightDirection']
         stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path
         if reference.properties['polarization'] in ['HH', 'HH+HV']:

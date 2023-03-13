@@ -57,12 +57,16 @@ def check_reference(reference: ASFProduct, stack: ASFSearchResults):
 def get_platform(reference: str):
     return reference[0:2].upper()
 
-def get_default_product_type(reference: str):
-    if get_platform(reference) in ['AL']:
+def get_default_product_type(product: ASFProduct):
+    scene_name = product.properties['sceneName']
+    
+    if get_platform(scene_name) in ['AL']:
         return 'L1.1'
-    if get_platform(reference) in ['R1', 'E1', 'E2', 'J1']:
+    if get_platform(scene_name) in ['R1', 'E1', 'E2', 'J1']:
         return 'L0'
-    if get_platform(reference) in ['S1']:
+    if get_platform(scene_name) in ['S1']:
+        if product.properties['processingLevel'] == 'BURST':
+            return 'BURST'
         return 'SLC'
     return None
 
