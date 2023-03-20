@@ -49,6 +49,9 @@ def search(
         relativeOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
+        absoluteBurstID: int = None,
+        relativeBurstID: int = None,
+        fullBurstID: str = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:

@@ -59,4 +59,7 @@ validator_map = {
     'session':                parse_session,
     'host':                   parse_string,
     'provider':               parse_string,
+    'absoluteBurstID':        int,
+    'relativeBurstID':        int,
+    'fullBurstID':            parse_string
 }
