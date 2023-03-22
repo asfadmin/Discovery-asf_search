@@ -87,9 +87,7 @@ def get_stack_opts(
     if reference.properties['platform'].upper() in [PLATFORM.SENTINEL1A.upper(), PLATFORM.SENTINEL1B.upper()]:
         stack_opts.platform = [reference.properties['platform'], PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
         
-        if reference.properties['processingLevel'] != 'BURST':
-            stack_opts.beamMode = [reference.properties['beamModeType']]
-        
+        stack_opts.beamMode = [reference.properties['beamModeType']]
         stack_opts.flightDirection = reference.properties['flightDirection']
         stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path
         

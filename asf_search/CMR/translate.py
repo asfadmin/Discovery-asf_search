@@ -161,6 +161,9 @@ def translate_product(item: dict) -> dict:
         'stopTime': get(umm, 'TemporalExtent', 'RangeDateTime', 'EndingDateTime'),
         'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL')
     }
+    
+    if properties['beamModeType'] is None:
+        properties['beamModeType'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
 
     positions = {}
     velocities = {}

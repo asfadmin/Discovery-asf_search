@@ -91,10 +91,9 @@ def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults)
     return stack
 
 def offset_perpendicular_baselines(reference: ASFProduct, stack: ASFSearchResults):
-    # for product in stack:
-        # if product.properties['sceneName'] == reference.properties['sceneName']:
     reference_offset = float(reference.baseline['insarBaseline'])
-            # break
+    
     for product in stack:
             product.properties['perpendicularBaseline'] = round(float(product.baseline['insarBaseline']) - reference_offset)
+    
     return stack
