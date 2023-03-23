@@ -24,7 +24,11 @@ def run_test_get_unprocessed_stack_params(product):
 
     original_properties = product['properties']
     assert(original_properties['polarization'] in params.polarization)
-    assert(['VV', 'VV+VH'] == params.polarization if reference.properties['polarization'] in ['VV', 'VV+VH'] else ['HH','HH+HV'] == params.polarization)
+    
+    if reference.properties['processingLevel'] == 'BURST':
+        assert([reference.properties['polarization']] == params.polarization)
+    else:
+        assert(['VV', 'VV+VH'] == params.polarization if reference.properties['polarization'] in ['VV', 'VV+VH'] else ['HH','HH+HV'] == params.polarization)
     assert(len(dict(params)) == 7)
 
 def run_get_stack_opts_invalid_insarStackId(product):

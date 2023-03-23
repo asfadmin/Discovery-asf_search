@@ -85,15 +85,17 @@ def get_stack_opts(
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
     if reference.properties['platform'].upper() in [PLATFORM.SENTINEL1A.upper(), PLATFORM.SENTINEL1B.upper()]:
-        stack_opts.platform = [reference.properties['platform'], PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
+        stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
         
         stack_opts.beamMode = [reference.properties['beamModeType']]
         stack_opts.flightDirection = reference.properties['flightDirection']
         stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path
         
-        if reference.properties['polarization'] in ['HH', 'HH+HV']:
+        is_burst = reference.properties['processingLevel'] == 'BURST'
+        
+        if reference.properties['polarization'] in ['HH', 'HH+HV'] and not is_burst:
             stack_opts.polarization = ['HH','HH+HV']
-        elif reference.properties['polarization'] in ['VV', 'VV+VH']:
+        elif reference.properties['polarization'] in ['VV', 'VV+VH'] and not is_burst:
             stack_opts.polarization = ['VV','VV+VH']
         else:
             stack_opts.polarization = [reference.properties['polarization']]

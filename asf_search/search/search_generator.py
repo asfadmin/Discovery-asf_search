@@ -49,9 +49,9 @@ def search_generator(
         relativeOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
-        absoluteBurstID: int = None,
-        relativeBurstID: int = None,
-        fullBurstID: str = None,
+        absoluteBurstID: Union[int, Iterable[int]] = None,
+        relativeBurstID: Union[int, Iterable[int]] = None,
+        fullBurstID: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
         ) -> Generator[ASFSearchResults, None, None]:
