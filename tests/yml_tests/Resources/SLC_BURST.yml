@@ -1,7 +1,7 @@
 {
   "properties":
     {
-      "beamModeType": None,
+      "beamModeType": "EW",
       "browse": None,
       "bytes": None,
       "centerLat": 67.60053530173546,
