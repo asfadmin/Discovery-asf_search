@@ -34,5 +34,10 @@ field_map = {
     'product_list':         {'key': 'granule_ur[]',            'fmt': '{0}'},
     'provider':             {'key': 'provider',                'fmt': '{0}'},
     'relativeOrbit':        {'key': 'attribute[]',             'fmt': 'int,PATH_NUMBER,{0}'},
-    'temporal':             {'key': 'temporal',                'fmt': '{0}'}
+    'temporal':             {'key': 'temporal',                'fmt': '{0}'},
+    
+    # SLC BURST fields
+    'absoluteBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_ABSOLUTE,{0}'},
+    'relativeBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_RELATIVE,{0}'},
+    'fullBurstID':          {'key': 'attribute[]',             'fmt': 'string,BURST_ID_FULL,{0}'},
 }

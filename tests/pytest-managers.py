@@ -1,5 +1,5 @@
 from typing import Dict, List
-from asf_search import ASFSearchOptions
+from asf_search import ASFSearchOptions, ASFProduct
 from asf_search.exceptions import ASFAuthenticationError, ASFSearch4xxError, ASFSearch5xxError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_product_get_stack_options, run_test_stack
@@ -352,10 +352,14 @@ def test_find_new_reference(**args) -> None:
 
 def test_get_default_product_type(**args) -> None:
     test_info = args["test_info"]
-    scene_name = get_resource(test_info["scene_name"])
+    product = get_resource(test_info["product"])
     product_type = get_resource(test_info["product_type"])
     
-    run_test_get_default_product_type(scene_name, product_type)
+    product = ASFProduct(args={'meta': product['meta'], 'umm': product['umm']})
+    if product.properties.get('sceneName') is None:
+        product.properties['sceneName'] = 'BAD_SCENE'
+        
+    run_test_get_default_product_type(product, product_type)
 
 def test_get_baseline_from_stack(**args) -> None:
     test_info = args["test_info"]

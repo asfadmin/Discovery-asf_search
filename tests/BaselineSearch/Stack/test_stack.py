@@ -16,8 +16,8 @@ def run_test_find_new_reference(stack: List, output_index: Number) -> None:
             product = clear_baseline(stack[idx], product)
         assert find_new_reference(products).properties['sceneName'] == stack[output_index]['properties']['sceneName']
         
-def run_test_get_default_product_type(scene_name: str, product_type: str) -> None:
-    assert get_default_product_type(scene_name) == product_type
+def run_test_get_default_product_type(product: ASFProduct, product_type: str) -> None:
+    assert get_default_product_type(product) == product_type
     
 def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
     reference = ASFProduct(reference)
