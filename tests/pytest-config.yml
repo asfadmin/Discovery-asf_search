@@ -157,7 +157,7 @@ test_types:
     method: test_find_new_reference
 
 - For running test_get_default_product_type tests:
-    required_keys: ["scene_name", "product_type"]
+    required_keys: ["product", "product_type"]
     required_in_title: test-get_default_product_type
     method: test_get_default_product_type
 
