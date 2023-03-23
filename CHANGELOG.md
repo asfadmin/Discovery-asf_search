@@ -33,6 +33,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - asf-search now sends the wrapped wkt to CMR when using the `intersectsWith` keyword
 ### Added
 - Temporal/perpendicular baseline values for stacks of SLC `BURST` products can now be calculated
+- Added searchable burst keyword params, `relativeBurstID`, `absoluteBurstID`, and `fullBurstID`
 
 ------
 ## [v6.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.1.0...v6.2.0)
