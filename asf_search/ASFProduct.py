@@ -41,7 +41,10 @@ class ASFProduct:
         :return: None
         """
         if filename is None:
-            filename = self.properties['fileName']
+            if self.properties['processingLevel'] == 'BURST':
+                filename = self.properties['fileID'] + '.tif'
+            else:
+                filename = self.properties['fileName']
         
         if session is None:
             session = self.session

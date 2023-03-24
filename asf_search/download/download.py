@@ -52,6 +52,8 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     :return:
     """
 
+    is_burst_extractor = urllib.parse.urlsplit(url).hostname == 'sentinel1-burst.asf.alaska.edu'
+    
     if filename is None:
         filename = os.path.split(urllib.parse.urlparse(url).path)[1]
 
@@ -73,11 +75,14 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
         if 400 <= response.status_code <= 499:
             raise ASFAuthenticationError(f'HTTP {e.response.status_code}: {e.response.text}')
         
-        raise e   
+        raise e
 
-    with open(os.path.join(path, filename), 'wb') as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
+    if response.status_code == 202 and is_burst_extractor:
+        download_url(url=url, path=path, filename=filename, session=session)
+    else:
+        with open(os.path.join(path, filename), 'wb') as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
 
 def remotezip(url: str, session: ASFSession) -> RemoteZip:
     """
