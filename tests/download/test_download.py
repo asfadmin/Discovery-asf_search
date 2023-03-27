@@ -41,11 +41,13 @@ def run_test_download_url(url, path, filename):
         with patch('asf_search.ASFSession.get') as mock_get:
             resp = requests.Response()
             resp.status_code = 202
+            resp.headers.update({'content-type': 'application/json'})
             mock_get.return_value = resp 
 
             with patch('asf_search.ASFSession.get') as mock_get_burst:
                 resp_2 = requests.Response()
                 resp_2.status_code = 200
+                resp_2.headers.update({'content-type': 'image/tiff'})
                 mock_get_burst.return_value = resp_2
                 resp_2.iter_content = lambda chunk_size: []
                     
