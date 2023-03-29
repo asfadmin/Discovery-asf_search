@@ -36,8 +36,7 @@
           "burstIndex": 19,
           "samplesPerBurst": 7320,
           "subswath": "EW5",
-          "timeFromAnxSeconds": 1849.529084057218,
-          "burstAnxTime": "2022-12-21T14:32:59.254219",
+          "azimuthAnxTime": "2022-12-21T14:32:59.254219",
         },
     },
   "geometry":
