@@ -79,8 +79,8 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
 
     if response.status_code == 202 and is_burst_extractor:
         download_url(url=url, path=path, filename=filename, session=session)
-    elif response.status_code == 200 and is_burst_extractor and response.headers.get('content-type').startswith('text/html'):
-        raise ASFAuthenticationError(f'An authenticated ASFSession is required to download SLC BURST products')
+    # elif response.status_code == 200 and is_burst_extractor and response.headers.get('content-type').startswith('text/html'):
+    #     raise ASFAuthenticationError(f'An authenticated ASFSession is required to download SLC BURST products')
     else:
         with open(os.path.join(path, filename), 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
