@@ -31,8 +31,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Temporal/perpendicular baseline values for stacks of SLC `BURST` products can now be calculated
 ### Changed
-- `burstAnxTime` field changed to `azimuthAnxTime`
-- Removed `timeFromAnxSeconds`
+- Removed `burstAnxTime`, `timeFromAnxSeconds` 
+- Added `azimuthAnxTime`, `azimuthTime`
 
 ------
 ## [v6.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.1.0...v6.2.0)

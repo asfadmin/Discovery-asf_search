@@ -62,6 +62,7 @@ fieldnames = (
     "absoluteBurstID",
     "fullBurstID",
     "burstIndex",
+    "azimuthTime"
     "azimuthAnxTime",
     "samplesPerBurst",
     "subswath"
@@ -154,6 +155,7 @@ class CSVStreamArray(list):
             "absoluteBurstID":  p['burst']['absoluteBurstID'] if p['processingLevel'] == 'BURST' else None,
             "fullBurstID":  p['burst']['fullBurstID'] if p['processingLevel'] == 'BURST' else None,
             "burstIndex":   p['burst']['burstIndex'] if p['processingLevel'] == 'BURST' else None,
+            "azimuthTime": p['burst']['azimuthTime'] if p['processingLevel'] == 'BURST' else None,
             "azimuthAnxTime": p['burst']['azimuthAnxTime'] if p['processingLevel'] == 'BURST' else None,
             "samplesPerBurst":  p['burst']['samplesPerBurst'] if p['processingLevel'] == 'BURST' else None,
             "subswath": p['burst']['subswath'] if p['processingLevel'] == 'BURST' else None

@@ -160,6 +160,7 @@ class KMLStreamArray(MetalinkStreamArray):
                 'Relative Burst ID: ' :  item['burst']['relativeBurstID'],
                 'Full Burst ID: ':  item['burst']['fullBurstID'],
                 'Burst Index: ': item['burst']['burstIndex'],
+                'Azimuth Time: ': item['burst']['azimuthTime'],
                 'Azimuth Anx Time: ': item['burst']['azimuthAnxTime'],
                 'Samples per Burst: ': item['burst']['samplesPerBurst'],
                 'Subswath: ': item['burst']['subswath']
