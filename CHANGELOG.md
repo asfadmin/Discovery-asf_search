@@ -27,14 +27,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
-## [v6.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.2.0...v6.2.1)
+## [v6.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.2.0...v6.3.0)
+### Added
+- `BURST` product temporal/perpendicular baseline stacking now supported
+- Added searchable burst keyword params, `relativeBurstID`, `absoluteBurstID`, and `fullBurstID`
 ### Changed
 - `validate_wkt()` now returns both wrapped and unwrapped wkts along with repair reports. 
 - asf-search now sends the wrapped wkt to CMR when using the `intersectsWith` keyword
-### Added
-- Temporal/perpendicular baseline values for stacks of SLC `BURST` products can now be calculated
-- Added searchable burst keyword params, `relativeBurstID`, `absoluteBurstID`, and `fullBurstID`
-### Changed
 - Changed `CMR_PAGE_SIZE` constant from 500 to 250
 - Removed `burstAnxTime`, `timeFromAnxSeconds` 
 - Added `azimuthAnxTime`, `azimuthTime`
