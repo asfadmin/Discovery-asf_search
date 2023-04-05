@@ -212,8 +212,8 @@ def translate_product(item: dict) -> dict:
             'burstIndex': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_INDEX'), 'Values', 0)),
             'samplesPerBurst': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'SAMPLES_PER_BURST'), 'Values', 0)),
             'subswath': get(umm, 'AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0),
-            'timeFromAnxSeconds': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'TIME_FROM_ANX_SEC'), 'Values', 0)),
-            'burstAnxTime': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ANX_TIME'), 'Values', 0),
+            'azimuthTime': get(umm, 'AdditionalAttributes', ('Name', 'AZIMUTH_TIME'), 'Values', 0),
+            'azimuthAnxTime': get(umm, 'AdditionalAttributes', ('Name', 'AZIMUTH_ANX_TIME'), 'Values', 0),
         }
         properties['burst'] = burst
         properties['sceneName'] = properties['fileID']
