@@ -27,7 +27,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
-## [v6.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.2.0...v6.2.1)
+## [v6.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.2.0...v6.3.0)
 ### Changed
 - `validate_wkt()` now returns both wrapped and unwrapped wkts along with repair reports. 
 - asf-search now sends the wrapped wkt to CMR when using the `intersectsWith` keyword
