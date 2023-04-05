@@ -39,7 +39,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - `validate_wkt()` now returns both wrapped and unwrapped wkts along with repair reports. 
 - asf-search now sends the wrapped wkt to CMR when using the `intersectsWith` keyword
-- Changed `CMR_PAGE_SIZE` constant from 500 to 250
 - Removed `burstAnxTime`, `timeFromAnxSeconds` 
 - Added `azimuthAnxTime`, `azimuthTime`
 
