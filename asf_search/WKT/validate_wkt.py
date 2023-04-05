@@ -35,9 +35,9 @@ def validate_wkt(aoi: Union[str, BaseGeometry]) -> Tuple[BaseGeometry, List[Repa
     if aoi_shape.is_empty:
         raise ASFWKTError(f'WKT string: \"{aoi_shape.wkt}\" empty WKT is not a valid AOI')
         
-    simplified, reports = _simplify_geometry(aoi_shape)
+    wrapped, unwrapped, reports = _simplify_geometry(aoi_shape)
     
-    return simplified, [report for report in reports if report != None]
+    return wrapped, unwrapped, [report for report in reports if report != None]
 
 
 def _search_wkt_prep(shape: BaseGeometry):
@@ -65,12 +65,13 @@ def _simplify_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
     returns: geometry prepped for CMR
     """
     flattened = _flatten_multipart_geometry(geometry)
-    clamped_and_wrapped, clamp_report = _get_clamped_and_wrapped_geometry(flattened)
-    merged, merge_report = _merge_overlapping_geometry(clamped_and_wrapped)
+    
+    merged, merge_report = _merge_overlapping_geometry(flattened)
     convex, convex_report = _get_convex_hull(merged)
     simplified, simplified_report = _simplify_aoi(convex)
     reoriented, reorientation_report = _counter_clockwise_reorientation(simplified)
-
+    wrapped, unwrapped, clamp_report = _get_clamped_and_wrapped_geometry(reoriented)
+    
     dimension_report = RepairEntry(
         report_type="'type': 'EXTRA_DIMENSION'", 
         report="'report': Only 2-Dimensional area of interests are supported (lon/lat), higher dimension coordinates will be ignored"
@@ -84,8 +85,9 @@ def _simplify_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, List[Repai
         if report is not None:
             logging.info(f"{report}")
 
-    validated = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), reoriented)
-    return validated, repair_reports
+    validated_wrapped = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), wrapped)
+    validated_unwrapped = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), unwrapped)
+    return validated_wrapped, validated_unwrapped, repair_reports
 
 
 def _flatten_multipart_geometry(unflattened_geometry: BaseGeometry) -> BaseGeometry:
@@ -173,13 +175,12 @@ def _get_clamped_and_wrapped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry
     coords_wrapped = 0
     def _clamp_lat(x, y, z=None):
         clamped = _clamp(y)
-        wrapped = x
 
         if clamped != y:
             nonlocal coords_clamped
             coords_clamped += 1
 
-        return tuple([wrapped, clamped])
+        return tuple([x, clamped])
 
     def _wrap_lon(x, y, z=None):
         wrapped = x
@@ -193,17 +194,20 @@ def _get_clamped_and_wrapped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry
         return tuple([wrapped, y])
 
     def _unwrap_lon(x, y, z=None):
-        unwrapped = x if x >= 0 else x + 360
+        unwrapped = x if x >= 0 else x + 360    # This undoes wrapping
 
         return tuple([unwrapped, y])
 
-    wrapped = transform(_wrap_lon, shape)
-    unwrapped = wrapped
+
+    clamped_lat = transform(_clamp_lat, shape)
+    
+    wrapped = transform(_wrap_lon, clamped_lat)
     
     if wrapped.bounds[2] - wrapped.bounds[0] > 180:
         unwrapped = transform(_unwrap_lon, wrapped)
-
-    clamped = transform(_clamp_lat, unwrapped)
+    else:
+        unwrapped = wrapped
+    
     
     clampRepairReport = None
     wrapRepairReport = None
@@ -213,7 +217,7 @@ def _get_clamped_and_wrapped_geometry(shape: BaseGeometry) -> Tuple[BaseGeometry
     if coords_wrapped > 0:
         wrapRepairReport = RepairEntry("'type': 'WRAP'", f"'report': 'Wrapped {coords_wrapped} value(s) to +/-180 longitude'")
 
-    return (clamped, [clampRepairReport, wrapRepairReport])
+    return (wrapped, unwrapped, [clampRepairReport, wrapRepairReport])
 
 
 def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]:

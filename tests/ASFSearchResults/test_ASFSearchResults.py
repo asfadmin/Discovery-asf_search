@@ -160,7 +160,7 @@ def get_SearchAPI_Output(product_list: List[str], output_type: str) -> List[Dict
     return expected
 
 def run_test_ASFSearchResults_intersection(wkt: str):
-    aoi, _ = asf.validate_wkt(wkt)
+    wrapped, unwrapped, _ = asf.validate_wkt(wkt)
     unchanged_aoi = loads(wkt) # sometimes geometries don't come back with wrapping in mind
 
     # exclude SMAP products
@@ -179,11 +179,7 @@ def run_test_ASFSearchResults_intersection(wkt: str):
 
         for product in results:
             if shape(product.geometry).is_valid:
-                product_geom, _ = asf.validate_wkt(shape(product.geometry))
+                product_geom_wrapped, product_geom_unwrapped, _ = asf.validate_wkt(shape(product.geometry))
                 original_shape = unchanged_aoi
 
-                # Shapes crossing antimeridian might have coordinates starting from other side
-                if unchanged_aoi.bounds[2] < 0 and product_geom.bounds[0] > 0:
-                    original_shape = transform(lambda x, y, z=None: tuple([x + 360, y]), unchanged_aoi)
-
-                assert overlap_check(product_geom, aoi) or overlap_check(product_geom, original_shape), f"OVERLAP FAIL: {product.properties['sceneName']}, {product.geometry} \nproduct: {product_geom.wkt} \naoi: {aoi.wkt}"
+                assert overlap_check(product_geom_wrapped, wrapped) or overlap_check(product_geom_wrapped, original_shape), f"OVERLAP FAIL: {product.properties['sceneName']}, {product.geometry} \nproduct: {product_geom_wrapped.wkt} \naoi: {wrapped.wkt}"
