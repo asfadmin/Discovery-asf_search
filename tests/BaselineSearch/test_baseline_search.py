@@ -2,7 +2,7 @@ from copy import deepcopy
 from unittest.mock import patch
 from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.search.search import ASFProduct
+from asf_search import ASFProduct
 from asf_search.search.baseline_search import get_stack_opts, stack_from_id, stack_from_product
 from asf_search.baseline.stack import calculate_temporal_baselines, get_default_product_type
 import pytest
@@ -13,7 +13,7 @@ def run_test_get_preprocessed_stack_params(product):
 
     original_properties = product['properties']
     
-    assert(params.processingLevel == [get_default_product_type(product['properties']['sceneName'])])
+    assert(params.processingLevel == [get_default_product_type(reference)])
     assert(params.insarStackId == original_properties['insarStackId'])
     assert(len(dict(params)) == 2)
     
@@ -24,7 +24,11 @@ def run_test_get_unprocessed_stack_params(product):
 
     original_properties = product['properties']
     assert(original_properties['polarization'] in params.polarization)
-    assert(['VV', 'VV+VH'] == params.polarization)
+    
+    if reference.properties['processingLevel'] == 'BURST':
+        assert([reference.properties['polarization']] == params.polarization)
+    else:
+        assert(['VV', 'VV+VH'] == params.polarization if reference.properties['polarization'] in ['VV', 'VV+VH'] else ['HH','HH+HV'] == params.polarization)
     assert(len(dict(params)) == 7)
 
 def run_get_stack_opts_invalid_insarStackId(product):
@@ -37,7 +41,7 @@ def run_get_stack_opts_invalid_insarStackId(product):
     
 def run_test_get_stack_opts_invalid_platform_raises_error(product):
     invalid_reference = ASFProduct(product)
-    invalid_reference.properties['platform'] = None
+    invalid_reference.properties['platform'] = 'FAKE_PLATFORM'
     
     with pytest.raises(ASFBaselineError):
         get_stack_opts(invalid_reference)

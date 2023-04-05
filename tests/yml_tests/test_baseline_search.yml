@@ -5,19 +5,26 @@ tests:
 - Test Get test-unprocessed-product S1 Stack Params:
     product: S1_response.yml
 
+- Test Get test-unprocessed-product Burst Stack Params:
+    product: SLC_BURST.yml
+
 - Test Get test-invalid-insarStackID Stack Params:
     product: Alos_response.yml
 
 - Test Get test-invalid-platform Stack Params:
     product: S1_response.yml
 
-- Test Get test-temporal-baseline test-product-stack Params:
+- Test Get test-temporal-baseline test-product-stack SLC Params:
     product: S1_response.yml
     stack: S1_baseline_stack.yml
 
-- Test get test-temporal-baseline test-product-stack Params:
+- Test get test-temporal-baseline test-product-stack ERS Params:
     product: Fairbanks_ers_reference.yml
     stack: Fairbanks_ers_stack.yml
+
+- Test get test-temporal-baseline test-product-stack BURST Params:
+    product: SLC_BURST.yml
+    stack: SLC_BURST_stack.yml
 
 - test-stack-id empty ID:
     stack_id: ''

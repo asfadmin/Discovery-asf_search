@@ -45,7 +45,7 @@ tests:
 
 - test-validate-wkt-clamp linestring wrapped:
     wkt: LINESTRING (-179 -95, 45 0, 90 95)
-    clamped-wkt: LINESTRING (181 -90, 45 0, 90 90)
+    clamped-wkt: LINESTRING (-179 -90, 45 0, 90 90)
     clamped-count: 2
     wrapped-count: 0
 
@@ -88,7 +88,7 @@ tests:
 
 - test-validate-wkt-clamp polygon wrapped:
     wkt: POLYGON ((-181 -95, 181 0, 10 100, 0 100, -181 -95))
-    clamped-wkt: POLYGON ((179 -90, 181 0, 10 90, 0 90, 179 -90))
+    clamped-wkt: POLYGON ((179 -90, -179 0, 10 90, 0 90, 179 -90))
     clamped-count: 4
     wrapped-count: 3
 
