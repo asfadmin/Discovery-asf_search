@@ -3,7 +3,6 @@ import pytest
 from typing import List
 
 from shapely.wkt import loads
-from shapely.geometry import Polygon, MultiLineString
 from shapely.geometry.base import BaseMultipartGeometry
 
 from asf_search.WKT.validate_wkt import (
@@ -26,21 +25,22 @@ def run_test_validate_wkt_invalid_wkt_error(wkt: str):
 
 def run_test_validate_wkt_valid_wkt(wkt: str, validated_wkt: str):
     expected_aoi = loads(validated_wkt)
-    actual, _ = validate_wkt(wkt)
-    assert actual.equals(expected_aoi), f"expected, {expected_aoi.wkt}, got {actual.wkt}"
+    actual_wrapped, actual_unwrapped, _ = validate_wkt(wkt)
     
-    actual_from_geom, _ = validate_wkt(loads(wkt))
-    assert actual_from_geom.equals(expected_aoi)
+    assert actual_wrapped.equals(expected_aoi), f"expected, {expected_aoi.wkt}, got {actual_wrapped.wkt}"
+    
+    actual_from_geom_wrapped, actual_from_geom_unwrapped, _ = validate_wkt(loads(wkt))
+    assert actual_from_geom_wrapped.equals(expected_aoi)
 
 def run_test_validate_wkt_clamp_geometry(wkt: str, clamped_wkt: str, clamped_count: Number, wrapped_count: Number):
     resp = _get_clamped_and_wrapped_geometry(loads(wkt))
     assert resp[0].wkt == clamped_wkt
     
     if clamped_count > 0:
-        assert resp[1][0].report.split(' ')[2] == str(clamped_count)
+        assert resp[2][0].report.split(' ')[2] == str(clamped_count)
     
     if wrapped_count > 0:
-        assert resp[1][1].report.split(' ')[2] == str(wrapped_count)
+        assert resp[2][1].report.split(' ')[2] == str(wrapped_count)
 
 def run_test_validate_wkt_convex_hull(wkt: str, corrected_wkt: str):
     shape = loads(wkt)
