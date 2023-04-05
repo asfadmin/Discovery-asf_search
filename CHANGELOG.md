@@ -31,7 +31,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Temporal/perpendicular baseline values for stacks of SLC `BURST` products can now be calculated
 ### Changed
+<<<<<<< HEAD
 - Changed `CMR_PAGE_SIZE` constant from 500 to 250
+=======
+- Removed `burstAnxTime`, `timeFromAnxSeconds` 
+- Added `azimuthAnxTime`, `azimuthTime`
+
+>>>>>>> master
 ------
 ## [v6.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.1.0...v6.2.0)
 ### Added
