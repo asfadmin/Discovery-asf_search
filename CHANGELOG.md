@@ -27,6 +27,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
+## [v6.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.0...v6.3.1)
+### Changed
+- Changed `CMR_PAGE_SIZE` constant from 500 to 250
+
+------
 ## [v6.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.2.0...v6.3.0)
 ### Added
 - `BURST` product temporal/perpendicular baseline stacking now supported
