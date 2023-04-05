@@ -62,7 +62,7 @@ fieldnames = (
     "absoluteBurstID",
     "fullBurstID",
     "burstIndex",
-    "azimuthTime"
+    "azimuthTime",
     "azimuthAnxTime",
     "samplesPerBurst",
     "subswath"
