@@ -218,7 +218,7 @@ def translate_product(item: dict) -> dict:
         properties['burst'] = burst
         properties['sceneName'] = properties['fileID']
         urls = get(umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
-        if len(urls):
+        if urls is not None:
             properties['url'] = urls[0]
             properties['fileName'] = properties['url'].split('/')[-1]
 
