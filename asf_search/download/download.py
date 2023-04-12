@@ -1,7 +1,9 @@
+from time import sleep
 from typing import Iterable
 from multiprocessing import Pool
 import os.path
 import urllib.parse
+from requests import Response
 from requests.exceptions import HTTPError
 import warnings
 
@@ -67,24 +69,17 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     if session is None:
         session = ASFSession()
 
-    response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
+    response = _try_get_response(session=session, url=url)
 
-    try:
-        response.raise_for_status()
-    except HTTPError as e:
-        if 400 <= response.status_code <= 499:
-            raise ASFAuthenticationError(f'HTTP {e.response.status_code}: {e.response.text}')
-        
-        raise e
-
-    if response.status_code == 202 and is_burst_extractor:
-        download_url(url=url, path=path, filename=filename, session=session)
-    # elif response.status_code == 200 and is_burst_extractor and response.headers.get('content-type').startswith('text/html'):
-    #     raise ASFAuthenticationError(f'An authenticated ASFSession is required to download SLC BURST products')
-    else:
-        with open(os.path.join(path, filename), 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
+    # if it's an unprocessed burst product, we need to query again 
+    # https://sentinel1-burst-docs.asf.alaska.edu/
+    if response.status_code == 202 and is_burst_extractor:    
+        sleep(35) # Wait for the burst extractor to finish processing
+        response = _poll(response=response, session=session, url=url)
+    
+    with open(os.path.join(path, filename), 'wb') as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
 
 def remotezip(url: str, session: ASFSession) -> RemoteZip:
     """
@@ -100,3 +95,30 @@ def strip_auth_if_aws(r, *args, **kwargs):
         location = r.headers['location']
         r.headers.clear()
         r.headers['location'] = location
+
+def _poll(response: Response, session: ASFSession, url):
+    tries = 0
+    while response.status_code == 202 and tries < 3:
+        response = _try_get_response(session=session, url=url)
+        
+        if response.status_code != 200:
+            tries += 1
+            sleep(10)
+    
+    if response.status_code != 200:
+        raise ASFDownloadError(f'Failed to download BURST product. HTTP {response.status_code}: {response.text}')
+
+    return response
+
+def _try_get_response(session: ASFSession, url: str):
+    response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
+
+    try:
+        response.raise_for_status()
+    except HTTPError as e:
+        if 400 <= response.status_code <= 499:
+            raise ASFAuthenticationError(f'HTTP {e.response.status_code}: {e.response.text}')
+
+        raise e
+
+    return response
