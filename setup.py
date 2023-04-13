@@ -9,7 +9,8 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "remotezip >= 0.10.0"
+    "remotezip >= 0.10.0",
+    "tenacity == 8.2.2"
 ]
 
 test_requirements = [
