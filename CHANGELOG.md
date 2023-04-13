@@ -27,7 +27,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
-## [v6.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.3.2)
+## [v6.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.4.0)
 ### Added
 - Burst product downloads now supported
 ### Fixed:
