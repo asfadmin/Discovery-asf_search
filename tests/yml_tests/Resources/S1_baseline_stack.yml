@@ -29,6 +29,7 @@
         "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.zip",
         "fileName": "S1B_IW_GRDH_1SDV_20211216T032038_20211216T032103_030045_039655_2335.zip",
         "frameNumber": 210,
+        "PGEVersion": 003.40
       },
     "geometry":
       {
@@ -268,6 +269,7 @@
         "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.zip",
         "fileName": "S1B_IW_GRDH_1SDV_20211204T032038_20211204T032103_029870_0390CC_FC88.zip",
         "frameNumber": 210,
+        "PGEVersion": 003.40
       },
     "geometry":
       {
@@ -507,6 +509,7 @@
         "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.zip",
         "fileName": "S1B_IW_GRDH_1SDV_20211122T032039_20211122T032104_029695_038B4D_706D.zip",
         "frameNumber": 210,
+        "PGEVersion": 003.40
       },
     "geometry":
       {
@@ -746,6 +749,7 @@
         "url": "https://datapool.asf.alaska.edu/GRD_HD/SB/S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
         "fileName": "S1B_IW_GRDH_1SDV_20211110T032039_20211110T032104_029520_0385E6_60DB.zip",
         "frameNumber": 210,
+        "PGEVersion": 003.40
       },
     "geometry":
       {
