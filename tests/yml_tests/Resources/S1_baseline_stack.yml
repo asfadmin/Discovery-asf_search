@@ -173,6 +173,7 @@
           ],
         "CollectionReference":
           { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.40'},
         "RelatedUrls":
           [
             {
@@ -413,6 +414,7 @@
           ],
         "CollectionReference":
           { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.40'},
         "RelatedUrls":
           [
             {
@@ -653,6 +655,7 @@
           ],
         "CollectionReference":
           { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.40'},
         "RelatedUrls":
           [
             {
@@ -893,6 +896,7 @@
           ],
         "CollectionReference":
           { "ShortName": "SENTINEL-1B_DP_GRD_HIGH", "Version": "1" },
+        'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.40'},
         "RelatedUrls":
           [
             {
