@@ -160,7 +160,7 @@ def translate_product(item: dict) -> dict:
         'startTime': get(umm, 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime'),
         'stopTime': get(umm, 'TemporalExtent', 'RangeDateTime', 'EndingDateTime'),
         'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL'),
-        'PGEVersion': get(umm, 'PGEVersionClass', 'PGEVersion')
+        'pgeVersion': get(umm, 'PGEVersionClass', 'PGEVersion')
     }
     
     if properties['beamModeType'] is None:
