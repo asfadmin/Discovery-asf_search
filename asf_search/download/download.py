@@ -1,4 +1,3 @@
-from time import sleep
 from typing import Iterable
 from multiprocessing import Pool
 import os.path
@@ -11,7 +10,7 @@ import regex as re
 from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError
 from asf_search import ASFSession
 from remotezip import RemoteZip
-from tenacity import retry, stop_after_attempt, wait_chain, wait_fixed, retry_if_result
+from tenacity import retry, stop_after_delay, retry_if_result, wait_fixed
 
 def _download_url(arg):
     url, path, session = arg
@@ -102,13 +101,12 @@ def strip_auth_if_aws(r, *args, **kwargs):
 
 # if it's an unprocessed burst product it'll return a 202 and we'll have to query again 
 # https://sentinel1-burst-docs.asf.alaska.edu/
-def _should_retry(response: Response):
-    return response.status_code != 200
+def _is_burst_processing(response: Response):
+    return response.status_code == 202
 
-@retry(
-    retry=retry_if_result(_should_retry),
-    wait=wait_chain(*[wait_fixed(35)] + [wait_fixed(10) for _ in range(2)]),
-    stop=stop_after_attempt(4)
+@retry(retry=retry_if_result(_is_burst_processing),
+       wait=wait_fixed(1),
+       stop=stop_after_delay(90),
     )
 def _try_get_response(session: ASFSession, url: str):
     response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
