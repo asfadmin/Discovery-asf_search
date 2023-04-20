@@ -40,8 +40,12 @@ class ASFProduct:
 
         :return: None
         """
-        if filename is None and not self.properties['processingLevel'] == 'BURST':
-            filename = self.properties['fileName']
+        if filename is None:
+            if self.properties['processingLevel'] == 'BURST':
+                extension = self.properties['fileName'].split('.')[-1]
+                filename = self.properties['sceneName'] + '.' + extension
+            else:
+                filename = self.properties['fileName']
         
         if session is None:
             session = self.session
