@@ -33,7 +33,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed:
 - `BURST` product `url` and `fileName` properties populated again
 ### Changed:
-- Changed order of entires in `ASFSession`'s `User-Agent` header
+- Changed order of entries in `ASFSession`'s `User-Agent` header
 
 ------
 ## [v6.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.0...v6.3.1)
