@@ -31,9 +31,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Burst product downloads now supported
 ### Fixed:
-- `BURST` product `url` and `fileName` properties populated again
+- `BURST` product `url`, `fileName`, and `bytes` properties populated again
 ### Changed:
 - Changed order of entries in `ASFSession`'s `User-Agent` header
+- `BURST` `filename` field uses "`sceneName`.`extension`" format
 
 ------
 ## [v6.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.0...v6.3.1)
