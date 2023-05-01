@@ -33,6 +33,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `IPFVersion` field added to `ASFProduct` properties
 ### Fixed
 - `BURST` product `url`, `fileName`, and `bytes` properties populated again
+- `search_count()` now uses `ASFSearchOptions.host` when building query url
 ### Changed:
 - `BURST` product baseline stackng now uses `fullBurstID` and `polarization` for getting initial stack
 - Changed order of entries in `ASFSession`'s `User-Agent` header
