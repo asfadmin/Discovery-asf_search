@@ -168,7 +168,8 @@ class JSONLiteStreamArray(list):
             'stopTime': p['stopTime'],
             'thumb': p['thumb'],
             'wkt': wrapped,
-            'wkt_unwrapped': unwrapped
+            'wkt_unwrapped': unwrapped,
+            'pgeVersion': p['pgeVersion']
         }
         
         for key in result.keys():
