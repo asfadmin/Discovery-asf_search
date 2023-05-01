@@ -30,11 +30,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v6.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.4.0)
 ### Added
 - Burst product downloads now supported
-### Fixed:
-- `BURST` product `url`, `fileName`, and `bytes` properties populated again
-### Added:
 - `IPFVersion` field added to `ASFProduct` properties
+### Fixed
+- `BURST` product `url`, `fileName`, and `bytes` properties populated again
 ### Changed:
+- `BURST` product baseline stackng now uses `fullBurstID` and `polarization` for getting initial stack
 - Changed order of entries in `ASFSession`'s `User-Agent` header
 - `BURST` `filename` field uses "`sceneName`.`extension`" format
 
