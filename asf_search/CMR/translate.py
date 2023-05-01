@@ -218,10 +218,12 @@ def translate_product(item: dict) -> dict:
         }
         properties['burst'] = burst
         properties['sceneName'] = properties['fileID']
+        properties['bytes'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0))
+
         urls = get(umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
         if urls is not None:
             properties['url'] = urls[0]
-            properties['fileName'] = properties['url'].split('/')[-1]
+            properties['fileName'] = properties['fileID'] + '.' + urls[0].split('.')[-1]
 
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 
