@@ -50,7 +50,8 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             'stp': p['stopTime'],
             't': p['thumb'].replace(p['granuleName'], '{gn}') if p['thumb'] is not None else p['thumb'],
             'w': p['wkt'],
-            'wu': p['wkt_unwrapped']
+            'wu': p['wkt_unwrapped'],
+            'pge': p['pgeVersion']
         }
 
         if 'temporalBaseline' in p.keys() or 'perpendicularBaseline' in p.keys():
