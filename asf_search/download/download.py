@@ -55,31 +55,21 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     :return:
     """
     
+    if filename is None:
+        filename = os.path.split(urllib.parse.urlparse(url).path)[1]
+    
     if not os.path.isdir(path):
         raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
 
-    if filename is not None:
-        if os.path.isfile(os.path.join(path, filename)):
-            warnings.warn(f'File already exists, skipping download: {os.path.join(path, filename)}')
-            return
+    if os.path.isfile(os.path.join(path, filename)):
+        warnings.warn(f'File already exists, skipping download: {os.path.join(path, filename)}')
+        return
 
     if session is None:
         session = ASFSession()
 
     response = _try_get_response(session=session, url=url)
     
-    # Burst products
-    if filename is None:
-        disposition = response.headers.get('content-disposition')
-        
-        if disposition is not None:
-            filenames = re.findall("filename=(.+)", disposition)
-            if len(filenames):
-                filename = filenames[0]
-        
-        if filename is None:
-            raise ASFDownloadError('Failed to download burst product, no filename given and no filename in Response Content-Disposition header')
-        
     with open(os.path.join(path, filename), 'wb') as f:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)

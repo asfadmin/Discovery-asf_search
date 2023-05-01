@@ -40,7 +40,7 @@ class ASFProduct:
 
         :return: None
         """
-        if filename is None and not self.properties['processingLevel'] == 'BURST':
+        if filename is None:
             filename = self.properties['fileName']
         
         if session is None:
