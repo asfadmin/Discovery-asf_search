@@ -13,3 +13,13 @@ tests:
     url: filenameError
     path: " "
     filename: "error"
+
+- Test test-download-url url regular:
+    url: "mock_url"
+    path: "./"
+    filename: "Regular product"
+
+- Test test-download-url url burst:
+    url: "https://sentinel1-burst.asf.alaska.edu/S1A_EW_SLC__1SDH_20221221T143159_20221221T143302_046431_059001_547B/EW5/HH/19.tiff"
+    path: "./"
+    filename: "BURST"
