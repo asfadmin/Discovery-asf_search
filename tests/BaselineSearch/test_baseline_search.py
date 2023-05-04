@@ -27,9 +27,10 @@ def run_test_get_unprocessed_stack_params(product):
     
     if reference.properties['processingLevel'] == 'BURST':
         assert([reference.properties['polarization']] == params.polarization)
+        assert([reference.properties['burst']['fullBurstID']] == params.fullBurstID)
     else:
         assert(['VV', 'VV+VH'] == params.polarization if reference.properties['polarization'] in ['VV', 'VV+VH'] else ['HH','HH+HV'] == params.polarization)
-    assert(len(dict(params)) == 7)
+        assert(len(dict(params)) == 7)
 
 def run_get_stack_opts_invalid_insarStackId(product):
     invalid_reference = ASFProduct(product)

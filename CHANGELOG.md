@@ -27,6 +27,19 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
+## [v6.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.4.0)
+### Added
+- Burst product downloads now supported
+- `IPFVersion` field added to `ASFProduct` properties
+### Fixed
+- `BURST` product `url`, `fileName`, and `bytes` properties populated again
+- `search_count()` now uses `ASFSearchOptions.host` when building query url
+### Changed:
+- `BURST` product baseline stackng now uses `fullBurstID` and `polarization` for getting initial stack
+- Changed order of entries in `ASFSession`'s `User-Agent` header
+- `BURST` `filename` field uses "`sceneName`.`extension`" format
+
+------
 ## [v6.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.0...v6.3.1)
 ### Changed
 - Changed `CMR_PAGE_SIZE` constant from 500 to 250

@@ -23,7 +23,7 @@ from WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wk
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
 
-from download.test_download import run_test_download_url_auth_error
+from download.test_download import run_test_download_url, run_test_download_url_auth_error
 from Serialization.test_serialization import run_test_serialization
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
@@ -338,7 +338,9 @@ def test_download_url(**args) -> None:
         
     if filename == "error":
         run_test_download_url_auth_error(url, path, filename)
-
+    else:
+        run_test_download_url(url, path, filename)
+        
 def test_find_new_reference(**args) -> None:
     """
     Test asf_search.baseline.calc.find_new_reference
