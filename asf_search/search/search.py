@@ -38,6 +38,7 @@ def search(
         absoluteBurstID: Union[int, Iterable[int]] = None,
         relativeBurstID: Union[int, Iterable[int]] = None,
         fullBurstID: Union[str, Iterable[str]] = None,
+        collections: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
