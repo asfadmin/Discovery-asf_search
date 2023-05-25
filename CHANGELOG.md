@@ -26,6 +26,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+## [v6.5.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.4.0...v6.5.0)
+### Added
+- Searching by concept-ids is now supported via the `collections` keyword for search methods and `ASFSearchOptions`
+
 ------
 ## [v6.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.4.0)
 ### Added
