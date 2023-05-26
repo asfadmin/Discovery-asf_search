@@ -15,7 +15,7 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
-from asf_search.exceptions import ASFError, ASFSearch4xxError, ASFSearch5xxError
+from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
@@ -82,7 +82,7 @@ def search_generator(
         translated_opts = translate_opts(query)
         try:
             response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-        except ASFError as e:
+        except ASFSearchError as e:
             message = str(e)
             logging.error(message)
             report_search_error(query, message)
@@ -113,7 +113,7 @@ def search_generator(
 
             try:
                 response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-            except ASFError as e:
+            except ASFSearchError as e:
                 message = str(e)
                 logging.error(message)
                 report_search_error(query, message)
@@ -156,7 +156,7 @@ def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: 
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(error_message) from exc
     except ReadTimeout as exc:
-        raise ASFError(f'Connection Error (Timeout): CMR took too long to respond ({url=})') from exc
+        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond ({url=})') from exc
     
     return response
     
