@@ -3,7 +3,7 @@ from typing import Generator, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
-from tenacity  import retry, retry_if_exception_type, stop_after_delay, wait_exponential
+from tenacity import retry, retry_if_exception_type, stop_after_delay, wait_exponential
 import datetime
 import dateparser
 import warnings
