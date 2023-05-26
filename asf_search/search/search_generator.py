@@ -140,7 +140,8 @@ def search_generator(
         opts.session.headers.pop('CMR-Search-After', None)
 
 
-@retry(retry=retry_if_exception_type((TimeoutError, ASFSearch5xxError)),
+@retry(reraise=True,
+       retry=retry_if_exception_type((TimeoutError, ASFSearch5xxError)),
        wait=wait_exponential(multiplier=1, min=4, max=10),
        stop=stop_after_delay(340),
     )
