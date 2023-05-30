@@ -2,7 +2,8 @@ import logging
 from typing import Generator, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
-from requests import Response
+from requests import ReadTimeout, Response
+from tenacity import retry, retry_if_exception_type, stop_after_delay, wait_exponential
 import datetime
 import dateparser
 import warnings
@@ -14,7 +15,7 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
-from asf_search.exceptions import ASFError, ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, ASFServerError
+from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
@@ -82,8 +83,10 @@ def search_generator(
         translated_opts = translate_opts(query)
         try:
             response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-        except ASFError as e:
-            logging.error(str(e))
+        except ASFSearchError as e:
+            message = str(e)
+            logging.error(message)
+            report_search_error(query, message)
             opts.session.headers.pop('CMR-Search-After', None)
             return
 
@@ -111,8 +114,10 @@ def search_generator(
 
             try:
                 response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-            except ASFError as e:
-                logging.error(str(e))
+            except ASFSearchError as e:
+                message = str(e)
+                logging.error(message)
+                report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
                 return
 
@@ -135,27 +140,27 @@ def search_generator(
 
         opts.session.headers.pop('CMR-Search-After', None)
 
+
+@retry(reraise=True,
+       retry=retry_if_exception_type((TimeoutError, ASFSearch5xxError)),
+       wait=wait_exponential(multiplier=1, min=4, max=10),
+       stop=stop_after_delay(340),
+    )
 def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
-    max_retries = 3
-    error_message = ''
-
-    for _ in range(max_retries):
+    try:
         response = session.post(url=url, data=translated_opts, timeout=170)
-
-        try:
-            response.raise_for_status()
-        except HTTPError:
-            error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
-            if 400 <= response.status_code <= 499:
-                error = ASFSearch4xxError(error_message)
-            if 500 <= response.status_code <= 599:
-                error = ASFSearch5xxError(error_message)
-        else:
-            return response
+        response.raise_for_status()
+    except HTTPError as exc:
+        error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
+        if 400 <= response.status_code <= 499:
+            raise ASFSearch4xxError(error_message) from exc
+        if 500 <= response.status_code <= 599:
+            raise ASFSearch5xxError(error_message) from exc
+    except ReadTimeout as exc:
+        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond ({url=})') from exc
     
-    report_search_error(search_opts, error_message)
-    raise error
-
+    return response
+    
 
 def preprocess_opts(opts: ASFSearchOptions):
     # Repair WKT here so it only happens once, and you can save the result to the new Opts object:
