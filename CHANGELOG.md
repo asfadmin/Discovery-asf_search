@@ -30,6 +30,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v6.5.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.4.0...v6.5.0)
 ### Changed
 - `search_generator()` now uses tenacity library to poll CMR
+### Fixed
+- TimeoutErrors now properly caught and logged
+
 ------
 ## [v6.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.4.0)
 ### Added
