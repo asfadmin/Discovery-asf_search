@@ -87,7 +87,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
 
 def should_use_asf_frame(cmr_opts):
-    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
+    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS', 'Sentinel-1 Interferogram (BETA)']
 
     return any([
         p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
@@ -199,7 +199,7 @@ def translate_product(item: dict) -> dict:
     if properties['platform'] is None:
         properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
 
-    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B']
+    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B', 'Sentinel-1 Interferogram (BETA)']
     if properties['platform'] in asf_frame_platforms:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
     else:
