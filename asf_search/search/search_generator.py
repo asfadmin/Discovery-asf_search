@@ -54,6 +54,7 @@ def search_generator(
         relativeBurstID: Union[int, Iterable[int]] = None,
         fullBurstID: Union[str, Iterable[str]] = None,
         collections: Union[str, Iterable[str]] = None,
+        temporalBaselineDays: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
         ) -> Generator[ASFSearchResults, None, None]:
