@@ -31,10 +31,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Searching by concept-ids is now supported via the `collections` keyword for search methods and `ASFSearchOptions`
 - adds `frameNumber` keyword and properties support for new Sentinel-1 Interferogram (BETA) products
+- adds `asfPlatform` as valid keyword for `ASFSearchOptions`
 ### Changed
 - `search_generator()` now uses tenacity library to poll CMR
 ### Fixed
-- TimeoutErrors now properly caught and logged
+- TimeoutErrors now properly caught and logged 
 
 ------
 ## [v6.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.4.0)
