@@ -1,5 +1,5 @@
 from typing import Dict
-from asf_search import ASFSearchOptions
+from asf_search import ASFSearchOptions, ERROR_REPORTING_ENDPOINT
 import requests
 import logging
 
@@ -14,18 +14,16 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
             \nIf you have any questions email uso@asf.alaska.edu")
         return
 
-    end_point_url = "https://search-error-report.asf.alaska.edu"
-    
     user_agent = search_options.session.headers.get("User-Agent")
     search_options_list = '\n'.join([f"\t{option}: {key}" for option, key in dict(search_options).items()])
     message=f"Error Message: {str(message)}\nUser Agent: {user_agent} \
     \nSearch Options: {{\n{search_options_list}\n}}"
 
-    response = requests.post(end_point_url, data={'Message': "This error message and info was automatically generated:\n\n" + message})
+    response = requests.post(f'https://{ERROR_REPORTING_ENDPOINT}', data={'Message': "This error message and info was automatically generated:\n\n" + message})
 
     try:
         response.raise_for_status()
-    except requests.exceptions.HTTPError as e:
+    except requests.exceptions.HTTPError:
         logging.error(f"asf-search failed to automatically report an error, if you have any questions email uso@asf.alaska.edu\
             \nError Text: HTTP {response.status_code}: {response.json()['errors']}")
         return

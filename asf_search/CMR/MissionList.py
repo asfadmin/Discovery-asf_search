@@ -14,7 +14,7 @@ def get_campaigns(data) -> Dict:
 
     :return: Dictionary containing CMR umm_json response
     """
-    response = requests.post('https://' + CMR_HOST + CMR_COLLECTIONS_PATH,
+    response = requests.post(f'https://{CMR_HOST}{CMR_COLLECTIONS_PATH}',
                              data=data)
     if response.status_code != 200:
         raise CMRError(f'CMR_ERROR {response.status_code}: {response.text}')
