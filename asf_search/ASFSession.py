@@ -23,7 +23,7 @@ class ASFSession(requests.Session):
            and self.headers == other.headers \
            and self.cookies == other.cookies
 
-    def auth_with_creds(self, username: str, password: str, host: str = EDL_HOST):
+    def auth_with_creds(self, username: str, password: str):
         """
         Authenticates the session using EDL username/password credentials
 
@@ -33,7 +33,7 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
-        login_url = f'https://{host}/oauth/authorize?client_id={EDL_CLIENT_ID}&response_type=code&redirect_uri=https://{ASF_AUTH_HOST}/login'
+        login_url = f'https://{EDL_HOST}/oauth/authorize?client_id={EDL_CLIENT_ID}&response_type=code&redirect_uri=https://{ASF_AUTH_HOST}/login'
 
         self.auth = (username, password)
         self.get(login_url)
@@ -43,7 +43,7 @@ class ASFSession(requests.Session):
 
         return self
 
-    def auth_with_token(self, token: str, host: str = CMR_HOST):
+    def auth_with_token(self, token: str):
         """
         Authenticates the session using an EDL Authorization: Bearer token
 
@@ -53,7 +53,7 @@ class ASFSession(requests.Session):
         """
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
-        url = f"https://{host}{CMR_COLLECTIONS}"
+        url = f"https://{CMR_HOST}{CMR_COLLECTIONS}"
         response = self.get(url)        
 
         if not 200 <= response.status_code <= 299:
