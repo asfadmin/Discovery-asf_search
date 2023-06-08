@@ -36,6 +36,7 @@ field_map = {
     'relativeOrbit':        {'key': 'attribute[]',             'fmt': 'int,PATH_NUMBER,{0}'},
     'temporal':             {'key': 'temporal',                'fmt': '{0}'},
     'collections':          {'key': 'echo_collection_id[]',    'fmt': '{0}'},
+    'temporalBaselineDays': {'key': 'attribute[]',             'fmt': 'int,TEMPORAL_BASELINE_DAYS,{0}'},
     
     # SLC BURST fields
     'absoluteBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_ABSOLUTE,{0}'},
