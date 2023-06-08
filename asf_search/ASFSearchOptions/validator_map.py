@@ -29,7 +29,6 @@ validator_map = {
     'maxResults':             int,
     'absoluteOrbit':          parse_int_or_range_list,
     'asfFrame':               parse_int_or_range_list,
-    'asfPlatform':            parse_string_list,
     'beamMode':               parse_string_list,
     'beamSwath':              parse_string_list,
     'campaign':               parse_string,

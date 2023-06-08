@@ -88,12 +88,8 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
-    asf_frame_asf_platforms = ('Sentinel-1 Interferogram (BETA)')
     return any([
         p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
-        for p in cmr_opts
-    ]) or any([
-        ( p[1].startswith('string,ASF_PLATFORM') and p[1].endswith(asf_frame_asf_platforms))
         for p in cmr_opts
     ])
 
