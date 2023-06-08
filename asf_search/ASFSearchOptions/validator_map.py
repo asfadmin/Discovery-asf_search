@@ -57,6 +57,8 @@ validator_map = {
     'insarStackId':           parse_string,
     'instrument':             parse_string,
     'collections':            parse_string_list,
+    'temporalBaselineDays':   parse_string_list,
+    
     # Config parameters       Parser
     'session':                parse_session,
     'host':                   parse_string,
