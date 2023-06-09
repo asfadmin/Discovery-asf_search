@@ -3,7 +3,7 @@ import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
 from asf_search import __name__ as asf_name, __version__ as asf_version
-from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST, AUTH_DOMAINS
+from asf_search.constants import EDL_CLIENT_ID, EDL_HOST, ASF_AUTH_HOST, AUTH_DOMAINS, CMR_HOST, CMR_COLLECTIONS
 from asf_search.exceptions import ASFAuthenticationError
 
 class ASFSession(requests.Session):
@@ -29,6 +29,7 @@ class ASFSession(requests.Session):
 
         :param username: EDL username, see https://urs.earthdata.nasa.gov/
         :param password: EDL password, see https://urs.earthdata.nasa.gov/
+        :param host (optional): EDL host to log in to 
 
         :return ASFSession: returns self for convenience
         """
@@ -52,7 +53,7 @@ class ASFSession(requests.Session):
         """
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
-        url = "https://cmr.earthdata.nasa.gov/search/collections"
+        url = f"https://{CMR_HOST}{CMR_COLLECTIONS}"
         response = self.get(url)        
 
         if not 200 <= response.status_code <= 299:
