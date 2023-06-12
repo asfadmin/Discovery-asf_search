@@ -38,6 +38,8 @@ def search(
         absoluteBurstID: Union[int, Iterable[int]] = None,
         relativeBurstID: Union[int, Iterable[int]] = None,
         fullBurstID: Union[str, Iterable[str]] = None,
+        collections: Union[str, Iterable[str]] = None,
+        temporalBaselineDays: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
@@ -72,6 +74,8 @@ def search(
     :param relativeOrbit: Path or track of satellite during data acquisition. For UAVSAR it is the Line ID.
     :param season: Start and end day of year for desired seasonal range. This option is used in conjunction with start/end to specify a seasonal range within an overall date range.
     :param start: Start date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
+    :param collections: List of collections (concept-ids) to limit search to 
+    :param temporalBaselineDays: List of temporal baselines, used for Sentinel-1 Interferogram (BETA)
     :param maxResults: The maximum number of results to be returned by the search
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
 

@@ -94,7 +94,8 @@ def strip_auth_if_aws(r, *args, **kwargs):
 def _is_burst_processing(response: Response):
     return response.status_code == 202
 
-@retry(retry=retry_if_result(_is_burst_processing),
+@retry(reraise=True,
+       retry=retry_if_result(_is_burst_processing),
        wait=wait_fixed(1),
        stop=stop_after_delay(90),
     )

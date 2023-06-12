@@ -27,6 +27,17 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
+## [v6.5.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.4.0...v6.5.0)
+### Added
+- Adds `collections` search keyword, letting results be limited to the provided concept-ids
+- Adds `temporalBaselineDays` search keyword, allows searching `Sentinel-1 Interferogram (BETA)` products by their temporal baseline
+### Changed
+- `search_generator()` now uses tenacity library to poll CMR
+- moves/re-organizes certain constant url fields to `INTERNAL.py`
+### Fixed
+- TimeoutErrors now properly caught and logged
+
+------
 ## [v6.4.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.3.1...v6.4.0)
 ### Added
 - Burst product downloads now supported

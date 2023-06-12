@@ -45,6 +45,7 @@
             "orbit": 24970,
             "pathNumber": 94,
             "perpendicularBaseline": 0,
+            "pgeVersion": "003.31",
             "platform": "Sentinel-1B",
             "pointingAngle": null,
             "polarization": "VV+VH",
@@ -389,6 +390,7 @@
                 "ShortName": "SENTINEL-1B_SLC",
                 "Version": "1"
             },
+            'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.31'},
             "RelatedUrls": [
                 {
                     "Format": "Not provided",
@@ -494,6 +496,7 @@
             "orbit": 25145,
             "pathNumber": 94,
             "perpendicularBaseline": 37,
+            "pgeVersion": "003.31",
             "platform": "Sentinel-1B",
             "pointingAngle": null,
             "polarization": "VV+VH",
@@ -838,6 +841,7 @@
                 "ShortName": "SENTINEL-1B_SLC",
                 "Version": "1"
             },
+            'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.31'},
             "RelatedUrls": [
                 {
                     "Format": "Not provided",
@@ -943,6 +947,7 @@
             "orbit": 25320,
             "pathNumber": 94,
             "perpendicularBaseline": 40,
+            "pgeVersion": "003.31",
             "platform": "Sentinel-1B",
             "pointingAngle": null,
             "polarization": "VV+VH",
@@ -1287,6 +1292,7 @@
                 "ShortName": "SENTINEL-1B_SLC",
                 "Version": "1"
             },
+            'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.31'},
             "RelatedUrls": [
                 {
                     "Format": "Not provided",
