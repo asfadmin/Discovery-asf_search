@@ -33,5 +33,5 @@ from .baseline import *
 from .WKT import validate_wkt
 from .export import *
 
-REPORT_ERRORS=True 
+REPORT_ERRORS=True
 """Enables automatic search error reporting to ASF, send any questions to uso@asf.alaska.edu"""
