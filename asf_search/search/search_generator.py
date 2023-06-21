@@ -145,11 +145,11 @@ def search_generator(
 @retry(reraise=True,
        retry=retry_if_exception_type((TimeoutError, ASFSearch5xxError)),
        wait=wait_exponential(multiplier=1, min=4, max=10),
-       stop=stop_after_delay(340),
+       stop=stop_after_delay(120),
     )
 def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
     try:
-        response = session.post(url=url, data=translated_opts, timeout=170)
+        response = session.post(url=url, data=translated_opts, timeout=20)
         response.raise_for_status()
     except HTTPError as exc:
         error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
