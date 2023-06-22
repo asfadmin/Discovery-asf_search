@@ -2,6 +2,7 @@ from collections import UserList
 from multiprocessing import Pool
 import json
 from asf_search import ASFSession, ASFSearchOptions
+from asf_search.download.file_download_type import FileDownloadType
 from asf_search.exceptions import ASFSearchError
 
 from asf_search import ASF_LOGGER
@@ -47,7 +48,8 @@ class ASFSearchResults(UserList):
             self,
             path: str,
             session: ASFSession = None,
-            processes: int = 1
+            processes: int = 1,
+            files = FileDownloadType.DEFAULT_FILE
     ) -> None:
         """
         Iterates over each ASFProduct and downloads them to the specified path.
@@ -61,7 +63,7 @@ class ASFSearchResults(UserList):
         ASF_LOGGER.info(f"Started downloading ASFSearchResults of size {len(self)}.")
         if processes == 1:
             for product in self:
-                product.download(path=path, session=session)
+                product.download(path=path, session=session, files=files)
         else:
             ASF_LOGGER.info(f"Using {processes} threads - starting up pool.")
             pool = Pool(processes=processes)
@@ -78,5 +80,5 @@ class ASFSearchResults(UserList):
             raise ASFSearchError(msg)
 
 def _download_product(args) -> None:
-    product, path, session = args
-    product.download(path=path, session=session)
+    product, path, session, files = args
+    product.download(path=path, session=session, files=files)

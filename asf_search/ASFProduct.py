@@ -7,6 +7,8 @@ from asf_search.download import download_url
 from asf_search.CMR import translate_product
 from remotezip import RemoteZip
 
+from asf_search.download.file_download_type import FileDownloadType
+
 
 class ASFProduct:
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -30,7 +32,7 @@ class ASFProduct:
             'properties': self.properties
         }
 
-    def download(self, path: str, filename: str = None, session: ASFSession = None) -> None:
+    def download(self, path: str, filename: str = None, session: ASFSession = None, files = FileDownloadType.DEFAULT_FILE) -> None:
         """
         Downloads this product to the specified path and optional filename.
 
@@ -41,12 +43,34 @@ class ASFProduct:
         :return: None
         """
         if filename is None:
-            filename = self.properties['fileName']
+            default_filename = self.properties['fileName']
         
         if session is None:
             session = self.session
 
-        download_url(url=self.properties['url'], path=path, filename=filename, session=session)
+        urls = []
+
+        def get_additional_urls():
+            output = []
+            base_filename = '.'.join(default_filename.split('.')[:-1])
+            for url in self.properties['additionalUrls']:
+                extension = url.split('.')[-1]
+                urls.append((f"{base_filename}.{extension}", url))
+            
+            return output
+
+        if files == FileDownloadType.DEFAULT_FILE:
+            urls.append((default_filename, self.properties['url']))
+        elif files == FileDownloadType.ADDITIONAL_FILES:
+            urls.extend(get_additional_urls())
+        elif files == FileDownloadType.ALL_FILES:
+            urls.append((default_filename, self.properties['url']))
+            urls.extend(get_additional_urls())
+        else:
+            raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
+
+        for filename, url in urls:
+            download_url(url=url, path=path, filename=filename, session=session)
 
     def stack(
             self,
