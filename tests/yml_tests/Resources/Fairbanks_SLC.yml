@@ -5,8 +5,8 @@
                 {
                     "RangeDateTime":
                         {
-                            "BeginningDateTime": "2021-01-02T03:20:31.000Z",
-                            "EndingDateTime": "2021-01-02T03:20:58.000Z",
+                            "BeginningDateTime": "2021-01-02T03:20:31.092Z",
+                            "EndingDateTime": "2021-01-02T03:20:58.059Z",
                         },
                 },
             "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 24970 }],
@@ -15,12 +15,12 @@
                 [
                     {
                         "Name": "ACQUISITION_DATE",
-                        "Values": ["2021-01-02T03:20:58.000000"],
+                        "Values": ["2021-01-02T03:20:58.059549Z"],
                     },
                     { "Name": "ASCENDING_DESCENDING", "Values": ["ASCENDING"] },
                     {
                         "Name": "ASC_NODE_TIME",
-                        "Values": ["2021-01-02T03:02:58.934857"],
+                        "Values": ["2021-01-02T03:02:58.934857Z"],
                     },
                     { "Name": "ASF_PLATFORM", "Values": ["Sentinel-1B"] },
                     { "Name": "BEAM_MODE", "Values": ["IW"] },
@@ -63,7 +63,7 @@
                     { "Name": "POLARIZATION", "Values": ["VV+VH"] },
                     {
                         "Name": "PROCESSING_DATE",
-                        "Values": ["2021-01-02T12:40:19.324537"],
+                        "Values": ["2021-01-02T12:40:19.324537Z"],
                     },
                     {
                         "Name": "PROCESSING_DESCRIPTION",
@@ -146,8 +146,8 @@
                 },
             "ProviderDates":
                 [
-                    { "Date": "2023-02-25T00:13:30.000Z", "Type": "Insert" },
-                    { "Date": "2023-02-25T00:13:30.000Z", "Type": "Update" },
+                    { "Date": "2023-06-16T03:04:36.000Z", "Type": "Insert" },
+                    { "Date": "2023-06-16T03:04:36.000Z", "Type": "Update" },
                 ],
             "CollectionReference":
                 { "ShortName": "SENTINEL-1B_SLC", "Version": "1" },
@@ -190,7 +190,7 @@
                                 "IdentifierType": "ProducerGranuleId",
                             },
                         ],
-                    "ProductionDateTime": "2021-01-02T03:20:31.000Z",
+                    "ProductionDateTime": "2021-01-02T03:20:31.092Z",
                     "ArchiveAndDistributionInformation":
                         [
                             {
@@ -213,11 +213,11 @@
         {
             "concept-type": "granule",
             "concept-id": "G1989758351-ASF",
-            "revision-id": 11,
+            "revision-id": 13,
             "native-id": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC",
             "provider-id": "ASF",
             "format": "application/echo10+xml",
-            "revision-date": "2023-02-25T00:13:31.987Z",
+            "revision-date": "2023-06-16T03:04:36.493Z",
         },
     "properties":
         {
@@ -239,12 +239,12 @@
             "platform": "Sentinel-1B",
             "pointingAngle": None,
             "polarization": "VV+VH",
-            "processingDate": "2021-01-02T03:20:31.000Z",
+            "processingDate": "2021-01-02T03:20:31.092Z",
             "processingLevel": "SLC",
             "sceneName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081",
             "sensor": "C-SAR",
-            "startTime": "2021-01-02T03:20:31.000Z",
-            "stopTime": "2021-01-02T03:20:58.000Z",
+            "startTime": "2021-01-02T03:20:31.092Z",
+            "stopTime": "2021-01-02T03:20:58.059Z",
             "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
             "pgeVersion": "003.31",
             "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
@@ -281,7 +281,7 @@
                             "postVelocityTime": "2021-01-02T03:20:53.000000",
                         },
                 },
-            "ascendingNodeTime": "2021-01-02T03:02:58.934857",
+            "ascendingNodeTime": "2021-01-02T03:02:58.934857Z",
         },
     "geometry":
         {

@@ -1,103 +1,10 @@
 [
     {
-        "type": "Feature",
-        "geometry": {
-            "coordinates": [
-                [
-                    [
-                        -150.172562,
-                        65.53125
-                    ],
-                    [
-                        -149.246063,
-                        63.942123
-                    ],
-                    [
-                        -144.136368,
-                        64.386414
-                    ],
-                    [
-                        -144.751495,
-                        65.99025
-                    ],
-                    [
-                        -150.172562,
-                        65.53125
-                    ]
-                ]
-            ],
-            "type": "Polygon"
-        },
-        "properties": {
-            "beamModeType": "IW",
-            "browse": null,
-            "bytes": 4193723581,
-            "centerLat": 64.9861,
-            "centerLon": -147.0909,
-            "faradayRotation": null,
-            "fileID": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC",
-            "flightDirection": null,
-            "groupID": "S1B_IWDV_0209_0216_024970_094",
-            "granuleType": "SENTINEL_1B_FRAME",
-            "insarStackId": null,
-            "md5sum": "6dd7f6a56ed98ba7037dfeb833217d5b",
-            "offNadirAngle": null,
-            "orbit": 24970,
-            "pathNumber": 94,
-            "perpendicularBaseline": 0,
-            "pgeVersion": "003.31",
-            "platform": "Sentinel-1B",
-            "pointingAngle": null,
-            "polarization": "VV+VH",
-            "processingDate": "2021-01-02T03:20:31.000Z",
-            "processingLevel": "SLC",
-            "sceneName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081",
-            "sensor": "C-SAR",
-            "startTime": "2021-01-02T03:20:31.000Z",
-            "stopTime": "2021-01-02T03:20:58.000Z",
-            "temporalBaseline": 0,
-            "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
-            "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
-            "frameNumber": 210
-        },
-        "baseline": {
-            "stateVectors": {
-                "positions": {
-                    "prePosition": [
-                        -2893767.065414,
-                        -1235752.268405,
-                        6327528.043215
-                    ],
-                    "prePositionTime": "2021-01-02T03:20:43.000000",
-                    "postPosition": [
-                        -2845284.115433,
-                        -1186496.621016,
-                        6358798.348458
-                    ],
-                    "postPositionTime": "2021-01-02T03:20:53.000000"
-                },
-                "velocities": {
-                    "preVelocity": [
-                        4828.593801,
-                        4922.268943,
-                        3162.776438
-                    ],
-                    "preVelocityTime": "2021-01-02T03:20:43.000000",
-                    "postVelocity": [
-                        4867.907153,
-                        4928.758938,
-                        3091.226142
-                    ],
-                    "postVelocityTime": "2021-01-02T03:20:53.000000"
-                }
-            },
-            "ascendingNodeTime": "2021-01-02T03:02:58.934857"
-        },
         "umm": {
             "TemporalExtent": {
                 "RangeDateTime": {
-                    "BeginningDateTime": "2021-01-02T03:20:31.000Z",
-                    "EndingDateTime": "2021-01-02T03:20:58.000Z"
+                    "BeginningDateTime": "2021-01-02T03:20:31.092Z",
+                    "EndingDateTime": "2021-01-02T03:20:58.059Z"
                 }
             },
             "OrbitCalculatedSpatialDomains": [
@@ -110,7 +17,7 @@
                 {
                     "Name": "ACQUISITION_DATE",
                     "Values": [
-                        "2021-01-02T03:20:58.000000"
+                        "2021-01-02T03:20:58.059549Z"
                     ]
                 },
                 {
@@ -122,7 +29,7 @@
                 {
                     "Name": "ASC_NODE_TIME",
                     "Values": [
-                        "2021-01-02T03:02:58.934857"
+                        "2021-01-02T03:02:58.934857Z"
                     ]
                 },
                 {
@@ -290,7 +197,7 @@
                 {
                     "Name": "PROCESSING_DATE",
                     "Values": [
-                        "2021-01-02T12:40:19.324537"
+                        "2021-01-02T12:40:19.324537Z"
                     ]
                 },
                 {
@@ -378,11 +285,11 @@
             },
             "ProviderDates": [
                 {
-                    "Date": "2021-01-02T14:36:15.000Z",
+                    "Date": "2023-06-16T03:04:36.000Z",
                     "Type": "Insert"
                 },
                 {
-                    "Date": "2021-01-02T14:36:15.000Z",
+                    "Date": "2023-06-16T03:04:36.000Z",
                     "Type": "Update"
                 }
             ],
@@ -390,13 +297,22 @@
                 "ShortName": "SENTINEL-1B_SLC",
                 "Version": "1"
             },
-            'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.31'},
+            "PGEVersionClass": {
+                "PGEName": "Sentinel-1 IPF",
+                "PGEVersion": "003.31"
+            },
             "RelatedUrls": [
                 {
                     "Format": "Not provided",
                     "Description": "This link provides direct download access to the granule.",
                     "Type": "GET DATA",
                     "URL": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip"
+                },
+                {
+                    "Format": "Not provided",
+                    "Description": "This link provides direct download access to the granule.",
+                    "Type": "GET DATA",
+                    "URL": "s3://asf-ngap2w-p-s1-slc-7b420b89/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip"
                 },
                 {
                     "Format": "Not provided",
@@ -419,7 +335,7 @@
                         "IdentifierType": "ProducerGranuleId"
                     }
                 ],
-                "ProductionDateTime": "2021-01-02T03:20:31.000Z",
+                "ProductionDateTime": "2021-01-02T03:20:31.092Z",
                 "ArchiveAndDistributionInformation": [
                     {
                         "Name": "Not provided",
@@ -443,112 +359,84 @@
         "meta": {
             "concept-type": "granule",
             "concept-id": "G1989758351-ASF",
-            "revision-id": 9,
+            "revision-id": 13,
             "native-id": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC",
             "provider-id": "ASF",
             "format": "application/echo10+xml",
-            "revision-date": "2021-01-02T14:36:16.174Z"
-        }
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "coordinates": [
-                [
-                    [
-                        -150.171432,
-                        65.531036
-                    ],
-                    [
-                        -149.24501,
-                        63.941902
-                    ],
-                    [
-                        -144.135376,
-                        64.386147
-                    ],
-                    [
-                        -144.750443,
-                        65.98999
-                    ],
-                    [
-                        -150.171432,
-                        65.531036
-                    ]
-                ]
-            ],
-            "type": "Polygon"
-        },
-        "properties": {
-            "beamModeType": "IW",
-            "browse": null,
-            "bytes": 4190691686,
-            "centerLat": 64.9858,
-            "centerLon": -147.0898,
-            "faradayRotation": null,
-            "fileID": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A-SLC",
-            "flightDirection": null,
-            "groupID": "S1B_IWDV_0209_0216_025145_094",
-            "granuleType": "SENTINEL_1B_FRAME",
-            "insarStackId": null,
-            "md5sum": "2a76325db9d931414189689082163ee5",
-            "offNadirAngle": null,
-            "orbit": 25145,
-            "pathNumber": 94,
-            "perpendicularBaseline": 37,
-            "pgeVersion": "003.31",
-            "platform": "Sentinel-1B",
-            "pointingAngle": null,
-            "polarization": "VV+VH",
-            "processingDate": "2021-01-14T03:20:30.000Z",
-            "processingLevel": "SLC",
-            "sceneName": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A",
-            "sensor": "C-SAR",
-            "startTime": "2021-01-14T03:20:30.000Z",
-            "stopTime": "2021-01-14T03:20:57.000Z",
-            "temporalBaseline": 12,
-            "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
-            "fileName": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
-            "frameNumber": 210
+            "revision-date": "2023-06-16T03:04:36.493Z"
         },
         "baseline": {
             "stateVectors": {
                 "positions": {
                     "prePosition": [
-                        -2893725.563321,
-                        -1235772.278165,
-                        6327540.675522
+                        -2893767.065414,
+                        -1235752.268405,
+                        6327528.043215
                     ],
-                    "prePositionTime": "2021-01-14T03:20:42.000000",
+                    "prePositionTime": "2021-01-02T03:20:43.000000",
                     "postPosition": [
-                        -2845242.394622,
-                        -1186516.792913,
-                        6358810.884979
+                        -2845284.115433,
+                        -1186496.621016,
+                        6358798.348458
                     ],
-                    "postPositionTime": "2021-01-14T03:20:52.000000"
+                    "postPositionTime": "2021-01-02T03:20:53.000000"
                 },
                 "velocities": {
                     "preVelocity": [
-                        4828.615891,
-                        4922.252624,
-                        3162.766956
+                        4828.593801,
+                        4922.268943,
+                        3162.776438
                     ],
-                    "preVelocityTime": "2021-01-14T03:20:42.000000",
+                    "preVelocityTime": "2021-01-02T03:20:43.000000",
                     "postVelocity": [
-                        4867.928786,
-                        4928.742823,
-                        3091.216457
+                        4867.907153,
+                        4928.758938,
+                        3091.226142
                     ],
-                    "postVelocityTime": "2021-01-14T03:20:52.000000"
+                    "postVelocityTime": "2021-01-02T03:20:53.000000"
                 }
             },
-            "ascendingNodeTime": "2021-01-14T03:02:58.414522"
+            "ascendingNodeTime": "2021-01-02T03:02:58.934857"
         },
+        "properties": {
+            "beamModeType": "IW",
+            "browse": null,
+            "bytes": 4193723581,
+            "centerLat": 64.9861,
+            "centerLon": -147.0909,
+            "faradayRotation": null,
+            "fileID": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081-SLC",
+            "flightDirection": "ASCENDING",
+            "groupID": "S1B_IWDV_0209_0216_024970_094",
+            "granuleType": "SENTINEL_1B_FRAME",
+            "insarStackId": null,
+            "md5sum": "6dd7f6a56ed98ba7037dfeb833217d5b",
+            "offNadirAngle": null,
+            "orbit": 24970,
+            "pathNumber": 94,
+            "platform": "Sentinel-1B",
+            "pointingAngle": null,
+            "polarization": "VV+VH",
+            "processingDate": "2021-01-02T03:20:31.092Z",
+            "processingLevel": "SLC",
+            "sceneName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081",
+            "sensor": "C-SAR",
+            "startTime": "2021-01-02T03:20:31.092Z",
+            "stopTime": "2021-01-02T03:20:58.059Z",
+            "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
+            "pgeVersion": "003.31",
+            "fileName": "S1B_IW_SLC__1SDV_20210102T032031_20210102T032058_024970_02F8C3_C081.zip",
+            "frameNumber": 210,
+            "temporalBaseline": 0,
+            "perpendicularBaseline": 0
+        }
+    },
+    {
         "umm": {
             "TemporalExtent": {
                 "RangeDateTime": {
-                    "BeginningDateTime": "2021-01-14T03:20:30.000Z",
-                    "EndingDateTime": "2021-01-14T03:20:57.000Z"
+                    "BeginningDateTime": "2021-01-14T03:20:30.566Z",
+                    "EndingDateTime": "2021-01-14T03:20:57.532Z"
                 }
             },
             "OrbitCalculatedSpatialDomains": [
@@ -561,7 +449,7 @@
                 {
                     "Name": "ACQUISITION_DATE",
                     "Values": [
-                        "2021-01-14T03:20:57.000000"
+                        "2021-01-14T03:20:57.532917Z"
                     ]
                 },
                 {
@@ -573,7 +461,7 @@
                 {
                     "Name": "ASC_NODE_TIME",
                     "Values": [
-                        "2021-01-14T03:02:58.414522"
+                        "2021-01-14T03:02:58.414522Z"
                     ]
                 },
                 {
@@ -741,7 +629,7 @@
                 {
                     "Name": "PROCESSING_DATE",
                     "Values": [
-                        "2021-01-15T05:50:38.350917"
+                        "2021-01-15T05:50:38.350917Z"
                     ]
                 },
                 {
@@ -829,11 +717,11 @@
             },
             "ProviderDates": [
                 {
-                    "Date": "2021-01-15T05:50:42.000Z",
+                    "Date": "2023-06-16T03:05:43.000Z",
                     "Type": "Insert"
                 },
                 {
-                    "Date": "2021-01-15T05:50:42.000Z",
+                    "Date": "2023-06-16T03:05:43.000Z",
                     "Type": "Update"
                 }
             ],
@@ -841,13 +729,22 @@
                 "ShortName": "SENTINEL-1B_SLC",
                 "Version": "1"
             },
-            'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.31'},
+            "PGEVersionClass": {
+                "PGEName": "Sentinel-1 IPF",
+                "PGEVersion": "003.31"
+            },
             "RelatedUrls": [
                 {
                     "Format": "Not provided",
                     "Description": "This link provides direct download access to the granule.",
                     "Type": "GET DATA",
                     "URL": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip"
+                },
+                {
+                    "Format": "Not provided",
+                    "Description": "This link provides direct download access to the granule.",
+                    "Type": "GET DATA",
+                    "URL": "s3://asf-ngap2w-p-s1-slc-7b420b89/S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip"
                 },
                 {
                     "Format": "Not provided",
@@ -870,7 +767,7 @@
                         "IdentifierType": "ProducerGranuleId"
                     }
                 ],
-                "ProductionDateTime": "2021-01-14T03:20:30.000Z",
+                "ProductionDateTime": "2021-01-14T03:20:30.566Z",
                 "ArchiveAndDistributionInformation": [
                     {
                         "Name": "Not provided",
@@ -894,112 +791,89 @@
         "meta": {
             "concept-type": "granule",
             "concept-id": "G1993900886-ASF",
-            "revision-id": 1,
+            "revision-id": 5,
             "native-id": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A-SLC",
             "provider-id": "ASF",
             "format": "application/echo10+xml",
-            "revision-date": "2021-01-15T05:50:42.934Z"
-        }
-    },
-    {
-        "type": "Feature",
-        "geometry": {
-            "coordinates": [
-                [
-                    [
-                        -150.171249,
-                        65.531166
-                    ],
-                    [
-                        -149.244873,
-                        63.942146
-                    ],
-                    [
-                        -144.135239,
-                        64.386398
-                    ],
-                    [
-                        -144.750275,
-                        65.99012
-                    ],
-                    [
-                        -150.171249,
-                        65.531166
-                    ]
-                ]
-            ],
-            "type": "Polygon"
-        },
-        "properties": {
-            "beamModeType": "IW",
-            "browse": null,
-            "bytes": 4184931225,
-            "centerLat": 64.986,
-            "centerLon": -147.0897,
-            "faradayRotation": null,
-            "fileID": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5-SLC",
-            "flightDirection": null,
-            "groupID": "S1B_IWDV_0209_0216_025320_094",
-            "granuleType": "SENTINEL_1B_FRAME",
-            "insarStackId": null,
-            "md5sum": "4e51b15bbe20cf3fdb1e099ebb4d2c36",
-            "offNadirAngle": null,
-            "orbit": 25320,
-            "pathNumber": 94,
-            "perpendicularBaseline": 40,
-            "pgeVersion": "003.31",
-            "platform": "Sentinel-1B",
-            "pointingAngle": null,
-            "polarization": "VV+VH",
-            "processingDate": "2021-01-26T03:20:30.000Z",
-            "processingLevel": "SLC",
-            "sceneName": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5",
-            "sensor": "C-SAR",
-            "startTime": "2021-01-26T03:20:30.000Z",
-            "stopTime": "2021-01-26T03:20:57.000Z",
-            "temporalBaseline": 24,
-            "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
-            "fileName": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
-            "frameNumber": 210,
+            "revision-date": "2023-06-16T03:05:43.819Z"
         },
         "baseline": {
             "stateVectors": {
                 "positions": {
                     "prePosition": [
-                        -2893709.242044,
-                        -1235768.184608,
-                        6327545.175914
+                        -2893725.563321,
+                        -1235772.278165,
+                        6327540.675522
                     ],
-                    "prePositionTime": "2021-01-26T03:20:42.000000",
+                    "prePositionTime": "2021-01-14T03:20:42.000000",
                     "postPosition": [
-                        -2845226.283146,
-                        -1186512.31404,
-                        6358815.223669
+                        -2845242.394622,
+                        -1186516.792913,
+                        6358810.884979
                     ],
-                    "postPositionTime": "2021-01-26T03:20:52.000000"
+                    "postPositionTime": "2021-01-14T03:20:52.000000"
                 },
                 "velocities": {
                     "preVelocity": [
-                        4828.59494,
-                        4922.291175,
-                        3162.750859
+                        4828.615891,
+                        4922.252624,
+                        3162.766956
                     ],
-                    "preVelocityTime": "2021-01-26T03:20:42.000000",
+                    "preVelocityTime": "2021-01-14T03:20:42.000000",
                     "postVelocity": [
-                        4867.907754,
-                        4928.781369,
-                        3091.20021
+                        4867.928786,
+                        4928.742823,
+                        3091.216457
                     ],
-                    "postVelocityTime": "2021-01-26T03:20:52.000000"
+                    "postVelocityTime": "2021-01-14T03:20:52.000000"
                 }
             },
-            "ascendingNodeTime": "2021-01-26T03:02:57.994247"
+            "ascendingNodeTime": "2021-01-14T03:02:58.414522Z",
+            "relative_start_time": 1052.1514780521393,
+            "relative_center_time": 1065.6344780921936,
+            "relative_end_time": 1079.117478132248,
+            "relative_sv_pre_time": 33463.5854780674,
+            "relative_sv_post_time": 33473.5854780674
         },
+        "properties": {
+            "beamModeType": "IW",
+            "browse": null,
+            "bytes": 4190691686,
+            "centerLat": 64.9858,
+            "centerLon": -147.0898,
+            "faradayRotation": null,
+            "fileID": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A-SLC",
+            "flightDirection": "ASCENDING",
+            "groupID": "S1B_IWDV_0209_0216_025145_094",
+            "granuleType": "SENTINEL_1B_FRAME",
+            "insarStackId": null,
+            "md5sum": "2a76325db9d931414189689082163ee5",
+            "offNadirAngle": null,
+            "orbit": 25145,
+            "pathNumber": 94,
+            "platform": "Sentinel-1B",
+            "pointingAngle": null,
+            "polarization": "VV+VH",
+            "processingDate": "2021-01-14T03:20:30.566Z",
+            "processingLevel": "SLC",
+            "sceneName": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A",
+            "sensor": "C-SAR",
+            "startTime": "2021-01-14T03:20:30.566Z",
+            "stopTime": "2021-01-14T03:20:57.532Z",
+            "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
+            "pgeVersion": "003.31",
+            "fileName": "S1B_IW_SLC__1SDV_20210114T032030_20210114T032057_025145_02FE61_454A.zip",
+            "frameNumber": 210,
+            "temporalBaseline": 12,
+            "perpendicularBaseline": 37
+        }
+    },
+    {
         "umm": {
             "TemporalExtent": {
                 "RangeDateTime": {
-                    "BeginningDateTime": "2021-01-26T03:20:30.000Z",
-                    "EndingDateTime": "2021-01-26T03:20:57.000Z"
+                    "BeginningDateTime": "2021-01-26T03:20:30.147Z",
+                    "EndingDateTime": "2021-01-26T03:20:57.112Z"
                 }
             },
             "OrbitCalculatedSpatialDomains": [
@@ -1012,7 +886,7 @@
                 {
                     "Name": "ACQUISITION_DATE",
                     "Values": [
-                        "2021-01-26T03:20:57.000000"
+                        "2021-01-26T03:20:57.112425Z"
                     ]
                 },
                 {
@@ -1024,7 +898,7 @@
                 {
                     "Name": "ASC_NODE_TIME",
                     "Values": [
-                        "2021-01-26T03:02:57.994247"
+                        "2021-01-26T03:02:57.994247Z"
                     ]
                 },
                 {
@@ -1192,7 +1066,7 @@
                 {
                     "Name": "PROCESSING_DATE",
                     "Values": [
-                        "2021-01-26T23:06:47.704061"
+                        "2021-01-26T23:06:47.704061Z"
                     ]
                 },
                 {
@@ -1280,11 +1154,11 @@
             },
             "ProviderDates": [
                 {
-                    "Date": "2021-01-26T23:07:05.000Z",
+                    "Date": "2023-06-16T03:10:08.000Z",
                     "Type": "Insert"
                 },
                 {
-                    "Date": "2021-01-26T23:07:05.000Z",
+                    "Date": "2023-06-16T03:10:08.000Z",
                     "Type": "Update"
                 }
             ],
@@ -1292,13 +1166,22 @@
                 "ShortName": "SENTINEL-1B_SLC",
                 "Version": "1"
             },
-            'PGEVersionClass': {'PGEName': 'Sentinel-1 IPF', 'PGEVersion': '003.31'},
+            "PGEVersionClass": {
+                "PGEName": "Sentinel-1 IPF",
+                "PGEVersion": "003.31"
+            },
             "RelatedUrls": [
                 {
                     "Format": "Not provided",
                     "Description": "This link provides direct download access to the granule.",
                     "Type": "GET DATA",
                     "URL": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip"
+                },
+                {
+                    "Format": "Not provided",
+                    "Description": "This link provides direct download access to the granule.",
+                    "Type": "GET DATA",
+                    "URL": "s3://asf-ngap2w-p-s1-slc-7b420b89/S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip"
                 },
                 {
                     "Format": "Not provided",
@@ -1321,7 +1204,7 @@
                         "IdentifierType": "ProducerGranuleId"
                     }
                 ],
-                "ProductionDateTime": "2021-01-26T03:20:30.000Z",
+                "ProductionDateTime": "2021-01-26T03:20:30.147Z",
                 "ArchiveAndDistributionInformation": [
                     {
                         "Name": "Not provided",
@@ -1345,11 +1228,81 @@
         "meta": {
             "concept-type": "granule",
             "concept-id": "G1996951408-ASF",
-            "revision-id": 1,
+            "revision-id": 5,
             "native-id": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5-SLC",
             "provider-id": "ASF",
             "format": "application/echo10+xml",
-            "revision-date": "2021-01-26T23:07:05.405Z"
+            "revision-date": "2023-06-16T03:10:08.749Z"
+        },
+        "baseline": {
+            "stateVectors": {
+                "positions": {
+                    "prePosition": [
+                        -2893709.242044,
+                        -1235768.184608,
+                        6327545.175914
+                    ],
+                    "prePositionTime": "2021-01-26T03:20:42.000000",
+                    "postPosition": [
+                        -2845226.283146,
+                        -1186512.31404,
+                        6358815.223669
+                    ],
+                    "postPositionTime": "2021-01-26T03:20:52.000000"
+                },
+                "velocities": {
+                    "preVelocity": [
+                        4828.59494,
+                        4922.291175,
+                        3162.750859
+                    ],
+                    "preVelocityTime": "2021-01-26T03:20:42.000000",
+                    "postVelocity": [
+                        4867.907754,
+                        4928.781369,
+                        3091.20021
+                    ],
+                    "postVelocityTime": "2021-01-26T03:20:52.000000"
+                }
+            },
+            "ascendingNodeTime": "2021-01-26T03:02:57.994247Z",
+            "relative_start_time": 1052.1527531147003,
+            "relative_center_time": 1065.6352529525757,
+            "relative_end_time": 1079.1177530288696,
+            "relative_sv_pre_time": 33464.005753040314,
+            "relative_sv_post_time": 33474.005753040314
+        },
+        "properties": {
+            "beamModeType": "IW",
+            "browse": null,
+            "bytes": 4184931225,
+            "centerLat": 64.986,
+            "centerLon": -147.0897,
+            "faradayRotation": null,
+            "fileID": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5-SLC",
+            "flightDirection": "ASCENDING",
+            "groupID": "S1B_IWDV_0209_0216_025320_094",
+            "granuleType": "SENTINEL_1B_FRAME",
+            "insarStackId": null,
+            "md5sum": "4e51b15bbe20cf3fdb1e099ebb4d2c36",
+            "offNadirAngle": null,
+            "orbit": 25320,
+            "pathNumber": 94,
+            "platform": "Sentinel-1B",
+            "pointingAngle": null,
+            "polarization": "VV+VH",
+            "processingDate": "2021-01-26T03:20:30.147Z",
+            "processingLevel": "SLC",
+            "sceneName": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5",
+            "sensor": "C-SAR",
+            "startTime": "2021-01-26T03:20:30.147Z",
+            "stopTime": "2021-01-26T03:20:57.112Z",
+            "url": "https://datapool.asf.alaska.edu/SLC/SB/S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
+            "pgeVersion": "003.31",
+            "fileName": "S1B_IW_SLC__1SDV_20210126T032030_20210126T032057_025320_0303F3_7BE5.zip",
+            "frameNumber": 210,
+            "temporalBaseline": 24,
+            "perpendicularBaseline": 40
         }
     }
 ]
