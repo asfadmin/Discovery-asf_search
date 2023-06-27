@@ -32,7 +32,7 @@ class ASFProduct:
             'properties': self.properties
         }
 
-    def download(self, path: str, filename: str = None, session: ASFSession = None, files = FileDownloadType.DEFAULT_FILE) -> None:
+    def download(self, path: str, filename: str = None, session: ASFSession = None, fileType = FileDownloadType.DEFAULT_FILE) -> None:
         """
         Downloads this product to the specified path and optional filename.
 
@@ -59,11 +59,11 @@ class ASFProduct:
             
             return output
 
-        if files == FileDownloadType.DEFAULT_FILE:
+        if fileType == FileDownloadType.DEFAULT_FILE:
             urls.append((default_filename, self.properties['url']))
-        elif files == FileDownloadType.ADDITIONAL_FILES:
+        elif fileType == FileDownloadType.ADDITIONAL_FILES:
             urls.extend(get_additional_urls())
-        elif files == FileDownloadType.ALL_FILES:
+        elif fileType == FileDownloadType.ALL_FILES:
             urls.append((default_filename, self.properties['url']))
             urls.extend(get_additional_urls())
         else:

@@ -49,7 +49,7 @@ class ASFSearchResults(UserList):
             path: str,
             session: ASFSession = None,
             processes: int = 1,
-            files = FileDownloadType.DEFAULT_FILE
+            fileType = FileDownloadType.DEFAULT_FILE
     ) -> None:
         """
         Iterates over each ASFProduct and downloads them to the specified path.
@@ -63,11 +63,11 @@ class ASFSearchResults(UserList):
         ASF_LOGGER.info(f"Started downloading ASFSearchResults of size {len(self)}.")
         if processes == 1:
             for product in self:
-                product.download(path=path, session=session, files=files)
+                product.download(path=path, session=session, fileType=fileType)
         else:
             ASF_LOGGER.info(f"Using {processes} threads - starting up pool.")
             pool = Pool(processes=processes)
-            args = [(product, path, session) for product in self]
+            args = [(product, path, session, fileType) for product in self]
             pool.map(_download_product, args)
             pool.close()
             pool.join()
@@ -80,5 +80,5 @@ class ASFSearchResults(UserList):
             raise ASFSearchError(msg)
 
 def _download_product(args) -> None:
-    product, path, session, files = args
-    product.download(path=path, session=session, files=files)
+    product, path, session, fileType = args
+    product.download(path=path, session=session, fileType=fileType)
