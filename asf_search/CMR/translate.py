@@ -224,6 +224,7 @@ def translate_product(item: dict) -> dict:
         if urls is not None:
             properties['url'] = urls[0]
             properties['fileName'] = properties['fileID'] + '.' + urls[0].split('.')[-1]
+            properties['additionalUrls'] = [urls[1]]
 
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 
