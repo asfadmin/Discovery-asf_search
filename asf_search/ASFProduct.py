@@ -8,6 +8,7 @@ from asf_search.CMR import translate_product
 from remotezip import RemoteZip
 
 from asf_search.download.file_download_type import FileDownloadType
+from asf_search import ASF_LOGGER
 
 
 class ASFProduct:
@@ -44,7 +45,17 @@ class ASFProduct:
         """
         if filename is None:
             default_filename = self.properties['fileName']
-        
+        elif filename is not None:
+            multiple_files = (
+                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1) 
+                or fileType == FileDownloadType.ALL_FILES
+            )
+            if multiple_files:
+                ASF_LOGGER.warning(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
+                default_filename = self.properties['fileName']
+            else:
+                default_filename = filename
+                
         if session is None:
             session = self.session
 
