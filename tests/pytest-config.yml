@@ -15,6 +15,11 @@ test_types:
     required_in_title: ASFProduct-get-stack-options
     method: test_ASFProduct_get_stack_options
 
+- For running ASFProduct_download_file tests:
+    required_keys: ["product", "filename", "filetype", "additionalUrls"]
+    required_in_title: ASFProduct-download-file
+    method: test_ASFProduct_download
+
 - For running ASFSession tests:
     required_in_title: password-login
     required_keys: ['username', 'password']

@@ -1,3 +1,4 @@
+import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
 
@@ -43,16 +44,16 @@ class ASFProduct:
 
         :return: None
         """
-        if filename is None:
-            default_filename = self.properties['fileName']
-        elif filename is not None:
+
+        default_filename = self.properties['fileName']
+
+        if filename is not None:
             multiple_files = (
-                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1) 
-                or fileType == FileDownloadType.ALL_FILES
+                (fileType != FileDownloadType.DEFAULT_FILE and len(self.properties['additionalUrls']) > 1) 
+                
             )
             if multiple_files:
-                ASF_LOGGER.warning(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
-                default_filename = self.properties['fileName']
+                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
             else:
                 default_filename = filename
                 
