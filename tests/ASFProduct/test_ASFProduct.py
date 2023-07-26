@@ -1,7 +1,13 @@
-from asf_search import ASFProduct, ASFSearchResults, ASFSearchOptions
+import logging
+import pytest
+import unittest
+
+from asf_search import ASFProduct, ASFSearchResults, ASFSearchOptions, FileDownloadType
 from unittest.mock import patch
 from shapely.geometry import shape
 from shapely.ops import orient
+
+import requests
 
 def run_test_ASFProduct(product_json):
     if product_json is None:
@@ -59,3 +65,22 @@ def run_test_product_get_stack_options(reference, options):
 
     product_options = dict(product.get_stack_opts())
     assert product_options == dict(expected_options)
+
+def run_test_ASFProduct_download(reference, filename, filetype, additional_urls):
+    product = ASFProduct(reference)
+    product.properties['additionalUrls'] = additional_urls
+    with patch('asf_search.ASFSession.get') as mock_get:
+        resp = requests.Response()
+        resp.status_code = 200
+        mock_get.return_value = resp
+        resp.iter_content = lambda chunk_size: []
+            
+        with patch('builtins.open', unittest.mock.mock_open()) as m:    
+            if filename != None and (
+                (filetype == FileDownloadType.ADDITIONAL_FILES and len(additional_urls) > 1) 
+                or filetype == FileDownloadType.ALL_FILES
+            ):
+                with pytest.warns(Warning):
+                    product.download('./', filename=filename, fileType=filetype)
+            else:
+                product.download('./', filename=filename, fileType=filetype)

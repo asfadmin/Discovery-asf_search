@@ -1,3 +1,4 @@
+import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
 
@@ -8,6 +9,7 @@ from asf_search.CMR import translate_product
 from remotezip import RemoteZip
 
 from asf_search.download.file_download_type import FileDownloadType
+from asf_search import ASF_LOGGER
 
 
 class ASFProduct:
@@ -42,9 +44,19 @@ class ASFProduct:
 
         :return: None
         """
-        if filename is None:
-            default_filename = self.properties['fileName']
-        
+
+        default_filename = self.properties['fileName']
+
+        if filename is not None:
+            multiple_files = (
+                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1) 
+                or fileType == FileDownloadType.ALL_FILES
+            )
+            if multiple_files:
+                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
+            else:
+                default_filename = filename
+                
         if session is None:
             session = self.session
 

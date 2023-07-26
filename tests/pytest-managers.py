@@ -1,8 +1,8 @@
 from typing import Dict, List
-from asf_search import ASFSearchOptions, ASFProduct
+from asf_search import ASFSearchOptions, ASFProduct, FileDownloadType
 from asf_search.exceptions import ASFAuthenticationError
 
-from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_product_get_stack_options, run_test_stack
+from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_ASFProduct_download, run_test_product_get_stack_options, run_test_stack
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
 from ASFSearchResults.test_ASFSearchResults import run_test_output_format, run_test_ASFSearchResults_intersection
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
@@ -56,7 +56,23 @@ def test_ASFProduct_get_stack_options(**args) -> None:
     options = get_resource(test_info['options'])
 
     run_test_product_get_stack_options(reference, options)
- 
+
+def test_ASFProduct_download(**args) -> None:
+    test_info = args["test_info"]
+    reference = get_resource(test_info['product'])
+    filename = test_info['filename']
+    filetype_raw = test_info['filetype']
+    additional_urls = test_info['additionalUrls']
+
+    if filetype_raw == 1:
+        filetype = FileDownloadType.DEFAULT_FILE
+    elif filetype_raw == 2:
+        filetype = FileDownloadType.ADDITIONAL_FILES
+    else:
+        filetype = FileDownloadType.ALL_FILES
+    
+    run_test_ASFProduct_download(reference, filename, filetype, additional_urls)
+    
 # asf_search.ASFSession Tests
 def test_ASFSession_Error(**args) -> None:
     """
@@ -335,7 +351,7 @@ def test_download_url(**args) -> None:
     url = test_info["url"]
     path = test_info["path"]
     filename = test_info["filename"]
-        
+
     if filename == "error":
         run_test_download_url_auth_error(url, path, filename)
     else:

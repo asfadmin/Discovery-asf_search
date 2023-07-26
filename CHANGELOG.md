@@ -29,6 +29,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v6.6.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.0...v6.6.1)
 ### Added
 - Adds automated release notes
+### Fixed
+- `filename` can be used again with `ASFProduct.Download()` method (ignored if multiple files are to be downloaded)
 
 ------
 ## [v6.6.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.5.0...v6.6.0)
