@@ -49,8 +49,8 @@ class ASFProduct:
 
         if filename is not None:
             multiple_files = (
-                (fileType != FileDownloadType.DEFAULT_FILE and len(self.properties['additionalUrls']) > 1) 
-                
+                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1) 
+                or fileType == FileDownloadType.ALL_FILES
             )
             if multiple_files:
                 warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")

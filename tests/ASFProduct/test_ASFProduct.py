@@ -76,7 +76,10 @@ def run_test_ASFProduct_download(reference, filename, filetype, additional_urls)
         resp.iter_content = lambda chunk_size: []
             
         with patch('builtins.open', unittest.mock.mock_open()) as m:    
-            if filename != None and (filetype != FileDownloadType.DEFAULT_FILE and (len(additional_urls) > 1)):
+            if filename != None and (
+                (filetype == FileDownloadType.ADDITIONAL_FILES and len(additional_urls) > 1) 
+                or filetype == FileDownloadType.ALL_FILES
+            ):
                 with pytest.warns(Warning):
                     product.download('./', filename=filename, fileType=filetype)
             else:
