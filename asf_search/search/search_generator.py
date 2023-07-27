@@ -80,7 +80,8 @@ def search_generator(
     url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
     count = 0
     
-    for query in build_subqueries(opts):
+    queries = build_subqueries(opts)
+    for idx, query in enumerate(queries):
         translated_opts = translate_opts(query)
         try:
             response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
@@ -108,8 +109,17 @@ def search_generator(
                 yield last_page
         else:
             count += len(hits)
-            yield ASFSearchResults(hits, opts=opts)
+            
+            if response.json()['hits'] <= count:
+                last_page = ASFSearchResults(hits, opts=opts)
+                last_page.searchComplete = True
+                yield last_page
 
+                if idx == len(queries) - 1:
+                    return
+            else:
+                yield ASFSearchResults(hits, opts=opts)
+        
         while('CMR-Search-After' in response.headers):
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
@@ -137,7 +147,18 @@ def search_generator(
                         yield last_page
                 else:
                     count += len(hits)
-                    yield ASFSearchResults(hits, opts=opts)
+                    
+                    if response.json()['hits'] <= count:
+                        last_page = ASFSearchResults(hits, opts=opts)
+                        last_page.searchComplete = True
+                        yield last_page
+
+                        if idx == len(queries) - 1:
+                            return
+                    else:
+                        yield ASFSearchResults(hits, opts=opts)
+                    # count += len(hits)
+                    # yield ASFSearchResults(hits, opts=opts)
 
         opts.session.headers.pop('CMR-Search-After', None)
 

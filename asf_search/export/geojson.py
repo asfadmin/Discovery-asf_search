@@ -33,9 +33,9 @@ class GeoJSONStreamArray(list):
         completed = False
         for page_idx, page in enumerate(self.results):
             ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")
-            completed = page.searchComplete
             
             yield from [self.getItem(p) for p in page if p is not None]
+            completed = page.searchComplete
 
         if not completed:
             ASF_LOGGER.warn('Failed to download all results from CMR')
