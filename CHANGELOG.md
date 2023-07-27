@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.6.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.1...v6.6.2)
+### Fixed
+- Fixes bug in `search_generator()` causing results to sometimes wrongly be marked as incomplete
+
+------
 ## [v6.6.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.0...v6.6.1)
 ### Added
 - Adds automated release notes
