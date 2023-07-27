@@ -93,15 +93,20 @@ def search_generator(
             return
 
         hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
+        
+        subquery_max_results = response.json()['hits']
+
+        if maxResults is not None:
+            subquery_max_results = min(maxResults, subquery_max_results)
 
         if 'CMR-Search-After' in response.headers:
             opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
 
         if maxResults != None:
-            last_page = ASFSearchResults(hits[:min(maxResults - count, len(hits))], opts=opts)
+            last_page = ASFSearchResults(hits[:min(subquery_max_results - count, len(hits))], opts=opts)
             count += len(last_page)
             
-            if count == maxResults:
+            if count == subquery_max_results:
                 last_page.searchComplete = True
                 yield last_page
                 return
@@ -110,7 +115,7 @@ def search_generator(
         else:
             count += len(hits)
             
-            if response.json()['hits'] <= count:
+            if response.json()['hits'] == count:
                 last_page = ASFSearchResults(hits, opts=opts)
                 last_page.searchComplete = True
                 yield last_page
@@ -136,10 +141,9 @@ def search_generator(
 
             if len(hits):
                 if maxResults != None:
-                    last_page = ASFSearchResults(hits[:min(maxResults - count, len(hits))], opts=opts)
+                    last_page = ASFSearchResults(hits[:min(subquery_max_results - count, len(hits))], opts=opts)
                     count += len(last_page)
-                    # results.extend(hits[:min(maxResults - len(results), len(hits))])
-                    if count == maxResults:
+                    if count == subquery_max_results:
                         last_page.searchComplete = True
                         yield last_page
                         return
@@ -148,7 +152,7 @@ def search_generator(
                 else:
                     count += len(hits)
                     
-                    if response.json()['hits'] <= count:
+                    if response.json()['hits'] == count:
                         last_page = ASFSearchResults(hits, opts=opts)
                         last_page.searchComplete = True
                         yield last_page
@@ -157,8 +161,6 @@ def search_generator(
                             return
                     else:
                         yield ASFSearchResults(hits, opts=opts)
-                    # count += len(hits)
-                    # yield ASFSearchResults(hits, opts=opts)
 
         opts.session.headers.pop('CMR-Search-After', None)
 
