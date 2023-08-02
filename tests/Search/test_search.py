@@ -30,7 +30,7 @@ def run_test_ASFSearchResults(search_resp):
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
-        m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", json={'items': answer})
+        m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", json={'items': answer, 'hits': len(answer)})
         response = search(**search_parameters)
 
         if search_parameters.get("maxResults", False):
