@@ -40,7 +40,7 @@ class MetalinkStreamArray(list):
         for page_idx, page in enumerate(self.pages):
             ASF_LOGGER.info(f"Streaming {len(page)} products from page {page_idx}")
             completed = page.searchComplete
-
+            
             properties_list = ASFSearchResults_to_properties_list(page, self.get_additional_fields)
             yield from [self.getItem(p) for p in properties_list]
         
