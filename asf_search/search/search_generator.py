@@ -1,5 +1,4 @@
 import logging
-from math import inf
 from typing import Generator, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
