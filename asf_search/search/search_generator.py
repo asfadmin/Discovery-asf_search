@@ -79,7 +79,7 @@ def search_generator(
     preprocess_opts(opts)
 
     url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
-    count = 0
+    total = 0
     
     queries = build_subqueries(opts)
     for query in queries:
@@ -89,14 +89,8 @@ def search_generator(
         
         while(cmr_search_after_headers is not None):
             try:
-                hits, subquery_max_results, cmr_search_after_headers = query_cmr(opts, url, translated_opts, query, subquery_count)
-            except CMRIncompleteError as e:
-                message = str(e)
-                logging.error(message)
-                report_search_error(query, message)
-                opts.session.headers.pop('CMR-Search-After', None)
-                return
-            except ASFSearchError as e:
+                items, subquery_max_results, cmr_search_after_headers = query_cmr(opts.session, url, translated_opts, subquery_count)
+            except (ASFSearchError, CMRIncompleteError) as e:
                 message = str(e)
                 logging.error(message)
                 report_search_error(query, message)
@@ -104,15 +98,16 @@ def search_generator(
                 return
             
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_headers})
-            count, last_page = return_page(hits, subquery_max_results, maxResults, opts, count, subquery_count)
+            total, last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
             subquery_count += len(last_page)
-            last_page.searchComplete = subquery_count == subquery_max_results or count == maxResults
+            last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
             yield last_page
             
             if last_page.searchComplete:
                 if subquery_count == subquery_max_results and maxResults is None: # end of subquery
                     cmr_search_after_headers = None
-                elif count == maxResults:
+                elif total == maxResults:
+                    opts.session.headers.pop('CMR-Search-After', None)
                     return
                 else:
                     cmr_search_after_headers = None
@@ -120,38 +115,31 @@ def search_generator(
 
 
 @retry(reraise=True,
-       retry=retry_if_exception_type((TimeoutError, ASFSearch5xxError)),
-       wait=wait_fixed(5),
+       retry=retry_if_exception_type(CMRIncompleteError),
+       wait=wait_fixed(10),
        stop=stop_after_delay(60),
     )
-def query_cmr(opts: ASFSearchOptions, url: str, translated_opts: dict, query: ASFSearchOptions, sub_query_count: int):
-    # try:
-    response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-    # except ASFSearchError as e:
-    #     message = str(e)
-    #     logging.error(message)
-    #     report_search_error(query, message)
-    #     opts.session.headers.pop('CMR-Search-After', None)
-    #     return
+def query_cmr(session: ASFSession, url: str, translated_opts: dict, sub_query_count: int):
+    response = get_page(session=session, url=url, translated_opts=translated_opts)
 
-    hits = [ASFProduct(f, session=opts.session) for f in response.json()['items']]
-    cmr_hits: int = response.json()['hits']
+    items = [ASFProduct(f, session=session) for f in response.json()['items']]
+    hits: int = response.json()['hits'] # total count of products given search opts
 
     # sometimes CMR returns results with the wrong page size
-    if len(hits) != INTERNAL.CMR_PAGE_SIZE and len(hits) + sub_query_count < cmr_hits:
-        raise CMRIncompleteError()
+    if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + sub_query_count < hits:
+        raise CMRIncompleteError(f"CMR returned page of incomplete results. Expected {min(INTERNAL.CMR_PAGE_SIZE, hits - sub_query_count)} results, got {len(items)}")
 
-    return hits, cmr_hits, response.headers.get('CMR-Search-After', None)
+    return items, hits, response.headers.get('CMR-Search-After', None)
     
 
-def return_page(hits: list[ASFProduct], subquery_max_results: int, max_results: int, opts: ASFSearchOptions, count: int, subquery_count: int):
+def process_page(items: list[ASFProduct], max_results: int, subquery_max_results: int, total: int, subquery_count: int, opts: ASFSearchOptions):
     if max_results is None:
-        last_page = ASFSearchResults(hits[:min(subquery_max_results - subquery_count, len(hits))], opts=opts)
+        last_page = ASFSearchResults(items[:min(subquery_max_results - subquery_count, len(items))], opts=opts)
     else:
-        last_page = ASFSearchResults(hits[:min(max_results - count, len(hits))], opts=opts)
-    count += len(last_page)
+        last_page = ASFSearchResults(items[:min(max_results - total, len(items))], opts=opts)
+    total += len(last_page)
 
-    return count, last_page
+    return total, last_page
 
 
 @retry(reraise=True,
@@ -159,7 +147,7 @@ def return_page(hits: list[ASFProduct], subquery_max_results: int, max_results: 
        wait=wait_exponential(multiplier=1, min=4, max=10),
        stop=stop_after_delay(340),
     )
-def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
+def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     try:
         response = session.post(url=url, data=translated_opts, timeout=170)
         response.raise_for_status()
