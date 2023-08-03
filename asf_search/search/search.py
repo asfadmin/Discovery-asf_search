@@ -4,7 +4,6 @@ import datetime
 
 from asf_search import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.exceptions import ASFSearchError
 from asf_search.search.search_generator import search_generator
 
 def search(
@@ -95,7 +94,7 @@ def search(
         results.extend(page)
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
-
+    
     results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
     
     return results
