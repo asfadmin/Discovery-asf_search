@@ -8,7 +8,6 @@ from asf_search.ASFProduct import ASFProduct
 from asf_search.constants import PLATFORM
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
 from copy import copy
-from tenacity import retry, retry_if_exception_type, stop_after_delay, wait_fixed
 
 precalc_platforms = [
     PLATFORM.ALOS,
@@ -47,11 +46,6 @@ def stack_from_product(
     return stack
 
 
-@retry(reraise=True,
-       retry=retry_if_exception_type(ASFSearchError),
-       wait=wait_fixed(5),
-       stop=stop_after_delay(120),
-    )
 def stack_from_id(
         reference_id: str,
         opts: ASFSearchOptions = None
