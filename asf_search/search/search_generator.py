@@ -84,12 +84,12 @@ def search_generator(
     queries = build_subqueries(opts)
     for query in queries:
         translated_opts = translate_opts(query)
-        cmr_search_after_headers = ""
+        cmr_search_after_header = ""
         subquery_count = 0
         
-        while(cmr_search_after_headers is not None):
+        while(cmr_search_after_header is not None):
             try:
-                items, subquery_max_results, cmr_search_after_headers = query_cmr(opts.session, url, translated_opts, subquery_count)
+                items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
             except (ASFSearchError, CMRIncompleteError) as e:
                 message = str(e)
                 logging.error(message)
@@ -97,7 +97,7 @@ def search_generator(
                 opts.session.headers.pop('CMR-Search-After', None)
                 return
             
-            opts.session.headers.update({'CMR-Search-After': cmr_search_after_headers})
+            opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             total, last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
             subquery_count += len(last_page)
             last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
@@ -105,12 +105,13 @@ def search_generator(
             
             if last_page.searchComplete:
                 if subquery_count == subquery_max_results and maxResults is None: # end of subquery
-                    cmr_search_after_headers = None
+                    cmr_search_after_header = None
                 elif total == maxResults:
                     opts.session.headers.pop('CMR-Search-After', None)
                     return
                 else:
-                    cmr_search_after_headers = None
+                    cmr_search_after_header = None
+        
         opts.session.headers.pop('CMR-Search-After', None)
 
 
