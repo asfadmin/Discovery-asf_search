@@ -144,7 +144,7 @@ def process_page(items: list[ASFProduct], max_results: int, subquery_max_results
 
 @retry(reraise=True,
        retry=retry_if_exception_type(ASFSearch5xxError),
-       wait=wait_exponential(multiplier=1, min=3, max=10),  # Wait 2^x * 1 starting with 35 seconds, max 50 seconds
+       wait=wait_exponential(multiplier=1, min=3, max=10),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
        stop=stop_after_delay(60),
     )
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
