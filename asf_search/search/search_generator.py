@@ -116,8 +116,8 @@ def search_generator(
 
 @retry(reraise=True,
        retry=retry_if_exception_type(CMRIncompleteError),
-       wait=wait_fixed(10),
-       stop=stop_after_delay(60),
+       wait=wait_fixed(2),
+       stop=stop_after_delay(120),
     )
 def query_cmr(session: ASFSession, url: str, translated_opts: dict, sub_query_count: int):
     response = get_page(session=session, url=url, translated_opts=translated_opts)
@@ -144,12 +144,12 @@ def process_page(items: list[ASFProduct], max_results: int, subquery_max_results
 
 @retry(reraise=True,
        retry=retry_if_exception_type((TimeoutError, ASFSearch5xxError)),
-       wait=wait_exponential(multiplier=1, min=4, max=10),
-       stop=stop_after_delay(340),
+       wait=wait_exponential(multiplier=1, min=35, max=50),  # Wait 2^x * 1 starting with 35 seconds, max 50 seconds
+       stop=stop_after_delay(40),
     )
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     try:
-        response = session.post(url=url, data=translated_opts, timeout=170)
+        response = session.post(url=url, data=translated_opts, timeout=30)
         response.raise_for_status()
     except HTTPError as exc:
         error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
