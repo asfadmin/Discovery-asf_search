@@ -1,0 +1,16 @@
+# .github/release.yml
+
+changelog:
+  exclude:
+    labels:
+      - bumpless
+  categories:
+    - title: Major Release
+      labels:
+        - major
+    - title: Minor Release
+      labels:
+        - minor
+    - title: Patch Release
+      labels:
+        - patch

@@ -63,3 +63,77 @@ tests:
         processingLevel: ['L0'],
         insarStackId: '1736495'
     }
+
+- Test ASFProduct-download-file default_file no additional files:
+    product: Fairbanks_SLC.yml
+    filename: null
+    filetype: 1
+    additionalUrls: []
+
+- Test ASFProduct-download-file additional_files no additional files:
+    product: Fairbanks_SLC.yml
+    filename: null
+    filetype: 2
+    additionalUrls: []
+
+- Test ASFProduct-download-file all_files no additional files:
+    product: Fairbanks_SLC.yml
+    filename: null
+    filetype: 3
+    additionalUrls: []
+
+
+- Test ASFProduct-download-file default_file:
+    product: Fairbanks_SLC.yml
+    filename: null
+    filetype: 1
+    additionalUrls: ['test.xml', 'test.tiff']
+
+- Test ASFProduct-download-file additional_files:
+    product: Fairbanks_SLC.yml
+    filename: null
+    filetype: 2
+    additionalUrls: ['test.xml', 'test.tiff']
+
+- Test ASFProduct-download-file all_files:
+    product: Fairbanks_SLC.yml
+    filename: null
+    filetype: 3
+    additionalUrls: ['test.xml', 'test.tiff']
+
+- Test ASFProduct-download-file default_file custom filename:
+    product: Fairbanks_SLC.yml
+    filename: custom_name.txt
+    filetype: 1
+    additionalUrls: ['test.xml', 'test.tiff']
+
+- Test ASFProduct-download-file additional_files custom filename:
+    product: Fairbanks_SLC.yml
+    filename: custom_name.txt
+    filetype: 1
+    additionalUrls: ['test.xml']
+
+- Test ASFProduct-download-file additional_files custom filename:
+    product: Fairbanks_SLC.yml
+    filename: custom_name.txt
+    filetype: 2
+    additionalUrls: ['test.xml']
+
+- Test ASFProduct-download-file multiple additional_files custom filename:
+    product: Fairbanks_SLC.yml
+    filename: custom_name.txt
+    filetype: 2
+    additionalUrls: ['test.xml', 'test.tiff']
+
+- Test ASFProduct-download-file all_files custom filename:
+    product: Fairbanks_SLC.yml
+    filename: custom_name.txt
+    filetype: 3
+    additionalUrls: ['test.xml', 'test.tiff']
+
+
+- Test ASFProduct-download-file all_files custom filename no additional:
+    product: Fairbanks_SLC.yml
+    filename: custom_name.txt
+    filetype: 3
+    additionalUrls: []

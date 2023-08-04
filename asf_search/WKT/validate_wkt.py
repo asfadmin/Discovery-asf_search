@@ -229,7 +229,7 @@ def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]
     if geometry.geom_type not in ['MultiPoint', 'MultiLineString', 'MultiPolygon', 'GeometryCollection']:
         return geometry, None
     
-    possible_repair = RepairEntry("'type': 'CONVEX_HULL_INDIVIDUAL'", "'report': 'Unconnected shapes: Convex-halled each INDIVIDUAL shape to merge them together.'")
+    possible_repair = RepairEntry("'type': 'CONVEX_HULL_INDIVIDUAL'", "'report': 'Unconnected shapes: Convex-hulled each INDIVIDUAL shape to merge them together.'")
     return geometry.convex_hull, possible_repair
 
 

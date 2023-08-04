@@ -25,11 +25,19 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+------
+## [v6.6.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.0...v6.6.1)
+### Added
+- Adds automated release notes
+### Fixed
+- `filename` can be used again with `ASFProduct.Download()` method (ignored if multiple files are to be downloaded)
 
 ------
 ## [v6.6.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.5.0...v6.6.0)
 ### Added
 - Adds `fileType` param to `ASFProduct` and `ASFSearchResults` download method. Let's users download burst .xml and/or .tiff from the burst extractor with `FileDownloadType` enum (`DEFAULT_FILE`, `ADDITIONAL_FILES`, `ALL_FILES`)
+### Fixed
+- Fixes typo in convex hull warning message
 
 ------
 ## [v6.5.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.4.0...v6.5.0)
