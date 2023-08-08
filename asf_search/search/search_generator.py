@@ -3,7 +3,7 @@ from typing import Generator, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, stop_after_delay, wait_exponential, wait_fixed
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential, wait_fixed
 import datetime
 import dateparser
 import warnings
@@ -116,7 +116,7 @@ def search_generator(
 @retry(reraise=True,
        retry=retry_if_exception_type(CMRIncompleteError),
        wait=wait_fixed(2),
-       stop=stop_after_delay(120),
+       stop=stop_after_attempt(3),
     )
 def query_cmr(session: ASFSession, url: str, translated_opts: dict, sub_query_count: int):
     response = get_page(session=session, url=url, translated_opts=translated_opts)
