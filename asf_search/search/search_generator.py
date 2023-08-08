@@ -97,18 +97,17 @@ def search_generator(
                 return
             
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
-            total, last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
+            last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
             subquery_count += len(last_page)
+            total += len(last_page)
             last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
             yield last_page
             
             if last_page.searchComplete:
-                if subquery_count == subquery_max_results and maxResults is None: # end of subquery
-                    cmr_search_after_header = None
-                elif total == maxResults:
+                if total == maxResults: # the user has as many results as they wanted
                     opts.session.headers.pop('CMR-Search-After', None)
                     return
-                else:
+                else: # or we've gotten all possible results for this subquery
                     cmr_search_after_header = None
         
         opts.session.headers.pop('CMR-Search-After', None)
@@ -137,9 +136,7 @@ def process_page(items: list[ASFProduct], max_results: int, subquery_max_results
         last_page = ASFSearchResults(items[:min(subquery_max_results - subquery_count, len(items))], opts=opts)
     else:
         last_page = ASFSearchResults(items[:min(max_results - total, len(items))], opts=opts)
-    total += len(last_page)
-
-    return total, last_page
+    return last_page
 
 
 @retry(reraise=True,
