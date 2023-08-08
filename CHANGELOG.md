@@ -26,6 +26,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.6.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.1...v6.6.2)
+### Added
+- Adds new `CMRIncompleteError` exception, raised by search methods when CMR returns an incomplete page
+### Fixed
+- Fixes bug in `search_generator()` causing results to sometimes wrongly be marked as incomplete
+### Changed
+- `stack_from_id()` now raises if results are incomplete, before checking if reference was found
+
+------
 ## [v6.6.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.0...v6.6.1)
 ### Added
 - Adds automated release notes
