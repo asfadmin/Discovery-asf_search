@@ -3,7 +3,7 @@ from typing import Generator, Union, Iterable, Tuple
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
-from tenacity import retry, retry_if_exception_type, stop_after_delay, wait_exponential, wait_fixed
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, stop_after_delay, wait_exponential, wait_fixed
 import datetime
 import dateparser
 import warnings
@@ -142,7 +142,7 @@ def process_page(items: list[ASFProduct], max_results: int, subquery_max_results
 @retry(reraise=True,
        retry=retry_if_exception_type(ASFSearch5xxError),
        wait=wait_exponential(multiplier=1, min=3, max=10),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
-       stop=stop_after_delay(60),
+       stop=stop_after_attempt(3),
     )
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     try:
