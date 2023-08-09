@@ -41,3 +41,4 @@ jobs:
         tag_schema: semantic
         draft: false
         prerelease: false
+        body: "${{ github.event.pull_request.body }}"
