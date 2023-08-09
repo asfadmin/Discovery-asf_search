@@ -45,6 +45,7 @@ def stack_from_product(
 
     return stack
 
+
 def stack_from_id(
         reference_id: str,
         opts: ASFSearchOptions = None
@@ -60,8 +61,11 @@ def stack_from_id(
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
 
-    reference_results = product_search(product_list=reference_id, opts=opts)
 
+    reference_results = product_search(product_list=reference_id, opts=opts)
+    
+    reference_results.raise_if_incomplete()
+    
     if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
     reference = reference_results[0]

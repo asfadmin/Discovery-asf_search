@@ -37,3 +37,6 @@ class CMRError(Exception):
 
 class CMRConceptIDError(CMRError):
     """Raise when CMR encounters a concept-id error"""
+
+class CMRIncompleteError(CMRError):
+    """Raise when CMR returns an incomplete page of results"""
