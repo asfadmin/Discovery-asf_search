@@ -21,7 +21,7 @@ def parse_string(value: str) -> str:
     except ValueError as exc: # If this happens, printing v's value would fail too...
         raise ValueError(f"Invalid string: Can't cast type '{type(value)}' to string.") from exc
     if len(value) == 0:
-        raise ValueError(f'Invalid string: Empty.')
+        raise ValueError('Invalid string: Empty.')
     return value
 
 
@@ -35,7 +35,7 @@ def parse_float(value: float) -> float:
         value = float(value)
     except ValueError as exc:
         raise ValueError(f'Invalid float: {value}') from exc
-    if math.isinf(value):
+    if math.isinf(value) or math.isnan(value):
         raise ValueError(f'Float values must be finite: got {value}')
     return value
 
