@@ -87,7 +87,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     
     cmr_opts.extend(additional_keys)
 
-    print(f"cmr_opts: {cmr_opts}")
     return cmr_opts
 
 
