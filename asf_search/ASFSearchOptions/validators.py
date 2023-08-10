@@ -189,6 +189,14 @@ def parse_wkt(value: str) -> str:
         raise ValueError(f'Invalid wkt: {exc}') from exc
     return wkt.dumps(value)
 
+# Parse a CMR circle:
+#       [longitude, latitude, radius(meters)]
+def parse_circle(value: List[float]) -> str:
+    value = parse_float_list(value)
+    if len(value) != 3:
+        raise ValueError(f'Invalid circle, must be 3 values (lat, long, radius). Got: {value}')
+    return value
+
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):
     if issubclass(type(session), requests.Session):

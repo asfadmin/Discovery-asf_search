@@ -43,6 +43,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
             (shapeType, shape) = wkt_to_cmr_shape(shape).split(':')
             dict_opts[shapeType] = shape
 
+    if "circle" in dict_opts:
+        # Map: to convert floats to strings before joining:
+        dict_opts['circle'] = ','.join(map(str, dict_opts['circle']))
+
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
@@ -83,6 +87,7 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     
     cmr_opts.extend(additional_keys)
 
+    print(f"cmr_opts: {cmr_opts}")
     return cmr_opts
 
 

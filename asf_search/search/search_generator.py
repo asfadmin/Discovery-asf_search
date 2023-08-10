@@ -89,13 +89,13 @@ def search_generator(
         while(cmr_search_after_header is not None):
             try:
                 items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
-            except (ASFSearchError, CMRIncompleteError) as e:
-                message = str(e)
+            except (ASFSearchError, CMRIncompleteError) as exc:
+                message = str(exc)
                 logging.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
-                return
-            
+                raise
+
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
             subquery_count += len(last_page)

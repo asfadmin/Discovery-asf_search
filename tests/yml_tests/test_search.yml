@@ -42,3 +42,10 @@ tests:
         platform: "Sentinel-1"
     status_code: 500
     report: "Server Error: This is a Test Error"
+
+- test-ASFSearch-search-error 400-Error circle radius too small:
+    parameters:
+        circle: [0, 0, 2]
+    status_code: 400
+    report: "Circle radius must be between 10 and 6000000, but was 2.0"
+

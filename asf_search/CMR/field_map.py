@@ -9,6 +9,7 @@ field_map = {
     'beamMode':             {'key': 'attribute[]',             'fmt': 'string,BEAM_MODE,{0}'},
     'beamSwath':            {'key': 'attribute[]',             'fmt': 'string,BEAM_MODE_TYPE,{0}'},
     'campaign':             {'key': 'attribute[]',             'fmt': 'string,MISSION_NAME,{0}'},
+    'circle':               {'key': 'circle',                  'fmt': '{0}'},
     'maxDoppler':           {'key': 'attribute[]',             'fmt': 'float,DOPPLER,,{0}'},
     'minDoppler':           {'key': 'attribute[]',             'fmt': 'float,DOPPLER,{0},'},
     'maxFaradayRotation':   {'key': 'attribute[]',             'fmt': 'float,FARADAY_ROTATION,,{0}'},
