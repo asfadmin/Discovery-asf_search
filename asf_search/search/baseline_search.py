@@ -1,8 +1,10 @@
-from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
+
 from copy import copy
 
+from asf_search import ASF_LOGGER
+from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
 from asf_search.search import search, product_search
-from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSearchOptions import ASFSearchOptions, config
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFProduct import ASFProduct
 from asf_search.constants import PLATFORM
@@ -30,9 +32,6 @@ def stack_from_product(
 
     :return: ASFSearchResults(dict) of search results
     """
-
-    opts = (ASFSearchOptions() if opts is None else copy(opts))
-
     stack_opts = get_stack_opts(reference, opts=opts)
 
     stack = search(opts=stack_opts)
@@ -58,9 +57,7 @@ def stack_from_id(
 
     :return: ASFSearchResults(list) of search results
     """
-
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-
 
     reference_results = product_search(product_list=reference_id, opts=opts)
     
@@ -78,7 +75,15 @@ def get_stack_opts(
         opts: ASFSearchOptions = None
 ) -> ASFSearchOptions:
 
-    stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
+    if opts is None:
+        stack_opts = ASFSearchOptions()
+    else:
+        stack_opts = copy(opts)
+        # If they set any search-specific keys inside the opts (exclude 'provider' and such):
+        if stack_opts:
+            ASF_LOGGER.warning(f'Baseline search options provided, but only the service config options will be used. [{config.config.keys()}]')
+            stack_opts.reset_search()
+
     stack_opts.processingLevel = get_default_product_type(reference)
 
     if reference.properties['platform'] in precalc_platforms:
@@ -88,7 +93,7 @@ def get_stack_opts(
         raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
 
     # build a stack from scratch if it's a non-precalc dataset with state vectors
-    
+
     if reference.properties['processingLevel'] == 'BURST':
         stack_opts.fullBurstID = reference.properties['burst']['fullBurstID']
         stack_opts.polarization = [reference.properties['polarization']]
