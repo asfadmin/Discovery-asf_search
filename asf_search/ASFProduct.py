@@ -24,6 +24,11 @@ class ASFProduct:
         self.baseline = translated['baseline']
         self.session = session
 
+        if 'additionalUrls' not in self.properties or len(self.properties['additionalUrls']) == 0:
+            self.multiple_files = False
+        else:
+            self.multiple_files = True
+
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
@@ -48,41 +53,50 @@ class ASFProduct:
         default_filename = self.properties['fileName']
 
         if filename is not None:
-            multiple_files = (
-                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1) 
-                or fileType == FileDownloadType.ALL_FILES
-            )
-            if multiple_files:
-                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
+            # Check if we should support the filename argument:
+            if self.multiple_files and fileType in [FileDownloadType.ADDITIONAL_FILES, FileDownloadType.ALL_FILES]:
+                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument '{filename}', using default.")
             else:
                 default_filename = filename
-                
+
         if session is None:
             session = self.session
 
+        urls = self.get_urls(fileType=fileType)
+
+        for url in urls:
+            base_filename = '.'.join(default_filename.split('.')[:-1])
+            extension = url.split('.')[-1]
+            download_url(
+                url=url,
+                path=path,
+                filename=f"{base_filename}.{extension}",
+                session=session
+            )
+
+    def get_urls(self, fileType = FileDownloadType.DEFAULT_FILE) -> list:
         urls = []
 
         def get_additional_urls():
-            output = []
-            base_filename = '.'.join(default_filename.split('.')[:-1])
+            if not self.multiple_files:
+                ASF_LOGGER.warning(f"You attempted to download multiple files from {self.properties['sceneName']}, this product only has one file to download.")
+                return []
+
+            additional_urls = []
             for url in self.properties['additionalUrls']:
-                extension = url.split('.')[-1]
-                urls.append((f"{base_filename}.{extension}", url))
-            
-            return output
+                additional_urls.append(url)
+            return additional_urls
 
         if fileType == FileDownloadType.DEFAULT_FILE:
-            urls.append((default_filename, self.properties['url']))
+            urls.append(self.properties['url'])
         elif fileType == FileDownloadType.ADDITIONAL_FILES:
             urls.extend(get_additional_urls())
         elif fileType == FileDownloadType.ALL_FILES:
-            urls.append((default_filename, self.properties['url']))
+            urls.append(self.properties['url'])
             urls.extend(get_additional_urls())
         else:
             raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
-
-        for filename, url in urls:
-            download_url(url=url, path=path, filename=filename, session=session)
+        return urls
 
     def stack(
             self,
