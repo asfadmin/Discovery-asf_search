@@ -26,6 +26,17 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [TODO](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.2...TODO)
+### Added
+- Added `asf.ASFSearchOptions(circle=[lat, long, radius])` search param. Takes list of exactly 3 numbers.
+- Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.
+- Exposed `ASFProduct.get_urls` which returns the URL's for it's products directly. Can control which products with the `fileType` enum.
+### Fixed
+- Fixed bug in `ASFProduct` where asking for `asf.ADDITIONAL_FILES` on non-burst products would throw a KeyError.
+### Changed
+- `stack_from_id()` now raises if results are incomplete, before checking if reference was found
+
+------
 ## [v6.6.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.1...v6.6.2)
 ### Added
 - Adds new `CMRIncompleteError` exception, raised by search methods when CMR returns an incomplete page
