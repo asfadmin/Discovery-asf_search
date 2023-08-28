@@ -1,5 +1,5 @@
 import logging
-from typing import Generator, Union, Iterable, Tuple
+from typing import Generator, Union, Iterable, Tuple, List
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
@@ -19,7 +19,7 @@ from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearc
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
-
+from typing import List # for 3.8 compatibility
 
 def search_generator(        
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
@@ -131,7 +131,7 @@ def query_cmr(session: ASFSession, url: str, translated_opts: dict, sub_query_co
     return items, hits, response.headers.get('CMR-Search-After', None)
     
 
-def process_page(items: list[ASFProduct], max_results: int, subquery_max_results: int, total: int, subquery_count: int, opts: ASFSearchOptions):
+def process_page(items: List[ASFProduct], max_results: int, subquery_max_results: int, total: int, subquery_count: int, opts: ASFSearchOptions):
     if max_results is None:
         last_page = ASFSearchResults(items[:min(subquery_max_results - subquery_count, len(items))], opts=opts)
     else:
