@@ -19,7 +19,6 @@ from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearc
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
-from typing import List # for 3.8 compatibility
 
 def search_generator(        
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
