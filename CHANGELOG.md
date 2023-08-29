@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.6.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.2...v6.6.3)
+### Fixed
+- Fixes type hinting compatibility break introduced in v6.6.2 in `search_generator.py` for Python versions < v3.9
+
+------
 ## [v6.6.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.1...v6.6.2)
 ### Added
 - Adds new `CMRIncompleteError` exception, raised by search methods when CMR returns an incomplete page
