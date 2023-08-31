@@ -27,6 +27,7 @@ def search_generator(
         beamMode: Union[str, Iterable[str]] = None,
         beamSwath: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
+        circle: Tuple[float, float, float] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
@@ -94,7 +95,13 @@ def search_generator(
                 logging.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
-                raise
+                # If it's a CMRIncompleteError, we can just stop here and return what we have
+                # It's up to the user to call .raise_if_incomplete() if they're using the
+                # generator directly.
+                if type(exc) == CMRIncompleteError:
+                    return
+                else:
+                    raise
 
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
