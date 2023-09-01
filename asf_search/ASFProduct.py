@@ -24,11 +24,6 @@ class ASFProduct:
         self.baseline = translated['baseline']
         self.session = session
 
-        if 'additionalUrls' not in self.properties or len(self.properties['additionalUrls']) == 0:
-            self.multiple_files = False
-        else:
-            self.multiple_files = True
-
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
@@ -54,7 +49,7 @@ class ASFProduct:
 
         if filename is not None:
             # Check if we should support the filename argument:
-            if self.multiple_files and fileType in [FileDownloadType.ADDITIONAL_FILES, FileDownloadType.ALL_FILES]:
+            if self._has_multiple_files() and fileType in [FileDownloadType.ADDITIONAL_FILES, FileDownloadType.ALL_FILES]:
                 warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument '{filename}', using default.")
             else:
                 default_filename = filename
@@ -78,7 +73,7 @@ class ASFProduct:
         urls = []
 
         def get_additional_urls():
-            if not self.multiple_files:
+            if not self._has_multiple_files():
                 ASF_LOGGER.warning(f"You attempted to download multiple files from {self.properties['sceneName']}, this product only has one file to download.")
                 return []
 
@@ -148,3 +143,6 @@ class ASFProduct:
         from .download.download import remotezip
 
         return remotezip(self.properties['url'], session=session)
+
+    def _has_multiple_files(self):
+        return 'additionalUrls' in self.properties and len(self.properties['additionalUrls']) > 0
