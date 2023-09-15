@@ -1,28 +1,50 @@
 import warnings
+from typing import List
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
 
 from asf_search import ASFSession, ASFSearchResults
-from asf_search.ASFSearchOptions import ASFSearchOptions 
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.download import download_url
-from asf_search.CMR import translate_product
+# from asf_search.CMR import translate_product
 from remotezip import RemoteZip
 
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
+from asf_search.CMR.translate import cast, try_round_float, get_state_vector
+from asf_search.CMR.translate import get as umm_get
+from asf_search.CMR import umm_property_paths, umm_property_typecasting
+# Myabe just these keys????
+#start and stop time (maybe)
+# - fileID
+# - platform
+# - geoemetry
 
 
 class ASFProduct:
+    base_properties = {
+            # min viable product
+            'centerLat',
+            'centerLon',
+            'fileID', # secondary search results sort key
+            'flightDirection',
+            'pathNumber',
+            'stopTime', # primary search results sort key
+            'processingLevel',
+            'url'
+    }
+
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')
         self.umm = args.get('umm')
 
-        translated = translate_product(args)
+        translated = self.translate_product(args)
 
         self.properties = translated['properties']
         self.geometry = translated['geometry']
-        self.baseline = translated['baseline']
+        self.baseline = None
         self.session = session
+
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
@@ -102,7 +124,7 @@ class ASFProduct:
 
         return stack_from_product(self, opts=opts)
 
-    def get_stack_opts(self) -> ASFSearchOptions:
+    def get_stack_opts(self, opts: ASFSearchOptions=None) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
 
@@ -134,3 +156,86 @@ class ASFProduct:
         from .download.download import remotezip
 
         return remotezip(self.properties['url'], session=session)
+
+    def translate_product(self, item: dict) -> dict:
+        try:
+            coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
+            coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
+            geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
+        except KeyError:
+            geometry = {'coordinates': None, 'type': 'Polygon'}
+
+        umm = item.get('umm')
+
+        properties = {
+            prop: umm_get(umm, *umm_key_value) for prop, umm_key_value in self._get_property_paths().items()
+        }
+
+        for key, cast_type in umm_property_typecasting.items():
+            if properties.get(key) is not None:
+                properties[key] = cast(cast_type, properties.get(key))
+        
+
+        if properties.get('url') is not None:
+            properties['fileName'] = properties['url'].split('/')[-1]
+        else:
+            properties['fileName'] = None
+
+        # Fallbacks
+        if properties.get('beamModeType') is None:
+            properties['beamModeType'] = umm_get(umm, *umm_property_paths['beamMode'])
+        
+        if properties.get('platform') is None:
+            properties['platform'] = umm_get(umm, *umm_property_paths['platformShortName'])
+
+        # asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B']
+        # if properties['platform'] in asf_frame_platforms:
+        #     properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
+        # else:
+        #     properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0))
+
+        return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
+
+    # ASFProduct subclasses define extra/override param key + UMM pathing here 
+    @staticmethod
+    def _get_property_paths() -> dict:
+        return {
+                prop: umm_path 
+                for prop in ASFProduct.base_properties 
+                if (umm_path := umm_property_paths.get(prop)) is not None
+            }
+    
+    def get_baseline_calc_properties(self) -> dict:
+        return {}
+    
+    def get_default_product_type(self):
+        # scene_name = product.properties['sceneName']
+        
+        # if get_platform(scene_name) in ['AL']:
+        #     return 'L1.1'
+        # if get_platform(scene_name) in ['R1', 'E1', 'E2', 'J1']:
+        #     return 'L0'
+        # if get_platform(scene_name) in ['S1']:
+        #     if product.properties['processingLevel'] == 'BURST':
+        #         return 'BURST'
+        #     return 'SLC'
+        return None
+    
+
+    # static helper methods for product type checking
+    @staticmethod
+    def get_platform(item: dict):
+        if (platform := umm_get(item.get('umm'), *umm_property_paths['platform'])) is not None:
+            return platform
+        
+        return umm_get(item.get('umm'), *umm_property_paths['platformShortName'])
+    
+    @staticmethod
+    def get_product_type(item: dict):
+        return umm_get(item.get('umm'), *umm_property_paths['processingLevel'])
+
+    
+    @staticmethod
+    def is_valid_product(item: dict):
+        return False
+    

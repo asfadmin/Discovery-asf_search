@@ -33,7 +33,7 @@ def stack_from_product(
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
 
-    stack_opts = get_stack_opts(reference, opts=opts)
+    stack_opts = reference.get_stack_opts(reference, opts=opts)
 
     stack = search(opts=stack_opts)
     is_complete = stack.searchComplete
@@ -108,7 +108,6 @@ def get_stack_opts(
             stack_opts.polarization = [reference.properties['polarization']]
         
         stack_opts.intersectsWith = reference.centroid().wkt
-        
         return stack_opts
 
     raise ASFBaselineError(f'Reference product is not a pre-calculated baseline dataset, and not a known ephemeris-based dataset: {reference.properties["fileID"]}')

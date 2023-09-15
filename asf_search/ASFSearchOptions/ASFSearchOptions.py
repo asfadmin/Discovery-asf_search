@@ -114,7 +114,7 @@ class ASFSearchOptions:
             # Spit out warning if the value is something other than the default:
             if not self._is_val_default(key):
                 msg = f'While merging search options, existing option {key}:{getattr(self, key, None)} overwritten by kwarg with value {kwargs[key]}'
-                ASF_LOGGER.warging(msg)
+                ASF_LOGGER.warning(msg)
                 warnings.warn(msg)
             self.__setattr__(key, kwargs[key])
 

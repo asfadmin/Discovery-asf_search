@@ -13,13 +13,14 @@ from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
+from asf_search.CMR.translate import get as umm_get
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, CMRIncompleteError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
-
+import asf_search.Products as ASFProductType
 def search_generator(        
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
         asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
@@ -120,7 +121,7 @@ def search_generator(
 def query_cmr(session: ASFSession, url: str, translated_opts: dict, sub_query_count: int):
     response = get_page(session=session, url=url, translated_opts=translated_opts)
 
-    items = [ASFProduct(f, session=session) for f in response.json()['items']]
+    items = [as_ASFProduct(f, session=session) for f in response.json()['items']]
     hits: int = response.json()['hits'] # total count of products given search opts
 
     # sometimes CMR returns results with the wrong page size
@@ -228,3 +229,11 @@ def set_platform_alias(opts: ASFSearchOptions):
                 platform_list.append(plat)
 
         opts.platform = list(set(platform_list))
+
+def as_ASFProduct(item: dict, session: ASFSession, subclasses: List[ASFProduct] = []) -> ASFProduct:
+    built_ins = [ASFProductType.ALOSProduct, ASFProductType.RadarsatProduct, ASFProductType.S1BURSTProduct, ASFProductType.S1Product]
+    for subclass in built_ins:
+        if subclass.is_valid_product(item):
+            return subclass(item)
+
+    return ASFProduct(item, session=session)
