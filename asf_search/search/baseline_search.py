@@ -33,9 +33,9 @@ def stack_from_product(
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
 
-    stack_opts = reference.get_stack_opts(reference, opts=opts)
+    opts.merge_args(**reference.get_stack_opts())
 
-    stack = search(opts=stack_opts)
+    stack = search(opts=opts)
     is_complete = stack.searchComplete
 
     stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)

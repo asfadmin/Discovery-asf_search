@@ -62,8 +62,11 @@ umm_property_paths = {
         'beamMode': ['AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0] # fallback to 'beamModeType'
     }
 
+def float_string_as_int(val):
+    int(float(val))
+
 umm_property_typecasting = {
-    'bytes': int,
+    'bytes': float_string_as_int, # casting the string literal of a floating point number raises a TypeError, parse as float first
     'centerLat': float,
     'centerLon': float,
     'faradayRotation': float,

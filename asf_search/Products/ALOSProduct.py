@@ -8,6 +8,13 @@ class ALOSProduct(ASFProduct):
     base_properties = {
         'faradayRotation',
         'offNadirAngle',
+        'browse',
+        'bytes',
+        'granuleType',
+        'orbit',
+        'polarization',
+        'processingDate',
+        'sensor'
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -41,7 +48,11 @@ class ALOSProduct(ASFProduct):
     def _get_property_paths() -> dict:
         return {
             **ASFProduct._get_property_paths(),
-            **ALOSProduct.additional_properties
+            **{
+                prop: umm_path 
+                for prop in ALOSProduct.base_properties 
+                if (umm_path := umm_property_paths.get(prop)) is not None
+            },
         }
     
     @staticmethod

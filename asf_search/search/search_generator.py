@@ -231,7 +231,9 @@ def set_platform_alias(opts: ASFSearchOptions):
         opts.platform = list(set(platform_list))
 
 def as_ASFProduct(item: dict, session: ASFSession, subclasses: List[ASFProduct] = []) -> ASFProduct:
-    built_ins = [ASFProductType.ALOSProduct, ASFProductType.RadarsatProduct, ASFProductType.S1BURSTProduct, ASFProductType.S1Product]
+    built_ins = [ASFProductType.RadarsatProduct, ASFProductType.AIRSARProduct, ASFProductType.ERSProduct, ASFProductType.JERSProduct, 
+                 ASFProductType.UAVSARProduct, ASFProductType.SIRCProduct, ASFProductType.SEASATProduct, ASFProductType.SMAPProduct,
+                 ASFProductType.ALOSProduct, ASFProductType.RadarsatProduct, ASFProductType.S1BURSTProduct, ASFProductType.S1Product]
     for subclass in built_ins:
         if subclass.is_valid_product(item):
             return subclass(item)

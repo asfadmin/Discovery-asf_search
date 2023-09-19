@@ -6,8 +6,17 @@ from asf_search.CMR.UMMFields import umm_property_paths
 from asf_search.constants import PLATFORM
 
 class S1Product(ASFProduct):
-    additional_properties = {
-        'frameNumber'
+    base_properties = {
+        'frameNumber',
+        'polarization',
+        'bytes',
+        'granuleType',
+        'groupID',
+        'md5sum',
+        'orbit',
+        'pgeVersion',
+        'processingDate',
+        'sensor'
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -41,36 +50,43 @@ class S1Product(ASFProduct):
             'velocities': velocities
         }
     
-    def get_stack_opts(reference: ASFProduct, 
-        opts: ASFSearchOptions = None):
+    def get_stack_opts(self):
 
-        stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-
-        if reference.properties['processingLevel'] == 'BURST':
-            stack_opts.processingLevel = 'BURST'
-        else:
-            stack_opts.processingLevel = 'SLC'
+        # stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
+        return {
+            'processingLevel': 'SLC',
+            'beamMode': [self.properties['beamModeType']],
+            'flightDirection': self.properties['flightDirection'],
+            'relativeOrbit': [int(self.properties['pathNumber'])], # path
+            'platform': [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B],
+            'polarization': ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH'],
+            'intersectsWith': self.centroid().wkt
+        }
+        # if reference.properties['processingLevel'] == 'BURST':
+        #     stack_opts.processingLevel = 'BURST'
+        # else:
+        #     stack_opts.processingLevel = 'SLC'
         
-        if reference.properties['processingLevel'] == 'BURST':
-            stack_opts.fullBurstID = reference.properties['burst']['fullBurstID']
-            stack_opts.polarization = [reference.properties['polarization']]
-            return stack_opts
+        # if reference.properties['processingLevel'] == 'BURST':
+        #     stack_opts.fullBurstID = reference.properties['burst']['fullBurstID']
+        #     stack_opts.polarization = [reference.properties['polarization']]
+        #     return stack_opts
         
-        stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
+        # stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
         
-        stack_opts.beamMode = [reference.properties['beamModeType']]
-        stack_opts.flightDirection = reference.properties['flightDirection']
-        stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path
+        # stack_opts.beamMode = [reference.properties['beamModeType']]
+        # stack_opts.flightDirection = reference.properties['flightDirection']
+        # stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path
         
-        if reference.properties['polarization'] in ['HH', 'HH+HV']:
-            stack_opts.polarization = ['HH','HH+HV']
-        elif reference.properties['polarization'] in ['VV', 'VV+VH']:
-            stack_opts.polarization = ['VV','VV+VH']
-        else:
-            stack_opts.polarization = [reference.properties['polarization']]
+        # if reference.properties['polarization'] in ['HH', 'HH+HV']:
+        #     stack_opts.polarization = ['HH','HH+HV']
+        # elif reference.properties['polarization'] in ['VV', 'VV+VH']:
+        #     stack_opts.polarization = ['VV','VV+VH']
+        # else:
+        #     stack_opts.polarization = [reference.properties['polarization']]
         
-        stack_opts.intersectsWith = reference.centroid().wkt
-        return stack_opts
+        # stack_opts.intersectsWith = reference.centroid().wkt
+        # return stack_opts
 
     @staticmethod
     def _get_property_paths() -> dict:

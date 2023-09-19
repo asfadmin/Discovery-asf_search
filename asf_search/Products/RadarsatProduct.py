@@ -8,9 +8,19 @@ from asf_search.CMR.translate import get as umm_get, cast as umm_cast
 
 class RadarsatProduct(ASFProduct):
     base_properties = {
+        'browse'
         'faradayRotation',
         'offNadirAngle',
         'insarStackId',
+        'processingDate',
+        'sceneName',
+        'orbit',
+        'polarization',
+        'md5sum',
+        'sensor',
+        'bytes',
+        'granuleType',
+        'frameNumber'
     }
     
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):

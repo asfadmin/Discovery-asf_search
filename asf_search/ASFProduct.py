@@ -26,12 +26,18 @@ class ASFProduct:
             # min viable product
             'centerLat',
             'centerLon',
+            'stopTime', # primary search results sort key
             'fileID', # secondary search results sort key
             'flightDirection',
             'pathNumber',
-            'stopTime', # primary search results sort key
             'processingLevel',
-            'url'
+            
+            # commonly used
+            'url',
+            'startTime',
+            'sceneName',
+            'browse',
+            'platform'
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -124,7 +130,7 @@ class ASFProduct:
 
         return stack_from_product(self, opts=opts)
 
-    def get_stack_opts(self, opts: ASFSearchOptions=None) -> ASFSearchOptions:
+    def get_stack_opts(self) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
 
