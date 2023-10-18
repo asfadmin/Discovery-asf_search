@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.6.4](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...v6.6.4)
+### Fixed
+- ERS-1, ERS-2, JERS-1, and RADARSAT-1 now assign `FRAME_NUMBER` to the `frameNumber` properties field
+
+------
 ## [v6.6.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.2...v6.6.3)
 ### Fixed
 - Fixes type hinting compatibility break introduced in v6.6.2 in `search_generator.py` for Python versions < v3.9
