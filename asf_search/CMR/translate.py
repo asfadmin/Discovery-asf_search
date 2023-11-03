@@ -7,6 +7,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
+from .datasets import platform_datasets
 
 import logging
 
@@ -46,7 +47,16 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
+    
+    if 'datasets' in dict_opts:
+        if 'collections' not in dict_opts:
+            dict_opts['collections'] = []
+        
+        for collection in dict_opts['datasets']:
+            dict_opts['collections'].extend(platform_datasets[collection])
 
+        dict_opts.pop('datasets')
+    
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
