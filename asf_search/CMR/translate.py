@@ -52,8 +52,11 @@ def translate_opts(opts: ASFSearchOptions) -> list:
         if 'collections' not in dict_opts:
             dict_opts['collections'] = []
         
-        for collection in dict_opts['datasets']:
-            dict_opts['collections'].extend(platform_datasets[collection])
+        for dataset in dict_opts['datasets']:
+            if dataset_collections := platform_datasets.get(dataset):
+                dict_opts['collections'].extend(dataset_collections)
+            else:
+                raise ValueError(f'Could not find dataset named "{dataset}" provided for datasets keyword.')
 
         dict_opts.pop('datasets')
     
