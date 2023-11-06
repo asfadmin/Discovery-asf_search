@@ -228,7 +228,7 @@ def translate_product(item: dict) -> dict:
 
     
 
-    if properties['fileID'].startswith('OPERA'):
+    if properties.get('fileID', '').startswith('OPERA'):
         properties['beamMode'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
         accessUrls = [*get(umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0), *get(umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0)]
         properties['additionalUrls'] = [url for url in list(set(accessUrls)) if not url.endswith('.md5') and not url.startswith('s3://') and not 's3credentials' in url and not url.endswith('.png')]
