@@ -1,10 +1,13 @@
 from numbers import Number
 from asf_search import ASFSearchOptions
 from asf_search.ASFProduct import ASFProduct
+from asf_search.CMR.translate import get
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
+from asf_search.CMR import platform_datasets
+from typing import List
 
 import requests
 
@@ -75,4 +78,41 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         with raises(ASFSearchError):
             results.raise_if_incomplete()
 
-            
+def run_test_datasets_search(datasets: List):
+    should_raise_error = len([dataset for dataset in datasets if not platform_datasets.get(dataset)]) > 0
+    
+    if should_raise_error:
+        with raises(ValueError):
+            search(datasets=datasets, maxResults=1)
+
+    # WIP
+    # get collection concept-ids from shortName cmr query
+    else:
+        valid_collections = []
+        for dataset in datasets:
+            valid_collections.extend(platform_datasets.get(dataset))
+        
+        response = search(datasets=datasets, maxResults=250)
+
+        retries = 3
+
+        while(retries != 0):
+            try:
+                # Granules don't keep track of their concept-ids,
+                # so query CMR to get them using each product's collection shortName
+                shortNames = '&'.join(list(set([f"shortName[]={get(product.umm, 'CollectionReference', 'ShortName')}" for product in response])))
+                r = requests.get(f"https://cmr.earthdata.nasa.gov/search/collections.umm_json?{shortNames}&provider=ASF")
+                r.raise_for_status()
+
+                items = r.json()['items']
+                concept_ids = [item['meta']['concept-id'] for item in items]
+
+                # check that results are limited to the expected datasets
+                for concept_id in concept_ids:
+                    assert concept_id in valid_collections
+                
+                return
+            except requests.HTTPError:
+                retries -= 1
+        
+        
