@@ -7,9 +7,9 @@ from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.CMR import platform_datasets
-from typing import List
 
 import requests
+from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 
 from pytest import raises
 
@@ -78,14 +78,20 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         with raises(ASFSearchError):
             results.raise_if_incomplete()
 
-def run_test_datasets_search(datasets: List):
+@retry(
+    reraise=True,
+    wait=wait_fixed(3),
+    stop=stop_after_attempt(3),
+    retry=retry_if_exception_type((requests.ReadTimeout, requests.HTTPError))
+)
+def test_datasets_search():
+    datasets = ['SENTINEL-1', 'RADARSAT-1', 'UAVSAR']
     should_raise_error = len([dataset for dataset in datasets if not platform_datasets.get(dataset)]) > 0
     
     if should_raise_error:
         with raises(ValueError):
             search(datasets=datasets, maxResults=1)
 
-    # WIP
     # get collection concept-ids from shortName cmr query
     else:
         valid_collections = []
@@ -94,25 +100,17 @@ def run_test_datasets_search(datasets: List):
         
         response = search(datasets=datasets, maxResults=250)
 
-        retries = 3
+        # Granules don't keep track of their collection concept-ids, 
+        # but they do have the collection names we can use to find them!
+        shortNames = '&'.join(list(set([f"shortName[]={get(product.umm, 'CollectionReference', 'ShortName')}" for product in response])))
 
-        while(retries != 0):
-            try:
-                # Granules don't keep track of their concept-ids,
-                # so query CMR to get them using each product's collection shortName
-                shortNames = '&'.join(list(set([f"shortName[]={get(product.umm, 'CollectionReference', 'ShortName')}" for product in response])))
-                r = requests.get(f"https://cmr.earthdata.nasa.gov/search/collections.umm_json?{shortNames}&provider=ASF")
-                r.raise_for_status()
+        r = requests.get(f"https://cmr.earthdata.nasa.gov/search/collections.umm_json?{shortNames}&provider=ASF")
+        r.raise_for_status()
 
-                items = r.json()['items']
-                concept_ids = [item['meta']['concept-id'] for item in items]
+        items = r.json()['items']
+        concept_ids = [item['meta']['concept-id'] for item in items]
 
-                # check that results are limited to the expected datasets
-                for concept_id in concept_ids:
-                    assert concept_id in valid_collections
-                
-                return
-            except requests.HTTPError:
-                retries -= 1
-        
+        # check that results are limited to the expected datasets
+        for concept_id in concept_ids:
+            assert concept_id in valid_collections
         
