@@ -6,13 +6,9 @@ from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.CMR import platform_datasets
-
-import requests
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
-
+from asf_search.CMR import dataset_collections
 from pytest import raises
-
+import requests
 import requests_mock
 
 def run_test_ASFSearchResults(search_resp):
@@ -78,39 +74,24 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         with raises(ASFSearchError):
             results.raise_if_incomplete()
 
-@retry(
-    reraise=True,
-    wait=wait_fixed(3),
-    stop=stop_after_attempt(3),
-    retry=retry_if_exception_type((requests.ReadTimeout, requests.HTTPError))
-)
 def test_datasets_search():
     datasets = ['SENTINEL-1', 'RADARSAT-1', 'UAVSAR']
-    should_raise_error = len([dataset for dataset in datasets if not platform_datasets.get(dataset)]) > 0
+    should_raise_error = len([dataset for dataset in datasets if not dataset_collections.get(dataset)]) > 0
     
     if should_raise_error:
         with raises(ValueError):
             search(datasets=datasets, maxResults=1)
-
-    # get collection concept-ids from shortName cmr query
     else:
-        valid_collections = []
+        valid_shortnames = []
         for dataset in datasets:
-            valid_collections.extend(platform_datasets.get(dataset))
+            valid_shortnames.extend([shortName for shortName in dataset_collections.get(dataset).keys()])
         
         response = search(datasets=datasets, maxResults=250)
 
-        # Granules don't keep track of their collection concept-ids, 
-        # but they do have the collection names we can use to find them!
-        shortNames = '&'.join(list(set([f"shortName[]={get(product.umm, 'CollectionReference', 'ShortName')}" for product in response])))
-
-        r = requests.get(f"https://cmr.earthdata.nasa.gov/search/collections.umm_json?{shortNames}&provider=ASF")
-        r.raise_for_status()
-
-        items = r.json()['items']
-        concept_ids = [item['meta']['concept-id'] for item in items]
-
-        # check that results are limited to the expected datasets
-        for concept_id in concept_ids:
-            assert concept_id in valid_collections
+        # Get collection shortName of all granules
+        shortNames = list(set([get(product.umm, 'CollectionReference', 'ShortName') for product in response]))
+    
+        # and check that results are limited to the expected datasets by their shortname
+        for shortName in shortNames:
+            assert shortName in valid_shortnames
         

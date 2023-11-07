@@ -7,7 +7,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import platform_datasets
+from .datasets import dataset_collections
 
 import logging
 
@@ -53,8 +53,9 @@ def translate_opts(opts: ASFSearchOptions) -> list:
             dict_opts['collections'] = []
         
         for dataset in dict_opts['datasets']:
-            if dataset_collections := platform_datasets.get(dataset):
-                dict_opts['collections'].extend(dataset_collections)
+            if collections_by_short_name := dataset_collections.get(dataset):
+                for shortName, concept_ids in collections_by_short_name.items():
+                    dict_opts['collections'].extend(concept_ids)
             else:
                 raise ValueError(f'Could not find dataset named "{dataset}" provided for datasets keyword.')
 
