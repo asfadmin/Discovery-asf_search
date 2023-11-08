@@ -27,6 +27,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v6.6.4](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...v6.6.4)
+### Added
+- Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page.
+
+### Changed
+- Changes `CMR_FORMAT_EXT` constant from `umm_json_v1_4` to `umm_json`, umm returned from CMR will now be in latest umm format by default
+
 ### Fixed
 - ERS-1, ERS-2, JERS-1, and RADARSAT-1 now assign `FRAME_NUMBER` to the `frameNumber` properties field
 
