@@ -48,18 +48,18 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
     
-    if 'datasets' in dict_opts:
+    if 'dataset' in dict_opts:
         if 'collections' not in dict_opts:
             dict_opts['collections'] = []
         
-        for dataset in dict_opts['datasets']:
+        for dataset in dict_opts['dataset']:
             if collections_by_short_name := dataset_collections.get(dataset):
-                for shortName, concept_ids in collections_by_short_name.items():
+                for concept_ids in collections_by_short_name.values():
                     dict_opts['collections'].extend(concept_ids)
             else:
-                raise ValueError(f'Could not find dataset named "{dataset}" provided for datasets keyword.')
+                raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
 
-        dict_opts.pop('datasets')
+        dict_opts.pop('dataset')
     
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []

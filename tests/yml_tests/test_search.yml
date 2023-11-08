@@ -43,14 +43,14 @@ tests:
     status_code: 500
     report: "Server Error: This is a Test Error"
 
-- test-search-datasets S1 Datasets:
-    datasets: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1']
+- test-search-dataset S1 Datasets:
+    dataset: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1']
 
-- test-search-datasets S1 Datasets and non-S1:
-    datasets: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1', 'UAVSAR']
+- test-search-dataset S1 Datasets and non-S1:
+    dataset: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1', 'UAVSAR']
 
-- test-search-datasets fake dataset:
-    datasets: 'FAKE-DATASET-V1'
+- test-search-dataset fake dataset:
+    dataset: 'FAKE-DATASET-V1'
 
-- test-search-datasets S1 Datasets and fake dataset:
-    datasets: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1', 'FAKE-DATASET-V2']
+- test-search-dataset S1 Datasets and fake dataset:
+    dataset: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1', 'FAKE-DATASET-V2']

@@ -199,10 +199,10 @@ test_types:
     required_keys: results
     method: test_output_format
 
-- For running datasets keyword tests:
-    required_in_title: search-datasets
-    required_keys: datasets
-    method: test_search_datasets
+- For running dataset keyword tests:
+    required_in_title: search-dataset
+    required_keys: dataset
+    method: test_search_dataset
 
 - For running jupyter notebook example tests:
     required_keys: notebook
