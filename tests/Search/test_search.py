@@ -83,7 +83,7 @@ def run_test_dataset_search(datasets: List):
         for dataset in datasets:
             valid_shortnames = list(dataset_collections.get(dataset))
 
-            response = search(datasets=dataset, maxResults=250)
+            response = search(dataset=dataset, maxResults=250)
 
             # Get collection shortName of all granules
             shortNames = list(set([shortName for product in response if (shortName:=get(product.umm, 'CollectionReference', 'ShortName')) is not None]))
