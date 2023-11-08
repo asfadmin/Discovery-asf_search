@@ -102,9 +102,16 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
+    asf_frame_datasets = ['SENTINEL-1', 'OPERA-S1', 'SLC-BURST', 'ALOS PALSAR', 'ALOS AVNIR-2']
+    
+    asf_frame_collections = []
+    for dataset in asf_frame_datasets:
+        for concept_ids in dataset_collections.get(dataset).values():
+            asf_frame_collections.extend(concept_ids)
 
     return any([
         p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
+        or p[0] == 'echo_collection_id[]' and p[1] in asf_frame_collections
         for p in cmr_opts
     ])
 
