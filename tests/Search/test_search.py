@@ -78,7 +78,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
 def run_test_dataset_search(datasets: List):
     if any(dataset for dataset in datasets if dataset_collections.get(dataset) is None):
         with raises(ValueError):
-            search(datasets=datasets, maxResults=1)
+            search(dataset=datasets, maxResults=1)
     else:    
         for dataset in datasets:
             valid_shortnames = list(dataset_collections.get(dataset))
