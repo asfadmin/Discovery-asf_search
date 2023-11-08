@@ -8,6 +8,7 @@ from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.CMR import dataset_collections
 from pytest import raises
+from typing import List
 import requests
 import requests_mock
 
@@ -74,24 +75,19 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         with raises(ASFSearchError):
             results.raise_if_incomplete()
 
-def test_datasets_search():
-    datasets = ['SENTINEL-1', 'RADARSAT-1', 'UAVSAR']
-    should_raise_error = len([dataset for dataset in datasets if not dataset_collections.get(dataset)]) > 0
-    
-    if should_raise_error:
+def run_test_datasets_search(datasets: List):
+    if any(dataset for dataset in datasets if dataset_collections.get(dataset) is None):
         with raises(ValueError):
             search(datasets=datasets, maxResults=1)
-    else:
-        valid_shortnames = []
+    else:    
         for dataset in datasets:
-            valid_shortnames.extend([shortName for shortName in dataset_collections.get(dataset).keys()])
-        
-        response = search(datasets=datasets, maxResults=250)
+            valid_shortnames = list(dataset_collections.get(dataset))
 
-        # Get collection shortName of all granules
-        shortNames = list(set([get(product.umm, 'CollectionReference', 'ShortName') for product in response]))
-    
-        # and check that results are limited to the expected datasets by their shortname
-        for shortName in shortNames:
-            assert shortName in valid_shortnames
-        
+            response = search(datasets=dataset, maxResults=250)
+
+            # Get collection shortName of all granules
+            shortNames = list(set([shortName for product in response if (shortName:=get(product.umm, 'CollectionReference', 'ShortName')) is not None]))
+
+            # and check that results are limited to the expected datasets by their shortname
+            for shortName in shortNames:
+                assert shortName in valid_shortnames
