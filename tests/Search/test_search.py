@@ -75,7 +75,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         with raises(ASFSearchError):
             results.raise_if_incomplete()
 
-def run_test_datasets_search(datasets: List):
+def run_test_dataset_search(datasets: List):
     if any(dataset for dataset in datasets if dataset_collections.get(dataset) is None):
         with raises(ValueError):
             search(datasets=datasets, maxResults=1)
