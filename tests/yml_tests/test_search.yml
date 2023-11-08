@@ -42,3 +42,15 @@ tests:
         platform: "Sentinel-1"
     status_code: 500
     report: "Server Error: This is a Test Error"
+
+- test-search-dataset S1 Datasets:
+    dataset: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1']
+
+- test-search-dataset S1 Datasets and non-S1:
+    dataset: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1', 'UAVSAR']
+
+- test-search-dataset fake dataset:
+    dataset: 'FAKE-DATASET-V1'
+
+- test-search-dataset S1 Datasets and fake dataset:
+    dataset: ['SENTINEL-1', 'SLC-BURST', 'OPERA-S1', 'FAKE-DATASET-V2']

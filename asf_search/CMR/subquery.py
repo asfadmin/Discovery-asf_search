@@ -22,7 +22,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     if params.get('product_list') is not None:
         params['product_list'] = chunk_list(params['product_list'], CMR_PAGE_SIZE)
 
-    list_param_names = ['platform', 'season', 'collections']  # these parameters will dodge the subquery system
+    list_param_names = ['platform', 'season', 'collections', 'dataset']  # these parameters will dodge the subquery system
     skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL
     
     params = dict([ (k, v) for k, v in params.items() if k not in skip_param_names ])

@@ -41,6 +41,7 @@ def search(
         collections: Union[str, Iterable[str]] = None,
         temporalBaselineDays: Union[str, Iterable[str]] = None,
         operaBurstID: Union[str, Iterable[str]] = None,
+        dataset: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
