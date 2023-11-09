@@ -235,9 +235,8 @@ def set_platform_alias(opts: ASFSearchOptions):
 
 def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
     shortName = umm_get(item['umm'], 'CollectionReference', 'ShortName')
-
-    for dataset in dataset_collections:
-        if shortName in dataset:
+    for dataset, collections in dataset_collections.items():
+        if shortName in collections.keys():
             return datset_product_types.get(dataset)(item, session=session)
 
     return ASFProduct(item, session=session)
