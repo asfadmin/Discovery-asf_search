@@ -14,6 +14,8 @@ from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.CMR.translate import get as umm_get
+from asf_search.CMR.datasets import dataset_collections, datset_product_types
+
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, CMRIncompleteError
@@ -55,6 +57,7 @@ def search_generator(
         fullBurstID: Union[str, Iterable[str]] = None,
         collections: Union[str, Iterable[str]] = None,
         temporalBaselineDays: Union[str, Iterable[str]] = None,
+        dataset: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
         ) -> Generator[ASFSearchResults, None, None]:
@@ -230,12 +233,11 @@ def set_platform_alias(opts: ASFSearchOptions):
 
         opts.platform = list(set(platform_list))
 
-def as_ASFProduct(item: dict, session: ASFSession, subclasses: List[ASFProduct] = []) -> ASFProduct:
-    built_ins = [ASFProductType.RadarsatProduct, ASFProductType.AIRSARProduct, ASFProductType.ERSProduct, ASFProductType.JERSProduct, 
-                 ASFProductType.UAVSARProduct, ASFProductType.SIRCProduct, ASFProductType.SEASATProduct, ASFProductType.SMAPProduct,
-                 ASFProductType.ALOSProduct, ASFProductType.RadarsatProduct, ASFProductType.S1BURSTProduct, ASFProductType.S1Product]
-    for subclass in built_ins:
-        if subclass.is_valid_product(item):
-            return subclass(item)
+def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
+    shortName = umm_get(item['umm'], 'CollectionReference', 'ShortName')
+
+    for dataset in dataset_collections:
+        if shortName in dataset:
+            return datset_product_types.get(dataset)(item, session=session)
 
     return ASFProduct(item, session=session)
