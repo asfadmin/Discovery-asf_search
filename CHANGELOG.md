@@ -26,6 +26,22 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.7.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...v6.7.0)
+### Added
+- Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page
+- Adds `operaBurstID` keyword to `search()`
+- Adds OPERA-S1 param `operaBurstID` to `ASFProduct.properties`, and adds Opera product urls to `additionalUrls`
+- OPERA-S1 RTC product `polarization` now shows both polarizations as list
+- adds `frameNumber` properties support for new `Sentinel-1 Interferogram` products
+- added `CMR_TIMEOUT` constant. This is the amount of time in seconds to wait without seeing *any* data. (Default=30)
+
+### Changed
+- Changes `CMR_FORMAT_EXT` constant from `umm_json_v1_4` to `umm_json`, umm returned from CMR will now be in latest umm format by default
+
+### Fixed
+- ERS-1, ERS-2, JERS-1, and RADARSAT-1 now assign `FRAME_NUMBER` to the `frameNumber` properties field
+
+------
 ## [v6.6.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.2...v6.6.3)
 ### Fixed
 - Fixes type hinting compatibility break introduced in v6.6.2 in `search_generator.py` for Python versions < v3.9

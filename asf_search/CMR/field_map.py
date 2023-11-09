@@ -2,7 +2,6 @@ field_map = {
     # API parameter               CMR keyword                       CMR format strings
     'absoluteOrbit':        {'key': 'orbit_number',            'fmt': '{0}'},
     'asfFrame':             {'key': 'attribute[]',             'fmt': 'int,FRAME_NUMBER,{0}'},
-    'asfPlatform':          {'key': 'attribute[]',             'fmt': 'string,ASF_PLATFORM,{0}'},
     'maxBaselinePerp':      {'key': 'attribute[]',             'fmt': 'float,INSAR_BASELINE,,{0}'},
     'minBaselinePerp':      {'key': 'attribute[]',             'fmt': 'float,INSAR_BASELINE,{0},'},
     'bbox':                 {'key': 'bounding_box',            'fmt': '{0}'},
@@ -42,4 +41,7 @@ field_map = {
     'absoluteBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_ABSOLUTE,{0}'},
     'relativeBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_RELATIVE,{0}'},
     'fullBurstID':          {'key': 'attribute[]',             'fmt': 'string,BURST_ID_FULL,{0}'},
+
+    # OPERA-S1 field
+    'operaBurstID':         {'key': 'attribute[]',             'fmt': 'string,OPERA_BURST_ID,{0}'},
 }

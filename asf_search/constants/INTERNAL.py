@@ -1,7 +1,8 @@
 ASF_AUTH_HOST = 'auth.asf.alaska.edu'
 
 CMR_HOST = 'cmr.earthdata.nasa.gov'
-CMR_FORMAT_EXT = 'umm_json_v1_4'
+CMR_TIMEOUT = 30
+CMR_FORMAT_EXT = 'umm_json'
 CMR_GRANULE_PATH = f'/search/granules.{CMR_FORMAT_EXT}'
 CMR_COLLECTIONS = f'/search/collections'
 CMR_COLLECTIONS_PATH = f'{CMR_COLLECTIONS}.{CMR_FORMAT_EXT}'
