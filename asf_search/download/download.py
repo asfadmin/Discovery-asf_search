@@ -1,7 +1,7 @@
 from typing import Iterable
 from multiprocessing import Pool
 import os.path
-import urllib.parse
+from urllib import parse
 from requests import Response
 from requests.exceptions import HTTPError
 import warnings
@@ -56,7 +56,7 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     """
     
     if filename is None:
-        filename = os.path.split(urllib.parse.urlparse(url).path)[1]
+        filename = os.path.split(parse.urlparse(url).path)[1]
     
     if not os.path.isdir(path):
         raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
@@ -84,7 +84,7 @@ def remotezip(url: str, session: ASFSession) -> RemoteZip:
     return RemoteZip(url, session=session)
 
 def strip_auth_if_aws(r, *args, **kwargs):
-    if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc:
+    if 300 <= r.status_code <= 399 and 'amazonaws.com' in parse.urlparse(r.headers['location']).netloc:
         location = r.headers['location']
         r.headers.clear()
         r.headers['location'] = location
