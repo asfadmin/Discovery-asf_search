@@ -28,9 +28,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v6.6.4](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...v6.6.4)
 ### Added
-- Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page.
+- Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page
 - Adds `operaBurstID` keyword to `search()`
 - Adds OPERA-S1 param `operaBurstID` to `ASFProduct.properties`, and adds Opera product urls to `additionalUrls`
+- OPERA-S1 RTC product `polarization` now shows both polarizations as list
 
 ### Changed
 - Changes `CMR_FORMAT_EXT` constant from `umm_json_v1_4` to `umm_json`, umm returned from CMR will now be in latest umm format by default
