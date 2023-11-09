@@ -25,15 +25,3 @@ tests:
         maxResults: 250,
         platform: 'UAVSAR'
       }
-
-- test-ASFSearch-search-valid S1 ALOS:
-    parameters: [
-      {
-        maxResults: 750,
-        platform: 'Sentinel-1'
-      },
-      {
-        maxResults: 750,
-        platform: 'ALOS'
-      },
-    ]

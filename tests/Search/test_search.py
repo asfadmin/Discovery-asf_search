@@ -1,15 +1,15 @@
 from numbers import Number
 from asf_search import ASFSearchOptions
 from asf_search.ASFProduct import ASFProduct
+from asf_search.CMR.translate import get
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
-
-import requests
-
+from asf_search.CMR import dataset_collections
 from pytest import raises
-
+from typing import List
+import requests
 import requests_mock
 
 def run_test_ASFSearchResults(search_resp):
@@ -30,7 +30,7 @@ def run_test_ASFSearchResults(search_resp):
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
-        m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", json={'items': answer})
+        m.post(f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", json={'items': answer, 'hits': len(answer)})
         response = search(**search_parameters)
 
         if search_parameters.get("maxResults", False):
@@ -75,4 +75,19 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         with raises(ASFSearchError):
             results.raise_if_incomplete()
 
-            
+def run_test_dataset_search(datasets: List):
+    if any(dataset for dataset in datasets if dataset_collections.get(dataset) is None):
+        with raises(ValueError):
+            search(dataset=datasets, maxResults=1)
+    else:    
+        for dataset in datasets:
+            valid_shortnames = list(dataset_collections.get(dataset))
+
+            response = search(dataset=dataset, maxResults=250)
+
+            # Get collection shortName of all granules
+            shortNames = list(set([shortName for product in response if (shortName:=get(product.umm, 'CollectionReference', 'ShortName')) is not None]))
+
+            # and check that results are limited to the expected datasets by their shortname
+            for shortName in shortNames:
+                assert shortName in valid_shortnames

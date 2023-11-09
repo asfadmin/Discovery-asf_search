@@ -7,6 +7,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
+from .datasets import dataset_collections
 
 import logging
 
@@ -46,7 +47,20 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
+    
+    if 'dataset' in dict_opts:
+        if 'collections' not in dict_opts:
+            dict_opts['collections'] = []
+        
+        for dataset in dict_opts['dataset']:
+            if collections_by_short_name := dataset_collections.get(dataset):
+                for concept_ids in collections_by_short_name.values():
+                    dict_opts['collections'].extend(concept_ids)
+            else:
+                raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
 
+        dict_opts.pop('dataset')
+    
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
@@ -88,8 +102,16 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
+    asf_frame_datasets = ['SENTINEL-1', 'OPERA-S1', 'SLC-BURST', 'ALOS PALSAR', 'ALOS AVNIR-2']
+    
+    asf_frame_collections = []
+    for dataset in asf_frame_datasets:
+        for concept_ids in dataset_collections.get(dataset).values():
+            asf_frame_collections.extend(concept_ids)
+
     return any([
         p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
+        or p[0] == 'echo_collection_id[]' and p[1] in asf_frame_collections
         for p in cmr_opts
     ])
 
@@ -198,7 +220,7 @@ def translate_product(item: dict) -> dict:
     if properties['platform'] is None:
         properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
 
-    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B', 'Sentinel-1 Interferogram (BETA)']
+    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B', 'Sentinel-1 Interferogram (BETA)', 'ERS-1', 'ERS-2', 'JERS-1', 'RADARSAT-1']
     if properties['platform'] in asf_frame_platforms:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
     else:
@@ -223,6 +245,7 @@ def translate_product(item: dict) -> dict:
         if urls is not None:
             properties['url'] = urls[0]
             properties['fileName'] = properties['fileID'] + '.' + urls[0].split('.')[-1]
+            properties['additionalUrls'] = [urls[1]]
 
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 

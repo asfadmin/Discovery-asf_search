@@ -1,7 +1,4 @@
 import unittest
-
-from requests_mock import Adapter
-import requests_mock
 from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError
 import pytest
 from unittest.mock import patch

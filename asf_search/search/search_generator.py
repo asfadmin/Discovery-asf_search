@@ -1,9 +1,9 @@
 import logging
-from typing import Generator, Union, Iterable, Tuple
+from typing import Generator, Union, Iterable, Tuple, List
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
-from tenacity import retry, retry_if_exception_type, stop_after_delay, wait_exponential
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential, wait_fixed
 import datetime
 import dateparser
 import warnings
@@ -15,11 +15,10 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
-from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError
+from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, CMRIncompleteError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
-
 
 def search_generator(        
         absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
@@ -55,6 +54,7 @@ def search_generator(
         fullBurstID: Union[str, Iterable[str]] = None,
         collections: Union[str, Iterable[str]] = None,
         temporalBaselineDays: Union[str, Iterable[str]] = None,
+        dataset: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
         ) -> Generator[ASFSearchResults, None, None]:
@@ -78,78 +78,75 @@ def search_generator(
     preprocess_opts(opts)
 
     url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
-    count = 0
+    total = 0
     
-    for query in build_subqueries(opts):
+    queries = build_subqueries(opts)
+    for query in queries:
         translated_opts = translate_opts(query)
-        try:
-            response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-        except ASFSearchError as e:
-            message = str(e)
-            logging.error(message)
-            report_search_error(query, message)
-            opts.session.headers.pop('CMR-Search-After', None)
-            return
-
-        hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
-
-        if 'CMR-Search-After' in response.headers:
-            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
-
-        if maxResults != None:
-            last_page = ASFSearchResults(hits[:min(maxResults - count, len(hits))], opts=opts)
-            count += len(last_page)
-            
-            if count == maxResults:
-                last_page.searchComplete = True
-                yield last_page
-                return
-            else:
-                yield last_page
-        else:
-            count += len(hits)
-            yield ASFSearchResults(hits, opts=opts)
-
-        while('CMR-Search-After' in response.headers):
-            opts.session.headers.update({'CMR-Search-After': response.headers['CMR-Search-After']})
-
+        cmr_search_after_header = ""
+        subquery_count = 0
+        
+        while(cmr_search_after_header is not None):
             try:
-                response = get_page(session=opts.session, url=url, translated_opts=translated_opts, search_opts=query)
-            except ASFSearchError as e:
+                items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
+            except (ASFSearchError, CMRIncompleteError) as e:
                 message = str(e)
                 logging.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
                 return
-
-            hits = [ASFProduct(f, session=query.session) for f in response.json()['items']]
-
-            if len(hits):
-                if maxResults != None:
-                    last_page = ASFSearchResults(hits[:min(maxResults - count, len(hits))], opts=opts)
-                    count += len(last_page)
-                    # results.extend(hits[:min(maxResults - len(results), len(hits))])
-                    if count == maxResults:
-                        last_page.searchComplete = True
-                        yield last_page
-                        return
-                    else:
-                        yield last_page
-                else:
-                    count += len(hits)
-                    yield ASFSearchResults(hits, opts=opts)
-
+            
+            opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
+            last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
+            subquery_count += len(last_page)
+            total += len(last_page)
+            last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
+            yield last_page
+            
+            if last_page.searchComplete:
+                if total == maxResults: # the user has as many results as they wanted
+                    opts.session.headers.pop('CMR-Search-After', None)
+                    return
+                else: # or we've gotten all possible results for this subquery
+                    cmr_search_after_header = None
+        
         opts.session.headers.pop('CMR-Search-After', None)
 
 
 @retry(reraise=True,
-       retry=retry_if_exception_type((TimeoutError, ASFSearch5xxError)),
-       wait=wait_exponential(multiplier=1, min=4, max=10),
-       stop=stop_after_delay(340),
+       retry=retry_if_exception_type(CMRIncompleteError),
+       wait=wait_fixed(2),
+       stop=stop_after_attempt(3),
     )
-def get_page(session: ASFSession, url: str, translated_opts: list, search_opts: ASFSearchOptions) -> Response:
+def query_cmr(session: ASFSession, url: str, translated_opts: dict, sub_query_count: int):
+    response = get_page(session=session, url=url, translated_opts=translated_opts)
+
+    items = [ASFProduct(f, session=session) for f in response.json()['items']]
+    hits: int = response.json()['hits'] # total count of products given search opts
+
+    # sometimes CMR returns results with the wrong page size
+    if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + sub_query_count < hits:
+        raise CMRIncompleteError(f"CMR returned page of incomplete results. Expected {min(INTERNAL.CMR_PAGE_SIZE, hits - sub_query_count)} results, got {len(items)}")
+
+    return items, hits, response.headers.get('CMR-Search-After', None)
+    
+
+def process_page(items: List[ASFProduct], max_results: int, subquery_max_results: int, total: int, subquery_count: int, opts: ASFSearchOptions):
+    if max_results is None:
+        last_page = ASFSearchResults(items[:min(subquery_max_results - subquery_count, len(items))], opts=opts)
+    else:
+        last_page = ASFSearchResults(items[:min(max_results - total, len(items))], opts=opts)
+    return last_page
+
+
+@retry(reraise=True,
+       retry=retry_if_exception_type(ASFSearch5xxError),
+       wait=wait_exponential(multiplier=1, min=3, max=10),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
+       stop=stop_after_attempt(3),
+    )
+def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     try:
-        response = session.post(url=url, data=translated_opts, timeout=170)
+        response = session.post(url=url, data=translated_opts, timeout=30)
         response.raise_for_status()
     except HTTPError as exc:
         error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'

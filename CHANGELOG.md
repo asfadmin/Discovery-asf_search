@@ -25,16 +25,55 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+------
+## [v6.6.4](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...v6.6.4)
+### Added
+- Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page.
+- adds `frameNumber` properties support for new `Sentinel-1 Interferogram (BETA)` products
+
+### Changed
+- Changes `CMR_FORMAT_EXT` constant from `umm_json_v1_4` to `umm_json`, umm returned from CMR will now be in latest umm format by default
+
+### Fixed
+- ERS-1, ERS-2, JERS-1, and RADARSAT-1 now assign `FRAME_NUMBER` to the `frameNumber` properties field
+
+------
+## [v6.6.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.2...v6.6.3)
+### Fixed
+- Fixes type hinting compatibility break introduced in v6.6.2 in `search_generator.py` for Python versions < v3.9
+
+------
+## [v6.6.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.1...v6.6.2)
+### Added
+- Adds new `CMRIncompleteError` exception, raised by search methods when CMR returns an incomplete page
+### Fixed
+- Fixes bug in `search_generator()` causing results to sometimes wrongly be marked as incomplete
+### Changed
+- `stack_from_id()` now raises if results are incomplete, before checking if reference was found
+
+------
+## [v6.6.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.0...v6.6.1)
+### Added
+- Adds automated release notes
+### Fixed
+- `filename` can be used again with `ASFProduct.Download()` method (ignored if multiple files are to be downloaded)
+
+------
+## [v6.6.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.5.0...v6.6.0)
+### Added
+- Adds `fileType` param to `ASFProduct` and `ASFSearchResults` download method. Let's users download burst .xml and/or .tiff from the burst extractor with `FileDownloadType` enum (`DEFAULT_FILE`, `ADDITIONAL_FILES`, `ALL_FILES`)
+### Fixed
+- Fixes typo in convex hull warning message
 
 ------
 ## [v6.5.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.4.0...v6.5.0)
 ### Added
 - Searching by concept-ids is now supported via the `collections` keyword for search methods and `ASFSearchOptions`
-- adds `frameNumber` properties support for new `Sentinel-1 Interferogram (BETA)` products
 - Adds `collections` search keyword, letting results be limited to the provided concept-ids
 - Adds `temporalBaselineDays` search keyword, allows searching `Sentinel-1 Interferogram (BETA)` products by their temporal baseline
 ### Changed
 - `search_generator()` now uses tenacity library to poll CMR
+- moves/re-organizes certain constant url fields to `INTERNAL.py`
 ### Fixed
 - TimeoutErrors now properly caught and logged
 
