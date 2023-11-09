@@ -146,9 +146,6 @@ def process_page(items: List[ASFProduct], max_results: int, subquery_max_results
     )
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     try:
-        print("DEBUG")
-        print(translated_opts)
-        print()
         response = session.post(url=url, data=translated_opts, timeout=INTERNAL.CMR_TIMEOUT)
         response.raise_for_status()
     except HTTPError as exc:
