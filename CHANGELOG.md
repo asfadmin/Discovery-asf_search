@@ -30,6 +30,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page.
 - adds `frameNumber` properties support for new `Sentinel-1 Interferogram` products
+- added `CMR_TIMEOUT` constant. This is the amount of time in seconds to wait without seeing *any* data. (Default=30)
 
 ### Changed
 - Changes `CMR_FORMAT_EXT` constant from `umm_json_v1_4` to `umm_json`, umm returned from CMR will now be in latest umm format by default
