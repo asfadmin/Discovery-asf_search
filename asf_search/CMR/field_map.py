@@ -41,4 +41,7 @@ field_map = {
     'absoluteBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_ABSOLUTE,{0}'},
     'relativeBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_RELATIVE,{0}'},
     'fullBurstID':          {'key': 'attribute[]',             'fmt': 'string,BURST_ID_FULL,{0}'},
+
+    # OPERA-S1 field
+    'operaBurstID':         {'key': 'attribute[]',             'fmt': 'string,OPERA_BURST_ID,{0}'},
 }

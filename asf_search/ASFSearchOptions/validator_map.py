@@ -57,10 +57,11 @@ validator_map = {
     'instrument':             parse_string,
     'collections':            parse_string_list,
     'temporalBaselineDays':   parse_string_list,
-    'dataset':               parse_string_list,
+    'operaBurstID':           parse_string_list,
     'absoluteBurstID':        parse_int_list,
     'relativeBurstID':        parse_int_list,
     'fullBurstID':            parse_string_list,
+    'dataset':                parse_string_list,
 
     # Config parameters       Parser
     'session':                parse_session,
