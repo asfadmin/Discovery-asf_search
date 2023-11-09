@@ -248,7 +248,7 @@ def translate_product(item: dict) -> dict:
             properties['additionalUrls'] = [urls[1]]
 
     
-    if fileID:=properties.get('fileID'):
+    if (fileID:=properties.get('fileID')):
         if fileID.startswith('OPERA'):
             properties['beamMode'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
             accessUrls = [*get(umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0), *get(umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0)]
