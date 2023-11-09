@@ -2,7 +2,6 @@ field_map = {
     # API parameter               CMR keyword                       CMR format strings
     'absoluteOrbit':        {'key': 'orbit_number',            'fmt': '{0}'},
     'asfFrame':             {'key': 'attribute[]',             'fmt': 'int,FRAME_NUMBER,{0}'},
-    'asfPlatform':          {'key': 'attribute[]',             'fmt': 'string,ASF_PLATFORM,{0}'},
     'maxBaselinePerp':      {'key': 'attribute[]',             'fmt': 'float,INSAR_BASELINE,,{0}'},
     'minBaselinePerp':      {'key': 'attribute[]',             'fmt': 'float,INSAR_BASELINE,{0},'},
     'bbox':                 {'key': 'bounding_box',            'fmt': '{0}'},
