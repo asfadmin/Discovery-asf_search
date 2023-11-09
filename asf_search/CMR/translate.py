@@ -252,7 +252,13 @@ def translate_product(item: dict) -> dict:
         if fileID.startswith('OPERA'):
             properties['beamMode'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
             accessUrls = [*get(umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0), *get(umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0)]
-            properties['additionalUrls'] = [url for url in list(set(accessUrls)) if not url.endswith('.md5') and not url.startswith('s3://') and not 's3credentials' in url and not url.endswith('.png')]
+            properties['additionalUrls'] = sorted([url for url in list(set(accessUrls)) if not url.endswith('.md5') 
+                                            and not url.startswith('s3://') 
+                                            and not 's3credentials' in url 
+                                            and not url.endswith('.png')
+                                            and url != properties['url']])
+            properties['polarization'] = get(umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values')
+            
             properties['operaBurstID'] = get(umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
     
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
