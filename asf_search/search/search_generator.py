@@ -155,7 +155,7 @@ def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(error_message) from exc
     except ReadTimeout as exc:
-        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond ({url=})') from exc
+        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "CMR_TIMEOUT" to increase. ({url=}, timeout={INTERNAL.CMR_TIMEOUT})') from exc
     
     return response
     
