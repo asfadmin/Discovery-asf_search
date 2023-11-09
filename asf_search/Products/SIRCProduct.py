@@ -1,6 +1,5 @@
 import copy
-from asf_search import ASFSession, ASFSearchOptions
-from asf_search.ASFProduct import ASFProduct
+from asf_search import ASFProduct, ASFSession
 from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast
 from asf_search.CMR.UMMFields import umm_property_paths
 from asf_search.constants import PLATFORM

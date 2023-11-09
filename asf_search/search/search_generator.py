@@ -14,7 +14,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.CMR.translate import get as umm_get
-from asf_search.CMR.datasets import dataset_collections, datset_product_types
+from asf_search.CMR.datasets import dataset_collections
 
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
@@ -241,3 +241,22 @@ def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
             return datset_product_types.get(dataset)(item, session=session)
 
     return ASFProduct(item, session=session)
+
+
+
+datset_product_types = {
+        'SENTINEL-1': ASFProductType.S1Product,
+        'OPERA-S1': ASFProduct,
+        'SLC-BURST': ASFProductType.S1BURSTProduct,
+        'ALOS PALSAR': ASFProductType.ALOSProduct,
+        'ALOS AVNIR-2': ASFProductType.ALOSProduct,
+        'SIR-C': ASFProductType.SIRCProduct,
+        'ARIA S1 GUNW': ASFProduct,
+        'SMAP': ASFProductType.SMAPProduct,
+        'UAVSAR': ASFProductType.UAVSARProduct,
+        'RADARSAT-1': ASFProductType.RadarsatProduct,
+        'ERS': ASFProductType.ERSProduct,
+        'JERS-1': ASFProductType.JERSProduct,
+        'AIRSAR': ASFProductType.AIRSARProduct,
+        'SEASAT': ASFProductType.SEASATProduct
+    }

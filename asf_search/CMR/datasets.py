@@ -1,5 +1,3 @@
-from asf_search import ASFProduct
-import asf_search.Products as ASFProductType
 
 dataset_collections = {
     "SENTINEL-1": {
@@ -328,21 +326,3 @@ dataset_collections = {
         "SEASAT_SAR_L1_HDF5": ["C1206500991-ASF", "C1206144699-ASF"],
     },
 }
-
-
-datset_product_types = {
-        'SENTINEL-1': ASFProductType.S1Product,
-        'OPERA-S1': ASFProduct,
-        'SLC-BURST': ASFProductType.S1BURSTProduct,
-        'ALOS PALSAR': ASFProductType.ALOSProduct,
-        'ALOS AVNIR-2': ASFProductType.ALOSProduct,
-        'SIR-C': ASFProductType.SIRCProduct,
-        'ARIA S1 GUNW': ASFProduct,
-        'SMAP': ASFProductType.SMAPProduct,
-        'UAVSAR': ASFProductType.UAVSARProduct,
-        'RADARSAT-1': ASFProductType.RadarsatProduct,
-        'ERS': ASFProductType.ERSProduct,
-        'JERS-1': ASFProductType.JERSProduct,
-        'AIRSAR': ASFProductType.AIRSARProduct,
-        'SEASAT': ASFProductType.SEASATProduct
-    }

@@ -1,4 +1,4 @@
-from asf_search import ASFProduct, ASFSession
+from asf_search import ASFSession, ASFProduct
 from asf_search.CMR import umm_property_paths
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast
 # offnadir

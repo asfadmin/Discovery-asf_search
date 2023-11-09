@@ -4,7 +4,7 @@ from copy import copy
 from asf_search.search import search, product_search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search.ASFProduct import ASFProduct
+from asf_search import ASFProduct
 from asf_search.constants import PLATFORM
 from asf_search.exceptions import ASFSearchError, ASFBaselineError
 from copy import copy

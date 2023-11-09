@@ -1,5 +1,5 @@
 import copy
-from asf_search import ASFProduct, ASFSession, ASFSearchOptions
+from asf_search import ASFSession, ASFProduct, ASFSearchOptions
 from asf_search.CMR import umm_property_paths
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast
 from asf_search.exceptions import ASFBaselineError

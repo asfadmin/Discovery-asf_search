@@ -6,7 +6,7 @@ from shapely.geometry import shape
 from shapely.ops import transform
 
 from asf_search.CMR.translate import get_additional_fields
-from asf_search import ASF_LOGGER, ASFProduct
+from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
 extra_jsonlite_fields = [
@@ -60,7 +60,7 @@ class JSONLiteStreamArray(list):
     def __len__(self):
         return self.len
 
-    def get_additional_output_fields(self, product: ASFProduct):
+    def get_additional_output_fields(self, product):
         umm = product.umm
         
         additional_fields = {}
