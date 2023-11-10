@@ -1,29 +1,29 @@
 import copy
 from asf_search import ASFSession, ASFProduct, ASFSearchOptions
-from asf_search.CMR import umm_property_paths
+from asf_search.CMR.UMMFields import float_string_as_int
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast
 from asf_search.exceptions import ASFBaselineError
 
 class ALOSProduct(ASFProduct):
     base_properties = {
-        'faradayRotation',
-        'offNadirAngle',
-        'browse',
-        'bytes',
-        'granuleType',
-        'orbit',
-        'polarization',
-        'processingDate',
-        'sensor'
+        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': int},
+        'faradayRotation': {'path': [ 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': float},
+        'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': float},
+        'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
+        'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': float_string_as_int},
+        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0], },
+        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': int},
+        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
+        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
+        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
-        self.properties['frameNumber'] = umm_cast(int, umm_get(self.umm, *umm_property_paths.get('S1AlosFrameNumber')))
         
     def get_baseline_calc_properties(self) -> dict:
-        insarBaseline = umm_cast(float, umm_get(self.umm, *umm_property_paths.get('insarBaseline')))
+        insarBaseline = umm_cast(float, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
         
         if insarBaseline is not None:
             return {
@@ -48,17 +48,8 @@ class ALOSProduct(ASFProduct):
     def _get_property_paths() -> dict:
         return {
             **ASFProduct._get_property_paths(),
-            **{
-                prop: umm_path 
-                for prop in ALOSProduct.base_properties 
-                if (umm_path := umm_property_paths.get(prop)) is not None
-            },
+            **ALOSProduct.base_properties
         }
-    
-    @staticmethod
-    def is_valid_product(item: dict):
-        return ALOSProduct.get_platform(item).lower() == 'alos'
-    
 
     def get_default_product_type(self):
         return 'L1.1'

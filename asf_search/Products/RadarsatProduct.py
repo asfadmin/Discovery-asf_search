@@ -1,5 +1,4 @@
 from asf_search import ASFSession, ASFProduct
-from asf_search.CMR import umm_property_paths
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast
 # offnadir
 # faradayRotation
@@ -28,7 +27,7 @@ class RadarsatProduct(ASFProduct):
         self.baseline = self.get_baseline_calc_properties()
     
     def get_baseline_calc_properties(self) -> dict:
-        insarBaseline = umm_cast(float, umm_get(self.umm, *umm_property_paths.get('insarBaseline')))
+        insarBaseline = umm_cast(float, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
         
         if insarBaseline is not None:
             return {
@@ -40,17 +39,9 @@ class RadarsatProduct(ASFProduct):
     @staticmethod
     def _get_property_paths() -> dict:
         return {
-            **ASFProduct()._get_property_paths(),
-             **{
-                prop: umm_path 
-                for prop in RadarsatProduct.base_properties 
-                if (umm_path := umm_property_paths.get(prop)) is not None
-            },
+            **ASFProduct._get_property_paths(),
+            **RadarsatProduct.base_properties
         }
-    
-    @staticmethod
-    def is_valid_product(item: dict):
-        return RadarsatProduct.get_platform(item).lower() == 'radarsat-1'
     
     def get_default_product_type(self):
         # if get_platform(scene_name) in ['R1', 'E1', 'E2', 'J1']:

@@ -5,6 +5,7 @@ import json
 
 from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.CMR.UMMFields import float_string_as_int
 from asf_search.download import download_url
 # from asf_search.CMR import translate_product
 from remotezip import RemoteZip
@@ -13,7 +14,6 @@ from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import cast, try_round_float, get_state_vector
 from asf_search.CMR.translate import get as umm_get
-from asf_search.CMR import umm_property_paths, umm_property_typecasting
 # Myabe just these keys????
 #start and stop time (maybe)
 # - fileID
@@ -24,20 +24,21 @@ from asf_search.CMR import umm_property_paths, umm_property_typecasting
 class ASFProduct:
     base_properties = {
             # min viable product
-            'centerLat',
-            'centerLon',
-            'stopTime', # primary search results sort key
-            'fileID', # secondary search results sort key
-            'flightDirection',
-            'pathNumber',
-            'processingLevel',
+            'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': float},
+            'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': float},
+            'stopTime': {'path': ['TemporalExtent', 'RangeDateTime', 'EndingDateTime']}, # primary search results sort key
+            'fileID': {'path': ['GranuleUR']}, # secondary search results sort key
+            'flightDirection': {'path': [ 'AdditionalAttributes', ('Name', 'ASCENDING_DESCENDING'), 'Values', 0]},
+            'pathNumber': {'path': ['AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0], 'cast': int},
+            'processingLevel': {'path': [ 'AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0]},
             
             # commonly used
-            'url',
-            'startTime',
-            'sceneName',
-            'browse',
-            'platform'
+            'url': {'path': [ 'RelatedUrls', ('Type', 'GET DATA'), 'URL']},
+            'startTime': {'path': [ 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime']},
+            'sceneName': {'path': [ 'DataGranule', 'Identifiers', ('IdentifierType', 'ProducerGranuleId'), 'Identifier']},
+            'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
+            'platform': {'path': [ 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
+            'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': float_string_as_int},
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -174,12 +175,13 @@ class ASFProduct:
         umm = item.get('umm')
 
         properties = {
-            prop: umm_get(umm, *umm_key_value) for prop, umm_key_value in self._get_property_paths().items()
+            prop: umm_entry['cast'](umm_get(umm, *umm_entry['path'])) if umm_entry.get('cast') is not None else umm_get(umm, *umm_entry['path'])
+            for prop, umm_entry in self._get_property_paths().items()
         }
 
-        for key, cast_type in umm_property_typecasting.items():
-            if properties.get(key) is not None:
-                properties[key] = cast(cast_type, properties.get(key))
+        # for key, cast_type in umm_property_typecasting.items():
+        #     if properties.get(key) is not None:
+        #         properties[key] = cast(cast_type, properties.get(key))
         
 
         if properties.get('url') is not None:
@@ -189,27 +191,17 @@ class ASFProduct:
 
         # Fallbacks
         if properties.get('beamModeType') is None:
-            properties['beamModeType'] = umm_get(umm, *umm_property_paths['beamMode'])
+            properties['beamModeType'] = umm_get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
         
         if properties.get('platform') is None:
-            properties['platform'] = umm_get(umm, *umm_property_paths['platformShortName'])
-
-        # asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B']
-        # if properties['platform'] in asf_frame_platforms:
-        #     properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
-        # else:
-        #     properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0))
+            properties['platform'] = umm_get(umm, 'Platforms', 0, 'ShortName')
 
         return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
 
     # ASFProduct subclasses define extra/override param key + UMM pathing here 
     @staticmethod
     def _get_property_paths() -> dict:
-        return {
-                prop: umm_path 
-                for prop in ASFProduct.base_properties 
-                if (umm_path := umm_property_paths.get(prop)) is not None
-            }
+        return ASFProduct.base_properties
     
     def get_baseline_calc_properties(self) -> dict:
         return {}
@@ -226,22 +218,3 @@ class ASFProduct:
         #         return 'BURST'
         #     return 'SLC'
         return None
-    
-
-    # static helper methods for product type checking
-    @staticmethod
-    def get_platform(item: dict):
-        if (platform := umm_get(item.get('umm'), *umm_property_paths['platform'])) is not None:
-            return platform
-        
-        return umm_get(item.get('umm'), *umm_property_paths['platformShortName'])
-    
-    @staticmethod
-    def get_product_type(item: dict):
-        return umm_get(item.get('umm'), *umm_property_paths['processingLevel'])
-
-    
-    @staticmethod
-    def is_valid_product(item: dict):
-        return False
-    

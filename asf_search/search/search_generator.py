@@ -245,7 +245,7 @@ def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
 
 datset_product_types = {
         'SENTINEL-1': ASFProductType.S1Product,
-        'OPERA-S1': ASFProduct,
+        'OPERA-S1': ASFProductType.OPERAS1Product,
         'SLC-BURST': ASFProductType.S1BURSTProduct,
         'ALOS PALSAR': ASFProductType.ALOSProduct,
         'ALOS AVNIR-2': ASFProductType.ALOSProduct,

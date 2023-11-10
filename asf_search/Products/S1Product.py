@@ -1,35 +1,34 @@
 import copy
 from asf_search import ASFSession, ASFProduct
 from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast
-from asf_search.CMR.UMMFields import umm_property_paths
 from asf_search.constants import PLATFORM
 
 class S1Product(ASFProduct):
     base_properties = {
-        'frameNumber',
-        'polarization',
-        'bytes',
-        'granuleType',
-        'groupID',
-        'md5sum',
-        'orbit',
-        'pgeVersion',
-        'processingDate',
-        'sensor'
+        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
+        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
+        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0], },
+        'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0], },
+        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0], },
+        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': int},
+        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion'], },
+        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
+        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
         baseline = self.get_baseline_calc_properties()
-        if None not in baseline['stateVectors']['positions'].values() and len(baseline['stateVectors'].items()) > 0:
-            self.baseline = baseline
         
-        self.properties['frameNumber'] = umm_cast(int, umm_get(self.umm, *umm_property_paths.get('S1AlosFrameNumber')))
+        if baseline is not None:
+            if None not in baseline['stateVectors']['positions'].values() and len(baseline['stateVectors'].items()) > 0:
+                self.baseline = baseline
+        
 
 
     def get_baseline_calc_properties(self) -> dict:
-        ascendingNodeTime = umm_get(self.umm, *umm_property_paths['ascendingNodeTime'])
+        ascendingNodeTime = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
 
         return {
             'stateVectors': self.get_state_vectors(),
@@ -39,10 +38,10 @@ class S1Product(ASFProduct):
     def get_state_vectors(self) -> dict:
         positions = {}
         velocities = {}
-        positions['prePosition'], positions['prePositionTime'] = umm_cast(get_state_vector, umm_get(self.umm, *umm_property_paths['sv_position_pre']))
-        positions['postPosition'], positions['postPositionTime'] = umm_cast(get_state_vector, umm_get(self.umm, *umm_property_paths['sv_position_post']))
-        velocities['preVelocity'], velocities['preVelocityTime'] = umm_cast(get_state_vector, umm_get(self.umm, *umm_property_paths['sv_velocity_pre']))
-        velocities['postVelocity'], velocities['postVelocityTime'] = umm_cast(get_state_vector, umm_get(self.umm, *umm_property_paths['sv_velocity_post']))
+        positions['prePosition'], positions['prePositionTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
+        positions['postPosition'], positions['postPositionTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
+        velocities['preVelocity'], velocities['preVelocityTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
+        velocities['postVelocity'], velocities['postVelocityTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
 
         return {
             'positions': positions,
@@ -91,18 +90,8 @@ class S1Product(ASFProduct):
     def _get_property_paths() -> dict:
         return {
             **ASFProduct._get_property_paths(),
-            **{
-                prop: umm_path 
-                for prop in S1Product.base_properties 
-                if (umm_path := umm_property_paths.get(prop)) is not None
-            },
+            **S1Product.base_properties
         }
     
     def get_default_product_type(self):
         return 'SLC'
-    
-    @staticmethod
-    def is_valid_product(item: dict):
-        platform: str = ASFProduct.get_platform(item).lower()
-
-        return platform in ['sentinel-1', 'sentinel-1a', 'sentinel-1b']
