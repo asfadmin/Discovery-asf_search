@@ -1,7 +1,10 @@
+import os
 import warnings
 from typing import List
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
+
+from urllib import parse
 
 from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -92,10 +95,14 @@ class ASFProduct:
 
         def get_additional_urls():
             output = []
-            base_filename = '.'.join(default_filename.split('.')[:-1])
             for url in self.properties['additionalUrls']:
-                extension = url.split('.')[-1]
-                urls.append((f"{base_filename}.{extension}", url))
+                if self.properties['processingLevel'] == 'BURST':
+                    # Burst XML filenames are just numbers, this makes it more indentifiable
+                    file_name = '.'.join(default_filename.split('.')[:-1]) + url.split('.')[-1]
+                else:
+                    # otherwise just use the name found in the url
+                    file_name = os.path.split(parse.urlparse(url).path)[1]
+                urls.append((f"{file_name}", url))
             
             return output
 

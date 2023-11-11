@@ -220,7 +220,7 @@ def translate_product(item: dict) -> dict:
     if properties['platform'] is None:
         properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
 
-    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B', 'ERS-1', 'ERS-2', 'JERS-1', 'RADARSAT-1']
+    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B', 'Sentinel-1 Interferogram', 'Sentinel-1 Interferogram (BETA)', 'ERS-1', 'ERS-2', 'JERS-1', 'RADARSAT-1']
     if properties['platform'] in asf_frame_platforms:
         properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
     else:
@@ -247,6 +247,20 @@ def translate_product(item: dict) -> dict:
             properties['fileName'] = properties['fileID'] + '.' + urls[0].split('.')[-1]
             properties['additionalUrls'] = [urls[1]]
 
+    
+    if (fileID:=properties.get('fileID')):
+        if fileID.startswith('OPERA'):
+            properties['beamMode'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
+            accessUrls = [*get(umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0), *get(umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0)]
+            properties['additionalUrls'] = sorted([url for url in list(set(accessUrls)) if not url.endswith('.md5') 
+                                            and not url.startswith('s3://') 
+                                            and not 's3credentials' in url 
+                                            and not url.endswith('.png')
+                                            and url != properties['url']])
+            properties['polarization'] = get(umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values')
+            
+            properties['operaBurstID'] = get(umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
+    
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 
 def get_additional_fields(umm, *field_path):

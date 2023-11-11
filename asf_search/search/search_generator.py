@@ -57,6 +57,7 @@ def search_generator(
         fullBurstID: Union[str, Iterable[str]] = None,
         collections: Union[str, Iterable[str]] = None,
         temporalBaselineDays: Union[str, Iterable[str]] = None,
+        operaBurstID: Union[str, Iterable[str]] = None,
         dataset: Union[str, Iterable[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
@@ -149,7 +150,7 @@ def process_page(items: List[ASFProduct], max_results: int, subquery_max_results
     )
 def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
     try:
-        response = session.post(url=url, data=translated_opts, timeout=30)
+        response = session.post(url=url, data=translated_opts, timeout=INTERNAL.CMR_TIMEOUT)
         response.raise_for_status()
     except HTTPError as exc:
         error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
@@ -158,7 +159,7 @@ def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(error_message) from exc
     except ReadTimeout as exc:
-        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond ({url=})') from exc
+        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "CMR_TIMEOUT" to increase. ({url=}, timeout={INTERNAL.CMR_TIMEOUT})') from exc
     
     return response
     
