@@ -1,7 +1,5 @@
-import copy
-from asf_search import ASFSession, ASFProduct
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast
-from asf_search.CMR.UMMFields import float_string_as_int
+from asf_search import ASFSession
+from asf_search.CMR.translate import get as umm_get
 from asf_search.Products import S1Product
 from asf_search.constants import PLATFORM
 

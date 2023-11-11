@@ -1,25 +1,18 @@
 from asf_search import ASFSession, ASFProduct
-from asf_search.CMR.translate import get as umm_get, cast as umm_cast
-# offnadir
-# faradayRotation
-# 'faradayRotation': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0)),
-#     'offNadirAngle': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0)),
+from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_parse_int
 
 class RadarsatProduct(ASFProduct):
     base_properties = {
-        'browse'
-        'faradayRotation',
-        'offNadirAngle',
-        'insarStackId',
-        'processingDate',
-        'sceneName',
-        'orbit',
-        'polarization',
-        'md5sum',
-        'sensor',
-        'bytes',
-        'granuleType',
-        'frameNumber'
+        'faradayRotation': {'path': [ 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
+        'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
+        'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
+        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
+        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
+        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
+        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
+        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
+        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
     }
     
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):

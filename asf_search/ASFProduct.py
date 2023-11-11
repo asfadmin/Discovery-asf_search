@@ -5,14 +5,13 @@ import json
 
 from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.CMR.UMMFields import float_string_as_int
 from asf_search.download import download_url
 # from asf_search.CMR import translate_product
 from remotezip import RemoteZip
 
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
-from asf_search.CMR.translate import cast, try_round_float, get_state_vector
+from asf_search.CMR.translate import cast, try_parse_float, try_parse_int, try_round_float, get_state_vector
 from asf_search.CMR.translate import get as umm_get
 # Myabe just these keys????
 #start and stop time (maybe)
@@ -24,12 +23,12 @@ from asf_search.CMR.translate import get as umm_get
 class ASFProduct:
     base_properties = {
             # min viable product
-            'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': float},
-            'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': float},
+            'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
+            'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': try_parse_float},
             'stopTime': {'path': ['TemporalExtent', 'RangeDateTime', 'EndingDateTime']}, # primary search results sort key
             'fileID': {'path': ['GranuleUR']}, # secondary search results sort key
             'flightDirection': {'path': [ 'AdditionalAttributes', ('Name', 'ASCENDING_DESCENDING'), 'Values', 0]},
-            'pathNumber': {'path': ['AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0], 'cast': int},
+            'pathNumber': {'path': ['AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0], 'cast': try_parse_int},
             'processingLevel': {'path': [ 'AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0]},
             
             # commonly used
@@ -38,7 +37,7 @@ class ASFProduct:
             'sceneName': {'path': [ 'DataGranule', 'Identifiers', ('IdentifierType', 'ProducerGranuleId'), 'Identifier']},
             'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
             'platform': {'path': [ 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
-            'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': float_string_as_int},
+            'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):

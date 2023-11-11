@@ -310,6 +310,17 @@ def try_round_float(value: str):
     
     return value
 
+def try_parse_int(value: str):
+    if value is not None:
+        return int(value)
+    
+    return value
+
+def try_parse_float(value: str):
+    if value is not None:
+        return float(value)
+    
+    return value
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:

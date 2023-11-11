@@ -235,10 +235,19 @@ def set_platform_alias(opts: ASFSearchOptions):
 
 def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
     shortName = umm_get(item['umm'], 'CollectionReference', 'ShortName')
+    
+    # ALOS
+    if shortName is None:
+        shortName = umm_get(item['umm'], 'Platforms', 0, 'ShortName')
+        # shortName = umm_get(item['umm'], 'CollectionReference', 'EntryTitle')
+        print(shortName)
+    
     for dataset, collections in dataset_collections.items():
-        if shortName in collections.keys():
+        if shortName in collections.keys() or shortName == dataset:
             return datset_product_types.get(dataset)(item, session=session)
 
+    if shortName in datset_product_types.keys():
+        return datset_product_types.get(shortName)(item, session=session)
     return ASFProduct(item, session=session)
 
 
@@ -247,15 +256,23 @@ datset_product_types = {
         'SENTINEL-1': ASFProductType.S1Product,
         'OPERA-S1': ASFProductType.OPERAS1Product,
         'SLC-BURST': ASFProductType.S1BURSTProduct,
-        'ALOS PALSAR': ASFProductType.ALOSProduct,
-        'ALOS AVNIR-2': ASFProductType.ALOSProduct,
+        'ALOS': ASFProductType.ALOSProduct,
+        # 'ALOS PALSAR': ASFProductType.ALOSProduct,
+        # 'ALOS AVNIR-2': ASFProductType.ALOSProduct,
         'SIR-C': ASFProductType.SIRCProduct,
         'ARIA S1 GUNW': ASFProduct,
         'SMAP': ASFProductType.SMAPProduct,
         'UAVSAR': ASFProductType.UAVSARProduct,
         'RADARSAT-1': ASFProductType.RadarsatProduct,
+        
         'ERS': ASFProductType.ERSProduct,
+        'ERS-2': ASFProductType.ERSProduct,
+        
         'JERS-1': ASFProductType.JERSProduct,
+        
         'AIRSAR': ASFProductType.AIRSARProduct,
-        'SEASAT': ASFProductType.SEASATProduct
+        'DC-8': ASFProductType.AIRSARProduct,
+        
+        'SEASAT': ASFProductType.SEASATProduct,
+        'SEASAT 1': ASFProductType.SEASATProduct
     }
