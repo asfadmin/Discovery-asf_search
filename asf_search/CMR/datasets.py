@@ -178,14 +178,6 @@ dataset_collections = {
         "ALOS_PSR_L1.1": ["C1206485527-ASF", "C1207710476-ASF", "C1239611505-ASFDEV"],
         "ALOS_PSR_L2.2": ["C2011599335-ASF", "C1239927797-ASF", "C1238733834-ASFDEV"],
         "ALOS_PALSAR_INSAR_METADATA": ["C1229740239-ASF"],
-
-        # ALOS PALSAR UMM-G doesn't have shortName, need to use Entry Title version
-        "ALOS_PALSAR_RTC_HIGH": [],
-        "ALOS_PALSAR_LEVEL1.5": [],
-        "ALOS_PALSAR_RTC_LOW": [],
-        "ALOS_PALSAR_LEVEL1.0": [],
-        "ALOS_PALSAR_LEVEL1.1": [],
-        "ALOS_PALSAR_LEVEL2.2": [],
     },
     "ALOS AVNIR-2": {
         "ALOS_AVNIR_OBS_ORI": [
@@ -224,13 +216,6 @@ dataset_collections = {
         "STS-68_META_GRD": ["C1661710600-ASF", "C1226557816-ASF", "C1234413273-ASFDEV"],
         "STS-68_META_SLC": ["C1661710603-ASF", "C1226557817-ASF", "C1234413274-ASFDEV"],
         "STS-68_SLC": ["C1661710604-ASF", "C1226557818-ASF", "C1234413275-ASFDEV"],
-
-        
-        # Some SIR-C UMM-G don't have shortName, need to use Entry Title version
-        "STS-59_METADATA_GRD": [],
-        "STS-59_METADATA_SLC": [],
-        "STS-68_METADATA_GRD": [],
-        "STS-68_METADATA_SLC": [],
     },
     "ARIA S1 GUNW": {
         "SENTINEL-1_INTERFEROGRAMS": ["C1595422627-ASF", "C1225776654-ASF"],
@@ -243,13 +228,7 @@ dataset_collections = {
         "SENTINEL-1_INTERFEROGRAMS_UNWRAPPED_PHASE": [
             "C1595765183-ASF",
             "C1225776659-ASF",
-        ],
-
-        "Sentinel-1 Interferograms (BETA)": [],
-        "Sentinel-1 Interferograms - Amplitude (BETA)": [],
-        "Sentinel-1 Interferograms - Coherence (BETA)": [],
-        "Sentinel-1 Interferograms - Connected Components (BETA)": [],
-        "Sentinel-1 Interferograms - Unwrapped Phase (BETA)": [],
+        ]
     },
     "SMAP": {
         "SPL1A_RO_METADATA_003": ["C1243122884-ASF", "C1233103964-ASF"],
@@ -288,10 +267,6 @@ dataset_collections = {
         "SPL1A_003": ["C1216074922-ASF"],
         "SPL1A_METADATA_003": ["C1216074750-ASF"],
         "SPL1A_QA_003": ["C1216074751-ASF"],
-
-        "SMAP_L1A_RADAR_RECEIVE_ONLY_QA_V003": [],
-        "SMAP_L1A_RADAR_RECEIVE_ONLY_V003": [],
-        "SMAP_L1A_RADAR_RECEIVE_ONLY_METADATA_V003": [],
     },
     "UAVSAR": {
         "UAVSAR_POL_META": ["C1214353986-ASF", "C1210487703-ASF"],
@@ -312,19 +287,6 @@ dataset_collections = {
         "UAVSAR_POL_PAULI": ["C1214354031-ASF", "C1207038647-ASF"],
         "UAVSAR_POL_SLOPE": ["C1214408428-ASF", "C1210599503-ASF"],
         "UAVSAR_POL_STOKES": ["C1214419355-ASF", "C1210599673-ASF"],
-
-        "UAVSAR_POL_METADATA": [],
-        "UAVSAR_POL_METADATA": [],
-        "UAVSAR_POLSAR_DEM": [],
-        "UAVSAR_POLSAR_INC": [],
-        "UAVSAR_POLSAR_KMZ": [],
-        "UAVSAR_POLSAR_ML_COMPLEX_GRD": [],
-        "UAVSAR_POLSAR_ML_COMPLEX_GRD_3X3": [],
-        "UAVSAR_POLSAR_ML_COMPLEX_GRD_5X5": [],
-        "UAVSAR_POLSAR_ML_COMPLEX_SLANT": [],
-        "UAVSAR_POLSAR_PAULI": [],
-        "UAVSAR_POLSAR_SLOPE": [],
-        "UAVSAR_POLSAR_STOKES": [],
     },
     "RADARSAT-1": {
         "RSAT-1_L0": ["C1206897141-ASF"],

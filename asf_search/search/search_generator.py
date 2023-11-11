@@ -239,8 +239,10 @@ def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
     # ALOS
     if shortName is None:
         shortName = umm_get(item['umm'], 'Platforms', 0, 'ShortName')
-        # shortName = umm_get(item['umm'], 'CollectionReference', 'EntryTitle')
-        print(shortName)
+        if shortName == 'SENTINEL-1A':
+            if 'Sentinel-1 Interferogram' in umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0):
+                shortName = 'ARIA S1 GUNW'
+        # print(shortName)
     
     for dataset, collections in dataset_collections.items():
         if shortName in collections.keys() or shortName == dataset:
@@ -260,7 +262,7 @@ datset_product_types = {
         # 'ALOS PALSAR': ASFProductType.ALOSProduct,
         # 'ALOS AVNIR-2': ASFProductType.ALOSProduct,
         'SIR-C': ASFProductType.SIRCProduct,
-        'ARIA S1 GUNW': ASFProduct,
+        'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
         'SMAP': ASFProductType.SMAPProduct,
         'UAVSAR': ASFProductType.UAVSARProduct,
         'RADARSAT-1': ASFProductType.RadarsatProduct,
