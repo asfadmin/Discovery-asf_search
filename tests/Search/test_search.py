@@ -1,6 +1,7 @@
 from numbers import Number
 from asf_search import ASFSearchOptions
 from asf_search.ASFProduct import ASFProduct
+from asf_search.CMR.subquery import build_subqueries
 from asf_search.CMR.translate import get
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
@@ -91,3 +92,10 @@ def run_test_dataset_search(datasets: List):
             # and check that results are limited to the expected datasets by their shortname
             for shortName in shortNames:
                 assert shortName in valid_shortnames
+
+def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
+    actual = build_subqueries(params)
+    for a, b in zip(actual, expected):
+        for a_param, b_param in zip(a, b):
+            if isinstance(b_param, list):
+                assert len(set(b_param).difference(set(a_param))) == 0

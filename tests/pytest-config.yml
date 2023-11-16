@@ -204,6 +204,11 @@ test_types:
     required_keys: dataset
     method: test_search_dataset
 
+- For running build_subquery tests:
+    required_in_title: search-build_subquery
+    required_keys: ['params', 'expected']
+    method: test_build_subqueries
+
 - For running jupyter notebook example tests:
     required_keys: notebook
     method: test_notebook_examples

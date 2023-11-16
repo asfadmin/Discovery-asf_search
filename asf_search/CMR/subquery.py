@@ -57,7 +57,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
 
             if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
                 if len(processingLevel_collections):
-                    params['collections'] = intersect1d(processingLevel_collections, params['collections']).tolist()
+                    params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
                 
                 params.pop('processingLevel_collections')
 
@@ -78,7 +78,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
             
             if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
                 if len(processingLevel_collections):
-                    params['collections'] = intersect1d(processingLevel_collections, params['collections']).tolist()
+                    params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
                
                 params.pop('processingLevel_collections')
 
@@ -90,7 +90,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
                 params['collections'] = params.get('processingLevel_collections')
         else:
             if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
-                params['collections'] = intersect1d(processingLevel_collections, params['collections']).tolist()
+                params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
     
     if params.get('processingLevel_collections') is not None:
         params.pop('processingLevel_collections')
