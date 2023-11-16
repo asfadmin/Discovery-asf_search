@@ -327,7 +327,7 @@ dataset_collections = {
 }
 
 collections_per_platform = {
-    "Sentinel-1A": [
+    "SENTINEL-1A": [
         "C1214470488-ASF",
         "C1214470533-ASF",
         "C1214470576-ASF",
@@ -413,7 +413,7 @@ collections_per_platform = {
         "C1244598379-ASFDEV",
         "C1240784657-ASFDEV",
     ],
-    "Sentinel-1B": [
+    "SENTINEL-1B": [
         "C1327985661-ASF",
         "C1327985645-ASF",
         "C1595422627-ASF",
@@ -729,7 +729,7 @@ collections_per_platform = {
 }
 
 
-collections_by_processing_level: {
+collections_by_processing_level = {
     "SLC": [
         "C1214470488-ASF",
         "C1205428742-ASF",

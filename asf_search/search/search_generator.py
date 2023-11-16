@@ -82,6 +82,7 @@ def search_generator(
     total = 0
     
     queries = build_subqueries(opts)
+    print(f"# of subqueries {len(queries)}")
     for query in queries:
         translated_opts = translate_opts(query)
         cmr_search_after_header = ""
