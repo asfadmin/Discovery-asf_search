@@ -32,6 +32,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 - Constants are no longer top level import, are now accessible through respective modules
+- `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving performance and dodging subquery system
 
 ------
 ## [v6.7.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.0...v6.7.1)

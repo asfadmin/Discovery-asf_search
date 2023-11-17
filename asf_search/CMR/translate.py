@@ -7,9 +7,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import dataset_collections, collections_per_platform
-
-from numpy import intersect1d
+from .datasets import dataset_collections
 
 import logging
 
@@ -50,32 +48,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
     
-    # if 'dataset' in dict_opts:
-    #     if 'collections' not in dict_opts:
-    #         dict_opts['collections'] = []
-        
-    #     for dataset in dict_opts['dataset']:
-    #         if collections_by_short_name := dataset_collections.get(dataset):
-    #             for concept_ids in collections_by_short_name.values():
-    #                 dict_opts['collections'].extend(concept_ids)
-    #         else:
-    #             raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
-
-    #     dict_opts.pop('dataset')
-    
-    # if 'platform' in dict_opts:
-    #     if 'collections' not in dict_opts:
-    #         dict_opts['collections'] = []
-        
-    #     missing = [platform for platform in dict_opts['platform'] if collections_per_platform.get(platform) is None]
-
-    #     # collections limit platform searches, so if there are any we don't have collections for we skip this optimization
-    #     if len(missing) == 0:
-    #         for platform in dict_opts['platform']:
-    #             if (collections := collections_per_platform.get(platform.upper())):
-    #                 dict_opts['collections'].extend(collections)
-    #         print(f"optimizing for platform search {dict_opts['platform']}")
-    #         dict_opts.pop('platform')
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
