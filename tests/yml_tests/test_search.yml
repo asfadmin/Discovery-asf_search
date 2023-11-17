@@ -322,3 +322,58 @@ tests:
             "C1234413263-ASFDEV"
         ]
         }]
+
+- test-search-build_subquery UNKNOWN_PROCESSING_TYPE:
+    params:
+        processingLevel: ["UNKNOWN_PROCESSING_TYPE"]
+        # collections: [
+        #     ]
+    expected: [{
+        # collections: [
+        # ]
+        }]
+
+- test-search-build_subquery UNKNOWN_PROCESSING_TYPE with collections:
+    params:
+        processingLevel: ["UNKNOWN_PROCESSING_TYPE"]
+        collections: [ #S1 SLC collections
+            "C1214470488-ASF",
+            "C1205428742-ASF",
+            "C1234413245-ASFDEV",
+            "C1327985661-ASF", 
+            "C1216244348-ASF", 
+            "C1234413263-ASFDEV",
+            "C1212001698-ASF" # INTERFEROMETRY
+            ]
+    expected: [{
+        collections: 
+            [ #S1 SLC collections
+                "C1214470488-ASF",
+                "C1205428742-ASF",
+                "C1234413245-ASFDEV",
+                "C1327985661-ASF", 
+                "C1216244348-ASF", 
+                "C1234413263-ASFDEV",
+                "C1212001698-ASF" # INTERFEROMETRY
+            ]
+        }]
+
+- test-search-build_subquery UNKNOWN_PROCESSING_TYPE with platform, SLC, & collection:
+    params:
+        platform: ['SENTINEL-1A', 'SENTINEL-1B', 'UAVSAR']
+        processingLevel: ["UNKNOWN_PROCESSING_TYPE", 'SLC']
+        collections: [ #S1 SLC collections
+            "C1212001698-ASF" # INTERFEROMETRY
+            ]
+    expected: [{
+        collections: 
+            [ #S1 SLC collections
+                "C1214470488-ASF",
+                "C1205428742-ASF",
+                "C1234413245-ASFDEV",
+                "C1327985661-ASF", 
+                "C1216244348-ASF", 
+                "C1234413263-ASFDEV",
+                "C1212001698-ASF" # INTERFEROMETRY
+            ]
+        }]

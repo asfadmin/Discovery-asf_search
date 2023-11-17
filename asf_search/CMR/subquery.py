@@ -45,31 +45,29 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
             params['processingLevel_collections'] = concept_id_aliases
 
     if 'dataset' in params:
-            if 'collections' not in params:
-                params['collections'] = []
+        if 'collections' not in params:
+            params['collections'] = []
+        
+        for dataset in params.pop('dataset'):
+            if collections_by_short_name := dataset_collections.get(dataset):
+                for concept_ids in collections_by_short_name.values():
+                    params['collections'].extend(concept_ids)
+            else:
+                raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
+
+        if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
+            if len(processingLevel_collections):
+                params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
             
-            for dataset in params['dataset']:
-                if collections_by_short_name := dataset_collections.get(dataset):
-                    for concept_ids in collections_by_short_name.values():
-                        params['collections'].extend(concept_ids)
-                else:
-                    raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
+            params.pop('processingLevel_collections')
 
-            if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
-                if len(processingLevel_collections):
-                    params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
-                
-                params.pop('processingLevel_collections')
-
-            if 'platform' in params:
-                params.pop('dataset')
-            params.pop('dataset')
-
+        
     elif 'platform' in params:
         if 'collections' not in params:
             params['collections'] = []
         
         missing = [platform for platform in params['platform'] if collections_per_platform.get(platform.upper()) is None]
+        
         # collections limit platform searches, so if there are any we don't have collections for we skip this optimization
         if len(missing) == 0:
             for platform in params['platform']:
