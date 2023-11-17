@@ -264,3 +264,61 @@ tests:
             "C1234413263-ASFDEV"
         ]
         }]
+
+- test-search-build_subquery INTERFEROMETRY:
+    params:
+        processingLevel: [INTERFEROMETRY]
+    expected: [{
+        collections: [
+            "C1214336045-ASF", "C1212001698-ASF"
+        ]
+        }]
+
+- test-search-build_subquery INTERFEROMETRY & SLC Collection:
+    params:
+        processingLevel: [INTERFEROMETRY]
+        collections: [ #S1 SLC collections
+            "C1214470488-ASF",
+            "C1205428742-ASF",
+            "C1234413245-ASFDEV",
+            "C1327985661-ASF", 
+            "C1216244348-ASF", 
+            "C1234413263-ASFDEV",
+            ]
+    expected: [{
+        collections: [
+            "C1214336045-ASF", 
+            "C1212001698-ASF",
+            "C1214470488-ASF",
+            "C1205428742-ASF",
+            "C1234413245-ASFDEV",
+            "C1327985661-ASF", 
+            "C1216244348-ASF", 
+            "C1234413263-ASFDEV"
+        ]
+        }]
+
+- test-search-build_subquery INTERFEROMETRY & SLC Collection with duplicate INTERFEROMETRY collection:
+    params:
+        processingLevel: [INTERFEROMETRY]
+        collections: [ #S1 SLC collections
+            "C1214470488-ASF",
+            "C1205428742-ASF",
+            "C1234413245-ASFDEV",
+            "C1327985661-ASF", 
+            "C1216244348-ASF", 
+            "C1234413263-ASFDEV",
+            "C1212001698-ASF" # INTERFEROMETRY
+            ]
+    expected: [{
+        collections: [
+            "C1214336045-ASF", 
+            "C1212001698-ASF",
+            "C1214470488-ASF",
+            "C1205428742-ASF",
+            "C1234413245-ASFDEV",
+            "C1327985661-ASF", 
+            "C1216244348-ASF", 
+            "C1234413263-ASFDEV"
+        ]
+        }]
