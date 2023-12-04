@@ -31,9 +31,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Adds constants for `dataset` keyword, under `asf_search.DATASET`
 - Adds CALVAL concept-ids to 'OPERA-S1' dataset
 
-### Changed
-- Constants are no longer top level import, are now accessible through respective modules
-
 ------
 ## [v6.7.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.0...v6.7.1)
 ### Fixed
