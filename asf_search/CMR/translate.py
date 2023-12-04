@@ -195,7 +195,15 @@ def translate_product(item: dict) -> dict:
     velocities['postVelocity'], velocities['postVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
     ascendingNodeTime = get(umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
 
-
+    for key in ['prePositionTime','postPositionTime','preVelocityTime','postVelocityTime']:
+        if positions.get(key) is not None:
+            if not positions.get(key).endswith('Z'):
+                positions[key] += 'Z'
+    
+    if ascendingNodeTime is not None:
+        if not ascendingNodeTime.endswith('Z'):
+            ascendingNodeTime += 'Z'
+    
     stateVectors = {
         'positions': positions,
         'velocities': velocities
