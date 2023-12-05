@@ -58,8 +58,8 @@ def run_test_valid_state_vectors(reference, output):
 def clear_baseline(resource, product: ASFProduct):
 # Baseline values can be restored from UMM in asfProduct constructor, 
 # this erases them again if the resource omitted them from the product
-    if resource['baseline'].get('stateVectors', False).get('positions', False) == {}:
-        product.baseline['stateVectors']['positions'] = {}
-        product.baseline['stateVectors']['velocities'] = {}
+    if (stateVectors:=resource['baseline'].get('stateVectors')):
+        if stateVectors.get('positions') == {}:
+            product.baseline['stateVectors'] = {'positions': {}, 'velocities': {}}
     
     return product
