@@ -60,6 +60,6 @@ def clear_baseline(resource, product: ASFProduct):
 # this erases them again if the resource omitted them from the product
     if (stateVectors:=resource['baseline'].get('stateVectors')):
         if stateVectors.get('positions') == {}:
-            product.baseline['stateVectors'] = {'positions': {}, 'velocities': {}}
+            product.baseline = {'stateVectors': {'positions': {}, 'velocities': {}}}
     
     return product

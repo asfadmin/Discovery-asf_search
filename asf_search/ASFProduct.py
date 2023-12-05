@@ -9,18 +9,12 @@ from urllib import parse
 from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.download import download_url
-# from asf_search.CMR import translate_product
 from remotezip import RemoteZip
 
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
-from asf_search.CMR.translate import cast, try_parse_float, try_parse_int, try_round_float, get_state_vector
+from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.CMR.translate import get as umm_get
-# Myabe just these keys????
-#start and stop time (maybe)
-# - fileID
-# - platform
-# - geoemetry
 
 
 class ASFProduct:
@@ -143,8 +137,6 @@ class ASFProduct:
 
         :return: ASFSearchOptions describing appropriate options for building a stack from this product
         """
-        # from .search.baseline_search import get_stack_opts
-
         return {}
 
     def centroid(self) -> Point:
@@ -185,11 +177,6 @@ class ASFProduct:
             for prop, umm_entry in self._get_property_paths().items()
         }
 
-        # for key, cast_type in umm_property_typecasting.items():
-        #     if properties.get(key) is not None:
-        #         properties[key] = cast(cast_type, properties.get(key))
-        
-
         if properties.get('url') is not None:
             properties['fileName'] = properties['url'].split('/')[-1]
         else:
@@ -214,16 +201,6 @@ class ASFProduct:
     
     @staticmethod
     def get_default_product_type():
-        # scene_name = product.properties['sceneName']
-        
-        # if get_platform(scene_name) in ['AL']:
-        #     return 'L1.1'
-        # if get_platform(scene_name) in ['R1', 'E1', 'E2', 'J1']:
-        #     return 'L0'
-        # if get_platform(scene_name) in ['S1']:
-        #     if product.properties['processingLevel'] == 'BURST':
-        #         return 'BURST'
-        #     return 'SLC'
         return None
 
     def is_valid_reference(self):
