@@ -1,5 +1,5 @@
 import copy
-from asf_search import ASFSession, ASFProduct
+from asf_search import ASFSearchOptions, ASFSession, ASFProduct
 from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_int
 from asf_search.constants import PLATFORM
 
@@ -48,18 +48,29 @@ class S1Product(ASFProduct):
             'velocities': velocities
         }
     
-    def get_stack_opts(self):
+    def get_stack_opts(self, 
+                       opts: ASFSearchOptions = None):
 
-        # stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-        return {
-            'processingLevel': 'SLC',
-            'beamMode': [self.properties['beamModeType']],
-            'flightDirection': self.properties['flightDirection'],
-            'relativeOrbit': [int(self.properties['pathNumber'])], # path
-            'platform': [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B],
-            'polarization': ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH'],
-            'intersectsWith': self.centroid().wkt
-        }
+        stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
+        
+        stack_opts.processingLevel = S1Product.get_default_product_type()
+        stack_opts.beamMode =  [self.properties['beamModeType']]
+        stack_opts.flightDirection =  self.properties['flightDirection']
+        stack_opts.relativeOrbit =  [int(self.properties['pathNumber'])], # path
+        stack_opts.platform =  [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
+        stack_opts.polarization =  ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH']
+        stack_opts.intersectsWith =  self.centroid().wkt
+        
+        return stack_opts
+        # return {
+        #     'processingLevel': 'SLC',
+        #     'beamMode': [self.properties['beamModeType']],
+        #     'flightDirection': self.properties['flightDirection'],
+        #     'relativeOrbit': [int(self.properties['pathNumber'])], # path
+        #     'platform': [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B],
+        #     'polarization': ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH'],
+        #     'intersectsWith': self.centroid().wkt
+        # }
         # if reference.properties['processingLevel'] == 'BURST':
         #     stack_opts.processingLevel = 'BURST'
         # else:
@@ -93,5 +104,15 @@ class S1Product(ASFProduct):
             **S1Product.base_properties
         }
     
-    def get_default_product_type(self):
+    @staticmethod
+    def get_default_product_type():
         return 'SLC'
+
+    def is_valid_reference(self):
+        return self.valid_state_vectors()
+    
+    def valid_state_vectors(self):
+        for key in ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']:
+            if key not in self.baseline['stateVectors']['positions'] or self.baseline['stateVectors']['positions'][key] == None:
+                return False
+        return True

@@ -54,5 +54,13 @@ class OPERAS1Product(S1Product):
             **OPERAS1Product.base_properties
         }
     
-    def get_default_product_type(self):
+    @staticmethod
+    def get_default_product_type():
         return 'CSLC'
+    
+    def is_valid_reference(self):
+        # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)
+        if 'insarBaseline' not in self.baseline:
+            raise ValueError('No baseline values available for precalculated dataset')
+        
+        return True

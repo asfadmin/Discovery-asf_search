@@ -25,5 +25,6 @@ class ARIAS1GUNWProduct(S1Product):
             **ARIAS1GUNWProduct.base_properties
         }
     
-    def get_default_product_type(self):
-        return 'BURST'
+    @staticmethod
+    def get_default_product_type():
+        return None

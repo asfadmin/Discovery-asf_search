@@ -33,7 +33,7 @@ def stack_from_product(
 
     opts = (ASFSearchOptions() if opts is None else copy(opts))
 
-    opts.merge_args(**reference.get_stack_opts())
+    opts.merge_args(**dict(reference.get_stack_opts()))
 
     stack = search(opts=opts)
     is_complete = stack.searchComplete

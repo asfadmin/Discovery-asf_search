@@ -22,17 +22,9 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
 
     return ASFSearchResults(stack), warnings
 
-def valid_state_vectors(product: ASFProduct):
-    if product is None:
-        raise ValueError('Attempting to check state vectors on None, this is fatal')
-    for key in ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']:
-        if key not in product.baseline['stateVectors']['positions'] or product.baseline['stateVectors']['positions'][key] == None:
-            return False
-    return True
-
 def find_new_reference(stack: ASFSearchResults):
     for product in stack:
-        if valid_state_vectors(product):
+        if product.is_valid_reference():
             return product
     return None
 
@@ -42,15 +34,12 @@ def check_reference(reference: ASFProduct, stack: ASFSearchResults):
         reference = stack[0]
         warnings = [{'NEW_REFERENCE': 'A new reference scene had to be selected in order to calculate baseline values.'}]
 
-    if get_platform(reference.properties['sceneName']) in precalc_datasets:
-            if 'insarBaseline' not in reference.baseline:
-                raise ValueError('No baseline values available for precalculated dataset')
-    else:
-        if not valid_state_vectors(reference): # the reference might be missing state vectors, pick a valid reference, replace above warning if it also happened
-            reference = find_new_reference(stack)
-            if reference == None:
-                raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
-            warnings = [{'NEW_REFERENCE': 'A new reference had to be selected in order to calculate baseline values.'}]
+    # non-s1 is_valid_reference raise an error, while we try to find a valid s1 reference
+    # do we want this behaviour for pre-calc stacks?
+    if not reference.is_valid_reference():
+        reference = find_new_reference(stack)
+        if reference == None:
+            raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
 
     return reference, stack, warnings
 

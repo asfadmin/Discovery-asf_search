@@ -143,9 +143,9 @@ class ASFProduct:
 
         :return: ASFSearchOptions describing appropriate options for building a stack from this product
         """
-        from .search.baseline_search import get_stack_opts
+        # from .search.baseline_search import get_stack_opts
 
-        return get_stack_opts(reference=self)
+        return {}
 
     def centroid(self) -> Point:
         """
@@ -212,7 +212,8 @@ class ASFProduct:
     def get_baseline_calc_properties(self) -> dict:
         return {}
     
-    def get_default_product_type(self):
+    @staticmethod
+    def get_default_product_type():
         # scene_name = product.properties['sceneName']
         
         # if get_platform(scene_name) in ['AL']:
@@ -224,3 +225,6 @@ class ASFProduct:
         #         return 'BURST'
         #     return 'SLC'
         return None
+
+    def is_valid_reference(self):
+        return False

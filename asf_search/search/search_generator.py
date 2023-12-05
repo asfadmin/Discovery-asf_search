@@ -260,8 +260,6 @@ datset_product_types = {
         'OPERA-S1': ASFProductType.OPERAS1Product,
         'SLC-BURST': ASFProductType.S1BURSTProduct,
         'ALOS': ASFProductType.ALOSProduct,
-        # 'ALOS PALSAR': ASFProductType.ALOSProduct,
-        # 'ALOS AVNIR-2': ASFProductType.ALOSProduct,
         'SIR-C': ASFProductType.SIRCProduct,
         'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
         'SMAP': ASFProductType.SMAPProduct,

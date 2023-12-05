@@ -1,4 +1,5 @@
-from asf_search import ASFSession
+import copy
+from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import get, try_parse_int
 from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast
@@ -17,7 +18,7 @@ class S1BURSTProduct(S1Product):
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.properties['sceneName'] = self.properties['fileID']
-        self.properties['bytes'] = umm_get(self.umm, ['AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0])
+        self.properties['bytes'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0)
         self.properties['burst'] = {
             'absoluteBurstID': self.properties.pop('absoluteBurstID'),
             'relativeBurstID': self.properties.pop('relativeBurstID'),
@@ -35,6 +36,14 @@ class S1BURSTProduct(S1Product):
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
             self.properties['additionalUrls'] = [urls[1]]
 
+    def get_stack_opts(self, opts: ASFSearchOptions = None):
+        stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
+        
+        stack_opts.processingLevel = S1BURSTProduct.get_default_product_type()
+        stack_opts.fullBurstID = self.properties['burst']['fullBurstID']
+        stack_opts.polarization = [self.properties['polarization']]
+        return stack_opts
+    
     @staticmethod
     def _get_property_paths() -> dict:
         return {
@@ -42,5 +51,6 @@ class S1BURSTProduct(S1Product):
             **S1BURSTProduct.base_properties
         }
     
-    def get_default_product_type(self):
+    @staticmethod
+    def get_default_product_type():
         return 'BURST'

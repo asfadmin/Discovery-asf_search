@@ -31,17 +31,17 @@ class ALOSProduct(ASFProduct):
         
         return None
     
-    def get_stack_opts(self, reference: ASFProduct, 
+    def get_stack_opts(self, 
         opts: ASFSearchOptions = None):
 
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-        stack_opts.processingLevel = self.get_default_product_type(reference)
+        stack_opts.processingLevel = ALOSProduct.get_default_product_type()
 
-        if reference.properties['insarStackId'] not in [None, 'NA', 0, '0']:
-            stack_opts.insarStackId = reference.properties['insarStackId']
+        if self.properties.get('insarStackId') not in [None, 'NA', 0, '0']:
+            stack_opts.insarStackId = self.properties['insarStackId']
             return stack_opts
         
-        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {reference.properties["fileID"]}')
+        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {self.properties["fileID"]}')
         
     @staticmethod
     def _get_property_paths() -> dict:
@@ -50,5 +50,13 @@ class ALOSProduct(ASFProduct):
             **ALOSProduct.base_properties
         }
 
-    def get_default_product_type(self):
+    @staticmethod
+    def get_default_product_type():
         return 'L1.1'
+    
+    def is_valid_reference(self):
+        # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)
+        if 'insarBaseline' not in self.baseline:
+            raise ValueError('No baseline values available for precalculated dataset')
+        
+        return True
