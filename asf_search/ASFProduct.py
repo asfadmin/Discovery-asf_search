@@ -1,6 +1,5 @@
 import os
 import warnings
-from typing import List
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
 

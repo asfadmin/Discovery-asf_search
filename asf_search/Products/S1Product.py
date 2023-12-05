@@ -56,7 +56,7 @@ class S1Product(ASFProduct):
         stack_opts.processingLevel = S1Product.get_default_product_type()
         stack_opts.beamMode = [self.properties['beamModeType']]
         stack_opts.flightDirection = self.properties['flightDirection']
-        stack_opts.relativeOrbit = [int(self.properties['pathNumber'])], # path
+        stack_opts.relativeOrbit = [int(self.properties['pathNumber'])] # path
         stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
         stack_opts.polarization = ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH']
         stack_opts.intersectsWith = self.centroid().wkt

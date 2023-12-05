@@ -1,7 +1,9 @@
 from typing import List
 from numbers import Number
 from asf_search.baseline.stack import find_new_reference, get_baseline_from_stack, get_default_product_type
-from asf_search import ASFProduct, ASFSearchResults
+from asf_search import ASFProduct, ASFSearchResults, ASFSession
+from asf_search.search.search_generator import as_ASFProduct
+
 import pytest
 def run_test_find_new_reference(stack: List, output_index: Number) -> None:
     """
@@ -11,7 +13,7 @@ def run_test_find_new_reference(stack: List, output_index: Number) -> None:
     if stack == []:
         assert(find_new_reference(stack) == None)
     else:
-        products = [ASFProduct(product) for product in stack]
+        products = [as_ASFProduct(product, ASFSession()) for product in stack]
         for idx, product in enumerate(products):
             product = clear_baseline(stack[idx], product)
         assert find_new_reference(products).properties['sceneName'] == stack[output_index]['properties']['sceneName']
@@ -20,8 +22,8 @@ def run_test_get_default_product_type(product: ASFProduct, product_type: str) ->
     assert get_default_product_type(product) == product_type
     
 def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
-    reference = ASFProduct(reference)
-    stack = ASFSearchResults([ASFProduct(product) for product in stack])
+    reference = as_ASFProduct(reference, ASFSession())
+    stack = ASFSearchResults([as_ASFProduct(product, ASFSession()) for product in stack])
     
     if error == None:
         stack, warnings = get_baseline_from_stack(reference, stack)
@@ -47,7 +49,7 @@ def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
 
 def run_test_valid_state_vectors(reference, output):
     if reference != None:
-        product = ASFProduct(reference)
+        product = as_ASFProduct(reference, ASFSession())
         clear_baseline(reference, product)
         assert output == product.valid_state_vectors()
         return
