@@ -1,6 +1,6 @@
 from typing import List
 from numbers import Number
-from asf_search.baseline.stack import find_new_reference, get_baseline_from_stack, get_default_product_type, valid_state_vectors
+from asf_search.baseline.stack import find_new_reference, get_baseline_from_stack, get_default_product_type
 from asf_search import ASFProduct, ASFSearchResults
 import pytest
 def run_test_find_new_reference(stack: List, output_index: Number) -> None:
@@ -49,11 +49,11 @@ def run_test_valid_state_vectors(reference, output):
     if reference != None:
         product = ASFProduct(reference)
         clear_baseline(reference, product)
-        assert output == valid_state_vectors(product)
+        assert output == product.valid_state_vectors()
         return
     
     with pytest.raises(ValueError):
-        valid_state_vectors(reference)
+        reference.valid_state_vectors()
 
 def clear_baseline(resource, product: ASFProduct):
 # Baseline values can be restored from UMM in asfProduct constructor, 
