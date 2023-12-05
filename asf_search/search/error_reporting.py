@@ -1,6 +1,5 @@
 from typing import Dict
-from asf_search import ASFSearchOptions
-from asf_search import INTERNAL
+from asf_search import ASFSearchOptions, ERROR_REPORTING_ENDPOINT
 import requests
 import logging
 
@@ -20,7 +19,7 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
     message=f"Error Message: {str(message)}\nUser Agent: {user_agent} \
     \nSearch Options: {{\n{search_options_list}\n}}"
 
-    response = requests.post(f'https://{INTERNAL.ERROR_REPORTING_ENDPOINT}', data={'Message': "This error message and info was automatically generated:\n\n" + message})
+    response = requests.post(f'https://{ERROR_REPORTING_ENDPOINT}', data={'Message': "This error message and info was automatically generated:\n\n" + message})
 
     try:
         response.raise_for_status()
