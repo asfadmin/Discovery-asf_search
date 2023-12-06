@@ -17,6 +17,15 @@ tests:
 - test-ASFSearch S1 Resp 1:
     response: S1_baseline_stack.yml
 
+- test-ASFSearch ERS Resp 1:
+    response: Fairbanks_ers_stack.yml
+
+- test-ASFSearch JERS Resp 1:
+    response: JERS_stack.yml
+
+- test-ASFSearch RADARSAT Resp 1:
+    response: RADARSAT_stack.yml
+
 - test-ASFSearch-search-valid Alos:
     parameters: *alos_parameters
     answer: Alos_response_maxResults3.yml

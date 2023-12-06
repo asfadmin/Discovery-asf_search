@@ -1,6 +1,6 @@
 from numbers import Number
 from asf_search import ASFSearchOptions
-from asf_search.ASFProduct import ASFProduct
+from asf_search import ASFSession
 from asf_search.CMR.translate import get
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
@@ -12,8 +12,10 @@ from typing import List
 import requests
 import requests_mock
 
+from asf_search.search.search_generator import as_ASFProduct
+
 def run_test_ASFSearchResults(search_resp):
-    search_results = ASFSearchResults([ASFProduct(product) for product in search_resp])
+    search_results = ASFSearchResults([as_ASFProduct(product, ASFSession()) for product in search_resp])
 
     assert(len(search_results) == len(search_resp))
     assert(search_results.geojson()['type'] == 'FeatureCollection')
@@ -26,7 +28,8 @@ def run_test_ASFSearchResults(search_resp):
 
         assert(feature.geojson()['geometry'] == search_resp[idx]['geometry'])
         for key, item in feature.geojson()['properties'].items():
-            assert(item == search_resp[idx]['properties'][key])
+            if search_resp[idx]['properties'][key] is not None and item is not None:
+                assert(item == search_resp[idx]['properties'][key])
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:

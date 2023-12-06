@@ -16,7 +16,8 @@ class JERSProduct(ASFProduct):
         'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
         'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
         'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime']},
-        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName']}
+        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName']},
+        'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]}
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):

@@ -3,7 +3,7 @@ from unittest.mock import patch
 from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search import ASFSession
-from asf_search.search.baseline_search import get_stack_opts, stack_from_id, stack_from_product
+from asf_search.search.baseline_search import stack_from_id, stack_from_product
 from asf_search.baseline.stack import calculate_temporal_baselines, get_default_product_type
 import pytest
 

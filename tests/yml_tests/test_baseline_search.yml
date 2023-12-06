@@ -23,6 +23,14 @@ tests:
     product: SLC_BURST.yml
     stack: SLC_BURST_stack.yml
 
+- Test get test-temporal-baseline test-product-stack JERS Params:
+    product: JERS.yml
+    stack: JERS_stack.yml
+
+- Test get test-temporal-baseline test-product-stack RADARSAT Params:
+    product: RADARSAT.yml
+    stack: RADARSAT_stack.yml
+
 - test-stack-id empty ID:
     stack_id: ''
     stack_reference: Alos_response.yml

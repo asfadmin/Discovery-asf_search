@@ -23,6 +23,8 @@ class ERSProduct(ASFProduct):
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
+
+        self.properties['frameNumber'] = str(self.properties['frameNumber'])
         
     def get_baseline_calc_properties(self) -> dict:
         insarBaseline = umm_cast(float, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))

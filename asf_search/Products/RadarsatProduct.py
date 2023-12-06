@@ -15,6 +15,7 @@ class RadarsatProduct(ASFProduct):
         'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
         'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
+        'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]}
     }
     
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
