@@ -101,19 +101,21 @@ class JSONLiteStreamArray(list):
             if p[i] == 'NA' or p[i] == '':
                 p[i] = None
         try:
-            if float(p['offNadirAngle']) < 0:
-                p['offNadirAngle'] = None
+            if p.get('offNadirAngle'):
+                if float(p['offNadirAngle']) < 0:
+                    p['offNadirAngle'] = None
         except TypeError:
             pass
 
         try:
-            if float(p['pathNumber']) < 0:
-                p['pathNumber'] = None
+            if p.get('patNumber'):
+                if float(p['pathNumber']) < 0:
+                    p['pathNumber'] = None
         except TypeError:
             pass
 
         try:
-            if p['groupID'] is None:
+            if p.get('groupID') is None:
                 p['groupID'] = p['sceneName']
         except TypeError:
             pass
@@ -142,34 +144,34 @@ class JSONLiteStreamArray(list):
         result = {
             'beamMode': p['beamModeType'],
             'browse': [] if p.get('browse') is None else p.get('browse'),
-            'canInSAR': p['canInsar'],
-            'dataset': p['platform'],
-            'downloadUrl': p['url'],
-            'faradayRotation': p['faradayRotation'], # ALOS
-            'fileName': p['fileName'],
-            'flightDirection': p['flightDirection'],
-            'flightLine': p['flightLine'],
-            'frame': p['frameNumber'],
-            'granuleName': p['sceneName'],
-            'groupID': p['groupID'],
-            'instrument': p['sensor'],
-            'missionName': p['missionName'],
-            'offNadirAngle': str(p['offNadirAngle']) if p['offNadirAngle'] is not None else None, # ALOS
+            'canInSAR': p.get('canInsar'),
+            'dataset': p.get('platform'),
+            'downloadUrl': p.get('url'),
+            'faradayRotation': p.get('faradayRotation'), # ALOS
+            'fileName': p.get('fileName'),
+            'flightDirection': p.get('flightDirection'),
+            'flightLine': p.get('flightLine'),
+            'frame': p.get('frameNumber'),
+            'granuleName': p.get('sceneName'),
+            'groupID': p.get('groupID'),
+            'instrument': p.get('sensor'),
+            'missionName': p.get('missionName'),
+            'offNadirAngle': str(p['offNadirAngle']) if p.get('offNadirAngle') is not None else None, # ALOS
             'orbit': [str(p['orbit'])],
-            'path': p['pathNumber'],
-            'polarization': p['polarization'],
-            'pointingAngle': p['pointingAngle'],
-            'productID': p['fileID'],
-            'productType': p['processingLevel'],
-            'productTypeDisplay': p['processingTypeDisplay'],
-            'sizeMB': p['sizeMB'],
+            'path': p.get('pathNumber'),
+            'polarization': p.get('polarization'),
+            'pointingAngle': p.get('pointingAngle'),
+            'productID': p.get('fileID'),
+            'productType': p.get('processingLevel'),
+            'productTypeDisplay': p.get('processingTypeDisplay'),
+            'sizeMB': p.get('sizeMB'),
             'stackSize': p.get('insarStackSize'), # Used for datasets with precalculated stacks
-            'startTime': p['startTime'],
-            'stopTime': p['stopTime'],
-            'thumb': p['thumb'],
+            'startTime': p.get('startTime'),
+            'stopTime': p.get('stopTime'),
+            'thumb': p.get('thumb'),
             'wkt': wrapped,
             'wkt_unwrapped': unwrapped,
-            'pgeVersion': p['pgeVersion']
+            'pgeVersion': p.get('pgeVersion')
         }
         
         for key in result.keys():

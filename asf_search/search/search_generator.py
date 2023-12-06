@@ -267,6 +267,7 @@ datset_product_types = {
         'RADARSAT-1': ASFProductType.RadarsatProduct,
         
         'ERS': ASFProductType.ERSProduct,
+        'ERS-1': ASFProductType.ERSProduct,
         'ERS-2': ASFProductType.ERSProduct,
         
         'JERS-1': ASFProductType.JERSProduct,

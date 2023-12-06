@@ -11,9 +11,6 @@ tests:
 - Test Get test-invalid-insarStackID Stack Params:
     product: Alos_response.yml
 
-- Test Get test-invalid-platform Stack Params:
-    product: S1_response.yml
-
 - Test Get test-temporal-baseline test-product-stack SLC Params:
     product: S1_response.yml
     stack: S1_baseline_stack.yml

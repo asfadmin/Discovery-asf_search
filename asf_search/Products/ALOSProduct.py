@@ -15,11 +15,15 @@ class ALOSProduct(ASFProduct):
         'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
         'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
         'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
+        'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
+
+        if self.properties.get('groupID') is None:
+            self.properties['groupID'] = self.properties['sceneName']
         
     def get_baseline_calc_properties(self) -> dict:
         insarBaseline = umm_cast(float, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
@@ -28,9 +32,7 @@ class ALOSProduct(ASFProduct):
             return {
                 'insarBaseline': insarBaseline        
             }
-        
-        return None
-    
+
     def get_stack_opts(self, 
         opts: ASFSearchOptions = None):
 

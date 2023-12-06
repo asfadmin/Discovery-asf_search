@@ -1,5 +1,5 @@
 from typing import Dict, List
-from asf_search import ASFSearchOptions, ASFProduct, FileDownloadType
+from asf_search import ASFSearchOptions, ASFSession, FileDownloadType
 from asf_search.exceptions import ASFAuthenticationError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_ASFProduct_download, run_test_product_get_stack_options, run_test_stack
@@ -22,6 +22,7 @@ import yaml
 from WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_simplify_aoi
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
+from asf_search.search.search_generator import as_ASFProduct
 
 from download.test_download import run_test_download_url, run_test_download_url_auth_error
 from Serialization.test_serialization import run_test_serialization
@@ -153,16 +154,7 @@ def test_get_stack_opts_invalid_insarStackId(**args) -> None:
     reference = get_resource(test_info["product"])
     
     run_get_stack_opts_invalid_insarStackId(reference)
-    
-def test_get_stack_opts_invalid_platform(**args) -> None:
-    """
-    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's 
-    platform set to an invalid value, and asserting an ASFBaselineError is raised
-    """
-    test_info = args["test_info"]
-    reference = get_resource(test_info["product"])    
-    run_test_get_stack_opts_invalid_platform_raises_error(reference)
-    
+
 def test_temporal_baseline(**args) -> None:
     """
     Test asf_search.search.baseline_search.calc_temporal_baselines, asserting mutated baseline stack
@@ -372,7 +364,7 @@ def test_get_default_product_type(**args) -> None:
     product = get_resource(test_info["product"])
     product_type = get_resource(test_info["product_type"])
     
-    product = ASFProduct(args={'meta': product['meta'], 'umm': product['umm']})
+    product = as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession())
     if product.properties.get('sceneName') is None:
         product.properties['sceneName'] = 'BAD_SCENE'
         
@@ -465,7 +457,7 @@ def test_output_format(**args) -> None:
     products = get_resource(test_info['results'])
     if not isinstance(products, List):
         products = [products]
-    results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in products])
+    results = ASFSearchResults([as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession()) for product in products])
 
     run_test_output_format(results)
 

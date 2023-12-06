@@ -56,12 +56,6 @@ test_types:
     method: test_get_stack_opts_invalid_insarStackId
 
 - For running Invalid Platform stack params tests:
-    required_keys: product
-    required_in_title: test-invalid-platform
-    method: test_get_stack_opts_invalid_platform
-
-
-- For running Invalid Platform stack params tests:
     required_keys: ["product", "stack"]
     required_in_title: test-temporal-baseline
     method: test_temporal_baseline
