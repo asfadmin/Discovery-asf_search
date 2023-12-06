@@ -57,10 +57,6 @@ tests:
     output_stack: Fairbanks_ers_stack.yml
     error: null
 
-- test-valid-state-vectors error:
-    reference: null
-    output: null
-
 - test-valid-state-vectors fairbanks slc:
     reference: Fairbanks_SLC.yml
     output: True

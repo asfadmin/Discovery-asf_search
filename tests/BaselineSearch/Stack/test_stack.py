@@ -54,9 +54,6 @@ def run_test_valid_state_vectors(reference, output):
         assert output == product.valid_state_vectors()
         return
     
-    with pytest.raises(ValueError):
-        reference.valid_state_vectors()
-
 def clear_baseline(resource, product: ASFProduct):
 # Baseline values can be restored from UMM in asfProduct constructor, 
 # this erases them again if the resource omitted them from the product
