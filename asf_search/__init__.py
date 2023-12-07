@@ -26,6 +26,7 @@ from .ASFSearchOptions import ASFSearchOptions, validators
 from .Products import *
 from .exceptions import *
 from .constants import *
+from .exceptions import *
 from .health import *
 from .search import *
 from .download import *
