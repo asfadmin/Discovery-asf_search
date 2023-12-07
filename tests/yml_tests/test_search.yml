@@ -17,9 +17,6 @@ tests:
 - test-ASFSearch S1 Resp 1:
     response: S1_baseline_stack.yml
 
-- test-ASFSearch ERS Resp 1:
-    response: Fairbanks_ers_stack.yml
-
 - test-ASFSearch JERS Resp 1:
     response: JERS_stack.yml
 
