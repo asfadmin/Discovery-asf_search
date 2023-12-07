@@ -3,10 +3,7 @@
     "properties":
         {
             "beamModeType": "STD",
-            "browse":
-                [
-                    "https://datapool.asf.alaska.edu/BROWSE/E1/E1_19942_STD_F287.jpg",
-                ],
+            "browse": "https://datapool.asf.alaska.edu/BROWSE/E1/E1_19942_STD_F287.jpg",
             "bytes": 58750445,
             "centerLat": 64.9813,
             "centerLon": -147.7602,
