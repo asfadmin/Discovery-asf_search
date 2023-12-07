@@ -6,7 +6,7 @@ from asf_search.exceptions import ASFBaselineError
 
 class ERSProduct(ASFProduct):
     base_properties = {
-        'browse': { 'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
+        'browse': { 'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')]), 0]},
         'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
         'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
