@@ -26,10 +26,21 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
+### Adds
+- Adds constants for `dataset` keyword, under `asf_search.DATASET`
+- Adds CALVAL concept-ids to 'OPERA-S1' dataset
+- Adds `validityStartDate` for applicable OPERA-S1 products
+
+### Fixed
+- Fixes OPERA-S1 dataset `RTC-STATIC` and `CSLC-STATIC` breaking returned results, sorts by `validityStartDate` in place of `stopTime`
+
+------
 ## [v6.7.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.0...v6.7.1)
 ### Fixed
 - Fixes issue with certain S1 products not stacking properly in certain environments, which caused null `perpendicularBaseline` values
 
+------
 ## [v6.7.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...v6.7.0)
 ### Added
 - Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page
