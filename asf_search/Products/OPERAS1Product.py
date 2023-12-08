@@ -50,3 +50,11 @@ class OPERAS1Product(S1Product):
     
     def is_valid_reference(self):
         return False
+    
+    def get_sort_keys(self):
+        keys = super().get_sort_keys()
+
+        if keys[0] is None:
+            keys = self.properties.get('validityStartDate'), keys[1]
+        
+        return keys

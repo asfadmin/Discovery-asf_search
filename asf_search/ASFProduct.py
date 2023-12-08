@@ -205,3 +205,7 @@ class ASFProduct:
 
     def is_valid_reference(self):
         return False
+    
+    def get_sort_keys(self):
+        return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
+    

@@ -17,6 +17,9 @@ tests:
 - test-ASFSearch S1 Resp 1:
     response: S1_baseline_stack.yml
 
+- test-ASFSearch OPERA Resp 1:
+    response: OPERA_Products.yml
+
 - test-ASFSearch JERS Resp 1:
     response: JERS_stack.yml
 

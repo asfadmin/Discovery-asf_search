@@ -97,6 +97,6 @@ def search(
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
     
-    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
     
     return results
