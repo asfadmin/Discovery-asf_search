@@ -97,6 +97,19 @@ def search(
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
     
-    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    results.sort(key=sort_key, reverse=True)
     
     return results
+
+def sort_key(p):
+    temporal_key = p.properties.get('stopTime')
+
+    if temporal_key is None:
+        temporal_key = p.properties.get('validityStartDate', '')
+    
+    scene_key = p.properties.get('fileID')
+
+    if scene_key is None:
+        scene_key = p.properties.get('sceneName')
+    
+    return (temporal_key, scene_key)

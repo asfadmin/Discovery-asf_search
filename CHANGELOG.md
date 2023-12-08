@@ -30,6 +30,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Adds
 - Adds constants for `dataset` keyword, under `asf_search.DATASET`
 - Adds CALVAL concept-ids to 'OPERA-S1' dataset
+- Adds `validityStartDate` for applicable OPERA-S1 products
+
+### Fixed
+- Fixes OPERA-S1 dataset `RTC-STATIC` and `CSLC-STATIC` breaking returned results, sorts by `validityStartDate` in place of `stopTime`
 
 ------
 ## [v6.7.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.0...v6.7.1)
