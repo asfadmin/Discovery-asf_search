@@ -1,6 +1,7 @@
 import copy
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_parse_int
+from asf_search.baseline import BaselineCalcType
 from asf_search.exceptions import ASFBaselineError
 
 class RadarsatProduct(ASFProduct):
@@ -14,9 +15,11 @@ class RadarsatProduct(ASFProduct):
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
         'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
-        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
+        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
         'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]}
     }
+
+    baseline_type = BaselineCalcType.PRE_CALCULATED
     
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)

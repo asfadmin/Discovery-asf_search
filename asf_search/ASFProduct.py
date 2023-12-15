@@ -14,7 +14,7 @@ from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.CMR.translate import get as umm_get
-
+from asf_search.baseline import BaselineCalcType
 
 class ASFProduct:
     base_properties = {
@@ -36,6 +36,8 @@ class ASFProduct:
             'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
             'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
     }
+
+    baseline_type = BaselineCalcType.NONE
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')

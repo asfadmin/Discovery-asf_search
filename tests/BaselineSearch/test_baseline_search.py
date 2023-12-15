@@ -4,7 +4,7 @@ from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search import ASFSession
 from asf_search.search.baseline_search import stack_from_id, stack_from_product
-from asf_search.baseline.stack import calculate_temporal_baselines, get_default_product_type
+from asf_search.baseline.stack import calculate_temporal_baselines
 import pytest
 
 from asf_search.search.search_generator import as_ASFProduct
@@ -15,7 +15,7 @@ def run_test_get_preprocessed_stack_params(product):
 
     original_properties = product['properties']
     
-    assert(params.processingLevel == [get_default_product_type(reference)])
+    assert(params.processingLevel == [reference.get_default_product_type()])
     assert(params.insarStackId == original_properties['insarStackId'])
     assert(len(dict(params)) == 2)
     
