@@ -1,4 +1,5 @@
 import os
+from typing import List
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -35,15 +36,27 @@ class ASFProduct:
             'platform': {'path': [ 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
             'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
             'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+            'processingTypeDisplay': {'path': ['AdditionalAttributes', ('Name', 'PROCESSING_TYPE_DISPLAY'), 'Values', 0]}
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')
         self.umm = args.get('umm')
-
         translated = self.translate_product(args)
 
         self.properties = translated['properties']
+
+        if (url := self.properties.get('url')) is not None:
+            ext = os.path.basename(url).split('.')[-1]
+            self.filesByKey = {ext: {
+                'url': url,
+                'fileName': self.properties['fileName']
+                }
+            }
+
+            if (processingTypeDisplay := self.properties.get('processingTypeDisplay')) is not None:
+                self.filesByKey[ext]['description'] = processingTypeDisplay
+        
         self.geometry = translated['geometry']
         self.baseline = None
         self.session = session
@@ -209,3 +222,23 @@ class ASFProduct:
     def get_sort_keys(self):
         return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
     
+    def download_by_file_key(self, path: str, filename: str = None, session: ASFSession = None, filesByKey: List[str] = ['default']) -> None:
+        """Allows downloading pre-defined products. This is primarily for products with a 1-to-many relationship in CMR 
+        (examples include S1BurstProduct and OPERAS1Product class products, which have multiple product urls per CMR entry). By default,
+        each class with a single url has a 'default' key."""
+        multiple_files = len([key for key in filesByKey if self.filesByKey.get(key) is not None]) > 1
+        
+        for key in filesByKey:
+            if multiple_files and filename is not None:
+                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
+
+            for key in filesByKey:
+                if (fileByKey := self.filesByKey.get(key)):
+                    product_filename = filename
+                    if not multiple_files and filename is None:
+                        product_filename = self.properties['fileName']
+                    elif multiple_files:
+                        product_filename = fileByKey['filename']
+
+                    download_url(url=fileByKey['url'], path=path, filename=product_filename, session=session)
+        

@@ -1,8 +1,16 @@
 import copy
+import os
+from typing import List
+from urllib import parse
+import warnings
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import get, try_parse_int
 from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast
+from asf_search.download.download import download_url
+from asf_search.download.file_download_type import FileDownloadType
+import enum
+
 class S1BURSTProduct(S1Product):
     base_properties = {
         'absoluteBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0], 'cast': try_parse_int},
@@ -30,11 +38,33 @@ class S1BURSTProduct(S1Product):
             'azimuthAnxTime': self.properties.pop('azimuthAnxTime')
         }
 
+        self.properties['description'] = 'Single Look Complex (BURST)'
+
         urls = get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
         if urls is not None:
             self.properties['url'] = urls[0]
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
-            self.properties['additionalUrls'] = [urls[1]]
+            self.properties['additionalUrls'] = {'xml': {
+                'url': urls[1],
+                'fileName': self.properties['fileID'] + '.xml',
+                'description': 'XML Metadata (BURST)',
+                # 'bytes': self.properties['bytes'][fileName]['bytes']
+                }
+            }
+
+            self.filesByKey = {
+                'geotiff': {
+                    'url': urls[0],
+                    'fileName': self.properties['fileID'] + '.tiff',
+                    'description': self.properties['description'],
+                },
+                'xml': {
+                    'url': urls[1],
+                    'fileName': self.properties['fileID'] + '.xml',
+                    'description': 'XML Metadata (BURST)',
+                }
+            }
+
 
     def get_stack_opts(self, opts: ASFSearchOptions = None):
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
