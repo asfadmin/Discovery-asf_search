@@ -11,6 +11,7 @@ class OPERAS1Product(S1Product):
         'operaBurstID': {'path': ['AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0]},
         'validityStartDate': {'path': ['TemporalExtent', 'SingleDateTime']},
         'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
+        'subswath': {'path': ['AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0]},
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -30,10 +31,19 @@ class OPERAS1Product(S1Product):
         self.properties['operaBurstID'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
         self.properties['bytes'] = {entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']} for entry in self.properties['bytes']}
         
-        self.properties.pop('centerLat')
-        self.properties.pop('centerLon')
+        center = self.centroid() 
+        self.properties['centerLat'] = center.y
+        self.properties['centerLon'] = center.x
+        
         self.properties.pop('frameNumber')
 
+        if (processingLevel := self.properties['processingLevel']) in ['RTC', 'RTC-STATIC']:
+            self.properties['bistaticDelayCorrection'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BISTATIC_DELAY_CORRECTION'), 'Values', 0)
+            if processingLevel == 'RTC':
+                self.properties['noiseCorrection'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'NOISE_CORRECTION'), 'Values', 0)
+                self.properties['postProcessingFilter'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'POST_PROCESSING_FILTER'), 'Values', 0)
+        
+        
     def get_stack_opts(self):
         return {}
 

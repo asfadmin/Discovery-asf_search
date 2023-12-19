@@ -35,6 +35,12 @@ class ASFProduct:
             'platform': {'path': [ 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
             'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
             'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+            'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int}, # overloaded by S1, ALOS, and ERS
+            'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
+            'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
+            'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
+            'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
+            'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):

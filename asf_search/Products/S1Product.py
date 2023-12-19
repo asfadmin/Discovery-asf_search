@@ -6,14 +6,9 @@ from asf_search.constants import PLATFORM
 class S1Product(ASFProduct):
     base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
-        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
-        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0], },
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0], },
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0], },
-        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion'], },
-        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
-        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
