@@ -94,7 +94,14 @@ class OPERAS1Product(S1Product):
         downloadUrl: str = self.properties['url']
         reg = re.split(self.subproduct_regex, downloadUrl)
         file_suffix = reg[3] if reg[3] is not None else reg[5]
-        opera_urls = {}
+        opera_urls = {
+            file_suffix.lower(): {
+                'url': downloadUrl, 
+                'fileName': (fileName := basename(downloadUrl)),
+                'description': self.opera_product_type_displays.get(file_suffix.lower(), ''),
+                'bytes': self.properties['bytes'][fileName]['bytes']
+        }
+        }
 
         self.properties['description'] = self.opera_product_type_displays.get(file_suffix.lower(), '')
 
