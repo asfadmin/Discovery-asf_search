@@ -95,7 +95,7 @@ def parse_float_range(value: Tuple[float, float]) -> Tuple[float, float]:
 
 # Parse and validate an iterable of values, using h() to validate each value: "a,b,c", "1,2,3", "1.1,2.3"
 def parse_iterator(value: Iterable, h) -> list:
-    if not isinstance(value, list) and not isinstance(value, tuple):
+    if not isinstance(value, Iterable):
         value = [value]
     try:
         return [h(a) for a in value]
@@ -128,7 +128,7 @@ def parse_number_or_range(value: Union[List, Tuple[number, number]], h):
 
 # Parse and validate an iterable of numbers or number ranges, using h() to validate each value: "1,2,3-5", "1.1,1.4,5.1-6.7"
 def parse_number_or_range_iterator(value: Iterable, h) -> list:
-    if not isinstance(value, list) and not isinstance(value, list):
+    if not isinstance(value, Iterable):
         value = [value]
     return [parse_number_or_range(x, h) for x in value]
 
@@ -145,7 +145,7 @@ def parse_float_or_range_iterator(value: Iterable) -> list:
 
 # Parse and validate a coordinate list
 def parse_coord_iterator(value: Iterable[float]) -> List[float]:
-    if not isinstance(value, list) and not isinstance(value, tuple):
+    if not isinstance(value, Iterable):
         raise ValueError(f'Invalid coord list list: Must pass in an iterable. Got {type(value)}.')
     for coord in value:
         try:
