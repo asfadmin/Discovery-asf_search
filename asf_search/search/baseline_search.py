@@ -1,3 +1,4 @@
+from asf_search import ASF_LOGGER
 from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
 from copy import copy
 
@@ -43,6 +44,9 @@ def stack_from_product(
 
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
+    for warning in warnings:
+        ASF_LOGGER.warn(f'{warning}')
+    
     return stack
 
 

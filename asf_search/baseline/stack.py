@@ -1,3 +1,4 @@
+from typing import Tuple, List
 from dateutil.parser import parse
 import pytz
 from .calc import calculate_perpendicular_baselines
@@ -5,14 +6,17 @@ from asf_search import ASFProduct, ASFSearchResults
 
 precalc_datasets = ['AL', 'R1', 'E1', 'E2', 'J1']
 
-def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
-    warnings = None
+def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults) -> Tuple[ASFSearchResults, List[dict]]:
+    warnings = []
 
     if len(stack) == 0:
         raise ValueError('No products found matching stack parameters')
     stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata') and product.baseline != None]
-    reference, stack, warnings = check_reference(reference, stack)
+    reference, stack, reference_warnings = check_reference(reference, stack)
     
+    if reference_warnings is not None:
+        warnings.append(reference_warnings)
+
     stack = calculate_temporal_baselines(reference, stack)
 
     if get_platform(reference.properties['sceneName']) in precalc_datasets:
@@ -20,6 +24,9 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
 
+        if missing_state_vectors := len([scene for scene in stack if scene.baseline.get('noStateVectors')]):
+            warnings.append({'MISSING STATE VECTORS': f'{missing_state_vectors} scenes in stack missing State Vectors, perpendicular baseline not calculated for these scenes'})
+    
     return ASFSearchResults(stack), warnings
 
 def valid_state_vectors(product: ASFProduct):
@@ -40,8 +47,7 @@ def check_reference(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None
     if reference.properties['sceneName'] not in [product.properties['sceneName'] for product in stack]: # Somehow the reference we built the stack from is missing?! Just pick one
         reference = stack[0]
-        warnings = [{'NEW_REFERENCE': 'A new reference scene had to be selected in order to calculate baseline values.'}]
-
+        warnings = {'NEW_REFERENCE': 'A new reference scene had to be selected in order to calculate baseline values.'}
     if get_platform(reference.properties['sceneName']) in precalc_datasets:
             if 'insarBaseline' not in reference.baseline:
                 raise ValueError('No baseline values available for precalculated dataset')
@@ -50,8 +56,7 @@ def check_reference(reference: ASFProduct, stack: ASFSearchResults):
             reference = find_new_reference(stack)
             if reference == None:
                 raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
-            warnings = [{'NEW_REFERENCE': 'A new reference had to be selected in order to calculate baseline values.'}]
-
+            warnings = {'NEW_REFERENCE': 'A new reference had to be selected in order to calculate baseline values.'}
     return reference, stack, warnings
 
 def get_platform(reference: str):
