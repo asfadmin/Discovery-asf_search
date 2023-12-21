@@ -95,7 +95,7 @@ def parse_float_range(value: Tuple[float, float]) -> Tuple[float, float]:
 
 # Parse and validate an iterable of values, using h() to validate each value: "a,b,c", "1,2,3", "1.1,2.3"
 def parse_iterator(value: Iterable, h) -> list:
-    if not isinstance(value, Iterable):
+    if not isinstance(value, Iterable) or isinstance(value, str):
         value = [value]
     try:
         return [h(a) for a in value]
