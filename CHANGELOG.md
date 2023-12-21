@@ -26,6 +26,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
+### Changed
+- Baseline stacking no longer excludes products with missing state vectors from final stack, like SearchAPI
+
+### Added
+- Adds warning when scenes in stack are missing state vectors, and logs baseline warnings with `ASF_LOGGER`
+
+
+------
 ## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
 ### Adds
 - Adds constants for `dataset` keyword, under `asf_search.DATASET`
