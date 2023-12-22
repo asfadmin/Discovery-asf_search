@@ -27,12 +27,16 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
-### Adds
+### Added
 - Adds OPERA-S1 constants `RTC`, `RTC_STATIC` (RTC-STATIC), `CSLC`, `CSLC_STATIC` (CSLC-STATIC) to `PRODUCT_TYPE.py`
+
+### Fixed
+- search method params with `Iterable` type hinting now actually accept iterables
+- Harmonizes `search()`, `geo_search()`, and `search_count()` parameters
 
 ------
 ## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
-### Adds
+### Added
 - Adds constants for `dataset` keyword, under `asf_search.DATASET`
 - Adds CALVAL concept-ids to 'OPERA-S1' dataset
 - Adds `validityStartDate` for applicable OPERA-S1 products

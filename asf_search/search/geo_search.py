@@ -1,4 +1,4 @@
-from typing import Union, Iterable
+from typing import Tuple, Union, Iterable
 import datetime
 from copy import copy
 
@@ -9,24 +9,42 @@ from asf_search.ASFSearchResults import ASFSearchResults
 
 def geo_search(
         intersectsWith: str,
-        absoluteOrbit: Iterable[Union[int, range]] = None,
-        asfFrame: Iterable[Union[int, range]] = None,
-        beamMode: Iterable[str] = None,
+        absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        beamMode: Union[str, Iterable[str]] = None,
         beamSwath: Union[str, Iterable[str]] = None,
         campaign: Union[str, Iterable[str]] = None,
+        maxDoppler: float = None,
+        minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
-        flightDirection: Iterable[str] = None,
-        frame: Iterable[Union[int, range]] = None,
-        instrument: Iterable[str] = None,
-        lookDirection: Iterable[str] = None,
-        platform: Iterable[str] = None,
-        polarization: Iterable[str] = None,
+        maxFaradayRotation: float = None,
+        minFaradayRotation: float = None,
+        flightDirection: str = None,
+        flightLine: str = None,
+        frame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        granule_list: Union[str, Iterable[str]] = None,
+        groupID: Union[str, Iterable[str]] = None,
+        insarStackId: str = None,
+        instrument: Union[str, Iterable[str]] = None,
+        lookDirection: Union[str, Iterable[str]] = None,
+        offNadirAngle: Union[float, Tuple[float, float], Iterable[Union[float, Tuple[float, float]]]] = None,
+        platform: Union[str, Iterable[str]] = None,
+        polarization: Union[str, Iterable[str]] = None,
         processingDate: Union[datetime.datetime, str] = None,
-        processingLevel: Iterable[str] = None,
-        relativeOrbit: Iterable[Union[int, range]] = None,
+        processingLevel: Union[str, Iterable[str]] = None,
+        product_list: Union[str, Iterable[str]] = None,
+        relativeOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
+        absoluteBurstID: Union[int, Iterable[int]] = None,
+        relativeBurstID: Union[int, Iterable[int]] = None,
+        fullBurstID: Union[str, Iterable[str]] = None,
+        collections: Union[str, Iterable[str]] = None,
+        temporalBaselineDays: Union[str, Iterable[str]] = None,
+        operaBurstID: Union[str, Iterable[str]] = None,
+        dataset: Union[str, Iterable[str]] = None,
         maxResults: int = None,
-        opts: ASFSearchOptions = None
+        opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
     Performs a geographic search using the ASF SearchAPI
