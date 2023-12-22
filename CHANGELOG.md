@@ -28,6 +28,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
 ### Fixed
+- search method params with `Iterable` type hinting now actually accept iterables
 - Harmonizes `search()`, `geo_search()`, and `search_count()` parameters
 
 ------
