@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
+### Fixed
+- search method params with `Iterable` type hinting now actually accept iterables
+
+------
 ## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
 ### Adds
 - Adds constants for `dataset` keyword, under `asf_search.DATASET`
