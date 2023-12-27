@@ -261,20 +261,19 @@ datset_product_types = {
         'SLC-BURST': ASFProductType.S1BURSTProduct,
         'ALOS': ASFProductType.ALOSProduct,
         'SIR-C': ASFProductType.SIRCProduct,
+        'STS-59': ASFProductType.SIRCProduct,
+        'STS-68': ASFProductType.SIRCProduct,
         'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
         'SMAP': ASFProductType.SMAPProduct,
         'UAVSAR': ASFProductType.UAVSARProduct,
+        'G-III': ASFProductType.UAVSARProduct,
         'RADARSAT-1': ASFProductType.RadarsatProduct,
-        
         'ERS': ASFProductType.ERSProduct,
         'ERS-1': ASFProductType.ERSProduct,
         'ERS-2': ASFProductType.ERSProduct,
-        
         'JERS-1': ASFProductType.JERSProduct,
-        
         'AIRSAR': ASFProductType.AIRSARProduct,
         'DC-8': ASFProductType.AIRSARProduct,
-        
         'SEASAT': ASFProductType.SEASATProduct,
         'SEASAT 1': ASFProductType.SEASATProduct
     }
