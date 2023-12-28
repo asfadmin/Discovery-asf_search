@@ -1,7 +1,8 @@
 from collections import UserList
 from multiprocessing import Pool
 import json
-from asf_search import ASFSession, ASFSearchOptions
+from typing import Type, Callable
+from asf_search import ASFSession, ASFSearchOptions, ASFProduct
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.exceptions import ASFSearchError
 
@@ -78,6 +79,16 @@ class ASFSearchResults(UserList):
             msg = "Results are incomplete due to a search error. See logging for more details. (ASFSearchResults.raise_if_incomplete called)"
             ASF_LOGGER.error(msg)
             raise ASFSearchError(msg)
+
+
+    def convert_to_sublcass(self, ASFProductSubclass: type(ASFProduct), criteria: Callable[[ASFProduct], bool] = lambda _: True):
+        count = 0
+        for idx, product in enumerate(self.data):
+            if criteria(product):
+                self.data[idx] = ASFProductSubclass(args={'umm': product.umm, 'meta': product.meta}, session=product.session)
+                count += 1
+
+        ASF_LOGGER.log(f'Converted {count} ASFProduct objects to subclass f{type(ASFProductSubclass)}')
 
 def _download_product(args) -> None:
     product, path, session, fileType = args
