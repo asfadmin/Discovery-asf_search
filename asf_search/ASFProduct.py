@@ -1,4 +1,5 @@
 import os
+from typing import Tuple
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -17,6 +18,28 @@ from asf_search.CMR.translate import get as umm_get
 
 
 class ASFProduct:
+    """
+    The ASFProduct class is the base class for search results from asf-search.
+    Key props:
+        - properties:
+            - stores commonly acessed properties of the CMR UMM for convenience
+        - umm:
+            - The data portion of the CMR response
+        - meta:
+            - The metadata portion of the CMR response
+        - geometry:
+            - The geometry `{coordinates: [[lon, lat] ...], 'type': Polygon}`
+        - baseline:
+            - used for spatio-temporal baseline stacking, stores state vectors/ascending node time/insar baseline values when available (Not set in base ASFProduct class)  
+            - See `S1Product` or `ALOSProduct` `get_baseline_calc_properties()` methods for implementation examples
+    
+    Key methods:
+        - `download()`
+        - `stack()`
+        - `remotezip()`
+
+        
+    """
     @classmethod
     def get_classname(cls):
         return cls.__name__
@@ -46,6 +69,18 @@ class ASFProduct:
             'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
             'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
+    """
+    base_properties dictionary, mapping readable property names to paths and optional type casting
+    
+    entries are organized as such:
+        - `PROPERTY_NAME`: The name the property should be called in `ASFProduct.properties`
+            - `path`: the expected path in the CMR UMM json granule response as a list
+            - `cast`: (optional): the optional type casting method
+    
+    Defining `base_properties` in subclasses allows for defining custom properties or overiding existing ones.
+    See `S1Product._get_property_paths()` on how subclasses are expected to 
+    combine `ASFProduct.base_properties` with their own separately defined `base_properties`
+    """
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')
@@ -173,6 +208,9 @@ class ASFProduct:
         return remotezip(self.properties['url'], session=session)
 
     def translate_product(self, item: dict) -> dict:
+        """
+        Generates `properties` and `geometry` from the CMR UMM response
+        """
         try:
             coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
             coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
@@ -204,18 +242,38 @@ class ASFProduct:
     # ASFProduct subclasses define extra/override param key + UMM pathing here 
     @staticmethod
     def _get_property_paths() -> dict:
+        """
+        Returns base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
+        define which properties they want in their subclass's properties dict. 
+        
+        (See `S1Product._get_property_paths()` for example of combining base_properties of multiple classes)
+        
+        :returns dictionary, {`PROPERTY_NAME`: {'path': [umm, path, to, value], 'cast (optional)': Callable_to_cast_value}, ...}
+        """
         return ASFProduct.base_properties
     
     def get_baseline_calc_properties(self) -> dict:
+        """
+        Used by subclasses to assign baseline values to `ASFProduct.baseline` property.
+        """
         return {}
     
     @staticmethod
     def get_default_product_type():
+        """
+        Used for baseline stack building, see S1Product or AlosProduct versions for example implementations
+        """
         return None
 
     def is_valid_reference(self):
+        """
+        Used for baseline stack reference validation, see S1Product or AlosProduct versions for example implementations
+        """
         return False
     
-    def get_sort_keys(self):
+    def get_sort_keys(self) -> Tuple:
+        """
+        Returns tuple of primary and secondary date values used for sorting final search results
+        """
         return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
     
