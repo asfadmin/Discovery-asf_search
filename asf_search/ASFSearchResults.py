@@ -91,7 +91,11 @@ class ASFSearchResults(UserList):
 
         ASF_LOGGER.log(f'Converted {count} ASFProduct objects to subclass f{type(ASFProductSubclass)}')
 
-    def get_products_by_subclass_type(self):
+    def get_products_by_subclass_type(self) -> dict:
+        """
+        Organizes results into dictionary by ASFProduct subclass name
+        : return: dict of ASFSearchResults, organized by ASFProduct subclass names
+        """
         subclasses = {}
 
         for product in self.data:
@@ -103,10 +107,6 @@ class ASFSearchResults(UserList):
             subclasses[product_type].append(product)
         
         return subclasses
-        
-    def get_by_property_value(self, key: str, value):
-        results = ASFSearchResults([product for product in self.data if product.properties[key] == value])
-        return results
 
 def _download_product(args) -> None:
     product, path, session, fileType = args
