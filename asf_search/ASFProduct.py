@@ -17,6 +17,10 @@ from asf_search.CMR.translate import get as umm_get
 
 
 class ASFProduct:
+    @classmethod
+    def get_classname(cls):
+        return cls.__name__
+    
     base_properties = {
             # min viable product
             'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
