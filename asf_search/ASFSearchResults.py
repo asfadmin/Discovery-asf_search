@@ -1,5 +1,6 @@
 from collections import UserList
 from multiprocessing import Pool
+from functools import reduce
 import json
 from typing import Type, Callable
 from asf_search import ASFSession, ASFSearchOptions, ASFProduct
@@ -81,7 +82,7 @@ class ASFSearchResults(UserList):
             raise ASFSearchError(msg)
 
 
-    def convert_to_sublcass(self, ASFProductSubclass: type(ASFProduct), criteria: Callable[[ASFProduct], bool] = lambda _: True):
+    def convert_to_sublcass(self, ASFProductSubclass: type(ASFProduct), criteria: Callable = lambda _: True):
         count = 0
         for idx, product in enumerate(self.data):
             if criteria(product):
@@ -89,6 +90,23 @@ class ASFSearchResults(UserList):
                 count += 1
 
         ASF_LOGGER.log(f'Converted {count} ASFProduct objects to subclass f{type(ASFProductSubclass)}')
+
+    def get_products_by_subclass_type(self):
+        subclasses = {}
+
+        for product in self.data:
+            product_type = product.get_classname()
+
+            if subclasses.get(product_type) is None:
+                subclasses[product_type] = ASFSearchResults([])
+            
+            subclasses[product_type].append(product)
+        
+        return subclasses
+        
+    def get_by_property_value(self, key: str, value):
+        results = ASFSearchResults([product for product in self.data if product.properties[key] == value])
+        return results
 
 def _download_product(args) -> None:
     product, path, session, fileType = args
