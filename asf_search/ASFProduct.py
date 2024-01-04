@@ -15,7 +15,7 @@ from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.CMR.translate import get as umm_get
-
+from asf_search.baseline import BaselineCalcType
 
 class ASFProduct:
     """
@@ -81,6 +81,8 @@ class ASFProduct:
     See `S1Product._get_property_paths()` on how subclasses are expected to 
     combine `ASFProduct.base_properties` with their own separately defined `base_properties`
     """
+
+    baseline_type = BaselineCalcType.NONE
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')

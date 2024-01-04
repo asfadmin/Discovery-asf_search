@@ -1,9 +1,9 @@
 from dateutil.parser import parse
 import pytz
+
+from asf_search.baseline import BaselineCalcType
 from .calc import calculate_perpendicular_baselines
 from asf_search import ASFProduct, ASFSearchResults
-
-precalc_datasets = ['AL', 'R1', 'E1', 'E2', 'J1']
 
 def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None
@@ -15,7 +15,7 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     
     stack = calculate_temporal_baselines(reference, stack)
 
-    if get_platform(reference.properties['sceneName']) in precalc_datasets:
+    if reference.baseline_type == BaselineCalcType.PRE_CALCULATED:
         stack = offset_perpendicular_baselines(reference, stack)
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
@@ -42,22 +42,6 @@ def check_reference(reference: ASFProduct, stack: ASFSearchResults):
             raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
 
     return reference, stack, warnings
-
-def get_platform(reference: str):
-    return reference[0:2].upper()
-
-def get_default_product_type(product: ASFProduct):
-    scene_name = product.properties['sceneName']
-    
-    if get_platform(scene_name) in ['AL']:
-        return 'L1.1'
-    if get_platform(scene_name) in ['R1', 'E1', 'E2', 'J1']:
-        return 'L0'
-    if get_platform(scene_name) in ['S1']:
-        if product.properties['processingLevel'] == 'BURST':
-            return 'BURST'
-        return 'SLC'
-    return None
 
 def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults):
     """

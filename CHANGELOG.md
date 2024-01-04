@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v7.0.0)
+### Adds
+- `ASFProduct` now has 13 sublcasses for different sub-products that correspond to datasets:
+  - `S1Product`, `S1BURSTProduct`, `OPERAS1Product`, `ARIAS1GUNWProduct`, `ALOSProduct`, `RadarsatProduct`, `AIRSARProduct`, `ERSProduct`, `JERSProduct`, `UAVSARProduct`, `SIRCProduct`, `SEASATProduct`, `SMAPProduct`
+  - Each subclass defines relevant keys to pull from `umm` response, reducing the amount of irrelevant values in `properties` dict for certain product types 
+
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
 ### Added
 - Adds OPERA-S1 constants `RTC`, `RTC_STATIC` (RTC-STATIC), `CSLC`, `CSLC_STATIC` (CSLC-STATIC) to `PRODUCT_TYPE.py`
