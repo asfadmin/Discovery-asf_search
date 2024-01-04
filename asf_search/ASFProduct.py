@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Tuple, Union
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -132,32 +132,22 @@ class ASFProduct:
 
         urls = []
 
-        def get_additional_urls():
-            output = []
-            for url in self.properties['additionalUrls']:
-                if self.properties['processingLevel'] == 'BURST':
-                    # Burst XML filenames are just numbers, this makes it more indentifiable
-                    file_name = '.'.join(default_filename.split('.')[:-1]) + url.split('.')[-1]
-                else:
-                    # otherwise just use the name found in the url
-                    file_name = os.path.split(parse.urlparse(url).path)[1]
-                urls.append((f"{file_name}", url))
-            
-            return output
-
         if fileType == FileDownloadType.DEFAULT_FILE:
             urls.append((default_filename, self.properties['url']))
         elif fileType == FileDownloadType.ADDITIONAL_FILES:
-            urls.extend(get_additional_urls())
+            urls.extend(self.get_additional_urls())
         elif fileType == FileDownloadType.ALL_FILES:
             urls.append((default_filename, self.properties['url']))
-            urls.extend(get_additional_urls())
+            urls.extend(self.get_additional_urls())
         else:
             raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
 
         for filename, url in urls:
             download_url(url=url, path=path, filename=filename, session=session)
 
+    def get_additional_urls(self):
+        return [(os.path.split(parse.urlparse(url).path)[1], url) for url in self.properties['additionalUrls']]
+    
     def stack(
             self,
             opts: ASFSearchOptions = None
@@ -176,13 +166,13 @@ class ASFProduct:
 
         return stack_from_product(self, opts=opts)
 
-    def get_stack_opts(self) -> ASFSearchOptions:
+    def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
 
         :return: ASFSearchOptions describing appropriate options for building a stack from this product
         """
-        return {}
+        return opts
 
     def centroid(self) -> Point:
         """
@@ -257,15 +247,8 @@ class ASFProduct:
         Used by subclasses to assign baseline values to `ASFProduct.baseline` property.
         """
         return {}
-    
-    @staticmethod
-    def get_default_product_type():
-        """
-        Used for baseline stack building, see S1Product or AlosProduct versions for example implementations
-        """
-        return None
 
-    def is_valid_reference(self):
+    def is_valid_reference(self) -> bool:
         """
         Used for baseline stack reference validation, see S1Product or AlosProduct versions for example implementations
         """

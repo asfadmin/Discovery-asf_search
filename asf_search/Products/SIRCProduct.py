@@ -1,9 +1,9 @@
-import copy
 from asf_search import ASFProduct, ASFSession
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_int
-from asf_search.constants import PLATFORM
 
 class SIRCProduct(ASFProduct):
+    """
+    Dataset Documentation Page: https://eospso.nasa.gov/missions/spaceborne-imaging-radar-c
+    """
     base_properties = {
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},

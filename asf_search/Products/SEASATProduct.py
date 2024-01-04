@@ -1,9 +1,10 @@
-import copy
 from asf_search import ASFSession, ASFProduct
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_float, try_parse_int, try_round_float
-from asf_search.constants import PLATFORM
+from asf_search.CMR.translate import try_parse_float, try_round_float
 
 class SEASATProduct(ASFProduct):
+    """
+    ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/sar-data-sets/seasat/
+    """
     base_properties = {
         'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},

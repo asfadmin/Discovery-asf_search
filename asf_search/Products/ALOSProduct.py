@@ -4,6 +4,11 @@ from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse
 from asf_search.exceptions import ASFBaselineError
 
 class ALOSProduct(ASFProduct):
+    """
+    Used for ALOS Palsar and Avnir dataset products
+
+    ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/alos-palsar/
+    """
     base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
         'faradayRotation': {'path': [ 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
@@ -27,11 +32,9 @@ class ALOSProduct(ASFProduct):
                 'insarBaseline': insarBaseline        
             }
 
-    def get_stack_opts(self, 
-        opts: ASFSearchOptions = None):
-
+    def get_stack_opts(self, opts: ASFSearchOptions = None):
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-        stack_opts.processingLevel = ALOSProduct.get_default_product_type()
+        stack_opts.processingLevel = 'L1.1'
 
         if self.properties.get('insarStackId') not in [None, 'NA', 0, '0']:
             stack_opts.insarStackId = self.properties['insarStackId']
@@ -45,10 +48,6 @@ class ALOSProduct(ASFProduct):
             **ASFProduct._get_property_paths(),
             **ALOSProduct.base_properties
         }
-
-    @staticmethod
-    def get_default_product_type():
-        return 'L1.1'
     
     def is_valid_reference(self):
         # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)

@@ -350,9 +350,6 @@ def get(item: dict, *args):
     ```
     'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0
     ```
-
-
-    
     """
     if item is None:
         return None

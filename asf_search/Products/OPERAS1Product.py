@@ -1,9 +1,11 @@
-from asf_search import ASFSession
+from asf_search import ASFSearchOptions, ASFSession
 from asf_search.CMR.translate import get as umm_get
 from asf_search.Products import S1Product
-from asf_search.constants import PLATFORM
 
 class OPERAS1Product(S1Product):
+    """
+    ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/opera/
+    """
     base_properties = {
         'centerLat': {'path': []}, # Opera products lacks these fields
         'centerLon': {'path': []}, 
@@ -44,8 +46,8 @@ class OPERAS1Product(S1Product):
                 self.properties['postProcessingFilter'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'POST_PROCESSING_FILTER'), 'Values', 0)
         
         
-    def get_stack_opts(self):
-        return {}
+    def get_stack_opts(self, opts: ASFSearchOptions = ASFSearchOptions()) -> ASFSearchOptions:
+        return opts
 
     @staticmethod
     def _get_property_paths() -> dict:
@@ -53,10 +55,6 @@ class OPERAS1Product(S1Product):
             **S1Product._get_property_paths(),
             **OPERAS1Product.base_properties
         }
-    
-    @staticmethod
-    def get_default_product_type():
-        return 'CSLC'
     
     def is_valid_reference(self):
         return False

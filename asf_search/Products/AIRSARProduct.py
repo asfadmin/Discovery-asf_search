@@ -1,9 +1,11 @@
 import copy
 from asf_search import ASFSession, ASFProduct
-from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_parse_int
-from asf_search.exceptions import ASFBaselineError
+from asf_search.CMR.translate import try_parse_float, try_parse_int
 
 class AIRSARProduct(ASFProduct):
+    """
+    ASF Dataset Overview Page: https://asf.alaska.edu/data-sets/sar-data-sets/airsar/
+    """
     base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
