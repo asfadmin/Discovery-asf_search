@@ -15,7 +15,7 @@ from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.CMR.translate import get as umm_get
-from asf_search.baseline import BaselineCalcType
+from asf_search.Products import BaselineCalcType
 
 class ASFProduct:
     """

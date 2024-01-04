@@ -1,9 +1,8 @@
 from dateutil.parser import parse
 import pytz
 
-from asf_search.baseline import BaselineCalcType
 from .calc import calculate_perpendicular_baselines
-from asf_search import ASFProduct, ASFSearchResults
+from asf_search import ASFProduct, ASFSearchResults, BaselineCalcType
 
 def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None

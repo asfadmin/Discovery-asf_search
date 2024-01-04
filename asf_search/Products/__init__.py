@@ -11,3 +11,5 @@ from .SMAPProduct import SMAPProduct
 from .S1BURSTProduct import S1BURSTProduct
 from .OPERAS1Product import OPERAS1Product
 from .ARIAS1GUNWProduct import ARIAS1GUNWProduct
+
+from .BaselineCalcType import BaselineCalcType

@@ -1,7 +1,7 @@
 import copy
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
 from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_int
-from asf_search.baseline import BaselineCalcType
+from asf_search.Products import BaselineCalcType
 from asf_search.constants import PLATFORM
 
 class S1Product(ASFProduct):
