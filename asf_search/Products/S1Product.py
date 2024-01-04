@@ -5,17 +5,23 @@ from asf_search.baseline import BaselineCalcType
 from asf_search.constants import PLATFORM
 
 class S1Product(ASFProduct):
+    """
+    The S1Product classes covers most Sentinel-1 Products
+    (For S1 BURST-SLC, OPERA-S1, and ARIA-S1 GUNW Products, see relevant S1 subclasses)
+
+    ASF Dataset Overview Page: https://asf.alaska.edu/datasets/daac/sentinel-1/
+    """
+
     base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
-        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
-        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0], },
-        'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0], },
-        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0], },
-        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
-        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion'], },
-        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
-        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
+        'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
+        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
     }
+    """
+    S1 Specific path override
+    - frameNumber: overrides ASFProduct's `CENTER_ESA_FRAME` with `FRAME_NUMBER`
+    """
 
     baseline_type = BaselineCalcType.CALCULATED
     
@@ -31,6 +37,9 @@ class S1Product(ASFProduct):
 
 
     def get_baseline_calc_properties(self) -> dict:
+        """
+        :returns properties required for SLC baseline stack calculations
+        """
         ascendingNodeTime = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
 
         if ascendingNodeTime is not None:
@@ -43,6 +52,10 @@ class S1Product(ASFProduct):
         }
     
     def get_state_vectors(self) -> dict:
+        """
+        Used in spatio-temporal perpendicular baseline calculations for non-pre-calculated stacks
+
+        :returns dictionary of pre/post positions, velocities, and times"""
         positions = {}
         velocities = {}
 
@@ -61,12 +74,16 @@ class S1Product(ASFProduct):
             'velocities': velocities
         }
     
-    def get_stack_opts(self, 
-                       opts: ASFSearchOptions = None):
-
+    def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
+        """
+        Returns the search options asf-search will use internally to build an SLC baseline stack from
+        
+        :param opts: additional criteria for limiting 
+        :returns ASFSearchOptions used for build Sentinel-1 SLC Stack
+        """
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
         
-        stack_opts.processingLevel = S1Product.get_default_product_type()
+        stack_opts.processingLevel = 'SLC'
         stack_opts.beamMode = [self.properties['beamModeType']]
         stack_opts.flightDirection = self.properties['flightDirection']
         stack_opts.relativeOrbit = [int(self.properties['pathNumber'])] # path
@@ -75,56 +92,19 @@ class S1Product(ASFProduct):
         stack_opts.intersectsWith = self.centroid().wkt
         
         return stack_opts
-        # return {
-        #     'processingLevel': 'SLC',
-        #     'beamMode': [self.properties['beamModeType']],
-        #     'flightDirection': self.properties['flightDirection'],
-        #     'relativeOrbit': [int(self.properties['pathNumber'])], # path
-        #     'platform': [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B],
-        #     'polarization': ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH'],
-        #     'intersectsWith': self.centroid().wkt
-        # }
-        # if reference.properties['processingLevel'] == 'BURST':
-        #     stack_opts.processingLevel = 'BURST'
-        # else:
-        #     stack_opts.processingLevel = 'SLC'
-        
-        # if reference.properties['processingLevel'] == 'BURST':
-        #     stack_opts.fullBurstID = reference.properties['burst']['fullBurstID']
-        #     stack_opts.polarization = [reference.properties['polarization']]
-        #     return stack_opts
-        
-        # stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
-        
-        # stack_opts.beamMode = [reference.properties['beamModeType']]
-        # stack_opts.flightDirection = reference.properties['flightDirection']
-        # stack_opts.relativeOrbit = [int(reference.properties['pathNumber'])]  # path
-        
-        # if reference.properties['polarization'] in ['HH', 'HH+HV']:
-        #     stack_opts.polarization = ['HH','HH+HV']
-        # elif reference.properties['polarization'] in ['VV', 'VV+VH']:
-        #     stack_opts.polarization = ['VV','VV+VH']
-        # else:
-        #     stack_opts.polarization = [reference.properties['polarization']]
-        
-        # stack_opts.intersectsWith = reference.centroid().wkt
-        # return stack_opts
-
+    
     @staticmethod
     def _get_property_paths() -> dict:
         return {
             **ASFProduct._get_property_paths(),
             **S1Product.base_properties
         }
-    
-    @staticmethod
-    def get_default_product_type():
-        return 'SLC'
 
-    def is_valid_reference(self):
+    def is_valid_reference(self) -> bool:
+        """perpendicular baselines are not pre-calculated for S1 products and require position/velocity state vectors to calculate"""
         return self.valid_state_vectors()
     
-    def valid_state_vectors(self):
+    def valid_state_vectors(self) -> bool:
         for key in ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']:
             if key not in self.baseline['stateVectors']['positions'] or self.baseline['stateVectors']['positions'][key] == None:
                 return False

@@ -1,23 +1,19 @@
 import copy
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_float, try_parse_int
 from asf_search.baseline import BaselineCalcType
-from asf_search.constants import PLATFORM
+from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float
 from asf_search.exceptions import ASFBaselineError
 
 class JERSProduct(ASFProduct):
+    """
+    ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/jers-1/
+    """
     base_properties = {
         'browse': { 'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
-        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
-        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
-        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
-        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
-        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime']},
-        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName']},
         'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]}
     }
 
@@ -44,21 +40,16 @@ class JERSProduct(ASFProduct):
             **JERSProduct.base_properties
         }
 
-    def get_stack_opts(self, 
-        opts: ASFSearchOptions = None):
+    def get_stack_opts(self, opts: ASFSearchOptions = None):
 
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-        stack_opts.processingLevel = JERSProduct.get_default_product_type()
-
+        
+        stack_opts.processingLevel = 'L0'
         if self.properties.get('insarStackId') not in [None, 'NA', 0, '0']:
             stack_opts.insarStackId = self.properties['insarStackId']
             return stack_opts
         
         raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {self.properties["fileID"]}')
-    
-    @staticmethod
-    def get_default_product_type():
-        return 'L0'
     
     def is_valid_reference(self):
         # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)

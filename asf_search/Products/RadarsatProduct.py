@@ -1,21 +1,18 @@
 import copy
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
-from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_parse_int
 from asf_search.baseline import BaselineCalcType
+from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float
 from asf_search.exceptions import ASFBaselineError
 
 class RadarsatProduct(ASFProduct):
+    """
+    ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/radarsat-1/
+    """
     base_properties = {
         'faradayRotation': {'path': [ 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
         'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
-        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
-        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
-        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
-        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
-        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
-        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
         'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]}
     }
 
@@ -39,7 +36,7 @@ class RadarsatProduct(ASFProduct):
         opts: ASFSearchOptions = None):
 
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-        stack_opts.processingLevel = RadarsatProduct.get_default_product_type()
+        stack_opts.processingLevel = 'L0'
 
         if self.properties.get('insarStackId') not in [None, 'NA', 0, '0']:
             stack_opts.insarStackId = self.properties['insarStackId']
@@ -53,10 +50,6 @@ class RadarsatProduct(ASFProduct):
             **ASFProduct._get_property_paths(),
             **RadarsatProduct.base_properties
         }
-    
-    @staticmethod
-    def get_default_product_type():
-        return 'L0'
     
     def is_valid_reference(self):
         # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)

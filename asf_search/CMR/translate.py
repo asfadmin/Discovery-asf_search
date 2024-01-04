@@ -282,6 +282,75 @@ def cast(f, v):
 
 
 def get(item: dict, *args):
+    """
+    Used to search for values in CMR UMM
+
+    :param item: the umm dict returned from CMR
+    :param *args: the expected path to the value 
+    
+    Example case:
+    "I want to grab the polarization from the granule umm"
+    ```
+    item = {
+        'AdditionalAttributes': [
+            { 
+                'Name': 'POLARIZATION', 
+                'Values': ['VV', 'VH']
+            },
+            ...
+        ],
+        ...
+    }
+    ```
+
+    The path provided to *args would look like this:
+    ```
+    'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0
+    result: 'VV'
+    ```
+
+    - `'AdditionalAttributes'` acts like item['AdditionalAttributes'], which is a list of dictionaries
+    
+    - Since `AdditionalAttributes` is a LIST of dictionaries, we search for a dict with the key value pair,
+    `('Name', 'POLARIZATION')`
+
+    - If found, we try to access that dictionary's `Values` key
+    - Since `Values` is a list, we can access the first index `0` (in this case, 'VV')
+    
+    ---
+
+    If you want more of the umm, simply reduce how deep you search:
+    Example: "I need BOTH polarizations (`OPERAS1Product` does this, noticed the omitted `0`)
+    
+    ```
+    'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values'
+    result: ['VV', 'VH']
+    ```
+
+    ---
+    
+    Example: "I need the ENTIRE POLARIZATION dict"
+    
+    ```
+    'AdditionalAttributes', ('Name', 'POLARIZATION')
+    result: { 
+                'Name': 'POLARIZATION', 
+                'Values': ['VV', 'VH']
+            }
+    ```
+
+    ---
+
+    ADVANCED:
+    Sometimes there are multiple dictionaries in a list that have the same key value pair we're searching for 
+    (See `OPERAS1Product` umm under `RelatedUrls`). This means we can miss values since we're only grabbing the first match
+    depending on how the umm is organized. There is a way to get ALL data that matches our key value criteria.
+
+    Example: "I need ALL `URL` values for dictionaries in `RelatedUrls` where `Type` is `GET DATA`" (See in use in `OPERAS1Product` class)
+    ```
+    'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0
+    ```
+    """
     if item is None:
         return None
     for key in args:

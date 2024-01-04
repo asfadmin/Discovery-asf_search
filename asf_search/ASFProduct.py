@@ -1,4 +1,5 @@
 import os
+from typing import Tuple, Union
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -17,6 +18,32 @@ from asf_search.CMR.translate import get as umm_get
 from asf_search.baseline import BaselineCalcType
 
 class ASFProduct:
+    """
+    The ASFProduct class is the base class for search results from asf-search.
+    Key props:
+        - properties:
+            - stores commonly acessed properties of the CMR UMM for convenience
+        - umm:
+            - The data portion of the CMR response
+        - meta:
+            - The metadata portion of the CMR response
+        - geometry:
+            - The geometry `{coordinates: [[lon, lat] ...], 'type': Polygon}`
+        - baseline:
+            - used for spatio-temporal baseline stacking, stores state vectors/ascending node time/insar baseline values when available (Not set in base ASFProduct class)  
+            - See `S1Product` or `ALOSProduct` `get_baseline_calc_properties()` methods for implementation examples
+    
+    Key methods:
+        - `download()`
+        - `stack()`
+        - `remotezip()`
+
+        
+    """
+    @classmethod
+    def get_classname(cls):
+        return cls.__name__
+    
     base_properties = {
             # min viable product
             'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
@@ -35,7 +62,25 @@ class ASFProduct:
             'platform': {'path': [ 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
             'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
             'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+            'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int}, # overloaded by S1, ALOS, and ERS
+            'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
+            'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
+            'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
+            'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
+            'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
+    """
+    base_properties dictionary, mapping readable property names to paths and optional type casting
+    
+    entries are organized as such:
+        - `PROPERTY_NAME`: The name the property should be called in `ASFProduct.properties`
+            - `path`: the expected path in the CMR UMM json granule response as a list
+            - `cast`: (optional): the optional type casting method
+    
+    Defining `base_properties` in subclasses allows for defining custom properties or overiding existing ones.
+    See `S1Product._get_property_paths()` on how subclasses are expected to 
+    combine `ASFProduct.base_properties` with their own separately defined `base_properties`
+    """
 
     baseline_type = BaselineCalcType.NONE
 
@@ -89,32 +134,24 @@ class ASFProduct:
 
         urls = []
 
-        def get_additional_urls():
-            output = []
-            for url in self.properties['additionalUrls']:
-                if self.properties['processingLevel'] == 'BURST':
-                    # Burst XML filenames are just numbers, this makes it more indentifiable
-                    file_name = '.'.join(default_filename.split('.')[:-1]) + url.split('.')[-1]
-                else:
-                    # otherwise just use the name found in the url
-                    file_name = os.path.split(parse.urlparse(url).path)[1]
-                urls.append((f"{file_name}", url))
-            
-            return output
-
         if fileType == FileDownloadType.DEFAULT_FILE:
             urls.append((default_filename, self.properties['url']))
         elif fileType == FileDownloadType.ADDITIONAL_FILES:
-            urls.extend(get_additional_urls())
+            urls.extend(self.get_additional_urls(default_filename))
         elif fileType == FileDownloadType.ALL_FILES:
             urls.append((default_filename, self.properties['url']))
-            urls.extend(get_additional_urls())
+            urls.extend(self.get_additional_urls(default_filename))
         else:
             raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
 
         for filename, url in urls:
             download_url(url=url, path=path, filename=filename, session=session)
 
+    def get_additional_filenames_and_urls(self, 
+                                          default_filename: str = None # for subclasses without fileName in url (see S1BURSTProduct implementation)
+                                          ):
+        return [(os.path.split(parse.urlparse(url).path)[1], url) for url in self.properties['additionalUrls']]
+    
     def stack(
             self,
             opts: ASFSearchOptions = None
@@ -133,13 +170,13 @@ class ASFProduct:
 
         return stack_from_product(self, opts=opts)
 
-    def get_stack_opts(self) -> ASFSearchOptions:
+    def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
 
         :return: ASFSearchOptions describing appropriate options for building a stack from this product
         """
-        return {}
+        return opts
 
     def centroid(self) -> Point:
         """
@@ -165,6 +202,9 @@ class ASFProduct:
         return remotezip(self.properties['url'], session=session)
 
     def translate_product(self, item: dict) -> dict:
+        """
+        Generates `properties` and `geometry` from the CMR UMM response
+        """
         try:
             coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
             coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
@@ -196,18 +236,31 @@ class ASFProduct:
     # ASFProduct subclasses define extra/override param key + UMM pathing here 
     @staticmethod
     def _get_property_paths() -> dict:
+        """
+        Returns base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
+        define which properties they want in their subclass's properties dict. 
+        
+        (See `S1Product._get_property_paths()` for example of combining base_properties of multiple classes)
+        
+        :returns dictionary, {`PROPERTY_NAME`: {'path': [umm, path, to, value], 'cast (optional)': Callable_to_cast_value}, ...}
+        """
         return ASFProduct.base_properties
     
     def get_baseline_calc_properties(self) -> dict:
+        """
+        Used by subclasses to assign baseline values to `ASFProduct.baseline` property.
+        """
         return {}
-    
-    @staticmethod
-    def get_default_product_type():
-        return None
 
-    def is_valid_reference(self):
+    def is_valid_reference(self) -> bool:
+        """
+        Used for baseline stack reference validation, see S1Product or AlosProduct versions for example implementations
+        """
         return False
     
-    def get_sort_keys(self):
+    def get_sort_keys(self) -> Tuple:
+        """
+        Returns tuple of primary and secondary date values used for sorting final search results
+        """
         return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
     

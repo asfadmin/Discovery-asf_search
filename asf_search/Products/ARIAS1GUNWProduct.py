@@ -1,8 +1,12 @@
 from asf_search import ASFSession
 from asf_search.Products import S1Product
-from asf_search.CMR.translate import get, try_parse_float, try_parse_int
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast
+from asf_search.CMR.translate import get, try_parse_float
 class ARIAS1GUNWProduct(S1Product):
+    """
+    Used for ARIA S1 GUNW Products
+
+    ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/derived-data-sets/sentinel-1-interferograms/
+    """
     base_properties = {
         'perpendicularBaseline': {'path': ['AdditionalAttributes', ('Name', 'PERPENDICULAR_BASELINE'), 'Values', 0], 'cast': try_parse_float},
         'orbit': {'path': ['OrbitCalculatedSpatialDomains']}
@@ -25,6 +29,3 @@ class ARIAS1GUNWProduct(S1Product):
             **ARIAS1GUNWProduct.base_properties
         }
     
-    @staticmethod
-    def get_default_product_type():
-        return None

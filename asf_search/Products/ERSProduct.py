@@ -1,23 +1,23 @@
 import copy
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_float, try_parse_int, try_round_float
 from asf_search.baseline import BaselineCalcType
-from asf_search.constants import PLATFORM
+from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_round_float
 from asf_search.exceptions import ASFBaselineError
 
 class ERSProduct(ASFProduct):
+    """
+    Used for ERS-1 and ERS-2 products
+
+    ASF ERS-1 Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/ers-1/
+    ASF ERS-2 Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/ers-2/
+    """
     base_properties = {
         'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
-        'esaFrame': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
-        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
-        'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
+        'esaFrame': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0]},
+        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
-        'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
-        'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
-        'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
-        'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
         'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]},
     }
 
@@ -26,9 +26,6 @@ class ERSProduct(ASFProduct):
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
-
-        self.properties['frameNumber'] = str(self.properties['frameNumber'])
-        self.properties['esaFrame'] = str(self.properties['esaFrame'])
         
     def get_baseline_calc_properties(self) -> dict:
         insarBaseline = umm_cast(float, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
@@ -40,12 +37,9 @@ class ERSProduct(ASFProduct):
         
         return None
     
-    def get_stack_opts(self, 
-        opts: ASFSearchOptions = None):
-
+    def get_stack_opts(self, opts: ASFSearchOptions = None):
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-        stack_opts.processingLevel = ERSProduct.get_default_product_type()
-        
+        stack_opts.processingLevel = 'L0'
         if self.properties.get('insarStackId') not in [None, 'NA', 0, '0']:
             stack_opts.insarStackId = self.properties['insarStackId']
             return stack_opts
@@ -58,10 +52,6 @@ class ERSProduct(ASFProduct):
             **ASFProduct._get_property_paths(),
             **ERSProduct.base_properties
         }
-
-    @staticmethod
-    def get_default_product_type():
-        return 'L0'
 
     def is_valid_reference(self):
         # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)

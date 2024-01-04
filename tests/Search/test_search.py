@@ -32,7 +32,7 @@ def run_test_ASFSearchResults(search_resp):
                 assert search_resp[idx]['properties']['frameNumber'] == item
             elif 'esaFrame' in feature.geojson()['properties'].keys() and key == 'frameNumber':
                 continue
-            elif search_resp[idx]['properties'][key] is not None and item is not None:
+            elif search_resp[idx]['properties'].get(key) is not None and item is not None:
                 assert item == search_resp[idx]['properties'][key]
 
 def run_test_search(search_parameters, answer):

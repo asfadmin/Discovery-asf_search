@@ -2,9 +2,20 @@ import copy
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import get, try_parse_int
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast
+
 class S1BURSTProduct(S1Product):
+    """
+    S1Product Subclass made specifically for Sentinel-1 SLC-BURST products
+    
+    Key features/properties:
+    - `properties['burst']` contains SLC-BURST Specific fields such as `fullBurstID` and `burstIndex`
+    - `properties['additionalUrls']` contains BURST-XML url
+    - SLC-BURST specific stacking params
+
+    ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/data-sets/derived-data-sets/sentinel-1-bursts/
+    """
     base_properties = {
+        'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0]},
         'absoluteBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0], 'cast': try_parse_int},
         'relativeBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_RELATIVE'), 'Values', 0], 'cast': try_parse_int},
         'fullBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_FULL'), 'Values', 0]},
@@ -18,7 +29,9 @@ class S1BURSTProduct(S1Product):
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.properties['sceneName'] = self.properties['fileID']
-        self.properties['bytes'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0)
+
+        # Gathers burst properties into `burst` specific dict 
+        # rather than properties dict to limit breaking changes
         self.properties['burst'] = {
             'absoluteBurstID': self.properties.pop('absoluteBurstID'),
             'relativeBurstID': self.properties.pop('relativeBurstID'),
@@ -34,12 +47,18 @@ class S1BURSTProduct(S1Product):
         if urls is not None:
             self.properties['url'] = urls[0]
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
-            self.properties['additionalUrls'] = [urls[1]]
+            self.properties['additionalUrls'] = [urls[1]] # xml-metadata url
 
     def get_stack_opts(self, opts: ASFSearchOptions = None):
+        """
+        Returns the search options asf-search will use internally to build an SLC-BURST baseline stack from
+        
+        :param opts: additional criteria for limiting 
+        :returns ASFSearchOptions used for build Sentinel-1 SLC-BURST Stack
+        """
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
         
-        stack_opts.processingLevel = S1BURSTProduct.get_default_product_type()
+        stack_opts.processingLevel = 'BURST'
         stack_opts.fullBurstID = self.properties['burst']['fullBurstID']
         stack_opts.polarization = [self.properties['polarization']]
         return stack_opts
@@ -51,6 +70,11 @@ class S1BURSTProduct(S1Product):
             **S1BURSTProduct.base_properties
         }
     
-    @staticmethod
-    def get_default_product_type():
-        return 'BURST'
+    def get_additional_filenames_and_urls(self, default_filename: str = None):
+        # Burst XML filenames are just numbers, this makes it more indentifiable
+        if file_name is None:
+            file_name = '.'.join(self.properties['fileName'].split('.')[:-1]) + 'xml'
+        else:
+            file_name = '.'.join(default_filename.split('.')[:-1]) + 'xml'
+        
+        return [(file_name, self.properties['additionalUrls'][0])]

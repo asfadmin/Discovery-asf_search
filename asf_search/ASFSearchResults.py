@@ -1,7 +1,9 @@
 from collections import UserList
 from multiprocessing import Pool
+from functools import reduce
 import json
-from asf_search import ASFSession, ASFSearchOptions
+from typing import Type, Callable
+from asf_search import ASFSession, ASFSearchOptions, ASFProduct
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.exceptions import ASFSearchError
 
@@ -78,6 +80,33 @@ class ASFSearchResults(UserList):
             msg = "Results are incomplete due to a search error. See logging for more details. (ASFSearchResults.raise_if_incomplete called)"
             ASF_LOGGER.error(msg)
             raise ASFSearchError(msg)
+
+
+    def convert_to_sublcass(self, ASFProductSubclass: type(ASFProduct), criteria: Callable = lambda _: True):
+        count = 0
+        for idx, product in enumerate(self.data):
+            if criteria(product):
+                self.data[idx] = ASFProductSubclass(args={'umm': product.umm, 'meta': product.meta}, session=product.session)
+                count += 1
+
+        ASF_LOGGER.log(f'Converted {count} ASFProduct objects to subclass f{type(ASFProductSubclass)}')
+
+    def get_products_by_subclass_type(self) -> dict:
+        """
+        Organizes results into dictionary by ASFProduct subclass name
+        : return: dict of ASFSearchResults, organized by ASFProduct subclass names
+        """
+        subclasses = {}
+
+        for product in self.data:
+            product_type = product.get_classname()
+
+            if subclasses.get(product_type) is None:
+                subclasses[product_type] = ASFSearchResults([])
+            
+            subclasses[product_type].append(product)
+        
+        return subclasses
 
 def _download_product(args) -> None:
     product, path, session, fileType = args
