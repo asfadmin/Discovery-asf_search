@@ -146,17 +146,17 @@ class ASFProduct:
         if fileType == FileDownloadType.DEFAULT_FILE:
             urls.append((default_filename, self.properties['url']))
         elif fileType == FileDownloadType.ADDITIONAL_FILES:
-            urls.extend(self.get_additional_urls(default_filename))
+            urls.extend(self._get_additional_filenames_and_urls(default_filename))
         elif fileType == FileDownloadType.ALL_FILES:
             urls.append((default_filename, self.properties['url']))
-            urls.extend(self.get_additional_urls(default_filename))
+            urls.extend(self._get_additional_filenames_and_urls(default_filename))
         else:
             raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
 
         for filename, url in urls:
             download_url(url=url, path=path, filename=filename, session=session)
 
-    def get_additional_filenames_and_urls(self, 
+    def _get_additional_filenames_and_urls(self, 
                                           default_filename: str = None # for subclasses without fileName in url (see S1BURSTProduct implementation)
                                           ):
         return [(os.path.split(parse.urlparse(url).path)[1], url) for url in self.properties['additionalUrls']]

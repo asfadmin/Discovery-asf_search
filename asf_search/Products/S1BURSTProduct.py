@@ -72,7 +72,7 @@ class S1BURSTProduct(S1Product):
             **S1BURSTProduct.base_properties
         }
     
-    def get_additional_filenames_and_urls(self, default_filename: str = None):
+    def _get_additional_filenames_and_urls(self, default_filename: str = None):
         # Burst XML filenames are just numbers, this makes it more indentifiable
         if file_name is None:
             file_name = '.'.join(self.properties['fileName'].split('.')[:-1]) + 'xml'
