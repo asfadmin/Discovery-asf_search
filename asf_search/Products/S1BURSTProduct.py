@@ -1,7 +1,9 @@
 import copy
+from typing import Union
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import get, try_parse_int
+from asf_search.constants import PRODUCT_TYPE
 
 class S1BURSTProduct(S1Product):
     """
@@ -78,3 +80,11 @@ class S1BURSTProduct(S1Product):
             file_name = '.'.join(default_filename.split('.')[:-1]) + 'xml'
         
         return [(file_name, self.properties['additionalUrls'][0])]
+    
+    @staticmethod
+    def get_default_baseline_product_type() -> Union[str, None]:
+        """
+        Returns the product type to search for when building a baseline stack.
+        """
+        return PRODUCT_TYPE.BURST
+    

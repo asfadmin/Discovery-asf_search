@@ -1,6 +1,8 @@
 import copy
+from typing import Union
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_round_float
+from asf_search.constants import PRODUCT_TYPE
 from asf_search.exceptions import ASFBaselineError
 
 class ERSProduct(ASFProduct):
@@ -58,3 +60,11 @@ class ERSProduct(ASFProduct):
             raise ValueError('No baseline values available for precalculated dataset')
         
         return True
+    
+    @staticmethod
+    def get_default_baseline_product_type() -> Union[str, None]:
+        """
+        Returns the product type to search for when building a baseline stack.
+        """
+        return PRODUCT_TYPE.L0
+    

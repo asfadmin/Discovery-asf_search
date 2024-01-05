@@ -272,4 +272,10 @@ class ASFProduct:
         Returns tuple of primary and secondary date values used for sorting final search results
         """
         return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
-    
+
+    @staticmethod
+    def get_default_baseline_product_type() -> Union[str, None]:
+        """
+        Returns the product type to search for when building a baseline stack.
+        """
+        return None

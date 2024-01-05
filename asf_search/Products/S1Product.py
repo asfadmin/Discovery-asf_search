@@ -1,7 +1,9 @@
 import copy
+from typing import Union
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
 from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_int
 from asf_search.constants import PLATFORM
+from asf_search.constants import PRODUCT_TYPE
 
 class S1Product(ASFProduct):
     """
@@ -109,3 +111,9 @@ class S1Product(ASFProduct):
                 return False
         return True
     
+    @staticmethod
+    def get_default_baseline_product_type() -> Union[str, None]:
+        """
+        Returns the product type to search for when building a baseline stack.
+        """
+        return PRODUCT_TYPE.SLC
