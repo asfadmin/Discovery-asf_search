@@ -9,7 +9,7 @@ class JERSProduct(ASFProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/jers-1/
     """
-    base_properties = {
+    _base_properties = {
         'browse': { 'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
@@ -35,10 +35,10 @@ class JERSProduct(ASFProduct):
         return None
         
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **ASFProduct._get_property_paths(),
-            **JERSProduct.base_properties
+            **ASFProduct.get_property_paths(),
+            **JERSProduct._base_properties
         }
 
     def get_stack_opts(self, opts: ASFSearchOptions = None):

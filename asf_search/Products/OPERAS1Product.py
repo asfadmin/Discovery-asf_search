@@ -6,7 +6,7 @@ class OPERAS1Product(S1Product):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/opera/
     """
-    base_properties = {
+    _base_properties = {
         'centerLat': {'path': []}, # Opera products lacks these fields
         'centerLon': {'path': []}, 
         'frameNumber': {'path': []}, 
@@ -50,10 +50,10 @@ class OPERAS1Product(S1Product):
         return opts
 
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **S1Product._get_property_paths(),
-            **OPERAS1Product.base_properties
+            **S1Product.get_property_paths(),
+            **OPERAS1Product._base_properties
         }
     
     def is_valid_reference(self):

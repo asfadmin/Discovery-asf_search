@@ -11,7 +11,7 @@ class ALOSProduct(ASFProduct):
 
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/alos-palsar/
     """
-    base_properties = {
+    _base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
         'faradayRotation': {'path': [ 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
         'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
@@ -47,10 +47,10 @@ class ALOSProduct(ASFProduct):
         raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {self.properties["fileID"]}')
         
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **ASFProduct._get_property_paths(),
-            **ALOSProduct.base_properties
+            **ASFProduct.get_property_paths(),
+            **ALOSProduct._base_properties
         }
     
     def is_valid_reference(self):

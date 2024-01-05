@@ -5,7 +5,7 @@ class SEASATProduct(ASFProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/sar-data-sets/seasat/
     """
-    base_properties = {
+    _base_properties = {
         'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
@@ -16,8 +16,8 @@ class SEASATProduct(ASFProduct):
         super().__init__(args, session)
 
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **ASFProduct._get_property_paths(),
-            **SEASATProduct.base_properties
+            **ASFProduct.get_property_paths(),
+            **SEASATProduct._base_properties
         }

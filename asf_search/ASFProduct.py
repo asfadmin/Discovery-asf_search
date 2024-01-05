@@ -55,7 +55,7 @@ class ASFProduct:
     
     baseline_type = BaselineCalcType.NONE
 
-    base_properties = {
+    _base_properties = {
             # min viable product
             'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
             'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': try_parse_float},
@@ -81,16 +81,16 @@ class ASFProduct:
             'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
     """
-    base_properties dictionary, mapping readable property names to paths and optional type casting
+    _base_properties dictionary, mapping readable property names to paths and optional type casting
     
     entries are organized as such:
         - `PROPERTY_NAME`: The name the property should be called in `ASFProduct.properties`
             - `path`: the expected path in the CMR UMM json granule response as a list
             - `cast`: (optional): the optional type casting method
     
-    Defining `base_properties` in subclasses allows for defining custom properties or overiding existing ones.
-    See `S1Product._get_property_paths()` on how subclasses are expected to 
-    combine `ASFProduct.base_properties` with their own separately defined `base_properties`
+    Defining `_base_properties` in subclasses allows for defining custom properties or overiding existing ones.
+    See `S1Product.get_property_paths()` on how subclasses are expected to 
+    combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
     """
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -225,7 +225,7 @@ class ASFProduct:
 
         properties = {
             prop: umm_entry['cast'](umm_get(umm, *umm_entry['path'])) if umm_entry.get('cast') is not None else umm_get(umm, *umm_entry['path'])
-            for prop, umm_entry in self._get_property_paths().items()
+            for prop, umm_entry in self.get_property_paths().items()
         }
 
         if properties.get('url') is not None:
@@ -244,16 +244,16 @@ class ASFProduct:
 
     # ASFProduct subclasses define extra/override param key + UMM pathing here 
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         """
-        Returns base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
+        Returns _base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
         define which properties they want in their subclass's properties dict. 
         
-        (See `S1Product._get_property_paths()` for example of combining base_properties of multiple classes)
+        (See `S1Product.get_property_paths()` for example of combining _base_properties of multiple classes)
         
         :returns dictionary, {`PROPERTY_NAME`: {'path': [umm, path, to, value], 'cast (optional)': Callable_to_cast_value}, ...}
         """
-        return ASFProduct.base_properties
+        return ASFProduct._base_properties
     
     def get_baseline_calc_properties(self) -> dict:
         """

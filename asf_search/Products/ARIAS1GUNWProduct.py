@@ -7,7 +7,7 @@ class ARIAS1GUNWProduct(S1Product):
 
     ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/derived-data-sets/sentinel-1-interferograms/
     """
-    base_properties = {
+    _base_properties = {
         'perpendicularBaseline': {'path': ['AdditionalAttributes', ('Name', 'PERPENDICULAR_BASELINE'), 'Values', 0], 'cast': try_parse_float},
         'orbit': {'path': ['OrbitCalculatedSpatialDomains']}
     }
@@ -23,9 +23,9 @@ class ARIAS1GUNWProduct(S1Product):
             self.properties['additionalUrls'] = [urls[1]]
 
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **S1Product._get_property_paths(),
-            **ARIAS1GUNWProduct.base_properties
+            **S1Product.get_property_paths(),
+            **ARIAS1GUNWProduct._base_properties
         }
     

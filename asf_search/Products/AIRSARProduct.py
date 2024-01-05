@@ -6,7 +6,7 @@ class AIRSARProduct(ASFProduct):
     """
     ASF Dataset Overview Page: https://asf.alaska.edu/data-sets/sar-data-sets/airsar/
     """
-    base_properties = {
+    _base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
@@ -18,8 +18,8 @@ class AIRSARProduct(ASFProduct):
         super().__init__(args, session)
     
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **ASFProduct._get_property_paths(),
-            **AIRSARProduct.base_properties
+            **ASFProduct.get_property_paths(),
+            **AIRSARProduct._base_properties
         }

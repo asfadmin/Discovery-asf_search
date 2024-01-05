@@ -13,7 +13,7 @@ class S1Product(ASFProduct):
     ASF Dataset Overview Page: https://asf.alaska.edu/datasets/daac/sentinel-1/
     """
 
-    base_properties = {
+    _base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
@@ -95,10 +95,10 @@ class S1Product(ASFProduct):
         return stack_opts
     
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **ASFProduct._get_property_paths(),
-            **S1Product.base_properties
+            **ASFProduct.get_property_paths(),
+            **S1Product._base_properties
         }
 
     def is_valid_reference(self) -> bool:

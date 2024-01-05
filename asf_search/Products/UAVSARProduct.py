@@ -6,7 +6,7 @@ class UAVSARProduct(ASFProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/uavsar/
     """
-    base_properties = {
+    _base_properties = {
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
@@ -17,8 +17,8 @@ class UAVSARProduct(ASFProduct):
         super().__init__(args, session)
 
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **ASFProduct._get_property_paths(),
-            **UAVSARProduct.base_properties
+            **ASFProduct.get_property_paths(),
+            **UAVSARProduct._base_properties
         }

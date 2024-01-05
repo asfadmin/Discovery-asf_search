@@ -9,7 +9,7 @@ class RadarsatProduct(ASFProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/radarsat-1/
     """
-    base_properties = {
+    _base_properties = {
         'faradayRotation': {'path': [ 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
         'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
@@ -46,10 +46,10 @@ class RadarsatProduct(ASFProduct):
         raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {self.properties["fileID"]}')
     
     @staticmethod
-    def _get_property_paths() -> dict:
+    def get_property_paths() -> dict:
         return {
-            **ASFProduct._get_property_paths(),
-            **RadarsatProduct.base_properties
+            **ASFProduct.get_property_paths(),
+            **RadarsatProduct._base_properties
         }
     
     def is_valid_reference(self):
