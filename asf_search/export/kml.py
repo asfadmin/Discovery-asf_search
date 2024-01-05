@@ -45,6 +45,13 @@ class KMLStreamArray(MetalinkStreamArray):
     def getOutputType(self) -> str:
         return 'kml'
     
+    def get_additional_fields(self, product):
+        umm = product.umm
+        additional_fields = {}
+        for key, path in extra_kml_fields:
+            additional_fields[key] = product.umm_get(umm, *path)
+        return additional_fields
+    
     def getItem(self, p):
         placemark = ETree.Element("Placemark")
         name = ETree.Element('name')
