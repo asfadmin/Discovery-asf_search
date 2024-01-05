@@ -19,7 +19,7 @@ def run_test_find_new_reference(stack: List, output_index: Number) -> None:
         assert find_new_reference(products).properties['sceneName'] == stack[output_index]['properties']['sceneName']
         
 def run_test_get_default_product_type(product: ASFProduct, product_type: str) -> None:
-    assert product.get_default_product_type() == product_type
+    assert product.properties['processingLevel'] == product_type
     
 def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
     reference = as_ASFProduct(reference, ASFSession())

@@ -15,7 +15,7 @@ def run_test_get_preprocessed_stack_params(product):
 
     original_properties = product['properties']
     
-    assert(params.processingLevel == [reference.get_default_product_type()])
+    assert(params.processingLevel == [reference.properties['processingLevel']])
     assert(params.insarStackId == original_properties['insarStackId'])
     assert(len(dict(params)) == 2)
     
