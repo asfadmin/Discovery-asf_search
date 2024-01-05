@@ -1,3 +1,4 @@
+from enum import Enum
 import os
 from typing import Tuple, Union
 import warnings
@@ -15,7 +16,6 @@ from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.CMR.translate import get as umm_get
-from asf_search.Products import BaselineCalcType
 
 class ASFProduct:
     """
@@ -44,6 +44,17 @@ class ASFProduct:
     def get_classname(cls):
         return cls.__name__
     
+    class BaselineCalcType(Enum):
+        """
+        ENUM to determine how asf-search will calculate perpendicular baseline
+
+        """
+        NONE = 1 # isn't a calculated baseline product
+        PRE_CALCULATED = 2 # Has pre-calculated insarBaseline value
+        CALCULATED = 3 # Calculate at run-time
+    
+    baseline_type = BaselineCalcType.NONE
+
     base_properties = {
             # min viable product
             'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
@@ -81,8 +92,6 @@ class ASFProduct:
     See `S1Product._get_property_paths()` on how subclasses are expected to 
     combine `ASFProduct.base_properties` with their own separately defined `base_properties`
     """
-
-    baseline_type = BaselineCalcType.NONE
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')

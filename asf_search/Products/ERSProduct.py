@@ -1,6 +1,5 @@
 import copy
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
-from asf_search.Products import BaselineCalcType
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_round_float
 from asf_search.exceptions import ASFBaselineError
 
@@ -21,7 +20,7 @@ class ERSProduct(ASFProduct):
         'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]},
     }
 
-    baseline_type = BaselineCalcType.PRE_CALCULATED
+    baseline_type = ASFProduct.BaselineCalcType.PRE_CALCULATED
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)

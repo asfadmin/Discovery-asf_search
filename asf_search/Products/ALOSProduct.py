@@ -1,7 +1,6 @@
 import copy
 from asf_search import ASFSession, ASFProduct, ASFSearchOptions
 from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_parse_int, try_round_float
-from asf_search.Products import BaselineCalcType
 from asf_search.exceptions import ASFBaselineError
 
 class ALOSProduct(ASFProduct):
@@ -18,7 +17,7 @@ class ALOSProduct(ASFProduct):
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
     }
 
-    baseline_type = BaselineCalcType.PRE_CALCULATED
+    baseline_type = ASFProduct.BaselineCalcType.PRE_CALCULATED
     
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
