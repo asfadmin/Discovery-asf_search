@@ -1,6 +1,7 @@
+from ast import List
 from enum import Enum
 import os
-from typing import Tuple, Union
+from typing import Tuple, Union, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -15,7 +16,6 @@ from remotezip import RemoteZip
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
-from asf_search.CMR.translate import get as umm_get
 
 class ASFProduct:
     """
@@ -224,7 +224,7 @@ class ASFProduct:
         umm = item.get('umm')
 
         properties = {
-            prop: umm_entry['cast'](umm_get(umm, *umm_entry['path'])) if umm_entry.get('cast') is not None else umm_get(umm, *umm_entry['path'])
+            prop: umm_entry['cast'](self.umm_get(umm, *umm_entry['path'])) if umm_entry.get('cast') is not None else self.umm_get(umm, *umm_entry['path'])
             for prop, umm_entry in self.get_property_paths().items()
         }
 
@@ -235,10 +235,10 @@ class ASFProduct:
 
         # Fallbacks
         if properties.get('beamModeType') is None:
-            properties['beamModeType'] = umm_get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
+            properties['beamModeType'] = self.umm_get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
         
         if properties.get('platform') is None:
-            properties['platform'] = umm_get(umm, 'Platforms', 0, 'ShortName')
+            properties['platform'] = self.umm_get(umm, 'Platforms', 0, 'ShortName')
 
         return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
 
@@ -279,3 +279,117 @@ class ASFProduct:
         Returns the product type to search for when building a baseline stack.
         """
         return None
+    
+    @final
+    @staticmethod
+    def umm_get(item: dict, *args):
+        """
+        Used to search for values in CMR UMM
+
+        :param item: the umm dict returned from CMR
+        :param *args: the expected path to the value 
+        
+        Example case:
+        "I want to grab the polarization from the granule umm"
+        ```
+        item = {
+            'AdditionalAttributes': [
+                { 
+                    'Name': 'POLARIZATION', 
+                    'Values': ['VV', 'VH']
+                },
+                ...
+            ],
+            ...
+        }
+        ```
+
+        The path provided to *args would look like this:
+        ```
+        'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0
+        result: 'VV'
+        ```
+
+        - `'AdditionalAttributes'` acts like item['AdditionalAttributes'], which is a list of dictionaries
+        
+        - Since `AdditionalAttributes` is a LIST of dictionaries, we search for a dict with the key value pair,
+        `('Name', 'POLARIZATION')`
+
+        - If found, we try to access that dictionary's `Values` key
+        - Since `Values` is a list, we can access the first index `0` (in this case, 'VV')
+        
+        ---
+
+        If you want more of the umm, simply reduce how deep you search:
+        Example: "I need BOTH polarizations (`OPERAS1Product` does this, noticed the omitted `0`)
+        
+        ```
+        'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values'
+        result: ['VV', 'VH']
+        ```
+
+        ---
+        
+        Example: "I need the ENTIRE POLARIZATION dict"
+        
+        ```
+        'AdditionalAttributes', ('Name', 'POLARIZATION')
+        result: { 
+                    'Name': 'POLARIZATION', 
+                    'Values': ['VV', 'VH']
+                }
+        ```
+
+        ---
+
+        ADVANCED:
+        Sometimes there are multiple dictionaries in a list that have the same key value pair we're searching for 
+        (See `OPERAS1Product` umm under `RelatedUrls`). This means we can miss values since we're only grabbing the first match
+        depending on how the umm is organized. There is a way to get ALL data that matches our key value criteria.
+
+        Example: "I need ALL `URL` values for dictionaries in `RelatedUrls` where `Type` is `GET DATA`" (See in use in `OPERAS1Product` class)
+        ```
+        'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0
+        ```
+        """
+        if item is None:
+            return None
+        for key in args:
+            if isinstance(key, int):
+                item = item[key] if key < len(item) else None
+            elif isinstance(key, tuple):
+                (a, b) = key
+                if isinstance(b, List):
+                    output = []
+                    b = b[0]
+                    for child in item:
+                        if ASFProduct.umm_get(child, key[0]) == b[0]:
+                            output.append(ASFProduct.get(child, b[1]))
+                    if len(output):
+                        return output
+
+                    return None
+
+                found = False
+                for child in item:
+                    if ASFProduct.umm_get(child, a) == b:
+                        item = child
+                        found = True
+                        break
+                if not found:
+                    return None
+            else:
+                item = item.get(key)
+            if item is None:
+                return None
+        if item in [None, 'NA', 'N/A', '']:
+            item = None
+        return item
+    
+    @final
+    @staticmethod
+    def umm_cast(f, v):
+        try:
+            return f(v)
+        except TypeError:
+            return None

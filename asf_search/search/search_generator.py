@@ -13,7 +13,6 @@ from asf_search import __version__
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
-from asf_search.CMR.translate import get as umm_get
 from asf_search.CMR.datasets import dataset_collections
 
 from asf_search.ASFSession import ASFSession
@@ -235,13 +234,13 @@ def set_platform_alias(opts: ASFSearchOptions):
         opts.platform = list(set(platform_list))
 
 def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
-    shortName = umm_get(item['umm'], 'CollectionReference', 'ShortName')
+    shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
     
     # ALOS
     if shortName is None:
-        shortName = umm_get(item['umm'], 'Platforms', 0, 'ShortName')
+        shortName = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
         if shortName == 'SENTINEL-1A':
-            if 'Sentinel-1 Interferogram' in umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0):
+            if 'Sentinel-1 Interferogram' in ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0):
                 shortName = 'ARIA S1 GUNW'
         # print(shortName)
     

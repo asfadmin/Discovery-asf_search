@@ -1,7 +1,7 @@
 import copy
 from typing import Union
 from asf_search import ASFSession, ASFProduct, ASFSearchOptions
-from asf_search.CMR.translate import get as umm_get, cast as umm_cast, try_parse_float, try_parse_int, try_round_float
+from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.constants import PRODUCT_TYPE
 from asf_search.exceptions import ASFBaselineError
 
@@ -29,7 +29,7 @@ class ALOSProduct(ASFProduct):
             self.properties['groupID'] = self.properties['sceneName']
         
     def get_baseline_calc_properties(self) -> dict:
-        insarBaseline = umm_cast(float, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
+        insarBaseline = self.umm_cast(float, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
         
         if insarBaseline is not None:
             return {

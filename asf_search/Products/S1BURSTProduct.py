@@ -2,7 +2,7 @@ import copy
 from typing import Union
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
-from asf_search.CMR.translate import get, try_parse_int
+from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PRODUCT_TYPE
 
 class S1BURSTProduct(S1Product):
@@ -45,7 +45,7 @@ class S1BURSTProduct(S1Product):
             'azimuthAnxTime': self.properties.pop('azimuthAnxTime')
         }
 
-        urls = get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
+        urls = self.umm_get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
         if urls is not None:
             self.properties['url'] = urls[0]
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]

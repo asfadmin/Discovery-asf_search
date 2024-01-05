@@ -1,7 +1,6 @@
 import csv
 from types import GeneratorType
 from asf_search import ASF_LOGGER
-from asf_search.CMR.translate import get_additional_fields
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 import inspect
@@ -92,7 +91,7 @@ class CSVStreamArray(list):
 
         additional_fields = {}
         for key, path in extra_csv_fields:
-            additional_fields[key] = get_additional_fields(umm, *path)
+            additional_fields[key] = product.umm_get(product.umm, *path)
 
         return additional_fields
 

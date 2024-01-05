@@ -5,7 +5,6 @@ from typing import Tuple
 from shapely.geometry import shape
 from shapely.ops import transform
 
-from asf_search.CMR.translate import get_additional_fields
 from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
@@ -61,18 +60,18 @@ class JSONLiteStreamArray(list):
         return self.len
 
     def get_additional_output_fields(self, product):
-        umm = product.umm
+        # umm = product.umm
         
         additional_fields = {}
         for key, path in extra_jsonlite_fields:
-            additional_fields[key] = get_additional_fields(umm, *path)
+            additional_fields[key] = product.umm_get(product.umm, *path)
 
         if product.properties['platform'].upper() in ['ALOS', 'RADARSAT-1', 'JERS-1', 'ERS-1', 'ERS-2']:
-            insarGrouping = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
+            insarGrouping = product.umm_get(product.umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0])
             
             if insarGrouping not in [None, 0, '0', 'NA', 'NULL']:
                 additional_fields['canInsar'] = True
-                additional_fields['insarStackSize'] = get_additional_fields(umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
+                additional_fields['insarStackSize'] = product.umm_get(product.umm, *['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0])
             else:
                 additional_fields['canInsar'] = False
         else:

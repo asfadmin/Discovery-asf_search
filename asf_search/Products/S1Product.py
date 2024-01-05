@@ -1,7 +1,7 @@
 import copy
 from typing import Union
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
-from asf_search.CMR.translate import get_state_vector, get as umm_get, cast as umm_cast, try_parse_int
+from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE
 
@@ -41,7 +41,7 @@ class S1Product(ASFProduct):
         """
         :returns properties required for SLC baseline stack calculations
         """
-        ascendingNodeTime = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
+        ascendingNodeTime = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
 
         if ascendingNodeTime is not None:
             if not ascendingNodeTime.endswith('Z'):
@@ -60,10 +60,10 @@ class S1Product(ASFProduct):
         positions = {}
         velocities = {}
 
-        positions['prePosition'], positions['prePositionTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
-        positions['postPosition'], positions['postPositionTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
-        velocities['preVelocity'], velocities['preVelocityTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
-        velocities['postVelocity'], velocities['postVelocityTime'] = umm_cast(get_state_vector, umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
+        positions['prePosition'], positions['prePositionTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
+        positions['postPosition'], positions['postPositionTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
+        velocities['preVelocity'], velocities['preVelocityTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
+        velocities['postVelocity'], velocities['postVelocityTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
 
         for key in ['prePositionTime','postPositionTime','preVelocityTime','postVelocityTime']:
             if positions.get(key) is not None:
@@ -75,6 +75,13 @@ class S1Product(ASFProduct):
             'velocities': velocities
         }
     
+    @staticmethod
+    def _get_state_vector(state_vector: str):
+        if state_vector is None:
+            return None, None
+        
+        return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
+
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
         Returns the search options asf-search will use internally to build an SLC baseline stack from

@@ -1,7 +1,6 @@
 import inspect
 from types import GeneratorType
 from asf_search import ASF_LOGGER
-from asf_search.CMR import get_additional_fields
 from asf_search.export.metalink import MetalinkStreamArray
 import xml.etree.ElementTree as ETree
 
@@ -41,13 +40,7 @@ class KMLStreamArray(MetalinkStreamArray):
          </PolyStyle>
      </Style>\n     """
         self.footer = """</Document>\n</kml>"""
-        
-    def get_additional_fields(self, product):
-        umm = product.umm
-        additional_fields = {}
-        for key, path in extra_kml_fields:
-            additional_fields[key] = get_additional_fields(umm, *path)
-        return additional_fields
+    
 
     def getOutputType(self) -> str:
         return 'kml'

@@ -1,7 +1,7 @@
 from numbers import Number
-from asf_search import ASFSearchOptions
+from asf_search import ASFProduct, ASFSearchOptions
 from asf_search import ASFSession
-from asf_search.CMR.translate import get
+# from asf_search.CMR.translate import get
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
@@ -93,7 +93,7 @@ def run_test_dataset_search(datasets: List):
             response = search(dataset=dataset, maxResults=250)
 
             # Get collection shortName of all granules
-            shortNames = list(set([shortName for product in response if (shortName:=get(product.umm, 'CollectionReference', 'ShortName')) is not None]))
+            shortNames = list(set([shortName for product in response if (shortName:=ASFProduct.umm_get(product.umm, 'CollectionReference', 'ShortName')) is not None]))
 
             # and check that results are limited to the expected datasets by their shortname
             for shortName in shortNames:

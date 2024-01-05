@@ -1,5 +1,4 @@
 from asf_search import ASFSearchOptions, ASFSession
-from asf_search.CMR.translate import get as umm_get
 from asf_search.Products import S1Product
 
 class OPERAS1Product(S1Product):
@@ -21,16 +20,16 @@ class OPERAS1Product(S1Product):
 
         self.baseline = None
         
-        self.properties['beamMode'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
-        accessUrls = [*umm_get(self.umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0), *umm_get(self.umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0)]
+        self.properties['beamMode'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
+        accessUrls = [*self.umm_get(self.umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0), *self.umm_get(self.umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0)]
         self.properties['additionalUrls'] = sorted([url for url in list(set(accessUrls)) if not url.endswith('.md5') 
                                         and not url.startswith('s3://') 
                                         and not 's3credentials' in url 
                                         and not url.endswith('.png')
                                         and url != self.properties['url']])
-        self.properties['polarization'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values')
+        self.properties['polarization'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values')
 
-        self.properties['operaBurstID'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
+        self.properties['operaBurstID'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
         self.properties['bytes'] = {entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']} for entry in self.properties['bytes']}
         
         center = self.centroid() 
@@ -40,10 +39,10 @@ class OPERAS1Product(S1Product):
         self.properties.pop('frameNumber')
 
         if (processingLevel := self.properties['processingLevel']) in ['RTC', 'RTC-STATIC']:
-            self.properties['bistaticDelayCorrection'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BISTATIC_DELAY_CORRECTION'), 'Values', 0)
+            self.properties['bistaticDelayCorrection'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BISTATIC_DELAY_CORRECTION'), 'Values', 0)
             if processingLevel == 'RTC':
-                self.properties['noiseCorrection'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'NOISE_CORRECTION'), 'Values', 0)
-                self.properties['postProcessingFilter'] = umm_get(self.umm, 'AdditionalAttributes', ('Name', 'POST_PROCESSING_FILTER'), 'Values', 0)
+                self.properties['noiseCorrection'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'NOISE_CORRECTION'), 'Values', 0)
+                self.properties['postProcessingFilter'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'POST_PROCESSING_FILTER'), 'Values', 0)
         
         
     def get_stack_opts(self, opts: ASFSearchOptions = ASFSearchOptions()) -> ASFSearchOptions:
