@@ -1,7 +1,6 @@
-from ast import List
 from enum import Enum
 import os
-from typing import Tuple, Union, final
+from typing import Tuple, Union, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
