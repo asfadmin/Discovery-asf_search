@@ -364,7 +364,7 @@ class ASFProduct:
                     b = b[0]
                     for child in item:
                         if ASFProduct.umm_get(child, key[0]) == b[0]:
-                            output.append(ASFProduct.get(child, b[1]))
+                            output.append(ASFProduct.umm_get(child, b[1]))
                     if len(output):
                         return output
 
