@@ -94,7 +94,7 @@ def parse_float_range(value: Tuple[float, float]) -> Tuple[float, float]:
 
 
 # Parse and validate an iterable of values, using h() to validate each value: "a,b,c", "1,2,3", "1.1,2.3"
-def parse_iterator(value: Iterable, h) -> list:
+def parse_iterator(value: Iterable, h) -> List:
     if not isinstance(value, Iterable) or isinstance(value, str):
         value = [value]
     try:
@@ -127,19 +127,19 @@ def parse_number_or_range(value: Union[List, Tuple[number, number]], h):
 
 
 # Parse and validate an iterable of numbers or number ranges, using h() to validate each value: "1,2,3-5", "1.1,1.4,5.1-6.7"
-def parse_number_or_range_iterator(value: Iterable, h) -> list:
+def parse_number_or_range_iterator(value: Iterable, h) -> List:
     if not isinstance(value, Iterable):
         value = [value]
     return [parse_number_or_range(x, h) for x in value]
 
 
 # Parse and validate an iterable of integers or integer ranges: "1,2,3-5"
-def parse_int_or_range_iterator(value: Iterable) -> list:
+def parse_int_or_range_iterator(value: Iterable) -> List:
     return parse_number_or_range_iterator(value, int)
 
 
 # Parse and validate an iterable of float or float ranges: "1.0,2.0,3.0-5.0"
-def parse_float_or_range_iterator(value: Iterable) -> list:
+def parse_float_or_range_iterator(value: Iterable) -> List:
     return parse_number_or_range_iterator(value, parse_float)
 
 
