@@ -91,7 +91,7 @@ class S1Product(ASFProduct):
         """
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
         
-        stack_opts.processingLevel = 'SLC'
+        stack_opts.processingLevel = self.get_default_baseline_product_type()
         stack_opts.beamMode = [self.properties['beamModeType']]
         stack_opts.flightDirection = self.properties['flightDirection']
         stack_opts.relativeOrbit = [int(self.properties['pathNumber'])] # path

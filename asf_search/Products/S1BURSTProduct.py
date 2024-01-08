@@ -60,7 +60,7 @@ class S1BURSTProduct(S1Product):
         """
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
         
-        stack_opts.processingLevel = 'BURST'
+        stack_opts.processingLevel = self.get_default_baseline_product_type()
         stack_opts.fullBurstID = self.properties['burst']['fullBurstID']
         stack_opts.polarization = [self.properties['polarization']]
         return stack_opts

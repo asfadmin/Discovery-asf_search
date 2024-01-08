@@ -45,7 +45,7 @@ class JERSProduct(ASFProduct):
 
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
         
-        stack_opts.processingLevel = 'L0'
+        stack_opts.processingLevel = self.get_default_baseline_product_type()
         if self.properties.get('insarStackId') not in [None, 'NA', 0, '0']:
             stack_opts.insarStackId = self.properties['insarStackId']
             return stack_opts

@@ -13,7 +13,6 @@ from asf_search.download import download_url
 from remotezip import RemoteZip
 
 from asf_search.download.file_download_type import FileDownloadType
-from asf_search import ASF_LOGGER
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 
 class ASFProduct:
@@ -45,12 +44,15 @@ class ASFProduct:
     
     class BaselineCalcType(Enum):
         """
-        ENUM to determine how asf-search will calculate perpendicular baseline
-
+        Defines how asf-search will calculate perpendicular baseline for products of this subclass
         """
-        NONE = 1 # isn't a calculated baseline product
-        PRE_CALCULATED = 2 # Has pre-calculated insarBaseline value
-        CALCULATED = 3 # Calculate at run-time
+
+        NONE = 1 
+        """Cannot be used in baseline calculations"""
+        PRE_CALCULATED = 2
+        """Has pre-calculated insarBaseline value that will be used for perpendicular calculations"""
+        CALCULATED = 3
+        """Uses position/velocity state vectors and ascending node time for perpendicular calculations"""
     
     baseline_type = BaselineCalcType.NONE
 
@@ -108,6 +110,7 @@ class ASFProduct:
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
     def geojson(self) -> dict:
+        """Returns ASFProduct object as a geojson formatted dictionary, with `type`, `geometry`, and `properties` keys"""
         return {
             'type': 'Feature',
             'geometry': self.geometry,
@@ -388,6 +391,7 @@ class ASFProduct:
     @final
     @staticmethod
     def umm_cast(f, v):
+        """Tries to cast value v by callable f, returns None if it fails"""
         try:
             return f(v)
         except TypeError:
