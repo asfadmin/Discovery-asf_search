@@ -21,8 +21,8 @@ from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
 
 def search_generator(        
-        absoluteOrbit: Union[int, Tuple[int, int], Sequence[Union[int, Tuple[int, int]]]] = None,
-        asfFrame: Union[int, Tuple[int, int], Sequence[Union[int, Tuple[int, int]]]] = None,
+        absoluteOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
+        asfFrame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
         beamMode: Union[str, Sequence[str]] = None,
         beamSwath: Union[str, Sequence[str]] = None,
         campaign: Union[str, Sequence[str]] = None,
@@ -33,7 +33,7 @@ def search_generator(
         minFaradayRotation: float = None,
         flightDirection: str = None,
         flightLine: str = None,
-        frame: Union[int, Tuple[int, int], Sequence[Union[int, Tuple[int, int]]]] = None,
+        frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
         granule_list: Union[str, Sequence[str]] = None,
         groupID: Union[str, Sequence[str]] = None,
         insarStackId: str = None,
@@ -46,7 +46,7 @@ def search_generator(
         processingDate: Union[datetime.datetime, str] = None,
         processingLevel: Union[str, Sequence[str]] = None,
         product_list: Union[str, Sequence[str]] = None,
-        relativeOrbit: Union[int, Tuple[int, int], Sequence[Union[int, Tuple[int, int]]]] = None,
+        relativeOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
         absoluteBurstID: Union[int, Sequence[int]] = None,
