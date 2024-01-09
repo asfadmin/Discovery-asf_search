@@ -1,5 +1,5 @@
 import datetime
-from typing import Iterable, Tuple, Union
+from typing import Sequence, Tuple, Union
 from copy import copy
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR.subquery import build_subqueries
@@ -9,11 +9,11 @@ from asf_search import INTERNAL
 
 
 def search_count(        
-        absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
-        asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
-        beamMode: Union[str, Iterable[str]] = None,
-        beamSwath: Union[str, Iterable[str]] = None,
-        campaign: Union[str, Iterable[str]] = None,
+        absoluteOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
+        asfFrame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
+        beamMode: Union[str, Sequence[str]] = None,
+        beamSwath: Union[str, Sequence[str]] = None,
+        campaign: Union[str, Sequence[str]] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
@@ -21,22 +21,29 @@ def search_count(
         minFaradayRotation: float = None,
         flightDirection: str = None,
         flightLine: str = None,
-        frame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
-        granule_list: Union[str, Iterable[str]] = None,
-        groupID: Union[str, Iterable[str]] = None,
+        frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
+        granule_list: Union[str, Sequence[str]] = None,
+        groupID: Union[str, Sequence[str]] = None,
         insarStackId: str = None,
-        instrument: Union[str, Iterable[str]] = None,
+        instrument: Union[str, Sequence[str]] = None,
         intersectsWith: str = None,
-        lookDirection: Union[str, Iterable[str]] = None,
-        offNadirAngle: Union[float, Tuple[float, float], Iterable[Union[float, Tuple[float, float]]]] = None,
-        platform: Union[str, Iterable[str]] = None,
-        polarization: Union[str, Iterable[str]] = None,
+        lookDirection: Union[str, Sequence[str]] = None,
+        offNadirAngle: Union[float, Tuple[float, float], Sequence[Union[float, Tuple[float, float]]]] = None,
+        platform: Union[str, Sequence[str]] = None,
+        polarization: Union[str, Sequence[str]] = None,
         processingDate: Union[datetime.datetime, str] = None,
-        processingLevel: Union[str, Iterable[str]] = None,
-        product_list: Union[str, Iterable[str]] = None,
-        relativeOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        processingLevel: Union[str, Sequence[str]] = None,
+        product_list: Union[str, Sequence[str]] = None,
+        relativeOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
+        absoluteBurstID: Union[int, Sequence[int]] = None,
+        relativeBurstID: Union[int, Sequence[int]] = None,
+        fullBurstID: Union[str, Sequence[str]] = None,
+        collections: Union[str, Sequence[str]] = None,
+        temporalBaselineDays: Union[str, Sequence[str]] = None,
+        operaBurstID: Union[str, Sequence[str]] = None,
+        dataset: Union[str, Sequence[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> int:
