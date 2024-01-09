@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Sequence
 from copy import copy
 
 from asf_search.search import search
@@ -7,7 +7,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 
 
 def granule_search(
-        granule_list: Iterable[str],
+        granule_list: Sequence[str],
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
