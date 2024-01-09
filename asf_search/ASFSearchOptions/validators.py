@@ -121,25 +121,31 @@ def parse_number_or_range(value: Union[List, Tuple[number, number]], h):
     try:
         if isinstance(value, tuple):
             return parse_range(value, h)
-        if isinstance(value, range):
-            if value.step == 1:
-                return parse_range_object(value)
+        if (simplified_range := try_simplify_range_object(value)) is not None:
+            return [h(bound) for bound in simplified_range]
+        
         return h(value)
+    
     except ValueError as exc:
         raise ValueError(f'Invalid {h.__name__} or range: {exc}') from exc
-
-def parse_range_object(value: range):
-    return [value.start, value.stop]
     
 # Parse and validate an iterable of numbers or number ranges, using h() to validate each value: "1,2,3-5", "1.1,1.4,5.1-6.7"
 def parse_number_or_range_list(value: Sequence, h) -> List:
     if not isinstance(value, Sequence):
         value = [value]
-    elif isinstance(value, range):
-        if value.step == 1:
-            return parse_range_object(value)
+    if (simplified_range := try_simplify_range_object(value)) is not None:
+        try:
+            return [h(bound) for bound in simplified_range]
+        except ValueError as exc:
+            raise ValueError(f'Invalid {h.__name__} or range: {exc}') from exc
+    
     return [parse_number_or_range(x, h) for x in value]
 
+# if range object increases step by 1, use bounds for CMR query instead of [i, i+1, i+2, i+3, ..., n]
+def try_simplify_range_object(value: range):
+    if isinstance(value, range):
+        if value.step == 1:
+            return [value.start, value.stop]
 
 # Parse and validate an iterable of integers or integer ranges: "1,2,3-5"
 def parse_int_or_range_list(value: Sequence) -> List:
