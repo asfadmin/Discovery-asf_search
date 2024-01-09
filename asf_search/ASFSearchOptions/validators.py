@@ -121,15 +121,23 @@ def parse_number_or_range(value: Union[List, Tuple[number, number]], h):
     try:
         if isinstance(value, tuple):
             return parse_range(value, h)
+        if isinstance(value, range):
+            if value.step == 1:
+                return parse_range_object(value)
         return h(value)
     except ValueError as exc:
         raise ValueError(f'Invalid {h.__name__} or range: {exc}') from exc
 
-
+def parse_range_object(value: range):
+    return [value.start, value.stop]
+    
 # Parse and validate an iterable of numbers or number ranges, using h() to validate each value: "1,2,3-5", "1.1,1.4,5.1-6.7"
 def parse_number_or_range_list(value: Sequence, h) -> List:
     if not isinstance(value, Sequence):
         value = [value]
+    elif isinstance(value, range):
+        if value.step == 1:
+            return parse_range_object(value)
     return [parse_number_or_range(x, h) for x in value]
 
 
