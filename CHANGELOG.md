@@ -31,9 +31,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Adds OPERA-S1 constants `RTC`, `RTC_STATIC` (RTC-STATIC), `CSLC`, `CSLC_STATIC` (CSLC-STATIC) to `PRODUCT_TYPE.py`
 
 ### Fixed
-- search method params with `Iterable` type hinting now actually accept iterables
 - Harmonizes `search()`, `geo_search()`, and `search_count()` parameters
 - Updates python version requirement in `setup.py` to 3.8+
+
+### Changed
+- search method params with `Iterable` type hinting now changed to `Sequence`
+- search method param validators updated to support `Sequence` type
 
 ------
 ## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
