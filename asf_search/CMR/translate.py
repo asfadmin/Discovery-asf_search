@@ -255,7 +255,10 @@ def translate_product(item: dict) -> dict:
             properties['polarization'] = get(umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values')
             
             properties['operaBurstID'] = get(umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
-    
+
+            if validityStartDate := get(umm, 'TemporalExtent', 'SingleDateTime'):
+                properties['validityStartDate'] = validityStartDate
+            
     return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
 
 def get_additional_fields(umm, *field_path):

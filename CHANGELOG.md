@@ -26,13 +26,33 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
-### Adds
-- Adds constants for `dataset` keyword, under `asf_search.DATASET`
-
+## [v7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v7.0.0)
 ### Changed
 - Constants are no longer top level import, are now accessible through respective modules
 - `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving performance and dodging subquery system
+
+------
+## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
+### Added
+- Adds OPERA-S1 constants `RTC`, `RTC_STATIC` (RTC-STATIC), `CSLC`, `CSLC_STATIC` (CSLC-STATIC) to `PRODUCT_TYPE.py`
+
+### Fixed
+- Harmonizes `search()`, `geo_search()`, and `search_count()` parameters
+- Updates python version requirement in `setup.py` to 3.8+
+
+### Changed
+- search method params with `Iterable` type hinting now changed to `Sequence`
+- search method param validators updated to support `Sequence` type
+
+------
+## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
+### Added
+- Adds constants for `dataset` keyword, under `asf_search.DATASET`
+- Adds CALVAL concept-ids to 'OPERA-S1' dataset
+- Adds `validityStartDate` for applicable OPERA-S1 products
+
+### Fixed
+- Fixes OPERA-S1 dataset `RTC-STATIC` and `CSLC-STATIC` breaking returned results, sorts by `validityStartDate` in place of `stopTime`
 
 ------
 ## [v6.7.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.0...v6.7.1)
