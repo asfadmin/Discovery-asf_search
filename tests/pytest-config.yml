@@ -199,6 +199,11 @@ test_types:
     required_keys: results
     method: test_output_format
 
+- For running search-api keyword-collection aliasing tests:
+    required_in_title: test-aliasing-search-against-api
+    required_keys: params
+    method: test_keyword_aliasing_results
+
 - For running dataset keyword tests:
     required_in_title: search-dataset
     required_keys: dataset

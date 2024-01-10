@@ -1,5 +1,7 @@
 from numbers import Number
-from asf_search import ASFSearchOptions
+
+from tenacity import retry, retry_if_exception_type, stop_after_attempt
+from asf_search import ASF_LOGGER, ASFSearchOptions
 from asf_search.ASFProduct import ASFProduct
 from asf_search.CMR.subquery import build_subqueries
 from asf_search.CMR.translate import get
@@ -12,6 +14,9 @@ from pytest import raises
 from typing import List
 import requests
 import requests_mock
+
+SEARCHAPI_URL = 'https://api.daac.asf.alaska.edu'
+SEARCHAPI_ENDPOINT = '/services/search/param?'
 
 def run_test_ASFSearchResults(search_resp):
     search_results = ASFSearchResults([ASFProduct(product) for product in search_resp])
@@ -99,3 +104,28 @@ def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
         for a_param, b_param in zip(a, b):
             if isinstance(b_param, list):
                 assert len(set(b_param).difference(set(a_param))) == 0
+
+def run_test_keyword_aliasing_results(params: ASFSearchOptions):
+    module_response = search(opts=params)
+    
+    try:
+        api_response = query_endpoint(dict(params))
+    except requests.ReadTimeout as exc:
+        ASF_LOGGER.warn(f'SearchAPI timed out, skipping test for params {str(params)}')
+        return
+
+    api_results = api_response['results']
+
+    api_dict = {product['granuleName']: True for product in api_results}
+    
+    for product in module_response:
+        sceneName = product.properties['sceneName']
+        assert api_dict.get(sceneName, False), f'Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}'
+    
+    
+@retry(stop=stop_after_attempt(3), retry=retry_if_exception_type(requests.HTTPError))
+def query_endpoint(params):
+    response = requests.post(url=SEARCHAPI_URL+SEARCHAPI_ENDPOINT, data={**params, 'output':'jsonlite'})
+    response.raise_for_status()
+
+    return response.json()
