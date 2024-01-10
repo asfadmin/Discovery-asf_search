@@ -2,7 +2,7 @@ import dateparser
 import datetime
 
 import requests
-from typing import Iterable, Union, Tuple, TypeVar, Callable, List, Type
+from typing import Union, Tuple, TypeVar, Callable, List, Type, Sequence
 
 import math
 from shapely import wkt, errors
@@ -94,8 +94,8 @@ def parse_float_range(value: Tuple[float, float]) -> Tuple[float, float]:
 
 
 # Parse and validate an iterable of values, using h() to validate each value: "a,b,c", "1,2,3", "1.1,2.3"
-def parse_iterator(value: Iterable, h) -> list:
-    if not isinstance(value, Iterable) or isinstance(value, str):
+def parse_list(value: Sequence, h) -> List:
+    if not isinstance(value, Sequence) or isinstance(value, str):
         value = [value]
     try:
         return [h(a) for a in value]
@@ -103,49 +103,53 @@ def parse_iterator(value: Iterable, h) -> list:
         raise ValueError(f'Invalid {h.__name__} list: {exc}') from exc
 
 # Parse and validate an iterable of strings: "foo,bar,baz"
-def parse_string_iterator(value: Iterable[str]) -> List[str]:
-    return parse_iterator(value, str)
+def parse_string_list(value: Sequence[str]) -> List[str]:
+    return parse_list(value, str)
 
 
 # Parse and validate an iterable of integers: "1,2,3"
-def parse_int_iterator(value: Iterable[int]) -> List[int]:
-    return parse_iterator(value, int)
+def parse_int_list(value: Sequence[int]) -> List[int]:
+    return parse_list(value, int)
 
 
 # Parse and validate an iterable of floats: "1.1,2.3,4.5"
-def parse_float_iterator(value: Iterable[float]) -> List[float]:
-    return parse_iterator(value, float)
+def parse_float_list(value: Sequence[float]) -> List[float]:
+    return parse_list(value, float)
 
 
-def parse_number_or_range(value: Union[List, Tuple[number, number]], h):
+def parse_number_or_range(value: Union[List, Tuple[number, number], range], h):
     try:
         if isinstance(value, tuple):
             return parse_range(value, h)
+        if isinstance(value, range):
+            if value.step == 1:
+                return [value.start, value.stop]
+        
         return h(value)
+    
     except ValueError as exc:
         raise ValueError(f'Invalid {h.__name__} or range: {exc}') from exc
-
-
+    
 # Parse and validate an iterable of numbers or number ranges, using h() to validate each value: "1,2,3-5", "1.1,1.4,5.1-6.7"
-def parse_number_or_range_iterator(value: Iterable, h) -> list:
-    if not isinstance(value, Iterable):
+def parse_number_or_range_list(value: Sequence, h) -> List:
+    if not isinstance(value, Sequence) or isinstance(value, range):
         value = [value]
+
     return [parse_number_or_range(x, h) for x in value]
 
-
 # Parse and validate an iterable of integers or integer ranges: "1,2,3-5"
-def parse_int_or_range_iterator(value: Iterable) -> list:
-    return parse_number_or_range_iterator(value, int)
+def parse_int_or_range_list(value: Sequence) -> List:
+    return parse_number_or_range_list(value, int)
 
 
 # Parse and validate an iterable of float or float ranges: "1.0,2.0,3.0-5.0"
-def parse_float_or_range_iterator(value: Iterable) -> list:
-    return parse_number_or_range_iterator(value, parse_float)
+def parse_float_or_range_list(value: Sequence) -> List:
+    return parse_number_or_range_list(value, parse_float)
 
 
 # Parse and validate a coordinate list
-def parse_coord_iterator(value: Iterable[float]) -> List[float]:
-    if not isinstance(value, Iterable):
+def parse_coord_list(value: Sequence[float]) -> List[float]:
+    if not isinstance(value, Sequence):
         raise ValueError(f'Invalid coord list list: Must pass in an iterable. Got {type(value)}.')
     for coord in value:
         try:
@@ -158,10 +162,10 @@ def parse_coord_iterator(value: Iterable[float]) -> List[float]:
 
 
 # Parse and validate a bbox coordinate list
-def parse_bbox_iterator(value: Iterable[float]) -> List[float]:
+def parse_bbox_list(value: Sequence[float]) -> List[float]:
     try:
         # This also makes sure v is an iterable:
-        value = parse_coord_iterator(value)
+        value = parse_coord_list(value)
     except ValueError as exc:
         raise ValueError(f'Invalid bbox: {exc}') from exc
     if len(value) != 4:
@@ -170,10 +174,10 @@ def parse_bbox_iterator(value: Iterable[float]) -> List[float]:
 
 
 # Parse and validate a point coordinate list
-def parse_point_iterator(value: Iterable[float]) -> List[float]:
+def parse_point_list(value: Sequence[float]) -> List[float]:
     try:
         # This also makes sure v is an iterable:
-        value = parse_coord_iterator(value)
+        value = parse_coord_list(value)
     except ValueError as exc:
         raise ValueError(f'Invalid point: {exc}') from exc
     if len(value) != 2:

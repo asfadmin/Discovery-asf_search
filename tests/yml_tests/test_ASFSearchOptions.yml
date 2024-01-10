@@ -63,38 +63,38 @@ tests:
     output: { tuple: [123.5, 125.5] }
     error: null
 
-- test-validators parse_string_iterator strings:
-    validator: parse_string_iterator
+- test-validators parse_string_list strings:
+    validator: parse_string_list
     input: ['asf', 'nasa']
     output: ['asf', 'nasa']
     error: null
 
-- test-validators parse_string_iterator numbers:
-    validator: parse_string_iterator
+- test-validators parse_string_list numbers:
+    validator: parse_string_list
     input: [123, 0.123, 0.0]
     output: ['123', '0.123', '0.0']
     error: null
 
-- test-validators parse_int_iterator strings:
-    validator: parse_int_iterator
+- test-validators parse_int_list strings:
+    validator: parse_int_list
     input: ['1', '2', '123']
     output: [1, 2, 123]
     error: null
 
-- test-validators parse_int_iterator int:
-    validator: parse_int_iterator
+- test-validators parse_int_list int:
+    validator: parse_int_list
     input: [1, 2, 123]
     output: [1, 2, 123]
     error: null
 
-- test-validators parse_int_iterator floats:
-    validator: parse_int_iterator
+- test-validators parse_int_list floats:
+    validator: parse_int_list
     input: [1.0, 2.0, 123.5]
     output: [1, 2, 123]
     error: null
 
-- test-validators parse_int_iterator error strings:
-    validator: parse_int_iterator
+- test-validators parse_int_list error strings:
+    validator: parse_int_list
     input: ['asf', 'nasa']
     output: null
     error: Invalid int list
