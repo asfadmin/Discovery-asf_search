@@ -123,7 +123,7 @@ def run_test_keyword_aliasing_results(params: ASFSearchOptions):
         assert api_dict.get(sceneName, False), f'Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}'
     
     
-@retry(stop=stop_after_attempt(3), retry=retry_if_exception_type(requests.HTTPError))
+@retry(stop=stop_after_attempt(3), retry=retry_if_exception_type(requests.HTTPError), reraise=True)
 def query_endpoint(params):
     response = requests.post(url=SEARCHAPI_URL+SEARCHAPI_ENDPOINT, data={**params, 'output':'jsonlite'})
     response.raise_for_status()
