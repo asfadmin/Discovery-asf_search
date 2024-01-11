@@ -13,39 +13,33 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     Build a list of sub-queries using the cartesian product of all the list parameters described by opts
 
     :param opts: The search options to split into sub-queries
-
     :return list: A list of ASFSearchOptions objects
     """
     params = dict(opts)
 
     # Break out two big list offenders into manageable chunks
-    if params.get('granule_list') is not None:
-        params['granule_list'] = chunk_list(params['granule_list'], CMR_PAGE_SIZE)
-    if params.get('product_list') is not None:
-        params['product_list'] = chunk_list(params['product_list'], CMR_PAGE_SIZE)
+    for chunked_key in ['granule_list', 'product_list']:
+        if params.get(chunked_key) is not None:
+            params[chunked_key] = chunk_list(params[chunked_key], CMR_PAGE_SIZE)
 
     list_param_names = ['platform', 'season', 'collections', 'dataset']  # these parameters will dodge the subquery system
     skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL
     
-    params = dict([ (k, v) for k, v in params.items() if k not in skip_param_names ])
-
     collections, aliased_keywords = get_keyword_concept_ids(params)
     params['collections'] = list(union1d(collections, params.get('collections', [])))
     
-    for keyword in aliased_keywords:
-        params.pop(keyword)
+    for keyword in [*skip_param_names, *aliased_keywords]:
+        params.pop(keyword, None)
     
     subquery_params, list_params = {}, {}
-    for k, v in params.items():
-        if k in list_param_names:
-            list_params[k] = v
+    for key, value in params.items():
+        if key in list_param_names:
+            list_params[key] = value
         else:
-            subquery_params[k] = v
-
+            subquery_params[key] = value
+    
     sub_queries = cartesian_product(subquery_params)
-    final_sub_query_opts = [_build_subquery(query, opts, list_params) for query in sub_queries]
-
-    return final_sub_query_opts
+    return [_build_subquery(query, opts, list_params) for query in sub_queries]
 
 def _build_subquery(query: List[Tuple[dict]], opts: ASFSearchOptions, list_params: dict) -> ASFSearchOptions:
     """
