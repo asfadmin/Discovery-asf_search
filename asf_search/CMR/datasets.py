@@ -1,3 +1,6 @@
+from typing import List
+
+
 dataset_collections = {
     "SENTINEL-1": {
         "SENTINEL-1A_SLC": ["C1214470488-ASF", "C1205428742-ASF", "C1234413245-ASFDEV"],
@@ -1071,3 +1074,40 @@ collections_by_processing_level = {
     "SLOPE": ["C1214408428-ASF", "C1210599503-ASF"],
     "STOKES": ["C1214419355-ASF", "C1210599673-ASF"],
 }
+
+#################### Helper Methods ####################
+
+def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[str]:
+    """
+    param: param_list (List[str]): list of search values to alias
+    param: collections_dict (dict): The search value to concept-id dictionary to read from
+
+    returns List[str]: Returns a list of concept-ids that correspond to the given list of search values
+    If any of the search values are not keys in the collections_dict, this will instead returns an empty list. 
+    """
+    concept_id_aliases = []
+    for param in param_list:
+        if alias := collections_dict.get(param):
+            concept_id_aliases.extend(alias)
+        else:
+            return []
+    
+    return concept_id_aliases
+
+def get_dataset_concept_ids(datasets: List[str]) -> List[str]:
+    """
+    Returns concept-ids for provided dataset(s)
+    If an invalid datset is provided a ValueError is raised
+
+    :param `datasets` (`List[str]`): a list of datasets to grab concept-ids for
+    :returns `List[str]`: the list of concept-ids associated with the given datasets
+    """
+    output = []
+    for dataset in datasets:
+        if collections_by_short_name := dataset_collections.get(dataset):
+            for concept_ids in collections_by_short_name.values():
+                output.extend(concept_ids)
+        else:
+            raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
+    
+    return output

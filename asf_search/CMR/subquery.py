@@ -1,12 +1,12 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import itertools
 from copy import copy
 
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import CMR_PAGE_SIZE
 
-from asf_search.CMR.datasets import collections_by_processing_level, collections_per_platform, dataset_collections
-from numpy import intersect1d
+from asf_search.CMR.datasets import collections_by_processing_level, collections_per_platform, dataset_collections, get_concept_id_alias, get_dataset_concept_ids
+from numpy import intersect1d, union1d
 
 def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     """
@@ -29,15 +29,9 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     
     params = dict([ (k, v) for k, v in params.items() if k not in skip_param_names ])
 
-    # Gets concept-ids for Dataset, and checks if concept-ids exist for platform, processingLevel
-    # processingLevel is scoped by dataset concept-ids, or platform concept-ids when available
     collections, aliased_keywords = get_keyword_concept_ids(params)
-
-    if 'collections' in params.keys():
-        params['collections'] = list(set([*collections, *params.get('collections')]))
-    else:
-        params['collections'] = collections
-        
+    params['collections'] = list(union1d(collections, params.get('collections', [])))
+    
     for keyword in aliased_keywords:
         params.pop(keyword)
     
@@ -49,21 +43,28 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
             subquery_params[k] = v
 
     sub_queries = cartesian_product(subquery_params)
-
-    final_sub_query_opts = []
-    for query in sub_queries:
-        q = dict()
-        for p in query:
-            q.update(p)
-        q['provider'] = opts.provider
-        q['host'] = opts.host
-        q['session'] = copy(opts.session)
-        for key in list_params.keys():
-            q[key] = list_params[key]
-
-        final_sub_query_opts.append(ASFSearchOptions(**q))
+    final_sub_query_opts = [_build_subquery(query, opts, list_params) for query in sub_queries]
 
     return final_sub_query_opts
+
+def _build_subquery(query: List[Tuple[dict]], opts: ASFSearchOptions, list_params: dict) -> ASFSearchOptions:
+    """
+    Composes query dict and list params into new ASFSearchOptions object
+
+    param: query: the cartesian search query options
+    param: opts: the search options to pull config options from (provider, host, session)
+    param: list_params: the subquery parameters
+    """
+    q = dict()
+    for p in query:
+        q.update(p)
+    return ASFSearchOptions(
+        **q,
+         provider= opts.provider,
+         host= opts.host,
+         session= copy(opts.session),
+         **list_params
+    )
 
 def get_keyword_concept_ids(params: dict) -> dict:
     """
@@ -73,78 +74,43 @@ def get_keyword_concept_ids(params: dict) -> dict:
     : param params: search parameter dictionary pre-CMR translation
     : returns two lists: 
         - list of concept-ids for dataset, platform, and processingLevel
-        - list of keywords to remove from parameters
+        - list of aliased keywords to remove from final parameters
     """
     collections = []
-    keywords = []
+    aliased_keywords = []
 
-    processing_level_collections = []
     if 'processingLevel' in params.keys():
-        pl_concept_id_aliases = get_processing_level_concept_ids(params.get('processingLevel'))
-        if len(pl_concept_id_aliases):
-            keywords.append('processingLevel')
-            processing_level_collections = pl_concept_id_aliases
+        collections = get_concept_id_alias(params.get('processingLevel'), collections_by_processing_level)
+        if len(collections):
+            aliased_keywords.append('processingLevel')
 
+    # Right now we only have XOR support for dataset and platform searches
     if 'dataset' in params.keys():
-        keywords.append('dataset')
-        
-        collections.extend(get_dataset_concept_ids(params.get('dataset')))
-
-        if len(processing_level_collections):
-            collections = list(intersect1d(processing_level_collections, collections))
+        aliased_keywords.append('dataset')
+        dataset_concept_ids = get_dataset_concept_ids(params.get('dataset'))
+        collections = _get_intersection(dataset_concept_ids, collections)
 
     elif 'platform' in params.keys():
-        platform_concept_ids = get_platform_concept_ids(params.get('platform'))
+        platform_concept_ids = get_concept_id_alias(
+                [platform.upper() for platform in params.get('platform')], 
+                collections_per_platform
+            )
         if len(platform_concept_ids):
-            collections.extend(platform_concept_ids)
-
-            if processing_level_collections is not None:
-                if len(processing_level_collections):
-                    collections = list(intersect1d(processing_level_collections, collections))
-            keywords.append('platform')
-
-    else:
-        if len(collections) and processing_level_collections is not None:
-            collections = list(intersect1d(processing_level_collections, collections))
-        else:
-            collections = processing_level_collections
+            aliased_keywords.append('platform')
+            collections = _get_intersection(platform_concept_ids, collections)
     
-    return collections, keywords
-    
-def get_processing_level_concept_ids(processingLevels: List[str]) -> List[str]:
-    concept_id_aliases = []
-    for processingLevel in processingLevels:
-        if alias := collections_by_processing_level.get(processingLevel):
-            concept_id_aliases.extend(alias)
-        else:
-            break
-    
-    return []
+    return collections, aliased_keywords
 
-def get_platform_concept_ids(platforms: List[str]) -> List[str]:
-    output = []
-
-    # collections limit platform searches, so if there are any we don't have collections for we skip this optimization
-    for platform in platforms:
-        if (collections := collections_per_platform.get(platform.upper())):
-            output.extend(collections)
-        else:
-            output = []
-            break
+def _get_intersection(keyword_concept_ids: List[str], intersecting_ids: List[str]) -> List[str]:
+    """
+    Returns the intersection between two lists. If the second list is empty the first list
+    is return unchaged
+    """
+    if len(intersecting_ids):
+        return list(intersect1d(intersecting_ids, keyword_concept_ids))
     
-    return output
-
-def get_dataset_concept_ids(datasets: List[str]) -> List[str]:
-    output = []
-    for dataset in datasets:
-        if collections_by_short_name := dataset_collections.get(dataset):
-            for concept_ids in collections_by_short_name.values():
-                output.extend(concept_ids)
-        else:
-            raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
+    return keyword_concept_ids
     
-    return output
-
 def chunk_list(source: List, n: int) -> List:
     """
     Breaks a longer list into a list of lists, each of length n
@@ -163,7 +129,7 @@ def cartesian_product(params):
     return p
 
 
-def format_query_params(params):
+def format_query_params(params) -> List[List[dict]]:
     listed_params = []
 
     for param_name, param_val in params.items():
@@ -173,7 +139,7 @@ def format_query_params(params):
     return listed_params
 
 
-def translate_param(param_name, param_val):
+def translate_param(param_name, param_val) -> List[dict]:
     param_list = []
 
     if not isinstance(param_val, list):
