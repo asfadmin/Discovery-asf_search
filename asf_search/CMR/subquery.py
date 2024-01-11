@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 import itertools
 from copy import copy
 
@@ -24,74 +24,22 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     if params.get('product_list') is not None:
         params['product_list'] = chunk_list(params['product_list'], CMR_PAGE_SIZE)
 
-    list_param_names = ['platform', 'season', 'collections', 'dataset', 'processingLevel_collections']  # these parameters will dodge the subquery system
+    list_param_names = ['platform', 'season', 'collections', 'dataset']  # these parameters will dodge the subquery system
     skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL
     
     params = dict([ (k, v) for k, v in params.items() if k not in skip_param_names ])
 
-    # in case all instances of platform and/or processingLevel can be substituded by a concept id
-    keyword_collection_aliases = []
-    if 'processingLevel' in params.keys():
-        concept_id_aliases = []
-        for processingLevel in params['processingLevel']:
-            if alias := collections_by_processing_level.get(processingLevel):
-                concept_id_aliases.extend(alias)
-            else:
-                concept_id_aliases = []
-                break
-            
-        if len(concept_id_aliases):
-            params.pop('processingLevel')
-            params['processingLevel_collections'] = concept_id_aliases
+    # Gets concept-ids for Dataset, and checks if concept-ids exist for platform, processingLevel
+    # processingLevel is scoped by dataset concept-ids, or platform concept-ids when available
+    collections, aliased_keywords = get_keyword_concept_ids(params)
 
-    if 'dataset' in params:
-        if 'collections' not in params:
-            params['collections'] = []
-        
-        for dataset in params.pop('dataset'):
-            if collections_by_short_name := dataset_collections.get(dataset):
-                for concept_ids in collections_by_short_name.values():
-                    params['collections'].extend(concept_ids)
-            else:
-                raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
-
-        if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
-            if len(processingLevel_collections):
-                params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
-            
-            params.pop('processingLevel_collections')
-
-        
-    elif 'platform' in params:
-        if 'collections' not in params:
-            params['collections'] = []
-        
-        missing = [platform for platform in params['platform'] if collections_per_platform.get(platform.upper()) is None]
-        
-        # collections limit platform searches, so if there are any we don't have collections for we skip this optimization
-        if len(missing) == 0:
-            for platform in params['platform']:
-                if (collections := collections_per_platform.get(platform.upper())):
-                    params['collections'].extend(collections)
-            
-            if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
-                if len(processingLevel_collections):
-                    params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
-               
-                params.pop('processingLevel_collections')
-
-            params.pop('platform')
+    if 'collections' in params.keys():
+        params['collections'] = list(set(*collections, *params.get('collections')))
     else:
-        if params.get('collections') is None:
-            params['collections'] = []
-            if params.get('processingLevel_collections') is not None:
-                params['collections'] = params.get('processingLevel_collections')
-        else:
-            if (processingLevel_collections := params.get('processingLevel_collections')) is not None:
-                params['collections'] = list(intersect1d(processingLevel_collections, params['collections']))
-    
-    if params.get('processingLevel_collections') is not None:
-        params.pop('processingLevel_collections')
+        params['collections'] = collections
+        
+    for keyword in aliased_keywords:
+        params.pop(keyword)
     
     subquery_params, list_params = {}, {}
     for k, v in params.items():
@@ -117,6 +65,85 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
 
     return final_sub_query_opts
 
+def get_keyword_concept_ids(params: dict) -> dict:
+    """
+    Gets concept-ids for dataset, platform, processingLevel keywords
+    processingLevel is scoped by dataset or platform concept-ids when available
+
+    : param params: search parameter dictionary pre-CMR translation
+    : returns two lists: 
+        - list of concept-ids for dataset, platform, and processingLevel
+        - list of keywords to remove from parameters
+    """
+    collections = []
+    keywords = []
+
+    processing_level_collections = []
+    if 'processingLevel' in params.keys():
+        pl_concept_id_aliases = get_processing_level_concept_ids(params.get('processingLevel'))
+        if len(pl_concept_id_aliases):
+            keywords.append('processingLevel')
+            processing_level_collections = pl_concept_id_aliases
+
+    if 'dataset' in params.keys():
+        keywords.append('dataset')
+        
+        collections.extend(get_dataset_concept_ids(params.get('dataset')))
+
+        if len(processing_level_collections):
+            collections = list(intersect1d(processing_level_collections, collections))
+
+    elif 'platform' in params.keys():
+        platform_concept_ids = get_platform_concept_ids(params.get('platform'))
+        if len(platform_concept_ids):
+            collections.extend(platform_concept_ids)
+
+            if processing_level_collections is not None:
+                if len(processing_level_collections):
+                    collections = list(intersect1d(processing_level_collections, collections))
+            keywords.append('platform')
+
+    else:
+        if len(collections) and processing_level_collections is not None:
+            collections = list(intersect1d(processing_level_collections, collections))
+        else:
+            collections = processing_level_collections
+    
+    return collections, keywords
+    
+def get_processing_level_concept_ids(processingLevels: List[str]) -> List[str]:
+    concept_id_aliases = []
+    for processingLevel in processingLevels:
+        if alias := collections_by_processing_level.get(processingLevel):
+            concept_id_aliases.extend(alias)
+        else:
+            break
+    
+    return []
+
+def get_platform_concept_ids(platforms: List[str]) -> List[str]:
+    output = []
+
+    # collections limit platform searches, so if there are any we don't have collections for we skip this optimization
+    for platform in platforms:
+        if (collections := collections_per_platform.get(platform.upper())):
+            output.extend(collections)
+        else:
+            output = []
+            break
+    
+    return output
+
+def get_dataset_concept_ids(datasets: List[str]) -> List[str]:
+    output = []
+    for dataset in datasets:
+        if collections_by_short_name := dataset_collections.get(dataset):
+            for concept_ids in collections_by_short_name.values():
+                output.extend(concept_ids)
+        else:
+            raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
+    
+    return output
 
 def chunk_list(source: List, n: int) -> List:
     """
