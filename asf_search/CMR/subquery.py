@@ -34,7 +34,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     collections, aliased_keywords = get_keyword_concept_ids(params)
 
     if 'collections' in params.keys():
-        params['collections'] = list(set(*collections, *params.get('collections')))
+        params['collections'] = list(set([*collections, *params.get('collections')]))
     else:
         params['collections'] = collections
         
