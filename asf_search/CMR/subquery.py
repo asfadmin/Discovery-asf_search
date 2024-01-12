@@ -25,7 +25,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     list_param_names = ['platform', 'season', 'collections', 'dataset']  # these parameters will dodge the subquery system
     skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL
     
-    collections, aliased_keywords = get_keyword_concept_ids(params)
+    collections, aliased_keywords = get_keyword_concept_ids(params, opts.collectionAlias)
     params['collections'] = list(union1d(collections, params.get('collections', [])))
     
     for keyword in [*skip_param_names, *aliased_keywords]:
@@ -60,12 +60,13 @@ def _build_subquery(query: List[Tuple[dict]], opts: ASFSearchOptions, list_param
          **list_params
     )
 
-def get_keyword_concept_ids(params: dict) -> dict:
+def get_keyword_concept_ids(params: dict, use_collection_alias: bool=True) -> dict:
     """
     Gets concept-ids for dataset, platform, processingLevel keywords
     processingLevel is scoped by dataset or platform concept-ids when available
 
     : param params: search parameter dictionary pre-CMR translation
+    : param use_collection_alias: whether or not to alias platform and processingLevel with concept-ids
     : returns two lists: 
         - list of concept-ids for dataset, platform, and processingLevel
         - list of aliased keywords to remove from final parameters
@@ -73,25 +74,25 @@ def get_keyword_concept_ids(params: dict) -> dict:
     collections = []
     aliased_keywords = []
 
-    if 'processingLevel' in params.keys():
-        collections = get_concept_id_alias(params.get('processingLevel'), collections_by_processing_level)
-        if len(collections):
-            aliased_keywords.append('processingLevel')
+    if use_collection_alias:
+        if 'processingLevel' in params.keys():
+            collections = get_concept_id_alias(params.get('processingLevel'), collections_by_processing_level)
+            if len(collections):
+                aliased_keywords.append('processingLevel')
 
-    # Right now we only have XOR support for dataset and platform searches
+        if 'platform' in params.keys():
+            platform_concept_ids = get_concept_id_alias(
+                    [platform.upper() for platform in params.get('platform')], 
+                    collections_per_platform
+                )
+            if len(platform_concept_ids):
+                aliased_keywords.append('platform')
+                collections = _get_intersection(platform_concept_ids, collections)
+
     if 'dataset' in params.keys():
         aliased_keywords.append('dataset')
         dataset_concept_ids = get_dataset_concept_ids(params.get('dataset'))
         collections = _get_intersection(dataset_concept_ids, collections)
-
-    elif 'platform' in params.keys():
-        platform_concept_ids = get_concept_id_alias(
-                [platform.upper() for platform in params.get('platform')], 
-                collections_per_platform
-            )
-        if len(platform_concept_ids):
-            aliased_keywords.append('platform')
-            collections = _get_intersection(platform_concept_ids, collections)
     
     return collections, aliased_keywords
 

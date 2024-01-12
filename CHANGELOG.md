@@ -29,7 +29,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v7.0.0)
 ### Changed
 - Constants are no longer top level import, are now accessible through respective modules
-- `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving performance and dodging subquery system
+- `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving search performance and dodging subquery system
+
+### Added
+- Added `collectionAlias` to `ASFSearchOptions` validator map as config param. Set to `False` to disable concept-id aliasing behaviour for `processingLevel` and `platform`.
 
 ------
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
