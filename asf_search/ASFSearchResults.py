@@ -3,7 +3,7 @@ from multiprocessing import Pool
 from functools import reduce
 import json
 from typing import Type, Callable, Union
-from asf_search import ASFSession, ASFSearchOptions, ASFProduct
+from asf_search import ASFSession, ASFSearchOptions
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.exceptions import ASFSearchError
 
@@ -98,7 +98,7 @@ class ASFSearchResults(UserList):
         
         return subclasses
     
-    def cast_to_subclass(self, ASFProductSubclass: Union[Type[ASFProduct], Callable[[ASFProduct], ASFProduct]]) -> None:
+    def cast_to_subclass(self, ASFProductSubclass: Union[Type['ASFProduct'], Callable[['ASFProduct'], 'ASFProduct']]) -> None:
         """Converts products to provided return type in-place, taking either a constructor or callable"""
         converted = 0
         for idx, product in enumerate(self.data):
