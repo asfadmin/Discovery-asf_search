@@ -1,6 +1,6 @@
 from enum import Enum
 import os
-from typing import Tuple, Union, List, final
+from typing import Callable, Tuple, Type, Union, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -165,13 +165,15 @@ class ASFProduct:
     
     def stack(
             self,
-            opts: ASFSearchOptions = None
+            opts: ASFSearchOptions = None,
+            ASFProductSubclass: Union[Type['ASFProduct'], Callable[['ASFProduct'], 'ASFProduct']] = None
     ) -> ASFSearchResults:
         """
         Builds a baseline stack from this product.
 
         :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-
+        :param ASFProductSubclass: An ASFProduct subclass constructor, or a callable that takes an ASFProduct object and returns and object of type ASFProduct. 
+    
         :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
@@ -179,7 +181,7 @@ class ASFProduct:
         if opts is None:
             opts = ASFSearchOptions(session=self.session)
 
-        return stack_from_product(self, opts=opts)
+        return stack_from_product(self, opts=opts, ASFProductSubclass=ASFProductSubclass)
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
@@ -396,3 +398,60 @@ class ASFProduct:
             return f(v)
         except TypeError:
             return None
+
+    @final
+    def cast_to_subclass(self, subclass: Union[Type['ASFProduct'], Callable[['ASFProduct'], 'ASFProduct']]) -> 'ASFProduct':
+        """
+        Casts this ASFProduct object as a new object of return type subclass.
+
+        example:
+        ```
+        class MyCustomClass(ASFProduct):
+            _base_properties = {
+            'some_unique_property': {'path': ['AdditionalAttributes', 'UNIQUE_PROPERTY', ...]}
+            }
+            
+            ...
+            
+            @staticmethod
+            def get_property_paths() -> dict:
+            return {
+                **ASFProduct.get_property_paths(),
+                **MyCustomClass._base_properties
+            }
+        
+        # subclass as constructor
+        customReference = reference.cast_to_subclass(MyCustomClass)
+        print(customReference.properties['some_unique_property'])
+
+        # sublclass as callable
+        def convert_to_product_if(original_product: ASFProduct) -> ASFProduct:
+            # conversion logic here
+            if original_product.properties['processingLevel'] == ''
+                return MyCustomClass(
+                    args={'umm': original_product.umm, 'meta': original_product.meta}, 
+                    session=original_product.session
+                    )
+            
+            # otherwise return orignal product
+            return original_product
+
+        customReference = reference.cast_to_subclass(convert_to_product_if)
+        ```
+
+        :param subclass: The ASFProduct subclass to convert to or a method with signature `func(original: ASFProduct) -> ASFProduct`
+        :returns `ASFProduct` of return type `subclass`
+        """
+
+        try:
+            if isinstance(subclass, Type[ASFProduct]):
+                return subclass(args={'umm': self.umm, 'meta': self.meta}, session=self.session)
+            elif isinstance(subclass, Callable[[ASFProduct], ASFProduct]):
+                output = subclass(self)
+                if not isinstance(output, ASFProduct):
+                    raise ValueError(f"Expected returned object of type `ASFProduct` from callable {subclass}, got {type(output)}")
+                return output
+            
+            raise ValueError(f"Expected subclass or method of return type ASFProduct, got {type(subclass)}")
+        except Exception as e:
+            raise ValueError(f"Unable to use provided subclass {type(subclass)}")

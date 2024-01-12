@@ -1,3 +1,5 @@
+from typing import Callable, Type, Union
+from asf_search.ASFSearchOptions.validators import parse_subclass
 from asf_search.baseline.stack import get_baseline_from_stack
 from copy import copy
 
@@ -20,14 +22,16 @@ precalc_platforms = [
 
 def stack_from_product(
         reference: ASFProduct,
-        opts: ASFSearchOptions = None
+        opts: ASFSearchOptions = None,
+        ASFProductSubclass: Union[Type[ASFProduct], Callable[[ASFProduct], ASFProduct]] = None
     ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference ASFProduct
 
     :param reference: Reference scene to base the stack on, and from which to calculate perpendicular/temporal baselines
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-
+    :param ASFProductSubclass: An ASFProduct subclass constructor, or a callable that takes an ASFProduct object and returns and object of type ASFProduct. 
+    
     :return: ASFSearchResults(dict) of search results
     """
 
@@ -36,6 +40,9 @@ def stack_from_product(
     opts.merge_args(**dict(reference.get_stack_opts()))
 
     stack = search(opts=opts)
+    if ASFProductSubclass is not None:
+        stack.cast_to_subclass(ASFProductSubclass)
+
     is_complete = stack.searchComplete
 
     stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
@@ -48,14 +55,16 @@ def stack_from_product(
 
 def stack_from_id(
         reference_id: str,
-        opts: ASFSearchOptions = None
+        opts: ASFSearchOptions = None,
+        ASFProductSubclass: Union[Type[ASFProduct], Callable[[ASFProduct], ASFProduct]] = None
 ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
 
     :param reference_id: Reference product to base the stack from, and from which to calculate perpendicular/temporal baselines
     :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-
+    :param ASFProductSubclass: An ASFProduct subclass constructor, or a callable that takes an ASFProduct object and returns and object of type ASFProduct. 
+    
     :return: ASFSearchResults(list) of search results
     """
 
@@ -69,5 +78,9 @@ def stack_from_id(
     if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
     reference = reference_results[0]
+    
+    if ASFProductSubclass is not None:
+        reference = reference.cast_to_subclass(ASFProductSubclass)
+        
 
-    return stack_from_product(reference, opts=opts)
+    return stack_from_product(reference, opts=opts, ASFProductSubclass=ASFProductSubclass)
