@@ -131,7 +131,7 @@ class ASFProduct:
 
         return Polygon(unwrapped_coords).centroid
 
-    def remotezip(self, session: ASFSession):
+    def remotezip(self, session: ASFSession) -> 'RemoteZip':
         """Returns a RemoteZip object which can be used to download a part of an ASFProduct's zip archive.
         (See example in examples/5-Download.ipynb)
         
