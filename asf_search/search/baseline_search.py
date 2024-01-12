@@ -1,5 +1,4 @@
 from typing import Callable, Type, Union
-from asf_search.ASFSearchOptions.validators import parse_subclass
 from asf_search.baseline.stack import get_baseline_from_stack
 from copy import copy
 
