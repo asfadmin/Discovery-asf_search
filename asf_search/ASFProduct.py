@@ -187,7 +187,7 @@ class ASFProduct:
 
         :return: ASFSearchOptions describing appropriate options for building a stack from this product
         """
-        return opts
+        return None
 
     def centroid(self) -> Point:
         """
