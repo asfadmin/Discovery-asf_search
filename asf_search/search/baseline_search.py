@@ -56,7 +56,7 @@ def stack_from_product(
 def stack_from_id(
         reference_id: str,
         opts: ASFSearchOptions = None,
-        ASFProductSubclass: Type[ASFProduct] = None
+        useSubclass: Type[ASFProduct] = None
 ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
@@ -79,11 +79,10 @@ def stack_from_id(
         raise ASFSearchError(f'Reference product not found: {reference_id}')
     reference = reference_results[0]
     
-    if ASFProductSubclass is not None:
-        reference = _try_cast_to_subclass(reference, ASFProductSubclass)
+    if useSubclass is not None:
+        reference = _try_cast_to_subclass(reference, useSubclass)
         
-
-    return stack_from_product(reference, opts=opts, ASFProductSubclass=ASFProductSubclass)
+    return reference.stack(opts=opts, useSubclass=useSubclass)
 
 def _try_cast_results_to_subclass(stack: ASFProduct, ASFProductSubclass: Type[ASFProduct]):
     """

@@ -166,7 +166,7 @@ class ASFProduct:
     def stack(
             self,
             opts: ASFSearchOptions = None,
-            ASFProductSubclass: Type['ASFProduct'] = None
+            useSubclass: Type['ASFProduct'] = None
     ) -> ASFSearchResults:
         """
         Builds a baseline stack from this product.
@@ -181,7 +181,7 @@ class ASFProduct:
         if opts is None:
             opts = ASFSearchOptions(session=self.session)
 
-        return stack_from_product(self, opts=opts, ASFProductSubclass=ASFProductSubclass)
+        return stack_from_product(self, opts=opts, ASFProductSubclass=useSubclass)
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
