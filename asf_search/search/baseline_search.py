@@ -43,7 +43,7 @@ def stack_from_product(
     is_complete = stack.searchComplete
 
     if ASFProductSubclass is not None:
-        _try_cast_results_to_subclass(stack, ASFProductSubclass)
+        _cast_results_to_subclass(stack, ASFProductSubclass)
 
     stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
     stack.searchComplete = is_complete # preserve final outcome of earlier search()
@@ -80,18 +80,18 @@ def stack_from_id(
     reference = reference_results[0]
     
     if useSubclass is not None:
-        reference = _try_cast_to_subclass(reference, useSubclass)
+        reference = _cast_to_subclass(reference, useSubclass)
         
     return reference.stack(opts=opts, useSubclass=useSubclass)
 
-def _try_cast_results_to_subclass(stack: ASFProduct, ASFProductSubclass: Type[ASFProduct]):
+def _cast_results_to_subclass(stack: ASFSearchResults, ASFProductSubclass: Type[ASFProduct]):
     """
     Converts results from default ASFProduct subclasses to custom ones
     """
     for idx, product in enumerate(stack):
-        stack[idx] = _try_cast_to_subclass(product, ASFProductSubclass)
+        stack[idx] = _cast_to_subclass(product, ASFProductSubclass)
 
-def _try_cast_to_subclass(product: ASFProduct, subclass: Type[ASFProduct]) -> ASFProduct:
+def _cast_to_subclass(product: ASFProduct, subclass: Type[ASFProduct]) -> ASFProduct:
     """
     Casts this ASFProduct object as a new object of return type subclass.
 
