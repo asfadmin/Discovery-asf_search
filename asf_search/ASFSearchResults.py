@@ -2,7 +2,7 @@ from collections import UserList
 from multiprocessing import Pool
 from functools import reduce
 import json
-from typing import Type, Callable
+from typing import Dict, Type, Callable
 from asf_search import ASFSession, ASFSearchOptions, ASFProduct
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.exceptions import ASFSearchError
@@ -91,10 +91,10 @@ class ASFSearchResults(UserList):
 
         ASF_LOGGER.log(f'Converted {count} ASFProduct objects to subclass f{type(ASFProductSubclass)}')
 
-    def get_products_by_subclass_type(self) -> dict:
+    def get_products_by_subclass_type(self) -> Dict:
         """
         Organizes results into dictionary by ASFProduct subclass name
-        : return: dict of ASFSearchResults, organized by ASFProduct subclass names
+        : return: Dict of ASFSearchResults, organized by ASFProduct subclass names
         """
         subclasses = {}
 

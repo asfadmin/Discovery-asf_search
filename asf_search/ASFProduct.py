@@ -1,6 +1,6 @@
 from enum import Enum
 import os
-from typing import Tuple, Union, List, final
+from typing import Any, Dict, Tuple, Union, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -94,7 +94,7 @@ class ASFProduct:
     combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
     """
 
-    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
+    def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')
         self.umm = args.get('umm')
 
@@ -109,7 +109,7 @@ class ASFProduct:
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
-    def geojson(self) -> dict:
+    def geojson(self) -> Dict:
         """Returns ASFProduct object as a geojson formatted dictionary, with `type`, `geometry`, and `properties` keys"""
         return {
             'type': 'Feature',
@@ -160,8 +160,13 @@ class ASFProduct:
 
     def _get_additional_filenames_and_urls(self, 
                                           default_filename: str = None # for subclasses without fileName in url (see S1BURSTProduct implementation)
-                                          ):
-        return [(os.path.split(parse.urlparse(url).path)[1], url) for url in self.properties['additionalUrls']]
+                                          ) -> List[Tuple[str, str]]:
+        return [(self._parse_filename_from_url(url), url) for url in self.properties['additionalUrls']]
+    
+    def _parse_filename_from_url(self, url: str) -> str:
+        file_path = os.path.split(parse.urlparse(url).path)
+        filename = file_path[1]
+        return filename
     
     def stack(
             self,
@@ -212,7 +217,14 @@ class ASFProduct:
 
         return remotezip(self.properties['url'], session=session)
 
-    def translate_product(self, item: dict) -> dict:
+    def _read_umm_property(self, umm: Dict, mapping: Dict) -> Any:
+        value = self.umm_get(umm, *mapping['path'])
+        if mapping.get('cast') is None:
+            return value
+        
+        return self.umm_cast(mapping['cast'], value)
+    
+    def translate_product(self, item: Dict) -> Dict:
         """
         Generates `properties` and `geometry` from the CMR UMM response
         """
@@ -226,8 +238,8 @@ class ASFProduct:
         umm = item.get('umm')
 
         properties = {
-            prop: umm_entry['cast'](self.umm_get(umm, *umm_entry['path'])) if umm_entry.get('cast') is not None else self.umm_get(umm, *umm_entry['path'])
-            for prop, umm_entry in self.get_property_paths().items()
+            prop: self._read_umm_property(umm, umm_mapping)
+            for prop, umm_mapping in self.get_property_paths().items()
         }
 
         if properties.get('url') is not None:
@@ -246,7 +258,7 @@ class ASFProduct:
 
     # ASFProduct subclasses define extra/override param key + UMM pathing here 
     @staticmethod
-    def get_property_paths() -> dict:
+    def get_property_paths() -> Dict:
         """
         Returns _base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
         define which properties they want in their subclass's properties dict. 
@@ -257,7 +269,7 @@ class ASFProduct:
         """
         return ASFProduct._base_properties
     
-    def get_baseline_calc_properties(self) -> dict:
+    def get_baseline_calc_properties(self) -> Dict:
         """
         Used by subclasses to assign baseline values to `ASFProduct.baseline` property.
         """
@@ -284,7 +296,7 @@ class ASFProduct:
     
     @final
     @staticmethod
-    def umm_get(item: dict, *args):
+    def umm_get(item: Dict, *args):
         """
         Used to search for values in CMR UMM
 

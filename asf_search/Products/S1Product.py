@@ -1,5 +1,5 @@
 import copy
-from typing import Union
+from typing import Dict, List, Optional, Tuple
 from asf_search import ASFSearchOptions, ASFSession, ASFProduct
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PLATFORM
@@ -26,33 +26,38 @@ class S1Product(ASFProduct):
 
     baseline_type = ASFProduct.BaselineCalcType.CALCULATED
     
-    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
+    def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
+        if self._has_baseline():
+            self.baseline = self.get_baseline_calc_properties()
+        
+
+    def _has_baseline(self) -> bool:
         baseline = self.get_baseline_calc_properties()
         
-        if baseline is not None:
-            if None not in baseline['stateVectors']['positions'].values() and len(baseline['stateVectors'].items()) > 0:
-                self.baseline = baseline
+        if baseline is None:
+            return False
+        if None in baseline['stateVectors']['positions'].values() and len(baseline['stateVectors'].items()) > 0:
+            return False
         
-
-
-    def get_baseline_calc_properties(self) -> dict:
+        return True
+                
+    def get_baseline_calc_properties(self) -> Dict:
         """
         :returns properties required for SLC baseline stack calculations
         """
-        ascendingNodeTime = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
-
-        if ascendingNodeTime is not None:
-            if not ascendingNodeTime.endswith('Z'):
-                ascendingNodeTime += 'Z'
+        ascendingNodeTime = self.umm_cast(
+            self._parse_timestamp, 
+            self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
+        )
         
         return {
             'stateVectors': self.get_state_vectors(),
             'ascendingNodeTime': ascendingNodeTime
         }
     
-    def get_state_vectors(self) -> dict:
+    def get_state_vectors(self) -> Dict:
         """
         Used in spatio-temporal perpendicular baseline calculations for non-pre-calculated stacks
 
@@ -60,27 +65,35 @@ class S1Product(ASFProduct):
         positions = {}
         velocities = {}
 
-        positions['prePosition'], positions['prePositionTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
-        positions['postPosition'], positions['postPositionTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
-        velocities['preVelocity'], velocities['preVelocityTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
-        velocities['postVelocity'], velocities['postVelocityTime'] = self.umm_cast(self._get_state_vector, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
-
-        for key in ['prePositionTime','postPositionTime','preVelocityTime','postVelocityTime']:
-            if positions.get(key) is not None:
-                if not positions.get(key).endswith('Z'):
-                    positions[key] += 'Z'
+        sv_pre_position = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0)
+        sv_post_position = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0)
+        sv_pre_velocity = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0)
+        sv_post_velocity = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0)
+        
+        positions['prePosition'], positions['prePositionTime'] = self.umm_cast(self._parse_state_vector, sv_pre_position)
+        positions['postPosition'], positions['postPositionTime'] = self.umm_cast(self._parse_state_vector, sv_post_position)
+        velocities['preVelocity'], velocities['preVelocityTime'] = self.umm_cast(self._parse_state_vector, sv_pre_velocity)
+        velocities['postVelocity'], velocities['postVelocityTime'] = self.umm_cast(self._parse_state_vector, sv_post_velocity)
 
         return {
             'positions': positions,
             'velocities': velocities
         }
     
-    @staticmethod
-    def _get_state_vector(state_vector: str):
+    def _parse_timestamp(self, timestamp: str) -> Optional[str]:
+        if timestamp is None:
+            return None
+        
+        return timestamp if timestamp.endswith('Z') else f'{timestamp}Z'
+    
+    def _parse_state_vector(self, state_vector: str) -> Tuple[Optional[List], Optional[str]]:
         if state_vector is None:
             return None, None
         
-        return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
+        velocity = list(map(float, state_vector.split(',')[:3]))
+        timestamp = self._parse_timestamp(state_vector.split(',')[-1])
+        
+        return velocity, timestamp
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
@@ -102,7 +115,7 @@ class S1Product(ASFProduct):
         return stack_opts
     
     @staticmethod
-    def get_property_paths() -> dict:
+    def get_property_paths() -> Dict:
         return {
             **ASFProduct.get_property_paths(),
             **S1Product._base_properties
@@ -110,16 +123,14 @@ class S1Product(ASFProduct):
 
     def is_valid_reference(self) -> bool:
         """perpendicular baselines are not pre-calculated for S1 products and require position/velocity state vectors to calculate"""
-        return self.valid_state_vectors()
-    
-    def valid_state_vectors(self) -> bool:
         for key in ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']:
             if key not in self.baseline['stateVectors']['positions'] or self.baseline['stateVectors']['positions'][key] == None:
                 return False
+        
         return True
     
     @staticmethod
-    def get_default_baseline_product_type() -> Union[str, None]:
+    def get_default_baseline_product_type() -> str:
         """
         Returns the product type to search for when building a baseline stack.
         """

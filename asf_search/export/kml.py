@@ -1,5 +1,6 @@
 import inspect
 from types import GeneratorType
+from typing import Dict
 from asf_search import ASF_LOGGER
 from asf_search.export.metalink import MetalinkStreamArray
 import xml.etree.ElementTree as ETree
@@ -133,7 +134,7 @@ class KMLStreamArray(MetalinkStreamArray):
         return ETree.tostring(placemark, encoding='unicode').replace('&amp;', '&')
     
     # Helper method for getting additional fields in <ul> tag
-    def metadata_fields(self, item: dict):
+    def metadata_fields(self, item: Dict):
         required = {
             'Processing type: ': item['processingTypeDisplay'],
             'Frame: ': item['frameNumber'],
