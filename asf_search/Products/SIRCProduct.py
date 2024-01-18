@@ -1,3 +1,4 @@
+from typing import Dict
 from asf_search import ASFProduct, ASFSession
 
 class SIRCProduct(ASFProduct):
@@ -11,11 +12,11 @@ class SIRCProduct(ASFProduct):
         'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]},
     }
 
-    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
+    def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
     @staticmethod
-    def get_property_paths() -> dict:
+    def get_property_paths() -> Dict:
         return {
             **ASFProduct.get_property_paths(),
             **SIRCProduct._base_properties

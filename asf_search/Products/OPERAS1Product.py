@@ -1,3 +1,4 @@
+from typing import Dict
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
 
@@ -16,7 +17,7 @@ class OPERAS1Product(S1Product):
         'polarization': {'path': ['AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values']} # dual polarization is in list rather than a 'VV+VH' style format
     }
 
-    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
+    def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
         self.baseline = None
@@ -56,7 +57,7 @@ class OPERAS1Product(S1Product):
         return opts
 
     @staticmethod
-    def get_property_paths() -> dict:
+    def get_property_paths() -> Dict:
         return {
             **S1Product.get_property_paths(),
             **OPERAS1Product._base_properties

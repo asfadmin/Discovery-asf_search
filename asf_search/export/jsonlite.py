@@ -100,8 +100,7 @@ class JSONLiteStreamArray(list):
             if p[i] == 'NA' or p[i] == '':
                 p[i] = None
         try:
-            if p.get('offNadirAngle'):
-                if float(p['offNadirAngle']) < 0:
+            if p.get('offNadirAngle') is not None and float(p['offNadirAngle']) < 0:
                     p['offNadirAngle'] = None
         except TypeError:
             pass

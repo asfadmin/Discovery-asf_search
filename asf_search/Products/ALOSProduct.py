@@ -1,5 +1,5 @@
 import copy
-from typing import Union
+from typing import Dict, Union
 from asf_search import ASFSession, ASFProduct, ASFSearchOptions
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.constants import PRODUCT_TYPE
@@ -21,14 +21,14 @@ class ALOSProduct(ASFProduct):
 
     baseline_type = ASFProduct.BaselineCalcType.PRE_CALCULATED
     
-    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
+    def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
 
         if self.properties.get('groupID') is None:
             self.properties['groupID'] = self.properties['sceneName']
         
-    def get_baseline_calc_properties(self) -> dict:
+    def get_baseline_calc_properties(self) -> Dict:
         insarBaseline = self.umm_cast(float, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
         
         if insarBaseline is not None:
@@ -40,14 +40,14 @@ class ALOSProduct(ASFProduct):
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
         stack_opts.processingLevel = self.get_default_baseline_product_type()
 
-        if self.properties.get('insarStackId') not in [None, 'NA', 0, '0']:
-            stack_opts.insarStackId = self.properties['insarStackId']
-            return stack_opts
+        if self.properties.get('insarStackId') in [None, 'NA', 0, '0']:
+            raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {self.properties["fileID"]}')
         
-        raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {self.properties["fileID"]}')
-        
+        stack_opts.insarStackId = self.properties['insarStackId']
+        return stack_opts
+
     @staticmethod
-    def get_property_paths() -> dict:
+    def get_property_paths() -> Dict:
         return {
             **ASFProduct.get_property_paths(),
             **ALOSProduct._base_properties

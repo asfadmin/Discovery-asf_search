@@ -1,3 +1,4 @@
+from typing import Dict
 from asf_search import ASFSession
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_float
@@ -12,7 +13,7 @@ class ARIAS1GUNWProduct(S1Product):
         'orbit': {'path': ['OrbitCalculatedSpatialDomains']}
     }
 
-    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
+    def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.properties['orbit'] = [orbit['OrbitNumber'] for orbit in self.properties['orbit']]
 
@@ -23,7 +24,7 @@ class ARIAS1GUNWProduct(S1Product):
             self.properties['additionalUrls'] = [urls[1]]
 
     @staticmethod
-    def get_property_paths() -> dict:
+    def get_property_paths() -> Dict:
         return {
             **S1Product.get_property_paths(),
             **ARIAS1GUNWProduct._base_properties

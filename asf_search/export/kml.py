@@ -1,5 +1,6 @@
 import inspect
 from types import GeneratorType
+from typing import Dict
 from asf_search import ASF_LOGGER
 from asf_search.export.metalink import MetalinkStreamArray
 import xml.etree.ElementTree as ETree
@@ -12,6 +13,7 @@ extra_kml_fields = [
     ('shape', ['SpatialExtent', 'HorizontalSpatialDomain', 'Geometry', 'GPolygons', 0, 'Boundary', 'Points']),
     ('thumbnailUrl', ['AdditionalAttributes', ('Name', 'THUMBNAIL_URL'), 'Values', 0]),
     ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
+    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0])
 ]
 
 def results_to_kml(results):
@@ -133,7 +135,7 @@ class KMLStreamArray(MetalinkStreamArray):
         return ETree.tostring(placemark, encoding='unicode').replace('&amp;', '&')
     
     # Helper method for getting additional fields in <ul> tag
-    def metadata_fields(self, item: dict):
+    def metadata_fields(self, item: Dict):
         required = {
             'Processing type: ': item['processingTypeDisplay'],
             'Frame: ': item['frameNumber'],

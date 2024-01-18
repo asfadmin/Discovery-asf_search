@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import CMR_PAGE_SIZE
 import re
@@ -12,7 +12,7 @@ from .datasets import dataset_collections
 import logging
 
 
-def translate_opts(opts: ASFSearchOptions) -> list:
+def translate_opts(opts: ASFSearchOptions) -> List:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
@@ -145,24 +145,24 @@ def use_asf_frame(cmr_opts):
     return cmr_opts
 
 # some products don't have integer values in BYTES fields, round to nearest int
-def try_round_float(value: str):
-    if value is not None:
-        value = float(value)
-        return round(value)
+def try_round_float(value: str) -> Optional[int]:
+    if value is None:
+        return None
     
-    return value
+    value = float(value)
+    return round(value)
 
-def try_parse_int(value: str):
-    if value is not None:
-        return int(value)
+def try_parse_int(value: str) -> Optional[int]:
+    if value is None:
+        return None
     
-    return value
+    return int(value)
 
-def try_parse_float(value: str):
-    if value is not None:
-        return float(value)
+def try_parse_float(value: str) -> Optional[float]:
+    if value is None:
+        return None
     
-    return value
+    return float(value)
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:

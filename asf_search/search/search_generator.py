@@ -1,5 +1,5 @@
 import logging
-from typing import Generator, Union, Sequence, Tuple, List
+from typing import Dict, Generator, Union, Sequence, Tuple, List
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
@@ -121,7 +121,7 @@ def search_generator(
        wait=wait_fixed(2),
        stop=stop_after_attempt(3),
     )
-def query_cmr(session: ASFSession, url: str, translated_opts: dict, sub_query_count: int):
+def query_cmr(session: ASFSession, url: str, translated_opts: Dict, sub_query_count: int):
     response = get_page(session=session, url=url, translated_opts=translated_opts)
 
     items = [as_ASFProduct(f, session=session) for f in response.json()['items']]
@@ -147,7 +147,7 @@ def process_page(items: List[ASFProduct], max_results: int, subquery_max_results
        wait=wait_exponential(multiplier=1, min=3, max=10),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
        stop=stop_after_attempt(3),
     )
-def get_page(session: ASFSession, url: str, translated_opts: list) -> Response:
+def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
     try:
         response = session.post(url=url, data=translated_opts, timeout=INTERNAL.CMR_TIMEOUT)
         response.raise_for_status()
@@ -233,46 +233,77 @@ def set_platform_alias(opts: ASFSearchOptions):
 
         opts.platform = list(set(platform_list))
 
-def as_ASFProduct(item: dict, session: ASFSession) -> ASFProduct:
-    shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
-    
-    # ALOS
-    if shortName is None:
-        shortName = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
-        if shortName == 'SENTINEL-1A':
-            if 'Sentinel-1 Interferogram' in ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0):
-                shortName = 'ARIA S1 GUNW'
-        # print(shortName)
-    
-    for dataset, collections in dataset_collections.items():
-        if shortName in collections.keys() or shortName == dataset:
-            return datset_product_types.get(dataset)(item, session=session)
+def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
+    """ Returns the granule umm as the corresponding ASFProduct subclass, 
+    or ASFProduct if no equivalent is found
 
-    if shortName in datset_product_types.keys():
-        return datset_product_types.get(shortName)(item, session=session)
+    :param item: the granule umm json
+    :param session: the session used to query CMR for the product
+
+    :returns the granule as an object of type ASFProduct
+    """
+    product_type_key = _get_product_type_key(item)
+    
+    # if there's a direct entry in our dataset to product type dict
+    if (subclass := dataset_to_product_types.get(product_type_key)) is not None:
+        return subclass(item, session=session)
+    
+    # or if the key matches one of the shortnames in any of our datasets
+    for dataset, collections in dataset_collections.items():
+        if collections.get(product_type_key) is not None:
+            return dataset_to_product_types.get(dataset)(item, session=session)
+
     return ASFProduct(item, session=session)
 
+def _get_product_type_key(item: Dict) -> str:
+    """Match the umm response to the right ASFProduct subclass by returning one of the following:
+        1. collection shortName (Ideal case)
+        2. platform_shortName (Fallback)
+            - special case: Aria S1 GUNW
+    """
+    collection_shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
+    
+    if collection_shortName is None:
+        platform_shortname = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
+        if platform_shortname in ['SENTINEL-1A', 'SENTINEL-1B']:
+            asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
+            if 'Sentinel-1 Interferogram' in asf_platform:
+                return 'ARIA S1 GUNW'
+            
+        return platform_shortname
+    
+    return collection_shortName
 
+# Maps datasets from DATASET.py and collection/platform shortnames to ASFProduct subclasses
+dataset_to_product_types = {
+    'SENTINEL-1': ASFProductType.S1Product,
+    'OPERA-S1': ASFProductType.OPERAS1Product,
+    'SLC-BURST': ASFProductType.S1BURSTProduct,
+    
+    'ALOS': ASFProductType.ALOSProduct,
+    
+    'SIR-C': ASFProductType.SIRCProduct,
+    'STS-59': ASFProductType.SIRCProduct,
+    'STS-68': ASFProductType.SIRCProduct,
+    
+    'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
+    
+    'SMAP': ASFProductType.SMAPProduct,
+    
+    'UAVSAR': ASFProductType.UAVSARProduct,
+    'G-III': ASFProductType.UAVSARProduct,
+    
+    'RADARSAT-1': ASFProductType.RadarsatProduct,
+    
+    'ERS': ASFProductType.ERSProduct,
+    'ERS-1': ASFProductType.ERSProduct,
+    'ERS-2': ASFProductType.ERSProduct,
+    
+    'JERS-1': ASFProductType.JERSProduct,
+    
+    'AIRSAR': ASFProductType.AIRSARProduct,
+    'DC-8': ASFProductType.AIRSARProduct,
 
-datset_product_types = {
-        'SENTINEL-1': ASFProductType.S1Product,
-        'OPERA-S1': ASFProductType.OPERAS1Product,
-        'SLC-BURST': ASFProductType.S1BURSTProduct,
-        'ALOS': ASFProductType.ALOSProduct,
-        'SIR-C': ASFProductType.SIRCProduct,
-        'STS-59': ASFProductType.SIRCProduct,
-        'STS-68': ASFProductType.SIRCProduct,
-        'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
-        'SMAP': ASFProductType.SMAPProduct,
-        'UAVSAR': ASFProductType.UAVSARProduct,
-        'G-III': ASFProductType.UAVSARProduct,
-        'RADARSAT-1': ASFProductType.RadarsatProduct,
-        'ERS': ASFProductType.ERSProduct,
-        'ERS-1': ASFProductType.ERSProduct,
-        'ERS-2': ASFProductType.ERSProduct,
-        'JERS-1': ASFProductType.JERSProduct,
-        'AIRSAR': ASFProductType.AIRSARProduct,
-        'DC-8': ASFProductType.AIRSARProduct,
-        'SEASAT': ASFProductType.SEASATProduct,
-        'SEASAT 1': ASFProductType.SEASATProduct
-    }
+    'SEASAT': ASFProductType.SEASATProduct,
+    'SEASAT 1': ASFProductType.SEASATProduct
+}

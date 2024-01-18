@@ -51,7 +51,7 @@ def run_test_valid_state_vectors(reference, output):
     if reference != None:
         product = as_ASFProduct(reference, ASFSession())
         clear_baseline(reference, product)
-        assert output == product.valid_state_vectors()
+        assert output == product.is_valid_reference()
         return
     
 def clear_baseline(resource, product: ASFProduct):

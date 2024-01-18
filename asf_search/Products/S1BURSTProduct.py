@@ -1,5 +1,5 @@
 import copy
-from typing import Union
+from typing import Dict, Union
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_int
@@ -28,7 +28,7 @@ class S1BURSTProduct(S1Product):
         'azimuthAnxTime': {'path': ['AdditionalAttributes', ('Name', 'AZIMUTH_ANX_TIME'), 'Values', 0]},
     }
 
-    def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
+    def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.properties['sceneName'] = self.properties['fileID']
 
@@ -66,7 +66,7 @@ class S1BURSTProduct(S1Product):
         return stack_opts
     
     @staticmethod
-    def get_property_paths() -> dict:
+    def get_property_paths() -> Dict:
         return {
             **S1Product.get_property_paths(),
             **S1BURSTProduct._base_properties
@@ -74,10 +74,10 @@ class S1BURSTProduct(S1Product):
     
     def _get_additional_filenames_and_urls(self, default_filename: str = None):
         # Burst XML filenames are just numbers, this makes it more indentifiable
-        if file_name is None:
-            file_name = '.'.join(self.properties['fileName'].split('.')[:-1]) + 'xml'
-        else:
-            file_name = '.'.join(default_filename.split('.')[:-1]) + 'xml'
+        if default_filename is None:
+            default_filename = self.properties['fileName']
+        
+        file_name = f"{'.'.join(default_filename.split('.')[:-1])}.xml"
         
         return [(file_name, self.properties['additionalUrls'][0])]
     
