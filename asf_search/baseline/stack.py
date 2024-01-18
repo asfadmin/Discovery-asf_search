@@ -2,31 +2,33 @@ from dateutil.parser import parse
 import pytz
 
 from .calc import calculate_perpendicular_baselines
-from asf_search import ASFProduct, ASFSearchResults
+from asf_search import ASFProduct, ASFStackableProduct, ASFSearchResults
+
 
 def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None
 
     if len(stack) == 0:
         raise ValueError('No products found matching stack parameters')
-    stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata') and product.baseline != None]
-    
+    stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata') and product.baseline is not None]
     reference, stack, warnings = check_reference(reference, stack)
-    
+
     stack = calculate_temporal_baselines(reference, stack)
 
-    if reference.baseline_type == ASFProduct.BaselineCalcType.PRE_CALCULATED:
+    if reference.baseline_type == ASFStackableProduct.BaselineCalcType.PRE_CALCULATED:
         stack = offset_perpendicular_baselines(reference, stack)
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
 
     return ASFSearchResults(stack), warnings
 
+
 def find_new_reference(stack: ASFSearchResults):
     for product in stack:
         if product.is_valid_reference():
             return product
     return None
+
 
 def check_reference(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None
@@ -42,6 +44,7 @@ def check_reference(reference: ASFProduct, stack: ASFSearchResults):
             raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
 
     return reference, stack, warnings
+
 
 def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults):
     """
@@ -60,13 +63,13 @@ def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults)
         if secondary_time.tzinfo is None:
             secondary_time = pytz.utc.localize(secondary_time)
         secondary.properties['temporalBaseline'] = (secondary_time.date() - reference_time.date()).days
-    
+
     return stack
 
 def offset_perpendicular_baselines(reference: ASFProduct, stack: ASFSearchResults):
     reference_offset = float(reference.baseline['insarBaseline'])
-    
+
     for product in stack:
             product.properties['perpendicularBaseline'] = round(float(product.baseline['insarBaseline']) - reference_offset)
-    
+
     return stack

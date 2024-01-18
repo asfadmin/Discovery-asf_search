@@ -2,6 +2,7 @@ from typing import Dict
 from asf_search import ASFSession, ASFProduct
 from asf_search.CMR.translate import try_parse_float, try_round_float
 
+
 class SEASATProduct(ASFProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/sar-data-sets/seasat/
