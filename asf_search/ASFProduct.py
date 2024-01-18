@@ -28,32 +28,32 @@ class ASFProduct:
         - geometry:
             - The geometry `{coordinates: [[lon, lat] ...], 'type': Polygon}`
         - baseline:
-            - used for spatio-temporal baseline stacking, stores state vectors/ascending node time/insar baseline values when available (Not set in base ASFProduct class)  
+            - used for spatio-temporal baseline stacking, stores state vectors/ascending node time/insar baseline values when available (Not set in base ASFProduct class)
             - See `S1Product` or `ALOSProduct` `get_baseline_calc_properties()` methods for implementation examples
-    
+
     Key methods:
         - `download()`
         - `stack()`
         - `remotezip()`
 
-        
+
     """
     @classmethod
     def get_classname(cls):
         return cls.__name__
-    
+
     class BaselineCalcType(Enum):
         """
         Defines how asf-search will calculate perpendicular baseline for products of this subclass
         """
 
-        NONE = 1 
+        NONE = 1
         """Cannot be used in baseline calculations"""
         PRE_CALCULATED = 2
         """Has pre-calculated insarBaseline value that will be used for perpendicular calculations"""
         CALCULATED = 3
         """Uses position/velocity state vectors and ascending node time for perpendicular calculations"""
-    
+
     baseline_type = BaselineCalcType.NONE
 
     _base_properties = {
@@ -65,7 +65,7 @@ class ASFProduct:
             'flightDirection': {'path': [ 'AdditionalAttributes', ('Name', 'ASCENDING_DESCENDING'), 'Values', 0]},
             'pathNumber': {'path': ['AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0], 'cast': try_parse_int},
             'processingLevel': {'path': [ 'AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0]},
-            
+
             # commonly used
             'url': {'path': [ 'RelatedUrls', ('Type', 'GET DATA'), 'URL']},
             'startTime': {'path': [ 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime']},
@@ -83,14 +83,14 @@ class ASFProduct:
     }
     """
     _base_properties dictionary, mapping readable property names to paths and optional type casting
-    
+
     entries are organized as such:
         - `PROPERTY_NAME`: The name the property should be called in `ASFProduct.properties`
             - `path`: the expected path in the CMR UMM json granule response as a list
             - `cast`: (optional): the optional type casting method
-    
+
     Defining `_base_properties` in subclasses allows for defining custom properties or overiding existing ones.
-    See `S1Product.get_property_paths()` on how subclasses are expected to 
+    See `S1Product.get_property_paths()` on how subclasses are expected to
     combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
     """
 
@@ -132,14 +132,14 @@ class ASFProduct:
 
         if filename is not None:
             multiple_files = (
-                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1) 
+                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1)
                 or fileType == FileDownloadType.ALL_FILES
             )
             if multiple_files:
                 warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
             else:
                 default_filename = filename
-                
+
         if session is None:
             session = self.session
 
@@ -158,16 +158,17 @@ class ASFProduct:
         for filename, url in urls:
             download_url(url=url, path=path, filename=filename, session=session)
 
-    def _get_additional_filenames_and_urls(self, 
-                                          default_filename: str = None # for subclasses without fileName in url (see S1BURSTProduct implementation)
-                                          ) -> List[Tuple[str, str]]:
+    def _get_additional_filenames_and_urls(
+            self,
+            default_filename: str = None  # for subclasses without fileName in url (see S1BURSTProduct implementation)
+     ) -> List[Tuple[str, str]]:
         return [(self._parse_filename_from_url(url), url) for url in self.properties['additionalUrls']]
-    
+
     def _parse_filename_from_url(self, url: str) -> str:
         file_path = os.path.split(parse.urlparse(url).path)
         filename = file_path[1]
         return filename
-    
+
     def stack(
             self,
             opts: ASFSearchOptions = None
@@ -210,7 +211,7 @@ class ASFProduct:
     def remotezip(self, session: ASFSession) -> RemoteZip:
         """Returns a RemoteZip object which can be used to download a part of an ASFProduct's zip archive.
         (See example in examples/5-Download.ipynb)
-        
+
         :param session: an authenticated ASFSession
         """
         from .download.download import remotezip
@@ -221,9 +222,9 @@ class ASFProduct:
         value = self.umm_get(umm, *mapping['path'])
         if mapping.get('cast') is None:
             return value
-        
+
         return self.umm_cast(mapping['cast'], value)
-    
+
     def translate_product(self, item: Dict) -> Dict:
         """
         Generates `properties` and `geometry` from the CMR UMM response
@@ -250,25 +251,25 @@ class ASFProduct:
         # Fallbacks
         if properties.get('beamModeType') is None:
             properties['beamModeType'] = self.umm_get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
-        
+
         if properties.get('platform') is None:
             properties['platform'] = self.umm_get(umm, 'Platforms', 0, 'ShortName')
 
         return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
 
-    # ASFProduct subclasses define extra/override param key + UMM pathing here 
+    # ASFProduct subclasses define extra/override param key + UMM pathing here
     @staticmethod
     def get_property_paths() -> Dict:
         """
         Returns _base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
-        define which properties they want in their subclass's properties dict. 
-        
+        define which properties they want in their subclass's properties dict.
+
         (See `S1Product.get_property_paths()` for example of combining _base_properties of multiple classes)
-        
+
         :returns dictionary, {`PROPERTY_NAME`: {'path': [umm, path, to, value], 'cast (optional)': Callable_to_cast_value}, ...}
         """
         return ASFProduct._base_properties
-    
+
     def get_baseline_calc_properties(self) -> Dict:
         """
         Used by subclasses to assign baseline values to `ASFProduct.baseline` property.
@@ -280,7 +281,7 @@ class ASFProduct:
         Used for baseline stack reference validation, see S1Product or AlosProduct versions for example implementations
         """
         return False
-    
+
     def get_sort_keys(self) -> Tuple:
         """
         Returns tuple of primary and secondary date values used for sorting final search results
@@ -293,7 +294,7 @@ class ASFProduct:
         Returns the product type to search for when building a baseline stack.
         """
         return None
-    
+
     @final
     @staticmethod
     def umm_get(item: Dict, *args):
@@ -301,15 +302,15 @@ class ASFProduct:
         Used to search for values in CMR UMM
 
         :param item: the umm dict returned from CMR
-        :param *args: the expected path to the value 
-        
+        :param *args: the expected path to the value
+
         Example case:
         "I want to grab the polarization from the granule umm"
         ```
         item = {
             'AdditionalAttributes': [
-                { 
-                    'Name': 'POLARIZATION', 
+                {
+                    'Name': 'POLARIZATION',
                     'Values': ['VV', 'VH']
                 },
                 ...
@@ -325,31 +326,31 @@ class ASFProduct:
         ```
 
         - `'AdditionalAttributes'` acts like item['AdditionalAttributes'], which is a list of dictionaries
-        
+
         - Since `AdditionalAttributes` is a LIST of dictionaries, we search for a dict with the key value pair,
         `('Name', 'POLARIZATION')`
 
         - If found, we try to access that dictionary's `Values` key
         - Since `Values` is a list, we can access the first index `0` (in this case, 'VV')
-        
+
         ---
 
         If you want more of the umm, simply reduce how deep you search:
         Example: "I need BOTH polarizations (`OPERAS1Product` does this, noticed the omitted `0`)
-        
+
         ```
         'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values'
         result: ['VV', 'VH']
         ```
 
         ---
-        
+
         Example: "I need the ENTIRE POLARIZATION dict"
-        
+
         ```
         'AdditionalAttributes', ('Name', 'POLARIZATION')
-        result: { 
-                    'Name': 'POLARIZATION', 
+        result: {
+                    'Name': 'POLARIZATION',
                     'Values': ['VV', 'VH']
                 }
         ```
@@ -357,7 +358,7 @@ class ASFProduct:
         ---
 
         ADVANCED:
-        Sometimes there are multiple dictionaries in a list that have the same key value pair we're searching for 
+        Sometimes there are multiple dictionaries in a list that have the same key value pair we're searching for
         (See `OPERAS1Product` umm under `RelatedUrls`). This means we can miss values since we're only grabbing the first match
         depending on how the umm is organized. There is a way to get ALL data that matches our key value criteria.
 
@@ -399,7 +400,7 @@ class ASFProduct:
         if item in [None, 'NA', 'N/A', '']:
             item = None
         return item
-    
+
     @final
     @staticmethod
     def umm_cast(f, v):

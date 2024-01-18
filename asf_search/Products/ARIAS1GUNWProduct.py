@@ -2,6 +2,8 @@ from typing import Dict
 from asf_search import ASFSession
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_float
+
+
 class ARIAS1GUNWProduct(S1Product):
     """
     Used for ARIA S1 GUNW Products
@@ -29,4 +31,3 @@ class ARIAS1GUNWProduct(S1Product):
             **S1Product.get_property_paths(),
             **ARIAS1GUNWProduct._base_properties
         }
-    

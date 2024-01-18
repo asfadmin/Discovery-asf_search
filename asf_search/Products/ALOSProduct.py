@@ -5,6 +5,7 @@ from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_f
 from asf_search.constants import PRODUCT_TYPE
 from asf_search.exceptions import ASFBaselineError
 
+
 class ALOSProduct(ASFProduct):
     """
     Used for ALOS Palsar and Avnir dataset products
@@ -13,21 +14,21 @@ class ALOSProduct(ASFProduct):
     """
     _base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
-        'faradayRotation': {'path': [ 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
-        'offNadirAngle': {'path': [ 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
-        'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
-        'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
+        'faradayRotation': {'path': ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
+        'offNadirAngle': {'path': ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
+        'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
+        'insarStackId': {'path': ['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
     }
 
     baseline_type = ASFProduct.BaselineCalcType.PRE_CALCULATED
-    
+
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
 
         if self.properties.get('groupID') is None:
             self.properties['groupID'] = self.properties['sceneName']
-        
+
     def get_baseline_calc_properties(self) -> Dict:
         insarBaseline = self.umm_cast(float, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
         
@@ -42,7 +43,7 @@ class ALOSProduct(ASFProduct):
 
         if self.properties.get('insarStackId') in [None, 'NA', 0, '0']:
             raise ASFBaselineError(f'Requested reference product needs a baseline stack ID but does not have one: {self.properties["fileID"]}')
-        
+
         stack_opts.insarStackId = self.properties['insarStackId']
         return stack_opts
 
@@ -52,18 +53,17 @@ class ALOSProduct(ASFProduct):
             **ASFProduct.get_property_paths(),
             **ALOSProduct._base_properties
         }
-    
+
     def is_valid_reference(self):
         # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)
         if 'insarBaseline' not in self.baseline:
             raise ValueError('No baseline values available for precalculated dataset')
-        
+
         return True
-    
+
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
         """
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L1_1
-    

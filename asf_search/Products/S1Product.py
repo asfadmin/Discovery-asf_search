@@ -5,6 +5,7 @@ from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE
 
+
 class S1Product(ASFProduct):
     """
     The S1Product classes covers most Sentinel-1 Products
@@ -25,13 +26,12 @@ class S1Product(ASFProduct):
     """
 
     baseline_type = ASFProduct.BaselineCalcType.CALCULATED
-    
+
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
         if self._has_baseline():
             self.baseline = self.get_baseline_calc_properties()
-        
 
     def _has_baseline(self) -> bool:
         baseline = self.get_baseline_calc_properties()
@@ -48,15 +48,15 @@ class S1Product(ASFProduct):
         :returns properties required for SLC baseline stack calculations
         """
         ascendingNodeTime = self.umm_cast(
-            self._parse_timestamp, 
+            self._parse_timestamp,
             self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
         )
-        
+
         return {
             'stateVectors': self.get_state_vectors(),
             'ascendingNodeTime': ascendingNodeTime
         }
-    
+
     def get_state_vectors(self) -> Dict:
         """
         Used in spatio-temporal perpendicular baseline calculations for non-pre-calculated stacks
@@ -69,7 +69,7 @@ class S1Product(ASFProduct):
         sv_post_position = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0)
         sv_pre_velocity = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0)
         sv_post_velocity = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0)
-        
+
         positions['prePosition'], positions['prePositionTime'] = self.umm_cast(self._parse_state_vector, sv_pre_position)
         positions['postPosition'], positions['postPositionTime'] = self.umm_cast(self._parse_state_vector, sv_post_position)
         velocities['preVelocity'], velocities['preVelocityTime'] = self.umm_cast(self._parse_state_vector, sv_pre_velocity)
@@ -79,41 +79,41 @@ class S1Product(ASFProduct):
             'positions': positions,
             'velocities': velocities
         }
-    
+
     def _parse_timestamp(self, timestamp: str) -> Optional[str]:
         if timestamp is None:
             return None
-        
+
         return timestamp if timestamp.endswith('Z') else f'{timestamp}Z'
-    
+
     def _parse_state_vector(self, state_vector: str) -> Tuple[Optional[List], Optional[str]]:
         if state_vector is None:
             return None, None
         
         velocity = list(map(float, state_vector.split(',')[:3]))
         timestamp = self._parse_timestamp(state_vector.split(',')[-1])
-        
+
         return velocity, timestamp
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
         Returns the search options asf-search will use internally to build an SLC baseline stack from
-        
-        :param opts: additional criteria for limiting 
+
+        :param opts: additional criteria for limiting
         :returns ASFSearchOptions used for build Sentinel-1 SLC Stack
         """
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
-        
+
         stack_opts.processingLevel = self.get_default_baseline_product_type()
         stack_opts.beamMode = [self.properties['beamModeType']]
         stack_opts.flightDirection = self.properties['flightDirection']
-        stack_opts.relativeOrbit = [int(self.properties['pathNumber'])] # path
+        stack_opts.relativeOrbit = [int(self.properties['pathNumber'])]  # path
         stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
         stack_opts.polarization = ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH']
         stack_opts.intersectsWith = self.centroid().wkt
-        
+
         return stack_opts
-    
+
     @staticmethod
     def get_property_paths() -> Dict:
         return {
