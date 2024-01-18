@@ -1,6 +1,5 @@
-from enum import Enum
 import os
-from typing import Any, Dict, Tuple, Union, List, final
+from typing import Any, Dict, Tuple, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -14,6 +13,7 @@ from remotezip import RemoteZip
 
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
+
 
 class ASFProduct:
     """
@@ -41,20 +41,6 @@ class ASFProduct:
     @classmethod
     def get_classname(cls):
         return cls.__name__
-
-    class BaselineCalcType(Enum):
-        """
-        Defines how asf-search will calculate perpendicular baseline for products of this subclass
-        """
-
-        NONE = 1
-        """Cannot be used in baseline calculations"""
-        PRE_CALCULATED = 2
-        """Has pre-calculated insarBaseline value that will be used for perpendicular calculations"""
-        CALCULATED = 3
-        """Uses position/velocity state vectors and ascending node time for perpendicular calculations"""
-
-    baseline_type = BaselineCalcType.NONE
 
     _base_properties = {
             # min viable product
@@ -104,7 +90,6 @@ class ASFProduct:
         self.geometry = translated['geometry']
         self.baseline = None
         self.session = session
-
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
@@ -270,30 +255,11 @@ class ASFProduct:
         """
         return ASFProduct._base_properties
 
-    def get_baseline_calc_properties(self) -> Dict:
-        """
-        Used by subclasses to assign baseline values to `ASFProduct.baseline` property.
-        """
-        return {}
-
-    def is_valid_reference(self) -> bool:
-        """
-        Used for baseline stack reference validation, see S1Product or AlosProduct versions for example implementations
-        """
-        return False
-
     def get_sort_keys(self) -> Tuple:
         """
         Returns tuple of primary and secondary date values used for sorting final search results
         """
         return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
-
-    @staticmethod
-    def get_default_baseline_product_type() -> Union[str, None]:
-        """
-        Returns the product type to search for when building a baseline stack.
-        """
-        return None
 
     @final
     @staticmethod

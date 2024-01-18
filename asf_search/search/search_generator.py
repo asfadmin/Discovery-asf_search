@@ -22,7 +22,9 @@ from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
 import asf_search.Products as ASFProductType
-def search_generator(        
+
+
+def search_generator(
         absoluteOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
         asfFrame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
         beamMode: Union[str, Sequence[str]] = None,
@@ -82,13 +84,13 @@ def search_generator(
 
     url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
     total = 0
-    
+
     queries = build_subqueries(opts)
     for query in queries:
         translated_opts = translate_opts(query)
         cmr_search_after_header = ""
         subquery_count = 0
-        
+
         while(cmr_search_after_header is not None):
             try:
                 items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
@@ -98,21 +100,21 @@ def search_generator(
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
                 return
-            
+
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
             subquery_count += len(last_page)
             total += len(last_page)
             last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
             yield last_page
-            
+
             if last_page.searchComplete:
                 if total == maxResults: # the user has as many results as they wanted
                     opts.session.headers.pop('CMR-Search-After', None)
                     return
                 else: # or we've gotten all possible results for this subquery
                     cmr_search_after_header = None
-        
+
         opts.session.headers.pop('CMR-Search-After', None)
 
 
@@ -132,7 +134,7 @@ def query_cmr(session: ASFSession, url: str, translated_opts: Dict, sub_query_co
         raise CMRIncompleteError(f"CMR returned page of incomplete results. Expected {min(INTERNAL.CMR_PAGE_SIZE, hits - sub_query_count)} results, got {len(items)}")
 
     return items, hits, response.headers.get('CMR-Search-After', None)
-    
+
 
 def process_page(items: List[ASFProduct], max_results: int, subquery_max_results: int, total: int, subquery_count: int, opts: ASFSearchOptions):
     if max_results is None:
@@ -159,9 +161,9 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
             raise ASFSearch5xxError(error_message) from exc
     except ReadTimeout as exc:
         raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "CMR_TIMEOUT" to increase. ({url=}, timeout={INTERNAL.CMR_TIMEOUT})') from exc
-    
+
     return response
-    
+
 
 def preprocess_opts(opts: ASFSearchOptions):
     # Repair WKT here so it only happens once, and you can save the result to the new Opts object:
@@ -234,7 +236,7 @@ def set_platform_alias(opts: ASFSearchOptions):
         opts.platform = list(set(platform_list))
 
 def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
-    """ Returns the granule umm as the corresponding ASFProduct subclass, 
+    """ Returns the granule umm as the corresponding ASFProduct subclass,
     or ASFProduct if no equivalent is found
 
     :param item: the granule umm json
@@ -243,11 +245,11 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
     :returns the granule as an object of type ASFProduct
     """
     product_type_key = _get_product_type_key(item)
-    
+
     # if there's a direct entry in our dataset to product type dict
     if (subclass := dataset_to_product_types.get(product_type_key)) is not None:
         return subclass(item, session=session)
-    
+
     # or if the key matches one of the shortnames in any of our datasets
     for dataset, collections in dataset_collections.items():
         if collections.get(product_type_key) is not None:
@@ -262,16 +264,16 @@ def _get_product_type_key(item: Dict) -> str:
             - special case: Aria S1 GUNW
     """
     collection_shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
-    
+
     if collection_shortName is None:
         platform_shortname = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
         if platform_shortname in ['SENTINEL-1A', 'SENTINEL-1B']:
             asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
             if 'Sentinel-1 Interferogram' in asf_platform:
                 return 'ARIA S1 GUNW'
-            
+
         return platform_shortname
-    
+
     return collection_shortName
 
 # Maps datasets from DATASET.py and collection/platform shortnames to ASFProduct subclasses
@@ -279,28 +281,28 @@ dataset_to_product_types = {
     'SENTINEL-1': ASFProductType.S1Product,
     'OPERA-S1': ASFProductType.OPERAS1Product,
     'SLC-BURST': ASFProductType.S1BURSTProduct,
-    
+
     'ALOS': ASFProductType.ALOSProduct,
-    
+
     'SIR-C': ASFProductType.SIRCProduct,
     'STS-59': ASFProductType.SIRCProduct,
     'STS-68': ASFProductType.SIRCProduct,
-    
+
     'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
-    
+
     'SMAP': ASFProductType.SMAPProduct,
-    
+
     'UAVSAR': ASFProductType.UAVSARProduct,
     'G-III': ASFProductType.UAVSARProduct,
-    
+
     'RADARSAT-1': ASFProductType.RadarsatProduct,
-    
+
     'ERS': ASFProductType.ERSProduct,
     'ERS-1': ASFProductType.ERSProduct,
     'ERS-2': ASFProductType.ERSProduct,
-    
+
     'JERS-1': ASFProductType.JERSProduct,
-    
+
     'AIRSAR': ASFProductType.AIRSARProduct,
     'DC-8': ASFProductType.AIRSARProduct,
 

@@ -1,12 +1,12 @@
 import copy
 from typing import Dict, List, Optional, Tuple
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct
+from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFBaselineProduct
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE
 
 
-class S1Product(ASFProduct):
+class S1Product(ASFBaselineProduct):
     """
     The S1Product classes covers most Sentinel-1 Products
     (For S1 BURST-SLC, OPERA-S1, and ARIA-S1 GUNW Products, see relevant S1 subclasses)
@@ -16,8 +16,8 @@ class S1Product(ASFProduct):
 
     _base_properties = {
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
-        'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
-        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+        'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
+        'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
     }
     """
@@ -25,7 +25,7 @@ class S1Product(ASFProduct):
     - frameNumber: overrides ASFProduct's `CENTER_ESA_FRAME` with `FRAME_NUMBER`
     """
 
-    baseline_type = ASFProduct.BaselineCalcType.CALCULATED
+    baseline_type = ASFBaselineProduct.BaselineCalcType
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
@@ -38,8 +38,7 @@ class S1Product(ASFProduct):
 
         return (
             baseline is not None and
-            None not in baseline['stateVectors']['positions'].values() and
-            len(baseline['stateVectors'].items()) <= 0
+            None not in baseline['stateVectors']['positions'].values()
         )
 
     def get_baseline_calc_properties(self) -> Dict:
@@ -121,19 +120,18 @@ class S1Product(ASFProduct):
     @staticmethod
     def get_property_paths() -> Dict:
         return {
-            **ASFProduct.get_property_paths(),
+            **ASFBaselineProduct.get_property_paths(),
             **S1Product._base_properties
         }
 
     def is_valid_reference(self) -> bool:
-        """perpendicular baselines are not pre-calculated for S1 products and require position/velocity state vectors to calculate"""
         keys = ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']
 
-        return all([
-            key not in self.baseline['stateVectors']['positions'] or
-            self.baseline['stateVectors']['positions'][key] is None
-            for key in keys
-        ])
+        for key in keys:
+            if self.baseline['stateVectors']['positions'].get(key) is None:
+                return False
+
+        return True
 
     @staticmethod
     def get_default_baseline_product_type() -> str:

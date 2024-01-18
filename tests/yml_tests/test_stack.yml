@@ -11,10 +11,6 @@ tests:
     stack: Fairbanks_S1_stack_preprocessed_incomplete.yml
     output_index: 1
 
-- test-get_default_product_type empty:
-    product: {'meta': {}, 'umm': {}}
-    product_type: null
-
 - test-get_default_product_type S1:
     product: Fairbanks_SLC.yml
     product_type: SLC
@@ -64,4 +60,3 @@ tests:
 - test-valid-state-vectors fairbanks slc:
     reference: Fairbanks_SLC_no_stateVectors.yml
     output: False
-
