@@ -20,6 +20,7 @@ extra_csv_fields = [
     ('doppler', ['AdditionalAttributes', ('Name', 'DOPPLER'), 'Values', 0]),
     ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
     ('insarStackSize', ['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0]),
+    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0])
 ]
 
 fieldnames = (

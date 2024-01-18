@@ -13,6 +13,7 @@ extra_kml_fields = [
     ('shape', ['SpatialExtent', 'HorizontalSpatialDomain', 'Geometry', 'GPolygons', 0, 'Boundary', 'Points']),
     ('thumbnailUrl', ['AdditionalAttributes', ('Name', 'THUMBNAIL_URL'), 'Values', 0]),
     ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
+    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0])
 ]
 
 def results_to_kml(results):
