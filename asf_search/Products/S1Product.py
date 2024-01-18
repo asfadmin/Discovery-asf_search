@@ -35,14 +35,13 @@ class S1Product(ASFProduct):
 
     def _has_baseline(self) -> bool:
         baseline = self.get_baseline_calc_properties()
-        
-        if baseline is None:
-            return False
-        if None in baseline['stateVectors']['positions'].values() and len(baseline['stateVectors'].items()) > 0:
-            return False
-        
-        return True
-                
+
+        return (
+            baseline is not None and
+            None not in baseline['stateVectors']['positions'].values() and
+            len(baseline['stateVectors'].items()) <= 0
+        )
+
     def get_baseline_calc_properties(self) -> Dict:
         """
         :returns properties required for SLC baseline stack calculations
@@ -89,8 +88,8 @@ class S1Product(ASFProduct):
     def _parse_state_vector(self, state_vector: str) -> Tuple[Optional[List], Optional[str]]:
         if state_vector is None:
             return None, None
-        
-        velocity = list(map(float, state_vector.split(',')[:3]))
+
+        velocity = [float(val) for val in state_vector.split(',')[:3]]
         timestamp = self._parse_timestamp(state_vector.split(',')[-1])
 
         return velocity, timestamp
@@ -109,7 +108,12 @@ class S1Product(ASFProduct):
         stack_opts.flightDirection = self.properties['flightDirection']
         stack_opts.relativeOrbit = [int(self.properties['pathNumber'])]  # path
         stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
-        stack_opts.polarization = ['HH','HH+HV'] if self.properties['polarization'] in ['HH','HH+HV'] else ['VV', 'VV+VH']
+
+        if self.properties['polarization'] in ['HH', 'HH+HV']:
+            stack_opts.polarization = ['HH', 'HH+HV']
+        else:
+            stack_opts.polarization = ['VV', 'VV+VH']
+
         stack_opts.intersectsWith = self.centroid().wkt
 
         return stack_opts
@@ -123,12 +127,14 @@ class S1Product(ASFProduct):
 
     def is_valid_reference(self) -> bool:
         """perpendicular baselines are not pre-calculated for S1 products and require position/velocity state vectors to calculate"""
-        for key in ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']:
-            if key not in self.baseline['stateVectors']['positions'] or self.baseline['stateVectors']['positions'][key] == None:
-                return False
-        
-        return True
-    
+        keys = ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']
+
+        return all([
+            key not in self.baseline['stateVectors']['positions'] or
+            self.baseline['stateVectors']['positions'][key] is None
+            for key in keys
+        ])
+
     @staticmethod
     def get_default_baseline_product_type() -> str:
         """

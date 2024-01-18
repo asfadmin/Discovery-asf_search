@@ -25,14 +25,14 @@ class JERSProduct(ASFProduct):
 
     def get_baseline_calc_properties(self) -> Dict:
         insarBaseline = self.umm_cast(float, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
-        
-        if insarBaseline is not None:
-            return {
-                'insarBaseline': insarBaseline        
-            }
-        
-        return None
-        
+
+        if insarBaseline is None:
+            return
+
+        return {
+            'insarBaseline': insarBaseline
+        }
+
     @staticmethod
     def get_property_paths() -> Dict:
         return {

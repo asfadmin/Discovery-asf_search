@@ -30,14 +30,14 @@ class ERSProduct(ASFProduct):
 
     def get_baseline_calc_properties(self) -> Dict:
         insarBaseline = self.umm_cast(float, self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
-        
-        if insarBaseline is not None:
-            return {
-                'insarBaseline': insarBaseline        
-            }
-        
-        return None
-    
+
+        if insarBaseline is None:
+            return None
+
+        return {
+            'insarBaseline': insarBaseline
+        }
+
     def get_stack_opts(self, opts: ASFSearchOptions = None):
         stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
         stack_opts.processingLevel = self.get_default_baseline_product_type()
