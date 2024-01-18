@@ -1,10 +1,10 @@
 from typing import Dict, Union
-from asf_search import ASFSession, ASFProduct, ASFBaselineProduct, ASFSearchOptions
+from asf_search import ASFSession, ASFProduct, ASFStackableProduct, ASFSearchOptions
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.constants import PRODUCT_TYPE
 
 
-class ALOSProduct(ASFBaselineProduct):
+class ALOSProduct(ASFStackableProduct):
     """
     Used for ALOS Palsar and Avnir dataset products
 
@@ -34,6 +34,6 @@ class ALOSProduct(ASFBaselineProduct):
     @staticmethod
     def get_property_paths() -> Dict:
         return {
-            **ASFBaselineProduct.get_property_paths(),
+            **ASFStackableProduct.get_property_paths(),
             **ALOSProduct._base_properties
         }

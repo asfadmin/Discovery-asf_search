@@ -2,7 +2,7 @@ from dateutil.parser import parse
 import pytz
 
 from .calc import calculate_perpendicular_baselines
-from asf_search import ASFProduct, ASFBaselineProduct, ASFSearchResults
+from asf_search import ASFProduct, ASFStackableProduct, ASFSearchResults
 
 
 def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
@@ -15,7 +15,7 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
 
     stack = calculate_temporal_baselines(reference, stack)
 
-    if reference.baseline_type == ASFBaselineProduct.BaselineCalcType.PRE_CALCULATED:
+    if reference.baseline_type == ASFStackableProduct.BaselineCalcType.PRE_CALCULATED:
         stack = offset_perpendicular_baselines(reference, stack)
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)

@@ -1,10 +1,10 @@
 from typing import Dict, Union
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFBaselineProduct
+from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_float
 from asf_search.constants import PRODUCT_TYPE
 
 
-class RadarsatProduct(ASFBaselineProduct):
+class RadarsatProduct(ASFStackableProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/radarsat-1/
     """
@@ -21,7 +21,7 @@ class RadarsatProduct(ASFBaselineProduct):
     @staticmethod
     def get_property_paths() -> Dict:
         return {
-            **ASFBaselineProduct.get_property_paths(),
+            **ASFStackableProduct.get_property_paths(),
             **RadarsatProduct._base_properties
         }
 

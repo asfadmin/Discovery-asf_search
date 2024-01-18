@@ -6,7 +6,7 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.exceptions import ASFBaselineError
 
 
-class ASFBaselineProduct(ASFProduct):
+class ASFStackableProduct(ASFProduct):
     """
     Used for ERS-1 and ERS-2 products
 
@@ -20,15 +20,15 @@ class ASFBaselineProduct(ASFProduct):
         """
         Defines how asf-search will calculate perpendicular baseline for products of this subclass
         """
-
-        """Cannot be used in baseline calculations"""
         PRE_CALCULATED = 0
         """Has pre-calculated insarBaseline value that will be used for perpendicular calculations"""
         CALCULATED = 1
         """Uses position/velocity state vectors and ascending node time for perpendicular calculations"""
 
+    
     baseline_type = BaselineCalcType.PRE_CALCULATED
-
+    """Determines how asf-search will attempt to stack products of this type."""
+    
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
@@ -57,7 +57,7 @@ class ASFBaselineProduct(ASFProduct):
     def get_property_paths() -> Dict:
         return {
             **ASFProduct.get_property_paths(),
-            **ASFBaselineProduct._base_properties
+            **ASFStackableProduct._base_properties
         }
 
     def is_valid_reference(self):

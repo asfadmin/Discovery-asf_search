@@ -21,7 +21,7 @@ ASF_LOGGER.addHandler(logging.NullHandler())
 
 from .ASFSession import ASFSession
 from .ASFProduct import ASFProduct
-from .ASFBaselineProduct import ASFBaselineProduct
+from .ASFStackableProduct import ASFStackableProduct
 from .ASFSearchResults import ASFSearchResults
 from .ASFSearchOptions import ASFSearchOptions, validators
 from .Products import *

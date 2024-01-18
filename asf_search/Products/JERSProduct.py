@@ -1,9 +1,9 @@
 from typing import Dict, Union
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFBaselineProduct
+from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
 from asf_search.constants import PRODUCT_TYPE
 
 
-class JERSProduct(ASFBaselineProduct):
+class JERSProduct(ASFStackableProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/jers-1/
     """
@@ -28,6 +28,6 @@ class JERSProduct(ASFBaselineProduct):
     @staticmethod
     def get_property_paths() -> Dict:
         return {
-            **ASFBaselineProduct.get_property_paths(),
+            **ASFStackableProduct.get_property_paths(),
             **JERSProduct._base_properties
         }

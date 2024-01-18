@@ -1,5 +1,5 @@
 from typing import Dict, List
-from asf_search import ASFSearchOptions, ASFSession, FileDownloadType, ASFBaselineProduct
+from asf_search import ASFSearchOptions, ASFSession, FileDownloadType, ASFStackableProduct
 from asf_search.exceptions import ASFAuthenticationError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_ASFProduct_download, run_test_product_get_stack_options, run_test_stack

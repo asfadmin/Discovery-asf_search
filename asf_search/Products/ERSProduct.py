@@ -1,10 +1,10 @@
 from typing import Dict, Union
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFBaselineProduct
+from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
 from asf_search.CMR.translate import try_round_float
 from asf_search.constants import PRODUCT_TYPE
 
 
-class ERSProduct(ASFBaselineProduct):
+class ERSProduct(ASFStackableProduct):
     """
     Used for ERS-1 and ERS-2 products
 
@@ -26,7 +26,7 @@ class ERSProduct(ASFBaselineProduct):
     @staticmethod
     def get_property_paths() -> Dict:
         return {
-            **ASFBaselineProduct.get_property_paths(),
+            **ASFStackableProduct.get_property_paths(),
             **ERSProduct._base_properties
         }
 

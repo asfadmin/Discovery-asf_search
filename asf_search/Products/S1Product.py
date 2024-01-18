@@ -1,12 +1,12 @@
 import copy
 from typing import Dict, List, Optional, Tuple
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFBaselineProduct
+from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE
 
 
-class S1Product(ASFBaselineProduct):
+class S1Product(ASFStackableProduct):
     """
     The S1Product classes covers most Sentinel-1 Products
     (For S1 BURST-SLC, OPERA-S1, and ARIA-S1 GUNW Products, see relevant S1 subclasses)
@@ -25,7 +25,7 @@ class S1Product(ASFBaselineProduct):
     - frameNumber: overrides ASFProduct's `CENTER_ESA_FRAME` with `FRAME_NUMBER`
     """
 
-    baseline_type = ASFBaselineProduct.BaselineCalcType
+    baseline_type = ASFStackableProduct.BaselineCalcType
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
@@ -120,7 +120,7 @@ class S1Product(ASFBaselineProduct):
     @staticmethod
     def get_property_paths() -> Dict:
         return {
-            **ASFBaselineProduct.get_property_paths(),
+            **ASFStackableProduct.get_property_paths(),
             **S1Product._base_properties
         }
 
