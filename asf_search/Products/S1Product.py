@@ -1,6 +1,6 @@
 import copy
 from typing import Dict, List, Optional, Tuple
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
+from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE
@@ -25,7 +25,7 @@ class S1Product(ASFStackableProduct):
     - frameNumber: overrides ASFProduct's `CENTER_ESA_FRAME` with `FRAME_NUMBER`
     """
 
-    baseline_type = ASFStackableProduct.BaselineCalcType
+    baseline_type = ASFStackableProduct.BaselineCalcType.CALCULATED
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
@@ -133,6 +133,9 @@ class S1Product(ASFStackableProduct):
 
         return True
 
+    def is_valid_reference(self):
+        return False
+    
     @staticmethod
     def get_default_baseline_product_type() -> str:
         """

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
 
@@ -64,9 +64,25 @@ class OPERAS1Product(S1Product):
             **S1Product.get_property_paths(),
             **OPERAS1Product._base_properties
         }
+    
+    @staticmethod
+    def get_default_baseline_product_type() -> None:
+        """
+        Returns the product type to search for when building a baseline stack.
+        """
+        return None
+
 
     def is_valid_reference(self):
         return False
+
+    def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
+        """
+        Build search options that can be used to find an insar stack for this product
+
+        :return: ASFSearchOptions describing appropriate options for building a stack from this product
+        """
+        return None
 
     def get_sort_keys(self):
         keys = super().get_sort_keys()
