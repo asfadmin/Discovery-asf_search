@@ -72,7 +72,6 @@ class OPERAS1Product(S1Product):
         """
         return None
 
-
     def is_valid_reference(self):
         return False
 

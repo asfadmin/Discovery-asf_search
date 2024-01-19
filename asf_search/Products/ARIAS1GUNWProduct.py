@@ -41,6 +41,10 @@ class ARIAS1GUNWProduct(S1Product):
         """
         return None
     
+
+    def is_valid_reference(self):
+        return False
+    
     @staticmethod
     def get_default_baseline_product_type() -> None:
         """

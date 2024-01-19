@@ -132,9 +132,6 @@ class S1Product(ASFStackableProduct):
                 return False
 
         return True
-
-    def is_valid_reference(self):
-        return False
     
     @staticmethod
     def get_default_baseline_product_type() -> str:
