@@ -1,6 +1,7 @@
 from typing import Dict, Union
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
+from asf_search import ASFSearchResults, ASFSession, ASFProduct, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_float
+from asf_search.baseline.stack import offset_perpendicular_baselines
 from asf_search.constants import PRODUCT_TYPE
 
 
@@ -31,3 +32,15 @@ class RadarsatProduct(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L0
+
+    def get_perpendicular_baseline(self, reference: ASFProduct, stack: ASFSearchResults):
+        return offset_perpendicular_baselines(reference, stack)
+    
+    @staticmethod
+    def check_reference(reference: ASFStackableProduct, stack: ASFSearchResults):
+        reference, warning = ASFStackableProduct.check_reference(reference, stack)
+        
+        if 'insarBaseline' not in reference.baseline:
+            raise ValueError('No baseline values available for precalculated dataset')
+
+        return reference, warning

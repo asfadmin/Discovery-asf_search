@@ -1,7 +1,8 @@
 import copy
 from typing import Dict, List, Optional, Tuple
-from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
+from asf_search import ASFSearchOptions, ASFSearchResults, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_int
+from asf_search.baseline.calc import calculate_perpendicular_baselines
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE
 
@@ -139,3 +140,24 @@ class S1Product(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.SLC
+
+    def get_perpendicular_baseline(self, stack: ASFSearchResults):
+        return calculate_perpendicular_baselines(self, stack)
+    
+    @staticmethod
+    def check_reference(reference: ASFStackableProduct, stack: ASFSearchResults) -> Tuple['ASFStackableProduct', Dict]:
+        reference, warning = ASFStackableProduct.check_reference(reference, stack)
+        
+        def find_new_reference(stack: ASFSearchResults) -> Optional[ASFStackableProduct]:
+            for product in stack:
+                if product.is_valid_reference():
+                    return product
+            return None
+        
+        if not reference.is_valid_reference():
+            reference = find_new_reference(stack)
+            if reference == None:
+                raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
+            warning = {'NEW_REFERENCE': 'A new reference scene had to be selected in order to calculate baseline values.'}
+        
+        return reference, warning

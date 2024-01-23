@@ -1,5 +1,6 @@
 from typing import Dict, Union
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
+from asf_search import ASFSearchOptions, ASFSearchResults, ASFSession, ASFProduct, ASFStackableProduct
+from asf_search.baseline.stack import offset_perpendicular_baselines
 from asf_search.constants import PRODUCT_TYPE
 
 
@@ -31,3 +32,15 @@ class JERSProduct(ASFStackableProduct):
             **ASFStackableProduct.get_property_paths(),
             **JERSProduct._base_properties
         }
+
+    def get_perpendicular_baseline(self, reference: ASFProduct, stack: ASFSearchResults):
+        return offset_perpendicular_baselines(reference, stack)
+    
+    @staticmethod
+    def check_reference(reference: ASFStackableProduct, stack: ASFSearchResults):
+        reference, warning = ASFStackableProduct.check_reference(reference, stack)
+        
+        if 'insarBaseline' not in reference.baseline:
+            raise ValueError('No baseline values available for precalculated dataset')
+
+        return reference, warning
