@@ -32,6 +32,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 - `OPERA-S1` dataset no longer includes calibration data (moved to new dataset)
+- Adds optional `ASFSession` constructor keyword arguments for new class variables:
+   - `edl_host`
+   - `edl_client_id`
+   - `asf_auth_host`
+   - `cmr_host`
+   - `cmr_collections`
+   - `auth_domains`
+- `ASFSession` imports `asf_search.constants.INTERNAL` in constructor call
+- `ASFSession` methods `auth_with_creds()`, `auth_with_token()`, and `rebuild_auth()` use new class variables instead of constants
 
 ------
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
