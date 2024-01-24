@@ -24,11 +24,15 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults) -> T
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
 
-        if missing_state_vectors := len([scene for scene in stack if scene.baseline.get('noStateVectors')]):
+        missing_state_vectors = _count_missing_state_vectors(stack)
+        if missing_state_vectors > 0:
             warnings.append({'MISSING STATE VECTORS': f'{missing_state_vectors} scenes in stack missing State Vectors, perpendicular baseline not calculated for these scenes'})
     
     return ASFSearchResults(stack), warnings
-
+    
+def _count_missing_state_vectors(stack) -> int:
+    return len([scene for scene in stack if scene.baseline.get('noStateVectors')])
+    
 def valid_state_vectors(product: ASFProduct):
     if product is None:
         raise ValueError('Attempting to check state vectors on None, this is fatal')
