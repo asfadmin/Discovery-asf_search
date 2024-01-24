@@ -362,6 +362,19 @@ tests:
         platform: SENTINEL-1A
         processingLevel: SLC
 
+  - test-ASFSearch OPERA Resp 1:
+      response: OPERA_Products.yml
+
+  - test-ASFSearch JERS Resp 1:
+      response: JERS_stack.yml
+
+  - test-ASFSearch RADARSAT Resp 1:
+      response: RADARSAT_stack.yml
+
+  - test-ASFSearch-search-valid Alos:
+      parameters: *alos_parameters
+      answer: Alos_response_maxResults3.yml
+
   - test-aliasing-search-against-api S1B SLC:
       params:
         platform: SENTINEL-1B

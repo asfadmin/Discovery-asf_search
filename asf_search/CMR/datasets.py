@@ -230,7 +230,7 @@ dataset_collections = {
         "SENTINEL-1_INTERFEROGRAMS_UNWRAPPED_PHASE": [
             "C1595765183-ASF",
             "C1225776659-ASF",
-        ],
+        ]
     },
     "SMAP": {
         "SPL1A_RO_METADATA_003": ["C1243122884-ASF", "C1233103964-ASF"],

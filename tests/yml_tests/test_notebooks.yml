@@ -10,3 +10,9 @@ tests:
 
 - Test Baseline-Search notebook:
     notebook: 4-Baseline_Search.ipynb
+
+- Test Baseline-Search notebook:
+    notebook: 4-Baseline_Search.ipynb
+
+- Test Baseline-Search notebook:
+    notebook: Advanced-Custom-ASFProduct-Subclassing.ipynb

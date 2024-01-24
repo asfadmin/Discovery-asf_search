@@ -1,0 +1,2251 @@
+[
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_08743_STD_F307.jpg"],
+        "bytes": 130277948,
+        "centerLat": 57.1991,
+        "centerLon": -134.5807,
+        "faradayRotation": null,
+        "fileID": "J1_08743_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "7749b93156fbc111bfb599f5456b4150",
+        "offNadirAngle": -1.0,
+        "orbit": 8743,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2011-12-05T20:10:10.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_08743_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1993-09-16T19:53:52.000Z",
+        "stopTime": "1993-09-16T19:54:08.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_08743_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_08743_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -1848,
+        "perpendicularBaseline": 1591,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1209348137-ASF",
+        "revision-id": 1,
+        "native-id": "J1_08743_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-06T15:47:25.076Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1993-09-16T19:53:52.000Z",
+                "EndingDateTime": "1993-09-16T19:54:08.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 8743 }],
+        "GranuleUR": "J1_08743_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["7749b93156fbc111bfb599f5456b4150"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7548"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["0"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1993-09-16T19:54:08Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.5807"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6404"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DATE",
+              "Values": ["2011-12-05 20:10:10.704998"],
+            },
+            { "Name": "NEAR_START_LON", "Values": ["-133.8922"] },
+            { "Name": "DOPPLER", "Values": ["4974.786"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7234"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.2402"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-134.9319"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_08743_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6729"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.2527"] },
+            { "Name": "BYTES", "Values": ["130277948"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -134.931949,
+                                    "Latitude": 57.723354,
+                                  },
+                                  {
+                                    "Longitude": -135.252671,
+                                    "Latitude": 56.754778,
+                                  },
+                                  {
+                                    "Longitude": -134.240182,
+                                    "Latitude": 56.672908,
+                                  },
+                                  {
+                                    "Longitude": -133.892217,
+                                    "Latitude": 57.64039,
+                                  },
+                                  {
+                                    "Longitude": -134.931949,
+                                    "Latitude": 57.723354,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-05-01T08:50:34.000Z", "Type": "Insert" },
+            { "Date": "2011-12-05T20:10:10.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_08743_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_08743_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_08743_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2011-12-05T20:10:10.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 124.24,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-134.931949, 57.723354],
+              [-135.252671, 56.754778],
+              [-134.240182, 56.672908],
+              [-133.892217, 57.64039],
+              [-134.931949, 57.723354],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": 0.0 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_10720_STD_F307.jpg"],
+        "bytes": 126890383,
+        "centerLat": 57.1991,
+        "centerLon": -134.7425,
+        "faradayRotation": null,
+        "fileID": "J1_10720_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "9be7bf54748c3eec25c9ed622f13a65a",
+        "offNadirAngle": -1.0,
+        "orbit": 10720,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2011-06-18T20:01:44.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_10720_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1994-01-26T19:52:25.000Z",
+        "stopTime": "1994-01-26T19:52:41.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_10720_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_10720_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -1716,
+        "perpendicularBaseline": 3809,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1208506985-ASF",
+        "revision-id": 1,
+        "native-id": "J1_10720_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-05T12:45:05.375Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1994-01-26T19:52:25.000Z",
+                "EndingDateTime": "1994-01-26T19:52:41.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 10720 }],
+        "GranuleUR": "J1_10720_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["9be7bf54748c3eec25c9ed622f13a65a"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7536"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["2217.3009"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1994-01-26T19:52:41Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.7425"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6418"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DATE",
+              "Values": ["2011-06-18 20:01:44.397893"],
+            },
+            { "Name": "NEAR_START_LON", "Values": ["-134.0618"] },
+            { "Name": "DOPPLER", "Values": ["5036.368"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7226"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.4055"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-135.0902"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_10720_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6739"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.4069"] },
+            { "Name": "BYTES", "Values": ["126890383"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -135.090186,
+                                    "Latitude": 57.722566,
+                                  },
+                                  {
+                                    "Longitude": -135.406949,
+                                    "Latitude": 56.753615,
+                                  },
+                                  {
+                                    "Longitude": -134.405458,
+                                    "Latitude": 56.673853,
+                                  },
+                                  {
+                                    "Longitude": -134.061762,
+                                    "Latitude": 57.641769,
+                                  },
+                                  {
+                                    "Longitude": -135.090186,
+                                    "Latitude": 57.722566,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-04-28T03:18:53.000Z", "Type": "Insert" },
+            { "Date": "2011-06-18T20:01:44.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_10720_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_10720_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_10720_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2011-06-18T20:01:44.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 121.01,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-135.090186, 57.722566],
+              [-135.406949, 56.753615],
+              [-134.405458, 56.673853],
+              [-134.061762, 57.641769],
+              [-135.090186, 57.722566],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": 2217.3009 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_23900_STD_F307.jpg"],
+        "bytes": 125851809,
+        "centerLat": 57.1991,
+        "centerLon": -134.6454,
+        "faradayRotation": null,
+        "fileID": "J1_23900_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "fbd52f362d1eddcf5193ccebc23accd6",
+        "offNadirAngle": -1.0,
+        "orbit": 23900,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2012-01-06T00:00:00.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_23900_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1996-06-24T20:01:34.000Z",
+        "stopTime": "1996-06-24T20:01:50.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_23900_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_23900_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -836,
+        "perpendicularBaseline": 1074,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1208053067-ASF",
+        "revision-id": 1,
+        "native-id": "J1_23900_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-04T22:21:22.132Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1996-06-24T20:01:34.000Z",
+                "EndingDateTime": "1996-06-24T20:01:50.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 23900 }],
+        "GranuleUR": "J1_23900_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["fbd52f362d1eddcf5193ccebc23accd6"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7543"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["-517.6473"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1996-06-24T20:01:50Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.6454"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.641"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            { "Name": "PROCESSING_DATE", "Values": ["2012-01-06 00:00:00"] },
+            { "Name": "NEAR_START_LON", "Values": ["-133.9613"] },
+            { "Name": "DOPPLER", "Values": ["5013.119"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.723"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.3079"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-134.9936"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_23900_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6733"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.3131"] },
+            { "Name": "BYTES", "Values": ["125851809"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -134.99355,
+                                    "Latitude": 57.723021,
+                                  },
+                                  {
+                                    "Longitude": -135.313142,
+                                    "Latitude": 56.754273,
+                                  },
+                                  {
+                                    "Longitude": -134.307929,
+                                    "Latitude": 56.673338,
+                                  },
+                                  {
+                                    "Longitude": -133.961309,
+                                    "Latitude": 57.64102,
+                                  },
+                                  {
+                                    "Longitude": -134.99355,
+                                    "Latitude": 57.723021,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-06-20T16:06:20.000Z", "Type": "Insert" },
+            { "Date": "2012-01-06T00:00:00.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_23900_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_23900_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_23900_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2012-01-06T00:00:00.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 120.02,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-134.99355, 57.723021],
+              [-135.313142, 56.754273],
+              [-134.307929, 56.673338],
+              [-133.961309, 57.64102],
+              [-134.99355, 57.723021],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": -517.6473 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_24559_STD_F307.jpg"],
+        "bytes": 129267707,
+        "centerLat": 57.1991,
+        "centerLon": -134.6666,
+        "faradayRotation": null,
+        "fileID": "J1_24559_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "b768391cb08a17aa79ec9878e223fa67",
+        "offNadirAngle": -1.0,
+        "orbit": 24559,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2012-01-16T00:00:00.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_24559_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1996-08-07T20:01:38.000Z",
+        "stopTime": "1996-08-07T20:01:54.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_24559_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_24559_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -792,
+        "perpendicularBaseline": 2060,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1208225744-ASF",
+        "revision-id": 1,
+        "native-id": "J1_24559_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-05T02:40:39.292Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1996-08-07T20:01:38.000Z",
+                "EndingDateTime": "1996-08-07T20:01:54.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 24559 }],
+        "GranuleUR": "J1_24559_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["b768391cb08a17aa79ec9878e223fa67"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7537"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["468.416"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1996-08-07T20:01:54Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.6666"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6416"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            { "Name": "PROCESSING_DATE", "Values": ["2012-01-16 00:00:00"] },
+            { "Name": "NEAR_START_LON", "Values": ["-133.9825"] },
+            { "Name": "DOPPLER", "Values": ["5014.389"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7235"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.3293"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-135.0145"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_24559_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6728"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.3343"] },
+            { "Name": "BYTES", "Values": ["129267707"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -135.014512,
+                                    "Latitude": 57.723506,
+                                  },
+                                  {
+                                    "Longitude": -135.334301,
+                                    "Latitude": 56.753705,
+                                  },
+                                  {
+                                    "Longitude": -134.329348,
+                                    "Latitude": 56.672834,
+                                  },
+                                  {
+                                    "Longitude": -133.982507,
+                                    "Latitude": 57.64157,
+                                  },
+                                  {
+                                    "Longitude": -135.014512,
+                                    "Latitude": 57.723506,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-05-02T02:17:03.000Z", "Type": "Insert" },
+            { "Date": "2012-01-16T00:00:00.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_24559_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_24559_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_24559_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2012-01-16T00:00:00.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 123.27,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-135.014512, 57.723506],
+              [-135.334301, 56.753705],
+              [-134.329348, 56.672834],
+              [-133.982507, 57.64157],
+              [-135.014512, 57.723506],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": 468.416 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_29831_STD_F307.jpg"],
+        "bytes": 129267942,
+        "centerLat": 57.1991,
+        "centerLon": -134.5879,
+        "faradayRotation": null,
+        "fileID": "J1_29831_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "89e49ba084f64bac3a513cc5f311d434",
+        "offNadirAngle": -1.0,
+        "orbit": 29831,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2012-01-05T00:00:00.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_29831_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1997-07-25T20:00:39.000Z",
+        "stopTime": "1997-07-25T20:00:54.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_29831_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_29831_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -440,
+        "perpendicularBaseline": -4651,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1209120742-ASF",
+        "revision-id": 1,
+        "native-id": "J1_29831_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-06T07:55:40.505Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1997-07-25T20:00:39.000Z",
+                "EndingDateTime": "1997-07-25T20:00:54.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 29831 }],
+        "GranuleUR": "J1_29831_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["89e49ba084f64bac3a513cc5f311d434"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.754"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["-6242.5365"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1997-07-25T20:00:54Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.5879"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6412"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            { "Name": "PROCESSING_DATE", "Values": ["2012-01-05 00:00:00"] },
+            { "Name": "NEAR_START_LON", "Values": ["-133.9049"] },
+            { "Name": "DOPPLER", "Values": ["5038.57"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7236"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.254"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-134.9323"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_29831_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6728"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.2545"] },
+            { "Name": "BYTES", "Values": ["129267942"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -134.932274,
+                                    "Latitude": 57.723573,
+                                  },
+                                  {
+                                    "Longitude": -135.25445,
+                                    "Latitude": 56.75402,
+                                  },
+                                  {
+                                    "Longitude": -134.254001,
+                                    "Latitude": 56.672767,
+                                  },
+                                  {
+                                    "Longitude": -133.904921,
+                                    "Latitude": 57.641245,
+                                  },
+                                  {
+                                    "Longitude": -134.932274,
+                                    "Latitude": 57.723573,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-06-20T17:57:05.000Z", "Type": "Insert" },
+            { "Date": "2012-01-05T00:00:00.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_29831_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_29831_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_29831_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2012-01-05T00:00:00.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 123.27,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-134.932274, 57.723573],
+              [-135.25445, 56.75402],
+              [-134.254001, 56.672767],
+              [-133.904921, 57.641245],
+              [-134.932274, 57.723573],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": -6242.5365 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_30490_STD_F307.jpg"],
+        "bytes": 130293690,
+        "centerLat": 57.1991,
+        "centerLon": -134.5491,
+        "faradayRotation": null,
+        "fileID": "J1_30490_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "7560328a1f63eec2af68a9e453972df0",
+        "offNadirAngle": -1.0,
+        "orbit": 30490,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2011-12-01T00:00:00.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_30490_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1997-09-07T20:01:53.000Z",
+        "stopTime": "1997-09-07T20:02:09.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_30490_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_30490_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -396,
+        "perpendicularBaseline": -5029,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1208330518-ASF",
+        "revision-id": 1,
+        "native-id": "J1_30490_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-05T05:57:41.520Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1997-09-07T20:01:53.000Z",
+                "EndingDateTime": "1997-09-07T20:02:09.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 30490 }],
+        "GranuleUR": "J1_30490_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["7560328a1f63eec2af68a9e453972df0"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7542"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["-6620.4887"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1997-09-07T20:02:09Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.5491"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6411"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            { "Name": "PROCESSING_DATE", "Values": ["2011-12-01 00:00:00"] },
+            { "Name": "NEAR_START_LON", "Values": ["-133.8644"] },
+            { "Name": "DOPPLER", "Values": ["5031.419"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7238"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.2141"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-134.8946"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_30490_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6726"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.2174"] },
+            { "Name": "BYTES", "Values": ["130293690"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -134.894647,
+                                    "Latitude": 57.723756,
+                                  },
+                                  {
+                                    "Longitude": -135.217352,
+                                    "Latitude": 56.75415,
+                                  },
+                                  {
+                                    "Longitude": -134.214098,
+                                    "Latitude": 56.67255,
+                                  },
+                                  {
+                                    "Longitude": -133.864392,
+                                    "Latitude": 57.64107,
+                                  },
+                                  {
+                                    "Longitude": -134.894647,
+                                    "Latitude": 57.723756,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2010-11-13T19:20:12.000Z", "Type": "Insert" },
+            { "Date": "2011-12-01T00:00:00.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_30490_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_30490_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_30490_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2011-12-01T00:00:00.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 124.25,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-134.894647, 57.723756],
+              [-135.217352, 56.75415],
+              [-134.214098, 56.67255],
+              [-133.864392, 57.64107],
+              [-134.894647, 57.723756],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": -6620.4887 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_33126_STD_F307.jpg"],
+        "bytes": 128284251,
+        "centerLat": 57.1991,
+        "centerLon": -134.6428,
+        "faradayRotation": null,
+        "fileID": "J1_33126_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "479b6dd0f3fc449d33d5e3be721254a7",
+        "offNadirAngle": -1.0,
+        "orbit": 33126,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2011-12-29T00:00:00.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_33126_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1998-03-02T20:06:25.000Z",
+        "stopTime": "1998-03-02T20:06:41.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_33126_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_33126_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -220,
+        "perpendicularBaseline": -3032,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1208125472-ASF",
+        "revision-id": 1,
+        "native-id": "J1_33126_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-04T23:48:11.095Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1998-03-02T20:06:25.000Z",
+                "EndingDateTime": "1998-03-02T20:06:41.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 33126 }],
+        "GranuleUR": "J1_33126_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["479b6dd0f3fc449d33d5e3be721254a7"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7535"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["-4623.1698"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1998-03-02T20:06:41Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.6428"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6418"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            { "Name": "PROCESSING_DATE", "Values": ["2011-12-29 00:00:00"] },
+            { "Name": "NEAR_START_LON", "Values": ["-133.962"] },
+            { "Name": "DOPPLER", "Values": ["5058.918"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7233"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.3091"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-134.987"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_33126_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6731"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.3073"] },
+            { "Name": "BYTES", "Values": ["128284251"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -134.987039,
+                                    "Latitude": 57.723316,
+                                  },
+                                  {
+                                    "Longitude": -135.307272,
+                                    "Latitude": 56.753543,
+                                  },
+                                  {
+                                    "Longitude": -134.30913,
+                                    "Latitude": 56.673102,
+                                  },
+                                  {
+                                    "Longitude": -133.962041,
+                                    "Latitude": 57.641822,
+                                  },
+                                  {
+                                    "Longitude": -134.987039,
+                                    "Latitude": 57.723316,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2010-12-21T06:02:48.000Z", "Type": "Insert" },
+            { "Date": "2011-12-29T00:00:00.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_33126_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_33126_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_33126_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2011-12-29T00:00:00.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 122.34,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-134.987039, 57.723316],
+              [-135.307272, 56.753543],
+              [-134.30913, 56.673102],
+              [-133.962041, 57.641822],
+              [-134.987039, 57.723316],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": -4623.1698 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_33785_STD_F307.jpg"],
+        "bytes": 129129217,
+        "centerLat": 57.1991,
+        "centerLon": -134.6122,
+        "faradayRotation": null,
+        "fileID": "J1_33785_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "83693f53f9c758bac70e0998166aeeb4",
+        "offNadirAngle": -1.0,
+        "orbit": 33785,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2011-12-30T20:57:36.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_33785_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1998-04-15T20:07:18.000Z",
+        "stopTime": "1998-04-15T20:07:34.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_33785_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_33785_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -176,
+        "perpendicularBaseline": -2452,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1208206377-ASF",
+        "revision-id": 1,
+        "native-id": "J1_33785_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-05T02:05:23.269Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1998-04-15T20:07:18.000Z",
+                "EndingDateTime": "1998-04-15T20:07:34.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 33785 }],
+        "GranuleUR": "J1_33785_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["83693f53f9c758bac70e0998166aeeb4"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7538"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["-4042.9112"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1998-04-15T20:07:34Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.6122"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6415"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DATE",
+              "Values": ["2011-12-30 20:57:36.269989"],
+            },
+            { "Name": "NEAR_START_LON", "Values": ["-133.9289"] },
+            { "Name": "DOPPLER", "Values": ["5067.172"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7236"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.2773"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-134.9576"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_33785_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6728"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.279"] },
+            { "Name": "BYTES", "Values": ["129129217"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -134.957623,
+                                    "Latitude": 57.723589,
+                                  },
+                                  {
+                                    "Longitude": -135.279047,
+                                    "Latitude": 56.753785,
+                                  },
+                                  {
+                                    "Longitude": -134.277322,
+                                    "Latitude": 56.672801,
+                                  },
+                                  {
+                                    "Longitude": -133.928889,
+                                    "Latitude": 57.641528,
+                                  },
+                                  {
+                                    "Longitude": -134.957623,
+                                    "Latitude": 57.723589,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-12-30T20:57:36.000Z", "Type": "Insert" },
+            { "Date": "2011-12-30T20:57:36.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_33785_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_33785_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_33785_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2011-12-30T20:57:36.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 123.14,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-134.957623, 57.723589],
+              [-135.279047, 56.753785],
+              [-134.277322, 56.672801],
+              [-133.928889, 57.641528],
+              [-134.957623, 57.723589],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": -4042.9112 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_34444_STD_F307.jpg"],
+        "bytes": 128282969,
+        "centerLat": 57.1991,
+        "centerLon": -134.683,
+        "faradayRotation": null,
+        "fileID": "J1_34444_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "2235c780a4321729beb5f7d63a87add3",
+        "offNadirAngle": -1.0,
+        "orbit": 34444,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2012-01-04T00:00:00.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_34444_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1998-05-29T20:08:20.000Z",
+        "stopTime": "1998-05-29T20:08:36.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_34444_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_34444_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": -132,
+        "perpendicularBaseline": 633,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1209144752-ASF",
+        "revision-id": 1,
+        "native-id": "J1_34444_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-06T08:54:12.973Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1998-05-29T20:08:20.000Z",
+                "EndingDateTime": "1998-05-29T20:08:36.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 34444 }],
+        "GranuleUR": "J1_34444_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["2235c780a4321729beb5f7d63a87add3"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7537"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["-958.3969"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1998-05-29T20:08:36Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.683"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6416"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            { "Name": "PROCESSING_DATE", "Values": ["2012-01-04 00:00:00"] },
+            { "Name": "NEAR_START_LON", "Values": ["-134.0006"] },
+            { "Name": "DOPPLER", "Values": ["5068.263"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7234"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.3485"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-135.0281"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_34444_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6729"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.3491"] },
+            { "Name": "BYTES", "Values": ["128282969"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -135.028085,
+                                    "Latitude": 57.723439,
+                                  },
+                                  {
+                                    "Longitude": -135.349078,
+                                    "Latitude": 56.753697,
+                                  },
+                                  {
+                                    "Longitude": -134.348533,
+                                    "Latitude": 56.672909,
+                                  },
+                                  {
+                                    "Longitude": -134.000576,
+                                    "Latitude": 57.641582,
+                                  },
+                                  {
+                                    "Longitude": -135.028085,
+                                    "Latitude": 57.723439,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-11-22T04:58:10.000Z", "Type": "Insert" },
+            { "Date": "2012-01-04T00:00:00.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_34444_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_34444_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_34444_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2012-01-04T00:00:00.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 122.34,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-135.028085, 57.723439],
+              [-135.349078, 56.753697],
+              [-134.348533, 56.672909],
+              [-134.000576, 57.641582],
+              [-135.028085, 57.723439],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": -958.3969 },
+  },
+  {
+    "properties":
+      {
+        "beamModeType": "STD",
+        "browse":
+          ["https://datapool.asf.alaska.edu/BROWSE/J1/J1_36421_STD_F307.jpg"],
+        "bytes": 129413152,
+        "centerLat": 57.1991,
+        "centerLon": -134.6525,
+        "faradayRotation": null,
+        "fileID": "J1_36421_STD_F307-L0",
+        "flightDirection": "DESCENDING",
+        "groupID": null,
+        "granuleType": "J1_STD_FRAME",
+        "insarStackId": "2016301",
+        "md5sum": "f13257d345d3676c1c999849229ab23e",
+        "offNadirAngle": -1.0,
+        "orbit": 36421,
+        "pathNumber": 327,
+        "platform": "JERS-1",
+        "pointingAngle": null,
+        "polarization": "HH",
+        "processingDate": "2012-01-10T00:00:00.000Z",
+        "processingLevel": "L0",
+        "sceneName": "J1_36421_STD_F307",
+        "sensor": "SAR",
+        "startTime": "1998-10-08T20:10:24.000Z",
+        "stopTime": "1998-10-08T20:10:40.000Z",
+        "url": "https://datapool.asf.alaska.edu/L0/J1/J1_36421_STD_L0_F307.zip",
+        "pgeVersion": null,
+        "fileName": "J1_36421_STD_L0_F307.zip",
+        "frameNumber": 2446,
+        "temporalBaseline": 0,
+        "perpendicularBaseline": 0,
+      },
+    "meta":
+      {
+        "concept-type": "granule",
+        "concept-id": "G1208536712-ASF",
+        "revision-id": 1,
+        "native-id": "J1_36421_STD_F307-L0",
+        "provider-id": "ASF",
+        "format": "application/echo10+xml",
+        "revision-date": "2015-11-05T13:45:23.705Z",
+      },
+    "umm":
+      {
+        "TemporalExtent":
+          {
+            "RangeDateTime":
+              {
+                "BeginningDateTime": "1998-10-08T20:10:24.000Z",
+                "EndingDateTime": "1998-10-08T20:10:40.000Z",
+              },
+          },
+        "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 36421 }],
+        "GranuleUR": "J1_36421_STD_F307-L0",
+        "AdditionalAttributes":
+          [
+            { "Name": "FLIGHT_LINE", "Values": ["NULL"] },
+            { "Name": "OFF_NADIR_ANGLE", "Values": ["-1"] },
+            {
+              "Name": "MD5SUM",
+              "Values": ["f13257d345d3676c1c999849229ab23e"],
+            },
+            { "Name": "GRANULE_TYPE", "Values": ["J1_STD_FRAME"] },
+            { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+            { "Name": "FAR_END_LAT", "Values": ["56.7537"] },
+            { "Name": "INSAR_STACK_SIZE", "Values": ["10"] },
+            { "Name": "BEAM_MODE_TYPE", "Values": ["STD"] },
+            { "Name": "INSAR_BASELINE", "Values": ["-1591.2745"] },
+            { "Name": "CENTER_FRAME_ID", "Values": ["2446"] },
+            { "Name": "CENTER_ESA_FRAME", "Values": ["2446"] },
+            { "Name": "ACQUISITION_DATE", "Values": ["1998-10-08T20:10:40Z"] },
+            { "Name": "MISSION_NAME", "Values": ["NULL"] },
+            { "Name": "CENTER_LON", "Values": ["-134.6525"] },
+            { "Name": "NEAR_START_LAT", "Values": ["57.6416"] },
+            { "Name": "BEAM_MODE", "Values": ["Standard"] },
+            {
+              "Name": "BEAM_MODE_DESC",
+              "Values": ["ERS-1,ERS-2,JERS-1,SEASAT,SMAP Standard Beam SAR"],
+            },
+            { "Name": "PROCESSING_TYPE", "Values": ["L0"] },
+            {
+              "Name": "PROCESSING_DESCRIPTION",
+              "Values": ["Raw signal SAR data."],
+            },
+            { "Name": "FRAME_NUMBER", "Values": ["307"] },
+            { "Name": "PROCESSING_LEVEL", "Values": ["L0"] },
+            { "Name": "PROCESSING_DATE", "Values": ["2012-01-10 00:00:00"] },
+            { "Name": "NEAR_START_LON", "Values": ["-133.9692"] },
+            { "Name": "DOPPLER", "Values": ["5045.285"] },
+            { "Name": "FAR_START_LAT", "Values": ["57.7236"] },
+            { "Name": "NEAR_END_LON", "Values": ["-134.3171"] },
+            { "Name": "PROCESSING_TYPE_DISPLAY", "Values": ["Level Zero"] },
+            { "Name": "POLARIZATION", "Values": ["HH"] },
+            { "Name": "FAR_START_LON", "Values": ["-134.9984"] },
+            {
+              "Name": "THUMBNAIL_URL",
+              "Values":
+                [
+                  "https://datapool.asf.alaska.edu/THUMBNAIL/J1/J1_36421_STD_F307_THUMBNAIL.jpg",
+                ],
+            },
+            { "Name": "ASF_PLATFORM", "Values": ["JERS-1"] },
+            { "Name": "INSAR_STACK_ID", "Values": ["2016301"] },
+            { "Name": "LOOK_DIRECTION", "Values": ["R"] },
+            { "Name": "PATH_NUMBER", "Values": ["327"] },
+            { "Name": "NEAR_END_LAT", "Values": ["56.6728"] },
+            { "Name": "FARADAY_ROTATION", "Values": ["NA"] },
+            { "Name": "FAR_END_LON", "Values": ["-135.3193"] },
+            { "Name": "BYTES", "Values": ["129413152"] },
+            { "Name": "CENTER_LAT", "Values": ["57.1991"] },
+          ],
+        "SpatialExtent":
+          {
+            "HorizontalSpatialDomain":
+              {
+                "Geometry":
+                  {
+                    "GPolygons":
+                      [
+                        {
+                          "Boundary":
+                            {
+                              "Points":
+                                [
+                                  {
+                                    "Longitude": -134.998406,
+                                    "Latitude": 57.723615,
+                                  },
+                                  {
+                                    "Longitude": -135.319276,
+                                    "Latitude": 56.753683,
+                                  },
+                                  {
+                                    "Longitude": -134.317103,
+                                    "Latitude": 56.672775,
+                                  },
+                                  {
+                                    "Longitude": -133.969239,
+                                    "Latitude": 57.641638,
+                                  },
+                                  {
+                                    "Longitude": -134.998406,
+                                    "Latitude": 57.723615,
+                                  },
+                                ],
+                            },
+                        },
+                      ],
+                  },
+              },
+          },
+        "ProviderDates":
+          [
+            { "Date": "2011-10-30T18:46:04.000Z", "Type": "Insert" },
+            { "Date": "2012-01-10T00:00:00.000Z", "Type": "Update" },
+          ],
+        "CollectionReference": { "EntryTitle": "JERS-1_LEVEL0" },
+        "RelatedUrls":
+          [
+            {
+              "Format": "Not provided",
+              "Type": "GET DATA",
+              "URL": "https://datapool.asf.alaska.edu/L0/J1/J1_36421_STD_L0_F307.zip",
+            },
+            {
+              "Format": "Not provided",
+              "Type": "GET RELATED VISUALIZATION",
+              "URL": "https://datapool.asf.alaska.edu/BROWSE/J1/J1_36421_STD_F307.jpg",
+            },
+          ],
+        "DataGranule":
+          {
+            "DayNightFlag": "Unspecified",
+            "Identifiers":
+              [
+                {
+                  "Identifier": "J1_36421_STD_F307",
+                  "IdentifierType": "ProducerGranuleId",
+                },
+              ],
+            "ProductionDateTime": "2012-01-10T00:00:00.000Z",
+            "ArchiveAndDistributionInformation":
+              [
+                {
+                  "Name": "Not provided",
+                  "Size": 123.41,
+                  "SizeUnit": "MB",
+                  "Format": "Not provided",
+                },
+              ],
+          },
+        "Platforms":
+          [
+            {
+              "ShortName": "JERS-1",
+              "Instruments":
+                [
+                  {
+                    "ShortName": "SAR",
+                    "ComposedOf": [{ "ShortName": "STD" }],
+                  },
+                ],
+            },
+          ],
+      },
+    "geometry":
+      {
+        "coordinates":
+          [
+            [
+              [-134.998406, 57.723615],
+              [-135.319276, 56.753683],
+              [-134.317103, 56.672775],
+              [-133.969239, 57.641638],
+              [-134.998406, 57.723615],
+            ],
+          ],
+        "type": "Polygon",
+      },
+    "baseline": { "insarBaseline": -1591.2745 },
+  },
+]

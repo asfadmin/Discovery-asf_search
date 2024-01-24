@@ -1,7 +1,6 @@
 import csv
 from types import GeneratorType
 from asf_search import ASF_LOGGER
-from asf_search.CMR.translate import get_additional_fields
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 import inspect
@@ -21,6 +20,7 @@ extra_csv_fields = [
     ('doppler', ['AdditionalAttributes', ('Name', 'DOPPLER'), 'Values', 0]),
     ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
     ('insarStackSize', ['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0]),
+    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0])
 ]
 
 fieldnames = (
@@ -92,7 +92,7 @@ class CSVStreamArray(list):
 
         additional_fields = {}
         for key, path in extra_csv_fields:
-            additional_fields[key] = get_additional_fields(umm, *path)
+            additional_fields[key] = product.umm_get(product.umm, *path)
 
         return additional_fields
 
@@ -117,38 +117,38 @@ class CSVStreamArray(list):
             
     def getItem(self, p):
         return {
-            "Granule Name":p['sceneName'],
-            "Platform":p['platform'],
-            "Sensor":p['sensor'],
-            "Beam Mode":p['beamModeType'],
-            "Beam Mode Description":p['configurationName'],
-            "Orbit":p['orbit'],
-            "Path Number":p['pathNumber'],
-            "Frame Number":p['frameNumber'],
-            "Acquisition Date":p['sceneDate'],
-            "Processing Date":p['processingDate'],
-            "Processing Level":p['processingLevel'],
-            "Start Time":p['startTime'],
-            "End Time":p['stopTime'],
-            "Center Lat":p['centerLat'],
-            "Center Lon":p['centerLon'],
-            "Near Start Lat":p['nearStartLat'],
-            "Near Start Lon":p['nearStartLon'],
-            "Far Start Lat":p['farStartLat'],
-            "Far Start Lon":p['farStartLon'],
-            "Near End Lat":p['nearEndLat'],
-            "Near End Lon":p['nearEndLon'],
-            "Far End Lat":p['farEndLat'],
-            "Far End Lon":p['farEndLon'],
-            "Faraday Rotation":p['faradayRotation'],
-            "Ascending or Descending?":p['flightDirection'],
-            "URL":p['url'],
-            "Size (MB)":p['sizeMB'],
-            "Off Nadir Angle":p['offNadirAngle'],
-            "Stack Size":p['insarStackSize'],
-            "Doppler":p['doppler'],
-            "GroupID":p['groupID'],
-            "Pointing Angle":p['pointingAngle'],
+            "Granule Name":p.get('sceneName'),
+            "Platform":p.get('platform'),
+            "Sensor":p.get('sensor'),
+            "Beam Mode":p.get('beamModeType'),
+            "Beam Mode Description":p.get('configurationName'),
+            "Orbit":p.get('orbit'),
+            "Path Number":p.get('pathNumber'),
+            "Frame Number":p.get('frameNumber'),
+            "Acquisition Date":p.get('sceneDate'),
+            "Processing Date":p.get('processingDate'),
+            "Processing Level":p.get('processingLevel'),
+            "Start Time":p.get('startTime'),
+            "End Time":p.get('stopTime'),
+            "Center Lat":p.get('centerLat'),
+            "Center Lon":p.get('centerLon'),
+            "Near Start Lat":p.get('nearStartLat'),
+            "Near Start Lon":p.get('nearStartLon'),
+            "Far Start Lat":p.get('farStartLat'),
+            "Far Start Lon":p.get('farStartLon'),
+            "Near End Lat":p.get('nearEndLat'),
+            "Near End Lon":p.get('nearEndLon'),
+            "Far End Lat":p.get('farEndLat'),
+            "Far End Lon":p.get('farEndLon'),
+            "Faraday Rotation":p.get('faradayRotation'),
+            "Ascending or Descending?":p.get('flightDirection'),
+            "URL":p.get('url'),
+            "Size (MB)":p.get('sizeMB'),
+            "Off Nadir Angle":p.get('offNadirAngle'),
+            "Stack Size":p.get('insarStackSize'),
+            "Doppler":p.get('doppler'),
+            "GroupID":p.get('groupID'),
+            "Pointing Angle":p.get('pointingAngle'),
             "TemporalBaseline":p.get('teporalBaseline'),
             "PerpendicularBaseline":p.get('pependicularBaseline'),
             "relativeBurstID":  p['burst']['relativeBurstID'] if p['processingLevel'] == 'BURST' else None,

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR.datasets import get_concept_id_alias
 from asf_search.constants import CMR_PAGE_SIZE
@@ -13,7 +13,7 @@ from .datasets import dataset_collections, collections_per_platform
 import logging
 
 
-def translate_opts(opts: ASFSearchOptions) -> list:
+def translate_opts(opts: ASFSearchOptions) -> List:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
@@ -127,197 +127,25 @@ def use_asf_frame(cmr_opts):
     
     return cmr_opts
 
-
-def translate_product(item: dict) -> dict:
-    try:
-        coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
-        coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
-        geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
-    except KeyError as e:
-        geometry = {'coordinates': None, 'type': 'Polygon'}
-
-    umm = item.get('umm')
-
-    properties = {
-        'beamModeType': get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0),
-        'browse': get(umm, 'RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])),
-        'bytes': cast(int, try_round_float(get(umm, 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0))),
-        'centerLat': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0)),
-        'centerLon': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0)),
-        'faradayRotation': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0)),
-        'fileID': get(umm, 'GranuleUR'),
-        'flightDirection': get(umm, 'AdditionalAttributes', ('Name', 'ASCENDING_DESCENDING'), 'Values', 0),
-        'groupID': get(umm, 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0),
-        'granuleType': get(umm, 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0),
-        'insarStackId': get(umm, 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0),
-        'md5sum': get(umm, 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0),
-        'offNadirAngle': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0)),
-        'orbit': cast(int, get(umm, 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber')),
-        'pathNumber': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0)),
-        'platform': get(umm, 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0),
-        'pointingAngle': cast(float, get(umm, 'AdditionalAttributes', ('Name', 'POINTING_ANGLE'), 'Values', 0)),
-        'polarization': get(umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0),
-        'processingDate': get(umm, 'DataGranule', 'ProductionDateTime'),
-        'processingLevel': get(umm, 'AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0),
-        'sceneName': get(umm, 'DataGranule', 'Identifiers', ('IdentifierType', 'ProducerGranuleId'), 'Identifier'),
-        'sensor': get(umm, 'Platforms', 0, 'Instruments', 0, 'ShortName'),
-        'startTime': get(umm, 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime'),
-        'stopTime': get(umm, 'TemporalExtent', 'RangeDateTime', 'EndingDateTime'),
-        'url': get(umm, 'RelatedUrls', ('Type', 'GET DATA'), 'URL'),
-        'pgeVersion': get(umm, 'PGEVersionClass', 'PGEVersion')
-    }
-    
-    if properties['beamModeType'] is None:
-        properties['beamModeType'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
-
-    positions = {}
-    velocities = {}
-    positions['prePosition'], positions['prePositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0))
-    positions['postPosition'], positions['postPositionTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0))
-    velocities['preVelocity'], velocities['preVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0))
-    velocities['postVelocity'], velocities['postVelocityTime'] = cast(get_state_vector, get(umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0))
-    ascendingNodeTime = get(umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
-
-    for key in ['prePositionTime','postPositionTime','preVelocityTime','postVelocityTime']:
-        if positions.get(key) is not None:
-            if not positions.get(key).endswith('Z'):
-                positions[key] += 'Z'
-    
-    if ascendingNodeTime is not None:
-        if not ascendingNodeTime.endswith('Z'):
-            ascendingNodeTime += 'Z'
-    
-    stateVectors = {
-        'positions': positions,
-        'velocities': velocities
-    }
-
-    insarBaseline = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
-    
-    baseline = {}
-    if ascendingNodeTime is not None:
-        baseline['stateVectors'] = stateVectors
-        baseline['ascendingNodeTime'] = ascendingNodeTime
-    elif insarBaseline is not None:
-        baseline['insarBaseline'] = insarBaseline
-    else:
-        baseline = None
-
-    if properties['url'] is not None:
-        properties['fileName'] = properties['url'].split('/')[-1]
-    else:
-        properties['fileName'] = None
-
-    if properties['platform'] is None:
-        properties['platform'] = get(umm, 'Platforms', 0, 'ShortName')
-
-    asf_frame_platforms = ['Sentinel-1A', 'Sentinel-1B', 'ALOS', 'SENTINEL-1A', 'SENTINEL-1B', 'Sentinel-1 Interferogram', 'Sentinel-1 Interferogram (BETA)', 'ERS-1', 'ERS-2', 'JERS-1', 'RADARSAT-1']
-    if properties['platform'] in asf_frame_platforms:
-        properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0))
-    else:
-        properties['frameNumber'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0))
-
-    if properties['processingLevel'] == 'BURST':
-        burst = {
-            'absoluteBurstID': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0)),
-            'relativeBurstID': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_RELATIVE'), 'Values', 0)),
-            'fullBurstID': get(umm, 'AdditionalAttributes', ('Name', 'BURST_ID_FULL'), 'Values', 0),
-            'burstIndex': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BURST_INDEX'), 'Values', 0)),
-            'samplesPerBurst': cast(int, get(umm, 'AdditionalAttributes', ('Name', 'SAMPLES_PER_BURST'), 'Values', 0)),
-            'subswath': get(umm, 'AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0),
-            'azimuthTime': get(umm, 'AdditionalAttributes', ('Name', 'AZIMUTH_TIME'), 'Values', 0),
-            'azimuthAnxTime': get(umm, 'AdditionalAttributes', ('Name', 'AZIMUTH_ANX_TIME'), 'Values', 0),
-        }
-        properties['burst'] = burst
-        properties['sceneName'] = properties['fileID']
-        properties['bytes'] = cast(int, get(umm, 'AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0))
-
-        urls = get(umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
-        if urls is not None:
-            properties['url'] = urls[0]
-            properties['fileName'] = properties['fileID'] + '.' + urls[0].split('.')[-1]
-            properties['additionalUrls'] = [urls[1]]
-
-    
-    if (fileID:=properties.get('fileID')):
-        if fileID.startswith('OPERA'):
-            properties['beamMode'] = get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
-            accessUrls = [*get(umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0), *get(umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0)]
-            properties['additionalUrls'] = sorted([url for url in list(set(accessUrls)) if not url.endswith('.md5') 
-                                            and not url.startswith('s3://') 
-                                            and not 's3credentials' in url 
-                                            and not url.endswith('.png')
-                                            and url != properties['url']])
-            properties['polarization'] = get(umm, 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values')
-            
-            properties['operaBurstID'] = get(umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
-
-            if validityStartDate := get(umm, 'TemporalExtent', 'SingleDateTime'):
-                properties['validityStartDate'] = validityStartDate
-            
-    return {'geometry': geometry, 'properties': properties, 'type': 'Feature', 'baseline': baseline}
-
-def get_additional_fields(umm, *field_path):
-    return get(umm, *field_path)
-
-def cast(f, v):
-    try:
-        return f(v)
-    except TypeError:
-        return None
-
-
-def get(item: dict, *args):
-    if item is None:
-        return None
-    for key in args:
-        if isinstance(key, int):
-            item = item[key] if key < len(item) else None
-        elif isinstance(key, tuple):
-            (a, b) = key
-            if isinstance(b, List):
-                output = []
-                b = b[0]
-                for child in item:
-                    if get(child, key[0]) == b[0]:
-                        output.append(get(child, b[1]))
-                if len(output):
-                    return output
-
-                return None
-
-            found = False
-            for child in item:
-                if get(child, a) == b:
-                    item = child
-                    found = True
-                    break
-            if not found:
-                return None
-        else:
-            item = item.get(key)
-        if item is None:
-            return None
-    if item in [None, 'NA', 'N/A', '']:
-        item = None
-    return item
-
-
-def get_state_vector(state_vector: str):
-    if state_vector is None:
-        return None, None
-    
-    return list(map(float, state_vector.split(',')[:3])), state_vector.split(',')[-1]
-
-
 # some products don't have integer values in BYTES fields, round to nearest int
-def try_round_float(value: str):
-    if value is not None:
-        value = float(value)
-        return round(value)
+def try_round_float(value: str) -> Optional[int]:
+    if value is None:
+        return None
     
-    return value
+    value = float(value)
+    return round(value)
 
+def try_parse_int(value: str) -> Optional[int]:
+    if value is None:
+        return None
+    
+    return int(value)
+
+def try_parse_float(value: str) -> Optional[float]:
+    if value is None:
+        return None
+    
+    return float(value)
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
