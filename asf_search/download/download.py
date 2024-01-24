@@ -83,7 +83,7 @@ def remotezip(url: str, session: ASFSession) -> 'RemoteZip':
     :param session: the authenticated ASFSession to read and download from the zip file
     """
     if RemoteZip is None:
-        raise ImportError("Could not find remotezip package in current python environment. \"remotezip\" is an optional dependency of asf-search required for the `remotezip()` method, and can be install via `python3 -m pip install asf-search[extras]`")
+        raise ImportError("Could not find remotezip package in current python environment. \"remotezip\" is an optional dependency of asf-search required for the `remotezip()` method. Enable by including the appropriate pip or conda install. Ex: `python3 -m pip install asf-search[extras]`")
     
     session.hooks['response'].append(strip_auth_if_aws)
     return RemoteZip(url, session=session)
