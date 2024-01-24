@@ -11,7 +11,7 @@ f = pow((1.0 - 1 / 298.257224), 2)
 # Technically f is normally considered to just be that 298... part but this is all we ever use, so
 # pre-calc and cache and call it all f anyhow
 
-def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
+def calculate_perpendicular_baselines(reference: ASFProduct, stack: List[ASFProduct]):
     for product in stack:
         baselineProperties = product.baseline
         positionProperties = baselineProperties['stateVectors']['positions']
@@ -40,7 +40,7 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
     for product in stack:
         # product.properties['granulePosition'] = get_granule_position(reference.properties['centerLat'], reference.properties['centerLon'])
         
-        if product.properties['sceneName'] == reference:
+        if product.properties['sceneName'] == reference.properties['sceneName']:
             reference = product
             reference.properties['perpendicularBaseline'] = 0
             # Cache these values
