@@ -36,6 +36,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Adds `OPERA-S1-CALIBRATION` entry to `dataset_collections` and corresponding `OPERA_S1_CALIBRATION` constant to `DATASET.py`, used to search for OPERA-S1 `CSLC` and `RTC` calibration data.
 
 ### Changed
+- `remotezip` is now an optional dependency of asf-search's pip and conda installs, (pip install example: `python3 -m pip install asf-search[extras]`).
 - Constants are no longer top level import, are now accessible through respective modules
 - `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving search performance and dodging subquery system
 - Baseline stacking no longer excludes products with missing state vectors from final stack, like SearchAPI

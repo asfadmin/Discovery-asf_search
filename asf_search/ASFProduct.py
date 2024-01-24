@@ -9,8 +9,6 @@ from urllib import parse
 from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.download import download_url
-from remotezip import RemoteZip
-
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 
@@ -195,9 +193,13 @@ class ASFProduct:
 
         return Polygon(unwrapped_coords).centroid
 
-    def remotezip(self, session: ASFSession) -> RemoteZip:
+    def remotezip(self, session: ASFSession) -> 'RemoteZip':
         """Returns a RemoteZip object which can be used to download a part of an ASFProduct's zip archive.
         (See example in examples/5-Download.ipynb)
+        
+        requires installing optional dependencies via pip or conda to use the `remotezip` package:
+        
+        `python3 -m pip install asf-search[extras]`
 
         :param session: an authenticated ASFSession
         """
