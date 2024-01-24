@@ -1,3 +1,4 @@
+from typing import Tuple, List
 from dateutil.parser import parse
 import pytz
 
@@ -5,13 +6,18 @@ from .calc import calculate_perpendicular_baselines
 from asf_search import ASFProduct, ASFStackableProduct, ASFSearchResults
 
 
-def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
-    warnings = None
+def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults) -> Tuple[ASFSearchResults, List[dict]]:
+    warnings = []
 
     if len(stack) == 0:
         raise ValueError('No products found matching stack parameters')
+
     stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata') and product.baseline is not None]
-    reference, stack, warnings = check_reference(reference, stack)
+    reference, stack, reference_warnings = check_reference(reference, stack)
+    
+    if reference_warnings is not None:
+        warnings.append(reference_warnings)
+
 
     stack = calculate_temporal_baselines(reference, stack)
 
@@ -20,8 +26,14 @@ def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
 
+        missing_state_vectors = _count_missing_state_vectors(stack)
+        if missing_state_vectors > 0:
+            warnings.append({'MISSING STATE VECTORS': f'{missing_state_vectors} scenes in stack missing State Vectors, perpendicular baseline not calculated for these scenes'})
+    
     return ASFSearchResults(stack), warnings
-
+    
+def _count_missing_state_vectors(stack) -> int:
+    return len([scene for scene in stack if scene.baseline.get('noStateVectors')])
 
 def find_new_reference(stack: ASFSearchResults):
     for product in stack:

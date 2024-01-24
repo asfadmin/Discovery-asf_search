@@ -1,5 +1,6 @@
-from typing import Callable, Type, Union
+from typing import Type
 from asf_search.baseline.stack import get_baseline_from_stack
+from asf_search import ASF_LOGGER
 from copy import copy
 
 from asf_search.search import search, product_search
@@ -50,6 +51,9 @@ def stack_from_product(
 
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
+    for warning in warnings:
+        ASF_LOGGER.warn(f'{warning}')
+    
     return stack
 
 
