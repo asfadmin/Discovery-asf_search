@@ -23,7 +23,7 @@ from .ASFSession import ASFSession
 from .ASFProduct import ASFProduct
 from .ASFSearchResults import ASFSearchResults
 from .ASFSearchOptions import ASFSearchOptions, validators
-from .constants import *
+from .constants import BEAMMODE, FLIGHT_DIRECTION, INSTRUMENT, PLATFORM, POLARIZATION, PRODUCT_TYPE, INTERNAL, DATASET
 from .exceptions import *
 from .health import *
 from .search import *

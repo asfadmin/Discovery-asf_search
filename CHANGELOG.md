@@ -28,10 +28,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v.7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v.7.0.0)
 ### Added
+- Added `collectionAlias` to `ASFSearchOptions` validator map as config param. Set to `False` to disable concept-id aliasing behaviour for `processingLevel` and `platform`.
 - Adds warning when scenes in stack are missing state vectors, and logs baseline warnings with `ASF_LOGGER`
 - Adds `OPERA-S1-CALIBRATION` entry to `dataset_collections` and corresponding `OPERA_S1_CALIBRATION` constant to `DATASET.py`, used to search for OPERA-S1 `CSLC` and `RTC` calibration data.
 
 ### Changed
+- Constants are no longer top level import, are now accessible through respective modules
+- `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving search performance and dodging subquery system
 - Baseline stacking no longer excludes products with missing state vectors from final stack, like SearchAPI
 - `OPERA-S1` dataset no longer includes calibration data (moved to new dataset)
 - Adds optional `ASFSession` constructor keyword arguments for new class variables:

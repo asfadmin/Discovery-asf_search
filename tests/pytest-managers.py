@@ -7,7 +7,7 @@ from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
 from ASFSearchResults.test_ASFSearchResults import run_test_output_format, run_test_ASFSearchResults_intersection
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
-from Search.test_search import run_test_ASFSearchResults, run_test_dataset_search, run_test_search, run_test_search_http_error
+from Search.test_search import run_test_ASFSearchResults, run_test_build_subqueries, run_test_dataset_search, run_test_keyword_aliasing_results, run_test_search, run_test_search_http_error
 from Search.test_search_generator import run_test_search_generator, run_test_search_generator_multi
 from CMR.test_MissionList import run_test_get_project_names
 
@@ -420,7 +420,12 @@ def test_ASFSearchResults_intersection(**kwargs) -> None:
 def test_search_dataset(**kwargs) -> None:
     dataset = get_resource(kwargs['test_info']['dataset'])
     run_test_dataset_search(dataset)
-    
+
+def test_build_subqueries(**kwargs) -> None:
+    params = ASFSearchOptions(**get_resource(kwargs['test_info']['params']))
+    expected = [ASFSearchOptions(**subquery) for subquery in get_resource(kwargs['test_info']['expected'])]
+    run_test_build_subqueries(params, expected)
+
 def test_serialization(**args) -> None:
     test_info = args['test_info']
     product = get_resource(test_info.get('product'))
@@ -468,6 +473,15 @@ def test_output_format(**args) -> None:
     results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in products])
 
     run_test_output_format(results)
+
+def test_keyword_aliasing_results(**args) -> None:
+    test_info = args['test_info']
+
+    opts = ASFSearchOptions(**test_info['params'])
+    opts.maxResults = 250
+
+    run_test_keyword_aliasing_results(opts)
+    
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):

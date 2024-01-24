@@ -75,7 +75,10 @@ def search_generator(
     if maxResults is not None and \
         (getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)):
             raise ValueError("Cannot use maxResults along with product_list/granule_list.")
-
+    
+    if opts.dataset is not None and opts.platform is not None:
+        raise ValueError("Cannot use dataset along with platform keyword in search.")
+    
     preprocess_opts(opts)
 
     url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])

@@ -1,13 +1,14 @@
 from datetime import datetime
 from typing import Any, Dict, List
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.CMR.datasets import get_concept_id_alias
 from asf_search.constants import CMR_PAGE_SIZE
 import re
 from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import dataset_collections
+from .datasets import dataset_collections, collections_per_platform
 
 import logging
 
@@ -48,19 +49,6 @@ def translate_opts(opts: ASFSearchOptions) -> list:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
     
-    if 'dataset' in dict_opts:
-        if 'collections' not in dict_opts:
-            dict_opts['collections'] = []
-        
-        for dataset in dict_opts['dataset']:
-            if collections_by_short_name := dataset_collections.get(dataset):
-                for concept_ids in collections_by_short_name.values():
-                    dict_opts['collections'].extend(concept_ids)
-            else:
-                raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
-
-        dict_opts.pop('dataset')
-    
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
     for (key, val) in dict_opts.items():
@@ -99,15 +87,10 @@ def translate_opts(opts: ASFSearchOptions) -> list:
 
     return cmr_opts
 
-
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
-    asf_frame_datasets = ['SENTINEL-1', 'OPERA-S1', 'SLC-BURST', 'ALOS PALSAR', 'ALOS AVNIR-2']
     
-    asf_frame_collections = []
-    for dataset in asf_frame_datasets:
-        for concept_ids in dataset_collections.get(dataset).values():
-            asf_frame_collections.extend(concept_ids)
+    asf_frame_collections = get_concept_id_alias(asf_frame_platforms, collections_per_platform)
 
     return any([
         p[0] == 'platform[]' and p[1].upper() in asf_frame_platforms
