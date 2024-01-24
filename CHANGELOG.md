@@ -26,12 +26,23 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v7.0.0)
-### Changed
-- Baseline stacking no longer excludes products with missing state vectors from final stack, like SearchAPI
-
+## [v.7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v.7.0.0)
 ### Added
 - Adds warning when scenes in stack are missing state vectors, and logs baseline warnings with `ASF_LOGGER`
+- Adds `OPERA-S1-CALIBRATION` entry to `dataset_collections` and corresponding `OPERA_S1_CALIBRATION` constant to `DATASET.py`, used to search for OPERA-S1 `CSLC` and `RTC` calibration data.
+
+### Changed
+- Baseline stacking no longer excludes products with missing state vectors from final stack, like SearchAPI
+- `OPERA-S1` dataset no longer includes calibration data (moved to new dataset)
+- Adds optional `ASFSession` constructor keyword arguments for new class variables:
+   - `edl_host`
+   - `edl_client_id`
+   - `asf_auth_host`
+   - `cmr_host`
+   - `cmr_collections`
+   - `auth_domains`
+- `ASFSession` imports `asf_search.constants.INTERNAL` in constructor call
+- `ASFSession` methods `auth_with_creds()`, `auth_with_token()`, and `rebuild_auth()` use new class variables instead of constants
 
 ------
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
