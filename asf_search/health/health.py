@@ -1,9 +1,10 @@
+from typing import Dict
 import requests
 import json
 
 import asf_search.constants
 
-def health(host: str = None) -> dict:
+def health(host: str = None) -> Dict:
     """
     Checks basic connectivity to and health of the ASF SearchAPI.
 

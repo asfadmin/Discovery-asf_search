@@ -79,6 +79,24 @@ class ASFSearchResults(UserList):
             ASF_LOGGER.error(msg)
             raise ASFSearchError(msg)
 
+    def get_products_by_subclass_type(self) -> dict:
+        """
+        Organizes results into dictionary by ASFProduct subclass name
+        : return: Dict of ASFSearchResults, organized by ASFProduct subclass names
+        """
+        subclasses = {}
+
+        for product in self.data:
+            product_type = product.get_classname()
+
+            if subclasses.get(product_type) is None:
+                subclasses[product_type] = ASFSearchResults([])
+            
+            subclasses[product_type].append(product)
+        
+        return subclasses
+    
 def _download_product(args) -> None:
     product, path, session, fileType = args
     product.download(path=path, session=session, fileType=fileType)
+

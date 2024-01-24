@@ -1,3 +1,6 @@
+from typing import List
+
+
 dataset_collections = {
     "SENTINEL-1": {
         "SENTINEL-1A_SLC": ["C1214470488-ASF", "C1205428742-ASF", "C1234413245-ASFDEV"],
@@ -162,10 +165,10 @@ dataset_collections = {
         "OPERA_L2_RTC-S1-STATIC_PROVISIONAL_V0": ["C1258354201-ASF"],
         "OPERA_L2_RTC-S1-STATIC_V1": ["C1259981910-ASF", "C2795135174-ASF"],
         "OPERA_L2_RTC-S1_PROVISIONAL_V0": ["C1257995186-ASF"],
-        "OPERA_L2_CSLC-S1-STATIC_CALVAL_V1": ["C1260726384-ASF", "C2803502140-ASF"],
+    },
+    "OPERA-S1-CALIBRATION": {
         "OPERA_L2_CSLC-S1_CALVAL_V1": ["C1260721945-ASF", "C2803501758-ASF"],
         "OPERA_L2_RTC-S1_CALVAL_V1": ["C1260721853-ASF", "C2803501097-ASF"],
-        "OPERA_L2_RTC-S1-STATIC_CALVAL_V1": ["C1260726378-ASF", "C2803500298-ASF"],
     },
     "SLC-BURST": {"SENTINEL-1_BURSTS": ["C2709161906-ASF", "C1257024016-ASF"]},
     "ALOS PALSAR": {
@@ -227,7 +230,7 @@ dataset_collections = {
         "SENTINEL-1_INTERFEROGRAMS_UNWRAPPED_PHASE": [
             "C1595765183-ASF",
             "C1225776659-ASF",
-        ],
+        ]
     },
     "SMAP": {
         "SPL1A_RO_METADATA_003": ["C1243122884-ASF", "C1233103964-ASF"],
@@ -327,7 +330,7 @@ dataset_collections = {
 }
 
 collections_per_platform = {
-    "Sentinel-1A": [
+    "SENTINEL-1A": [
         "C1214470488-ASF",
         "C1214470533-ASF",
         "C1214470576-ASF",
@@ -413,7 +416,7 @@ collections_per_platform = {
         "C1244598379-ASFDEV",
         "C1240784657-ASFDEV",
     ],
-    "Sentinel-1B": [
+    "SENTINEL-1B": [
         "C1327985661-ASF",
         "C1327985645-ASF",
         "C1595422627-ASF",
@@ -729,7 +732,7 @@ collections_per_platform = {
 }
 
 
-collections_by_processing_level: {
+collections_by_processing_level = {
     "SLC": [
         "C1214470488-ASF",
         "C1205428742-ASF",
@@ -1071,3 +1074,40 @@ collections_by_processing_level: {
     "SLOPE": ["C1214408428-ASF", "C1210599503-ASF"],
     "STOKES": ["C1214419355-ASF", "C1210599673-ASF"],
 }
+
+#################### Helper Methods ####################
+
+def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[str]:
+    """
+    param: param_list (List[str]): list of search values to alias
+    param: collections_dict (dict): The search value to concept-id dictionary to read from
+
+    returns List[str]: Returns a list of concept-ids that correspond to the given list of search values
+    If any of the search values are not keys in the collections_dict, this will instead returns an empty list. 
+    """
+    concept_id_aliases = []
+    for param in param_list:
+        if alias := collections_dict.get(param):
+            concept_id_aliases.extend(alias)
+        else:
+            return []
+    
+    return concept_id_aliases
+
+def get_dataset_concept_ids(datasets: List[str]) -> List[str]:
+    """
+    Returns concept-ids for provided dataset(s)
+    If an invalid datset is provided a ValueError is raised
+
+    :param `datasets` (`List[str]`): a list of datasets to grab concept-ids for
+    :returns `List[str]`: the list of concept-ids associated with the given datasets
+    """
+    output = []
+    for dataset in datasets:
+        if collections_by_short_name := dataset_collections.get(dataset):
+            for concept_ids in collections_by_short_name.values():
+                output.extend(concept_ids)
+        else:
+            raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
+    
+    return output

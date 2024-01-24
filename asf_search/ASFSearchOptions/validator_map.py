@@ -66,5 +66,6 @@ validator_map = {
     # Config parameters       Parser
     'session':                parse_session,
     'host':                   parse_string,
-    'provider':               parse_string
+    'provider':               parse_string,
+    'collectionAlias':        bool,
 }
