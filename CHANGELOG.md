@@ -26,6 +26,14 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v.7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v.7.0.0)
+### Added
+- Adds `OPERA-S1-CALIBRATION` entry to `dataset_collections` and corresponding `OPERA_S1_CALIBRATION` constant to `DATASET.py`, used to search for OPERA-S1 `CSLC` and `RTC` calibration data.
+
+### Changed
+- `OPERA-S1` dataset no longer includes calibration data (moved to new dataset)
+
+------
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
 ### Added
 - Adds OPERA-S1 constants `RTC`, `RTC_STATIC` (RTC-STATIC), `CSLC`, `CSLC_STATIC` (CSLC-STATIC) to `PRODUCT_TYPE.py`
