@@ -138,3 +138,18 @@ class ASFSession(requests.Session):
 
     def _get_domain(self, url: str):
             return requests.utils.urlparse(url).hostname
+
+    # multi-processing does an implicit copy of ASFSession objects,  
+    # this ensures ASFSession class variables are included
+    def __getstate__(self):
+        state = super().__getstate__()
+        state = {
+            **state,
+            'edl_host': self.edl_host,
+            'edl_client_id': self.edl_client_id,
+            'asf_auth_host': self.asf_auth_host,
+            'cmr_host': self.cmr_host,
+            'cmr_collections': self.cmr_collections,
+            'auth_domains': self.auth_domains
+        }
+        return state
