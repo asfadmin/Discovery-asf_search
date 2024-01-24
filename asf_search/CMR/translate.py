@@ -195,7 +195,7 @@ def translate_product(item: dict) -> dict:
     insarBaseline = cast(float, get(umm, 'AdditionalAttributes', ('Name', 'INSAR_BASELINE'), 'Values', 0))
     
     baseline = {}
-    if None not in stateVectors['positions'].values() and len(stateVectors.items()) > 0:
+    if ascendingNodeTime is not None:
         baseline['stateVectors'] = stateVectors
         baseline['ascendingNodeTime'] = ascendingNodeTime
     elif insarBaseline is not None:
