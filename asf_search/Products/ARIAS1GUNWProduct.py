@@ -1,5 +1,6 @@
 from typing import Dict
 from asf_search import ASFSession
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_float
 
@@ -31,3 +32,22 @@ class ARIAS1GUNWProduct(S1Product):
             **S1Product.get_property_paths(),
             **ARIAS1GUNWProduct._base_properties
         }
+
+    def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
+        """
+        Build search options that can be used to find an insar stack for this product
+
+        :return: ASFSearchOptions describing appropriate options for building a stack from this product
+        """
+        return None
+    
+
+    def is_valid_reference(self):
+        return False
+    
+    @staticmethod
+    def get_default_baseline_product_type() -> None:
+        """
+        Returns the product type to search for when building a baseline stack.
+        """
+        return None

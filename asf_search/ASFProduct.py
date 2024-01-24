@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Tuple, List, final
+from typing import Any, Dict, Tuple, Type, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -156,13 +156,15 @@ class ASFProduct:
 
     def stack(
             self,
-            opts: ASFSearchOptions = None
+            opts: ASFSearchOptions = None,
+            useSubclass: Type['ASFProduct'] = None
     ) -> ASFSearchResults:
         """
         Builds a baseline stack from this product.
 
         :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-
+        :param ASFProductSubclass: An ASFProduct subclass constructor.
+    
         :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
@@ -170,7 +172,7 @@ class ASFProduct:
         if opts is None:
             opts = ASFSearchOptions(session=self.session)
 
-        return stack_from_product(self, opts=opts)
+        return stack_from_product(self, opts=opts, ASFProductSubclass=useSubclass)
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
