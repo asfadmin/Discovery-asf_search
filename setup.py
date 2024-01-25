@@ -9,7 +9,6 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "remotezip >= 0.10.0",
     "tenacity == 8.2.2"
 ]
 
@@ -22,8 +21,13 @@ test_requirements = [
     "requests-mock",
     "nbformat",
     "nbconvert",
-    "ipykernel", 
+    "ipykernel",
 ]
+
+extra_requirements = [
+    "remotezip>=0.10.0"
+]
+
 
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
@@ -45,7 +49,7 @@ setup(
     include_package_data=True,
     python_requires='>=3.8',
     install_requires=requirements,
-    extras_require={ "test": test_requirements },
+    extras_require={ "test": test_requirements, "extras": extra_requirements},
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[

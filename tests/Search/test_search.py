@@ -1,7 +1,11 @@
 from numbers import Number
-from asf_search import ASFSearchOptions
-from asf_search.ASFProduct import ASFProduct
-from asf_search.CMR.translate import get
+from asf_search import ASFProduct, ASFSearchOptions
+from asf_search import ASFSession
+# from asf_search.CMR.translate import get
+
+from tenacity import retry, retry_if_exception_type, stop_after_attempt
+from asf_search import ASF_LOGGER, ASFSearchOptions
+from asf_search.CMR.subquery import build_subqueries
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
@@ -12,8 +16,13 @@ from typing import List
 import requests
 import requests_mock
 
+from asf_search.search.search_generator import as_ASFProduct
+
+SEARCHAPI_URL = 'https://api.daac.asf.alaska.edu'
+SEARCHAPI_ENDPOINT = '/services/search/param?'
+
 def run_test_ASFSearchResults(search_resp):
-    search_results = ASFSearchResults([ASFProduct(product) for product in search_resp])
+    search_results = ASFSearchResults([as_ASFProduct(product, ASFSession()) for product in search_resp])
 
     assert(len(search_results) == len(search_resp))
     assert(search_results.geojson()['type'] == 'FeatureCollection')
@@ -26,7 +35,12 @@ def run_test_ASFSearchResults(search_resp):
 
         assert(feature.geojson()['geometry'] == search_resp[idx]['geometry'])
         for key, item in feature.geojson()['properties'].items():
-            assert(item == search_resp[idx]['properties'][key])
+            if key == 'esaFrame':
+                assert search_resp[idx]['properties']['frameNumber'] == item
+            elif 'esaFrame' in feature.geojson()['properties'].keys() and key == 'frameNumber':
+                continue
+            elif search_resp[idx]['properties'].get(key) is not None and item is not None:
+                assert item == search_resp[idx]['properties'][key]
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
@@ -86,8 +100,40 @@ def run_test_dataset_search(datasets: List):
             response = search(dataset=dataset, maxResults=250)
 
             # Get collection shortName of all granules
-            shortNames = list(set([shortName for product in response if (shortName:=get(product.umm, 'CollectionReference', 'ShortName')) is not None]))
+            shortNames = list(set([shortName for product in response if (shortName:=ASFProduct.umm_get(product.umm, 'CollectionReference', 'ShortName')) is not None]))
 
             # and check that results are limited to the expected datasets by their shortname
             for shortName in shortNames:
                 assert shortName in valid_shortnames
+
+def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
+    actual = build_subqueries(params)
+    for a, b in zip(actual, expected):
+        for a_param, b_param in zip(a, b):
+            if isinstance(b_param, list):
+                assert len(set(b_param).difference(set(a_param))) == 0
+
+def run_test_keyword_aliasing_results(params: ASFSearchOptions):
+    module_response = search(opts=params)
+    
+    try:
+        api_response = query_endpoint(dict(params))
+    except requests.ReadTimeout as exc:
+        ASF_LOGGER.warn(f'SearchAPI timed out, skipping test for params {str(params)}')
+        return
+
+    api_results = api_response['results']
+
+    api_dict = {product['granuleName']: True for product in api_results}
+    
+    for product in module_response:
+        sceneName = product.properties['sceneName']
+        assert api_dict.get(sceneName, False), f'Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}'
+    
+    
+@retry(stop=stop_after_attempt(3), retry=retry_if_exception_type(requests.HTTPError), reraise=True)
+def query_endpoint(params):
+    response = requests.post(url=SEARCHAPI_URL+SEARCHAPI_ENDPOINT, data={**params, 'output':'jsonlite'})
+    response.raise_for_status()
+
+    return response.json()

@@ -1,7 +1,7 @@
 import inspect
 from types import GeneratorType
+from typing import Dict
 from asf_search import ASF_LOGGER
-from asf_search.CMR import get_additional_fields
 from asf_search.export.metalink import MetalinkStreamArray
 import xml.etree.ElementTree as ETree
 
@@ -13,6 +13,7 @@ extra_kml_fields = [
     ('shape', ['SpatialExtent', 'HorizontalSpatialDomain', 'Geometry', 'GPolygons', 0, 'Boundary', 'Points']),
     ('thumbnailUrl', ['AdditionalAttributes', ('Name', 'THUMBNAIL_URL'), 'Values', 0]),
     ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
+    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0])
 ]
 
 def results_to_kml(results):
@@ -41,16 +42,17 @@ class KMLStreamArray(MetalinkStreamArray):
          </PolyStyle>
      </Style>\n     """
         self.footer = """</Document>\n</kml>"""
-        
+    
+
+    def getOutputType(self) -> str:
+        return 'kml'
+    
     def get_additional_fields(self, product):
         umm = product.umm
         additional_fields = {}
         for key, path in extra_kml_fields:
-            additional_fields[key] = get_additional_fields(umm, *path)
+            additional_fields[key] = product.umm_get(umm, *path)
         return additional_fields
-
-    def getOutputType(self) -> str:
-        return 'kml'
     
     def getItem(self, p):
         placemark = ETree.Element("Placemark")
@@ -133,7 +135,7 @@ class KMLStreamArray(MetalinkStreamArray):
         return ETree.tostring(placemark, encoding='unicode').replace('&amp;', '&')
     
     # Helper method for getting additional fields in <ul> tag
-    def metadata_fields(self, item: dict):
+    def metadata_fields(self, item: Dict):
         required = {
             'Processing type: ': item['processingTypeDisplay'],
             'Frame: ': item['frameNumber'],

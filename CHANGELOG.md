@@ -26,6 +26,32 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v.7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v.7.0.0)
+### Added
+- `ASFProduct` now has 13 sublcasses for different sub-products that correspond to datasets:
+  - `S1Product`, `S1BurstProduct`, `OPERAS1Product`, `ARIAS1GUNWProduct`, `ALOSProduct`, `RADARSATProduct`, `AIRSARProduct`, `ERSProduct`, `JERSProduct`, `UAVSARProduct`, `SIRCProduct`, `SEASATProduct`, `SMAPProduct`
+  - Each subclass defines relevant keys to pull from `umm` response, reducing the amount of irrelevant values in `properties` dict for certain product types 
+- Adds `collectionAlias` to `ASFSearchOptions` validator map as config param. Set to `False` to disable concept-id aliasing behaviour for `processingLevel` and `platform`.
+- Adds warning when scenes in stack are missing state vectors, and logs baseline warnings with `ASF_LOGGER`
+- Adds `OPERA-S1-CALIBRATION` entry to `dataset_collections` and corresponding `OPERA_S1_CALIBRATION` constant to `DATASET.py`, used to search for OPERA-S1 `CSLC` and `RTC` calibration data.
+
+### Changed
+- `remotezip` is now an optional dependency of asf-search's pip and conda installs, (pip install example: `python3 -m pip install asf-search[extras]`).
+- Constants are no longer top level import, are now accessible through respective modules
+- `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving search performance and dodging subquery system
+- Baseline stacking no longer excludes products with missing state vectors from final stack, like SearchAPI
+- `OPERA-S1` dataset no longer includes calibration data (moved to new dataset)
+- Adds optional `ASFSession` constructor keyword arguments for new class variables:
+   - `edl_host`
+   - `edl_client_id`
+   - `asf_auth_host`
+   - `cmr_host`
+   - `cmr_collections`
+   - `auth_domains`
+- `ASFSession` imports `asf_search.constants.INTERNAL` in constructor call
+- `ASFSession` methods `auth_with_creds()`, `auth_with_token()`, and `rebuild_auth()` use new class variables instead of constants
+
+------
 ## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
 ### Added
 - Adds OPERA-S1 constants `RTC`, `RTC_STATIC` (RTC-STATIC), `CSLC`, `CSLC_STATIC` (CSLC-STATIC) to `PRODUCT_TYPE.py`

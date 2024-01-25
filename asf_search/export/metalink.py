@@ -64,7 +64,7 @@ class MetalinkStreamArray(list):
         resources.append(url)
         file.append(resources)
         
-        if p['md5sum'] and p['md5sum'] != 'NA':
+        if p.get('md5sum') and p.get('md5sum') != 'NA':
             verification = ETree.Element('verification')
             h = ETree.Element('hash', {'type': 'md5'})
             h.text = p['md5sum']

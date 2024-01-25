@@ -1,5 +1,5 @@
 from typing import Dict, List
-from asf_search import ASFSearchOptions, ASFProduct, FileDownloadType
+from asf_search import ASFSearchOptions, ASFSession, FileDownloadType, ASFStackableProduct
 from asf_search.exceptions import ASFAuthenticationError
 
 from ASFProduct.test_ASFProduct import run_test_ASFProduct, run_test_ASFProduct_download, run_test_product_get_stack_options, run_test_stack
@@ -7,7 +7,7 @@ from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions
 from ASFSearchResults.test_ASFSearchResults import run_test_output_format, run_test_ASFSearchResults_intersection
 from ASFSession.test_ASFSession import run_auth_with_cookiejar, run_auth_with_creds, run_auth_with_token, run_test_asf_session_rebuild_auth
 from BaselineSearch.test_baseline_search import *
-from Search.test_search import run_test_ASFSearchResults, run_test_dataset_search, run_test_search, run_test_search_http_error
+from Search.test_search import run_test_ASFSearchResults, run_test_build_subqueries, run_test_dataset_search, run_test_keyword_aliasing_results, run_test_search, run_test_search_http_error
 from Search.test_search_generator import run_test_search_generator, run_test_search_generator_multi
 from CMR.test_MissionList import run_test_get_project_names
 
@@ -22,6 +22,7 @@ import yaml
 from WKT.test_validate_wkt import run_test_search_wkt_prep, run_test_validate_wkt_get_shape_coords, run_test_validate_wkt_clamp_geometry, run_test_validate_wkt_valid_wkt, run_test_validate_wkt_convex_hull, run_test_validate_wkt_counter_clockwise_reorientation, run_test_validate_wkt_invalid_wkt_error, run_test_validate_wkt_merge_overlapping_geometry, run_test_simplify_aoi
 from ASFSearchOptions.test_ASFSearchOptions import run_test_ASFSearchOptions_validator, run_test_validator_map_validate
 from BaselineSearch.Stack.test_stack import run_test_find_new_reference, run_test_get_baseline_from_stack, run_test_get_default_product_type, run_test_valid_state_vectors
+from asf_search.search.search_generator import as_ASFProduct
 
 from download.test_download import run_test_download_url, run_test_download_url_auth_error
 from Serialization.test_serialization import run_test_serialization
@@ -41,7 +42,7 @@ def test_ASFProduct(**args) -> None:
 def test_ASFProduct_Stack(**args) -> None:
     """
     Tests ASFProduct.stack() with reference and corresponding stack
-    Checks for temporalBaseline order, 
+    Checks for temporalBaseline order,
     asserting the stack is ordered by the scene's temporalBaseline (in ascending order)
     """
     test_info = args["test_info"]
@@ -70,9 +71,9 @@ def test_ASFProduct_download(**args) -> None:
         filetype = FileDownloadType.ADDITIONAL_FILES
     else:
         filetype = FileDownloadType.ALL_FILES
-    
+
     run_test_ASFProduct_download(reference, filename, filetype, additional_urls)
-    
+
 # asf_search.ASFSession Tests
 def test_ASFSession_Error(**args) -> None:
     """
@@ -110,7 +111,7 @@ def test_ASFSession_Cookie_Error(**args) -> None:
 def test_asf_session_rebuild_auth(**args) -> None:
     """
     Test asf_search.ASFSession.rebuild_auth
-    When redirecting from an ASF domain, only accept 
+    When redirecting from an ASF domain, only accept
     domains listed in ASFSession.AUTH_DOMAINS
     """
     test_info = args["test_info"]
@@ -146,33 +147,24 @@ def test_get_unprocessed_stack_params(**args) -> None:
 
 def test_get_stack_opts_invalid_insarStackId(**args) -> None:
     """
-    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's 
+    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's
     insarStackID set to an invalid value, and asserting an ASFBaselineError is raised
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
-    
+
     run_get_stack_opts_invalid_insarStackId(reference)
-    
-def test_get_stack_opts_invalid_platform(**args) -> None:
-    """
-    Test asf_search.search.baseline_search.get_stack_opts with a the reference scene's 
-    platform set to an invalid value, and asserting an ASFBaselineError is raised
-    """
-    test_info = args["test_info"]
-    reference = get_resource(test_info["product"])    
-    run_test_get_stack_opts_invalid_platform_raises_error(reference)
-    
+
 def test_temporal_baseline(**args) -> None:
     """
     Test asf_search.search.baseline_search.calc_temporal_baselines, asserting mutated baseline stack
-    is still the same length and that each product's properties contain a temporalBaseline key 
+    is still the same length and that each product's properties contain a temporalBaseline key
     """
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
     stack = get_resource(test_info["stack"])
     run_test_calc_temporal_baselines(reference, stack)
-    
+
 def test_stack_from_product(**args) -> None:
     """
     Test asf_search.search.baseline_search.stack_from_product, asserting stack returned is ordered
@@ -181,7 +173,7 @@ def test_stack_from_product(**args) -> None:
     test_info = args["test_info"]
     reference = get_resource(test_info["product"])
     stack = get_resource(test_info["stack"])
-    
+
     run_test_stack_from_product(reference, stack)
 
 def test_stack_from_id(**args) -> None:
@@ -205,7 +197,7 @@ def test_stack_from_id(**args) -> None:
 # asf_search.ASFSearchResults Tests
 def test_ASFSearchResults(**args) -> None:
     """
-    Test asf_search.ASFSearchResults, asserting initialized values, 
+    Test asf_search.ASFSearchResults, asserting initialized values,
     and geojson response returns object with type FeatureCollection
     """
     test_info = args["test_info"]
@@ -323,7 +315,7 @@ def test_search_wkt_prep(**args) -> None:
     """
     test_info = args["test_info"]
     wkt = get_resource(test_info['wkt'])
-    
+
     run_test_search_wkt_prep(wkt)
 
 def test_simplify_aoi(**args) -> None:
@@ -340,7 +332,7 @@ def test_get_platform_campaign_names(**args) -> None:
     test_info = args["test_info"]
     cmr_ummjson = get_resource(test_info["cmr_ummjson"])
     campaigns: List[str] = get_resource(test_info["campaigns"])
-    
+
     run_test_get_project_names(cmr_ummjson, campaigns)
 
 def test_download_url(**args) -> None:
@@ -356,7 +348,7 @@ def test_download_url(**args) -> None:
         run_test_download_url_auth_error(url, path, filename)
     else:
         run_test_download_url(url, path, filename)
-        
+
 def test_find_new_reference(**args) -> None:
     """
     Test asf_search.baseline.calc.find_new_reference
@@ -364,18 +356,19 @@ def test_find_new_reference(**args) -> None:
     test_info = args["test_info"]
     stack = get_resource(test_info["stack"])
     output_index = get_resource(test_info["output_index"])
-    
+
     run_test_find_new_reference(stack, output_index)
 
 def test_get_default_product_type(**args) -> None:
     test_info = args["test_info"]
     product = get_resource(test_info["product"])
     product_type = get_resource(test_info["product_type"])
-    
-    product = ASFProduct(args={'meta': product['meta'], 'umm': product['umm']})
+
+    product = as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession())
+
     if product.properties.get('sceneName') is None:
         product.properties['sceneName'] = 'BAD_SCENE'
-        
+
     run_test_get_default_product_type(product, product_type)
 
 def test_get_baseline_from_stack(**args) -> None:
@@ -390,9 +383,9 @@ def test_valid_state_vectors(**args) -> None:
     test_info = args["test_info"]
     reference = get_resource(test_info['reference'])
     output = get_resource(test_info['output'])
-    
+
     run_test_valid_state_vectors(reference, output)
-    
+
 def test_validator_map_validate(**args) -> None:
     test_info = args["test_info"]
     key = get_resource(test_info['key'])
@@ -408,7 +401,7 @@ def test_ASFSearchOptions_validator(**args) -> None:
     output = safe_load_tuple(get_resource(test_info['output']))
     error = get_resource(test_info['error'])
     run_test_ASFSearchOptions_validator(validator_name, param, output, error)
-    
+
 
 def test_ASFSearchOptions(**kwargs) -> None:
     run_test_ASFSearchOptions(**kwargs)
@@ -420,7 +413,12 @@ def test_ASFSearchResults_intersection(**kwargs) -> None:
 def test_search_dataset(**kwargs) -> None:
     dataset = get_resource(kwargs['test_info']['dataset'])
     run_test_dataset_search(dataset)
-    
+
+def test_build_subqueries(**kwargs) -> None:
+    params = ASFSearchOptions(**get_resource(kwargs['test_info']['params']))
+    expected = [ASFSearchOptions(**subquery) for subquery in get_resource(kwargs['test_info']['expected'])]
+    run_test_build_subqueries(params, expected)
+
 def test_serialization(**args) -> None:
     test_info = args['test_info']
     product = get_resource(test_info.get('product'))
@@ -451,27 +449,36 @@ def safe_load_tuple(param):
     loads a tuple from a list if a param is an object with key 'tuple'
     (Arbritrary constructor initialization is not supported by yaml.safe_load
     as a security measure)
-    
+
     """
     if isinstance(param, Dict):
         if "tuple" in param.keys():
             param = tuple(param['tuple'])
-    
+
     return param
 
 def test_output_format(**args) -> None:
     test_info = args['test_info']
-    
+
     products = get_resource(test_info['results'])
     if not isinstance(products, List):
         products = [products]
-    results = ASFSearchResults([ASFProduct(args={'meta': product['meta'], 'umm': product['umm']}) for product in products])
+    results = ASFSearchResults([as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession()) for product in products])
 
     run_test_output_format(results)
 
+def test_keyword_aliasing_results(**args) -> None:
+    test_info = args['test_info']
+
+    opts = ASFSearchOptions(**test_info['params'])
+    opts.maxResults = 250
+
+    run_test_keyword_aliasing_results(opts)
+    
+
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
-    
+
     if isinstance(yml_file, str):
         if yml_file.endswith((".yml", ".yaml")):
             base_path = pathlib.Path(__file__).parent.resolve()
