@@ -283,7 +283,7 @@ def _get_product_type_key(item: Dict) -> str:
 dataset_to_product_types = {
     'SENTINEL-1': ASFProductType.S1Product,
     'OPERA-S1': ASFProductType.OPERAS1Product,
-    'SLC-BURST': ASFProductType.S1BURSTProduct,
+    'SLC-BURST': ASFProductType.S1BurstProduct,
 
     'ALOS': ASFProductType.ALOSProduct,
 
@@ -298,7 +298,7 @@ dataset_to_product_types = {
     'UAVSAR': ASFProductType.UAVSARProduct,
     'G-III': ASFProductType.UAVSARProduct,
 
-    'RADARSAT-1': ASFProductType.RadarsatProduct,
+    'RADARSAT-1': ASFProductType.RADARSATProduct,
 
     'ERS': ASFProductType.ERSProduct,
     'ERS-1': ASFProductType.ERSProduct,

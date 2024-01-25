@@ -29,7 +29,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v.7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v.7.0.0)
 ### Added
 - `ASFProduct` now has 13 sublcasses for different sub-products that correspond to datasets:
-  - `S1Product`, `S1BURSTProduct`, `OPERAS1Product`, `ARIAS1GUNWProduct`, `ALOSProduct`, `RadarsatProduct`, `AIRSARProduct`, `ERSProduct`, `JERSProduct`, `UAVSARProduct`, `SIRCProduct`, `SEASATProduct`, `SMAPProduct`
+  - `S1Product`, `S1BurstProduct`, `OPERAS1Product`, `ARIAS1GUNWProduct`, `ALOSProduct`, `RADARSATProduct`, `AIRSARProduct`, `ERSProduct`, `JERSProduct`, `UAVSARProduct`, `SIRCProduct`, `SEASATProduct`, `SMAPProduct`
   - Each subclass defines relevant keys to pull from `umm` response, reducing the amount of irrelevant values in `properties` dict for certain product types 
 - Adds `collectionAlias` to `ASFSearchOptions` validator map as config param. Set to `False` to disable concept-id aliasing behaviour for `processingLevel` and `platform`.
 - Adds warning when scenes in stack are missing state vectors, and logs baseline warnings with `ASF_LOGGER`

@@ -4,7 +4,7 @@ from asf_search.CMR.translate import try_parse_float
 from asf_search.constants import PRODUCT_TYPE
 
 
-class RadarsatProduct(ASFStackableProduct):
+class RADARSATProduct(ASFStackableProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/radarsat-1/
     """
@@ -22,7 +22,7 @@ class RadarsatProduct(ASFStackableProduct):
     def get_property_paths() -> Dict:
         return {
             **ASFStackableProduct.get_property_paths(),
-            **RadarsatProduct._base_properties
+            **RADARSATProduct._base_properties
         }
 
     @staticmethod

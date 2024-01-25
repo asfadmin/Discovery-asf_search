@@ -5,7 +5,7 @@ from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PRODUCT_TYPE
 
-class S1BURSTProduct(S1Product):
+class S1BurstProduct(S1Product):
     """
     S1Product Subclass made specifically for Sentinel-1 SLC-BURST products
     
@@ -69,7 +69,7 @@ class S1BURSTProduct(S1Product):
     def get_property_paths() -> Dict:
         return {
             **S1Product.get_property_paths(),
-            **S1BURSTProduct._base_properties
+            **S1BurstProduct._base_properties
         }
     
     def _get_additional_filenames_and_urls(self, default_filename: str = None):
