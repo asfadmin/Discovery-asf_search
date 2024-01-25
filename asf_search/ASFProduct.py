@@ -143,7 +143,7 @@ class ASFProduct:
 
     def _get_additional_filenames_and_urls(
             self,
-            default_filename: str = None  # for subclasses without fileName in url (see S1BURSTProduct implementation)
+            default_filename: str = None  # for subclasses without fileName in url (see S1BurstProduct implementation)
      ) -> List[Tuple[str, str]]:
         return [(self._parse_filename_from_url(url), url) for url in self.properties.get('additionalUrls', [])]
 
