@@ -26,7 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v.7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v.7.0.0)
+## [v7.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.0...v7.0.1)
+### Fixed
+- Fixed `OPERA-S1-CALIBRATION` dataset products raising error during search.
+
+------
+## [v7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v7.0.0)
 ### Added
 - `ASFProduct` now has 13 sublcasses for different sub-products that correspond to datasets:
   - `S1Product`, `S1BurstProduct`, `OPERAS1Product`, `ARIAS1GUNWProduct`, `ALOSProduct`, `RADARSATProduct`, `AIRSARProduct`, `ERSProduct`, `JERSProduct`, `UAVSARProduct`, `SIRCProduct`, `SEASATProduct`, `SMAPProduct`
