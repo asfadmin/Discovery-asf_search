@@ -250,13 +250,17 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
     product_type_key = _get_product_type_key(item)
 
     # if there's a direct entry in our dataset to product type dict
-    if (subclass := dataset_to_product_types.get(product_type_key)) is not None:
+    subclass = dataset_to_product_types.get(product_type_key)
+    if subclass is not None:
         return subclass(item, session=session)
 
     # or if the key matches one of the shortnames in any of our datasets
     for dataset, collections in dataset_collections.items():
         if collections.get(product_type_key) is not None:
-            return dataset_to_product_types.get(dataset)(item, session=session)
+            subclass = dataset_to_product_types.get(dataset)
+            if subclass is not None:
+                return subclass(item, session=session)
+            break # dataset exists, but is not in dataset_to_product_types yet
 
     return ASFProduct(item, session=session)
 
@@ -283,6 +287,7 @@ def _get_product_type_key(item: Dict) -> str:
 dataset_to_product_types = {
     'SENTINEL-1': ASFProductType.S1Product,
     'OPERA-S1': ASFProductType.OPERAS1Product,
+    'OPERA-S1-CALIBRATION': ASFProductType.OPERAS1Product,
     'SLC-BURST': ASFProductType.S1BurstProduct,
 
     'ALOS': ASFProductType.ALOSProduct,
