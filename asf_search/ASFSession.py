@@ -1,4 +1,5 @@
 import platform
+from typing import Dict, Union
 import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
@@ -12,7 +13,7 @@ class ASFSession(requests.Session):
                 asf_auth_host: str = None,
                 cmr_host: str = None,
                 cmr_collections: str = None,
-                auth_domains: str = None 
+                auth_domains: str = None
                 ):
         """
         ASFSession is a subclass of `requests.Session`, and is meant to ease downloading ASF hosted data by simplifying logging in to Earthdata Login.
@@ -71,7 +72,7 @@ class ASFSession(requests.Session):
         self.auth = (username, password)
         self.get(login_url)
 
-        if "urs_user_already_logged" not in self.cookies.get_dict():
+        if not self._check_urs_cookies(self.cookies.get_dict()):
             raise ASFAuthenticationError("Username or password is incorrect")
 
         return self
@@ -94,7 +95,7 @@ class ASFSession(requests.Session):
 
         return self
 
-    def auth_with_cookiejar(self, cookies: http.cookiejar):
+    def auth_with_cookiejar(self, cookies: http.cookiejar.CookieJar):
         """
         Authenticates the session using a pre-existing cookiejar
 
@@ -103,7 +104,7 @@ class ASFSession(requests.Session):
         :return ASFSession: returns self for convenience
         """
         
-        if "urs_user_already_logged" not in cookies:
+        if not self._check_urs_cookies(cookies):
             raise ASFAuthenticationError("Cookiejar does not contain login cookies")
 
         for cookie in cookies:
@@ -113,6 +114,9 @@ class ASFSession(requests.Session):
         self.cookies = cookies
 
         return self
+
+    def _check_urs_cookies(self, cookies: Union[http.cookiejar.CookieJar, Dict]) -> bool:
+        return any(cookie in ["urs_user_already_logged", "uat_urs_user_already_logged"] for cookie in cookies)
 
     def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):
         """
