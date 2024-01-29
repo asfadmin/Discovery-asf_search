@@ -16,7 +16,7 @@ from typing import List
 import requests
 import requests_mock
 
-from asf_search.search.search_generator import as_ASFProduct
+from asf_search.search.search_generator import as_ASFProduct, preprocess_opts
 
 SEARCHAPI_URL = 'https://api.daac.asf.alaska.edu'
 SEARCHAPI_ENDPOINT = '/services/search/param?'
@@ -107,11 +107,18 @@ def run_test_dataset_search(datasets: List):
                 assert shortName in valid_shortnames
 
 def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
+    # mainly for getting platform aliases
+    preprocess_opts(params)
+
     actual = build_subqueries(params)
     for a, b in zip(actual, expected):
-        for a_param, b_param in zip(a, b):
-            if isinstance(b_param, list):
-                assert len(set(b_param).difference(set(a_param))) == 0
+        for key, actual_val in a:
+            expected_val = getattr(b, key)
+            if isinstance(actual_val, list):
+                if len(actual_val) > 0: # ASFSearchOptions leaves empty lists as None
+                    assert len(set(expected_val).difference(set(actual_val))) == 0
+            else:
+                assert actual_val == expected_val
 
 def run_test_keyword_aliasing_results(params: ASFSearchOptions):
     module_response = search(opts=params)
