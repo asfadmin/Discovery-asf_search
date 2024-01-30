@@ -26,6 +26,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.1...v7.0.2)
+### Added
+- Adds `AUTH_COOKIES` to `constants.INTERNAL` and `auth_cookie_names` variable for `ASFSession`, used by `auth_with_creds()` and `auth_with_cookiejar()` to confirm login.
+
+### Fixed
+- Attempting to authorize `ASFSession` against CMR UAT using `auth_with_creds()` and `auth_with_cookiejar()` no longer raises an exception on valid login
+- Fixes custom host in `ASFSearchOptions` raising type error while searching.
+
+------
 ## [v7.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.0...v7.0.1)
 ### Fixed
 - Fixed `OPERA-S1-CALIBRATION` dataset products raising error during search.

@@ -1,4 +1,5 @@
 import platform
+from typing import Dict, List, Union
 import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
@@ -12,7 +13,8 @@ class ASFSession(requests.Session):
                 asf_auth_host: str = None,
                 cmr_host: str = None,
                 cmr_collections: str = None,
-                auth_domains: str = None 
+                auth_domains: List[str] = None,
+                auth_cookie_names: List[str] = None
                 ):
         """
         ASFSession is a subclass of `requests.Session`, and is meant to ease downloading ASF hosted data by simplifying logging in to Earthdata Login.
@@ -29,7 +31,7 @@ class ASFSession(requests.Session):
         `cmr_host`: the base CMR endpoint to test EDL login tokens against. Defaults to `asf_search.constants.INTERNAL.CMR_HOST`
         `cmr_collections`: the CMR endpoint path login tokens will be tested against. Defaults to `asf_search.constants.INTERNAL.CMR_COLLECTIONS`
         `auth_domains`: the list of authorized endpoints that are allowed to pass auth credentials. Defaults to `asf_search.constants.INTERNAL.AUTH_DOMAINS`. Authorization headers WILL NOT be stripped from the session object when redirected through these domains.
-        
+        `auth_cookie_names`: the list of cookie names to use when verifying with `auth_with_creds()` & `auth_with_cookiejar()`
         More information on Earthdata Login can be found here:
         https://urs.earthdata.nasa.gov/documentation/faq
         """
@@ -50,6 +52,7 @@ class ASFSession(requests.Session):
         self.cmr_host = INTERNAL.CMR_HOST if cmr_host is None else cmr_host
         self.cmr_collections = INTERNAL.CMR_COLLECTIONS if cmr_collections is None else cmr_collections
         self.auth_domains = INTERNAL.AUTH_DOMAINS if auth_domains is None else auth_domains
+        self.auth_cookie_names = INTERNAL.AUTH_COOKIES if auth_cookie_names is None else auth_cookie_names
 
     def __eq__(self, other):
         return self.auth == other.auth \
@@ -71,7 +74,7 @@ class ASFSession(requests.Session):
         self.auth = (username, password)
         self.get(login_url)
 
-        if "urs_user_already_logged" not in self.cookies.get_dict():
+        if not self._check_auth_cookies(self.cookies.get_dict()):
             raise ASFAuthenticationError("Username or password is incorrect")
 
         return self
@@ -87,14 +90,14 @@ class ASFSession(requests.Session):
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
         url = f"https://{self.cmr_host}{self.cmr_collections}"
-        response = self.get(url)        
+        response = self.get(url)
 
         if not 200 <= response.status_code <= 299:
             raise ASFAuthenticationError("Invalid/Expired token passed")
 
         return self
 
-    def auth_with_cookiejar(self, cookies: http.cookiejar):
+    def auth_with_cookiejar(self, cookies: http.cookiejar.CookieJar):
         """
         Authenticates the session using a pre-existing cookiejar
 
@@ -103,7 +106,7 @@ class ASFSession(requests.Session):
         :return ASFSession: returns self for convenience
         """
         
-        if "urs_user_already_logged" not in cookies:
+        if not self._check_auth_cookies(cookies):
             raise ASFAuthenticationError("Cookiejar does not contain login cookies")
 
         for cookie in cookies:
@@ -113,6 +116,9 @@ class ASFSession(requests.Session):
         self.cookies = cookies
 
         return self
+
+    def _check_auth_cookies(self, cookies: Union[http.cookiejar.CookieJar, Dict]) -> bool:
+        return any(cookie in self.auth_cookie_names for cookie in cookies)
 
     def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):
         """
@@ -150,6 +156,7 @@ class ASFSession(requests.Session):
             'asf_auth_host': self.asf_auth_host,
             'cmr_host': self.cmr_host,
             'cmr_collections': self.cmr_collections,
-            'auth_domains': self.auth_domains
+            'auth_domains': self.auth_domains,
+            'auth_cookie_names': self.auth_cookie_names
         }
         return state

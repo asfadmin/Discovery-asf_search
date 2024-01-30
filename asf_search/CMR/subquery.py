@@ -52,12 +52,14 @@ def _build_subquery(query: List[Tuple[dict]], opts: ASFSearchOptions, list_param
     q = dict()
     for p in query:
         q.update(p)
+    
+    q['provider'] = opts.provider
+    q['host'] = opts.host
+    q['session'] = copy(opts.session)
+
     return ASFSearchOptions(
         **q,
-         provider= opts.provider,
-         host= opts.host,
-         session= copy(opts.session),
-         **list_params
+        **list_params
     )
 
 def get_keyword_concept_ids(params: dict, use_collection_alias: bool=True) -> dict:
