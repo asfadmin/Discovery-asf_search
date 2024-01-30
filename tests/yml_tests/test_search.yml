@@ -1,7 +1,3 @@
-empty_parameters: {}
-alos_parameters:
-  platform: ALOS
-  maxResults: 3
 tests:
   - test-ASFSearch ALOS Resp 1:
       response: Alos_response_maxResults3.yml
@@ -309,8 +305,9 @@ tests:
       params:
         processingLevel:
           - UNKNOWN_PROCESSING_TYPE
-      expected:
-        - {}
+      expected: [
+        {processingLevel: [UNKNOWN_PROCESSING_TYPE]}
+      ]
   - test-search-build_subquery UNKNOWN_PROCESSING_TYPE with collections:
       params:
         processingLevel:
@@ -323,15 +320,18 @@ tests:
           - C1216244348-ASF
           - C1234413263-ASFDEV
           - C1212001698-ASF
-      expected:
-        - collections:
-            - C1214470488-ASF
-            - C1205428742-ASF
-            - C1234413245-ASFDEV
-            - C1327985661-ASF
-            - C1216244348-ASF
-            - C1234413263-ASFDEV
-            - C1212001698-ASF
+      expected: [
+        {
+        processingLevel: [UNKNOWN_PROCESSING_TYPE],
+        collections: [C1214470488-ASF,
+            C1205428742-ASF,
+            C1234413245-ASFDEV,
+            C1327985661-ASF,
+            C1216244348-ASF,
+            C1234413263-ASFDEV,
+            C1212001698-ASF]
+        }
+      ]
   - test-search-build_subquery UNKNOWN_PROCESSING_TYPE with platform, SLC, & collection:
       params:
         platform:
@@ -343,16 +343,31 @@ tests:
           - SLC
         collections:
           - C1212001698-ASF
-      expected:
-        - collections:
-            - C1214470488-ASF
-            - C1205428742-ASF
-            - C1234413245-ASFDEV
-            - C1327985661-ASF
-            - C1216244348-ASF
-            - C1234413263-ASFDEV
-            - C1212001698-ASF
-    
+      expected: [{
+        processingLevel: UNKNOWN_PROCESSING_TYPE,
+        collections: [
+            C1214470488-ASF,
+            C1205428742-ASF,
+            C1234413245-ASFDEV,
+            C1327985661-ASF,
+            C1216244348-ASF,
+            C1234413263-ASFDEV,
+            C1212001698-ASF,
+          ]
+        }]
+  - test-search-build_subquery configuration params:
+      params:
+        host: 'cmr.uat.earthdata.nasa.gov'
+        provider: 'ASFDEV'
+        product_list: ['S1_069649_IW1_20151201T232154_VV_73D6-BURST']
+      expected: [
+        {
+          host: 'cmr.uat.earthdata.nasa.gov',
+          provider: 'ASFDEV',
+          product_list: ['S1_069649_IW1_20151201T232154_VV_73D6-BURST']
+        }
+      ]
+
   - test-aliasing-search-against-api SLC:
       params:
         processingLevel: SLC
@@ -370,10 +385,6 @@ tests:
 
   - test-ASFSearch RADARSAT Resp 1:
       response: RADARSAT_stack.yml
-
-  - test-ASFSearch-search-valid Alos:
-      parameters: *alos_parameters
-      answer: Alos_response_maxResults3.yml
 
   - test-aliasing-search-against-api S1B SLC:
       params:

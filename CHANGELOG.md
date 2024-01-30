@@ -32,6 +32,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 - Attempting to authorize `ASFSession` against CMR UAT using `auth_with_creds()` and `auth_with_cookiejar()` no longer raises an exception on valid login
+- Fixes custom host in `ASFSearchOptions` raising type error while searching.
 
 ------
 ## [v7.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.0...v7.0.1)
