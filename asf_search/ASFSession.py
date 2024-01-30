@@ -7,8 +7,6 @@ from asf_search import __name__ as asf_name, __version__ as asf_version
 from asf_search.exceptions import ASFAuthenticationError
 
 class ASFSession(requests.Session):
-    """The names of the cookies to check for when confirming ASFSession is authenticated"""
-
     def __init__(self, 
                 edl_host: str = None,
                 edl_client_id: str = None,
