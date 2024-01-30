@@ -14,5 +14,6 @@ EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'
 DEFAULT_PROVIDER = 'ASF'
 
 AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov']
+AUTH_COOKIES = ['urs_user_already_logged', 'uat_urs_user_already_logged']
 
 ERROR_REPORTING_ENDPOINT = 'search-error-report.asf.alaska.edu'
