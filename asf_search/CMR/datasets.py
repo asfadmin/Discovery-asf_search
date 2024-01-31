@@ -897,12 +897,15 @@ collections_by_processing_level = {
         "C1595765183-ASF",
         "C1225776659-ASF",
     ],
-    "CSLC-STATIC": ["C1259982010-ASF", "C1259982010-ASF"],
+    "CSLC-STATIC": [
+        "C1259982010-ASF", 
+        "C1259982010-ASF", 
+        "C2795135668-ASF"
+    ],
     "RTC-STATIC": [
-        "C1260726378-ASF",
         "C1259981910-ASF",
         "C1260726378-ASF",
-        "C1259981910-ASF",
+        "C2795135174-ASF"
     ],
     "GRD": [
         "C1661710583-ASF",
