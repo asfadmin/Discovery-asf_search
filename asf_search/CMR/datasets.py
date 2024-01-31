@@ -331,6 +331,8 @@ dataset_collections = {
 
 collections_per_platform = {
     "SENTINEL-1A": [
+        "C2803501758-ASF",
+        "C2803501097-ASF",
         "C1214470488-ASF",
         "C1214470533-ASF",
         "C1214470576-ASF",
@@ -418,6 +420,8 @@ collections_per_platform = {
         "C1240784657-ASFDEV",
     ],
     "SENTINEL-1B": [
+        "C2803501758-ASF",
+        "C2803501097-ASF",
         "C1327985661-ASF",
         "C1327985645-ASF",
         "C1595422627-ASF",
@@ -852,11 +856,13 @@ collections_by_processing_level = {
     "CSLC": [
         "C2777443834-ASF",
         "C1260721945-ASF",
+        "C2803501758-ASF",
         "C1259976861-ASF",
     ],
     "RTC": [
         "C2777436413-ASF",
         "C1260721853-ASF",
+        "C2803501097-ASF",
         "C1259974840-ASF",
     ],
     "GRD_FD": ["C1214471197-ASF", "C1212200781-ASF"],
