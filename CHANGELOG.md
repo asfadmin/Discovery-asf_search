@@ -27,14 +27,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v7.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.2...v7.0.3)
-### Added
-- Adds newer `CSLC-STATIC` and `RTC-STATIC` concept-ids to `collections_by_processing_level` and Sentinel-1 platform concept id lists.
-
 ### Fixed
-- Fixed typo for constant variable name `constants.PRODUCT_TYPE.CSLC_STATIC`
+- Fixes typo for constant variable name `constants.PRODUCT_TYPE.CSLC_STATIC`
+- Normalizes concept-id lists for `OPERA-S1` dataset product types
 
 ### Changed
-- Completely remove calval `CSLC-STATIC` and calval `RTC-STATIC` collections from concept-id lists
+- Completely removes `CSLC-STATIC` Calval and `RTC-STATIC` Calval collections from concept-id lists
 
 ------
 ## [v7.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.1...v7.0.2)
