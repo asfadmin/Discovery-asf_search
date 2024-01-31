@@ -377,6 +377,26 @@ tests:
         platform: SENTINEL-1A
         processingLevel: SLC
 
+  - test-aliasing-search-against-api S1A RTC:
+      params:
+        platform: SENTINEL-1A
+        processingLevel: RTC
+
+  - test-aliasing-search-against-api S1A CSLC:
+      params:
+        platform: SENTINEL-1A
+        processingLevel: CSLC
+
+  - test-aliasing-search-against-api OERA-S1 CSLC:
+      params:
+        dataset: OPERA-S1
+        processingLevel: CSLC
+
+  - test-aliasing-search-against-api OERA-S1 RTC:
+      params:
+        dataset: OPERA-S1
+        processingLevel: RTC
+
   - test-ASFSearch OPERA Resp 1:
       response: OPERA_Products.yml
 
