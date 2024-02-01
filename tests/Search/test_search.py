@@ -109,14 +109,17 @@ def run_test_dataset_search(datasets: List):
 def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
     # mainly for getting platform aliases
     preprocess_opts(params)
-
     actual = build_subqueries(params)
     for a, b in zip(actual, expected):
         for key, actual_val in a:
             expected_val = getattr(b, key)
             if isinstance(actual_val, list):
                 if len(actual_val) > 0: # ASFSearchOptions leaves empty lists as None
-                    assert len(set(expected_val).difference(set(actual_val))) == 0
+                    expected_set = set(expected_val)
+                    actual_set = set(actual_val)
+
+                    difference = expected_set.symmetric_difference(actual_set)
+                    assert len(difference) == 0, f"Found {len(difference)} missing entries for subquery generated keyword: \"{key}\"\n{list(difference)}"
             else:
                 assert actual_val == expected_val
 

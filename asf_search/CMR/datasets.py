@@ -331,6 +331,8 @@ dataset_collections = {
 
 collections_per_platform = {
     "SENTINEL-1A": [
+        "C2803501758-ASF",
+        "C2803501097-ASF",
         "C1214470488-ASF",
         "C1214470533-ASF",
         "C1214470576-ASF",
@@ -376,12 +378,13 @@ collections_per_platform = {
         "C1260726384-ASF",
         "C1258354200-ASF",
         "C1259982010-ASF",
+        "C2795135668-ASF",
         "C1260721945-ASF",
         "C1257995185-ASF",
         "C1259976861-ASF",
-        "C1260726378-ASF",
         "C1258354201-ASF",
         "C1259981910-ASF",
+        "C2795135174-ASF",
         "C1260721853-ASF",
         "C1257995186-ASF",
         "C1259974840-ASF",
@@ -417,6 +420,8 @@ collections_per_platform = {
         "C1240784657-ASFDEV",
     ],
     "SENTINEL-1B": [
+        "C2803501758-ASF",
+        "C2803501097-ASF",
         "C1327985661-ASF",
         "C1327985645-ASF",
         "C1595422627-ASF",
@@ -462,12 +467,13 @@ collections_per_platform = {
         "C1260726384-ASF",
         "C1258354200-ASF",
         "C1259982010-ASF",
+        "C2795135668-ASF",
         "C1260721945-ASF",
         "C1257995185-ASF",
         "C1259976861-ASF",
-        "C1260726378-ASF",
         "C1258354201-ASF",
         "C1259981910-ASF",
+        "C2795135174-ASF",
         "C1260721853-ASF",
         "C1257995186-ASF",
         "C1259974840-ASF",
@@ -850,25 +856,18 @@ collections_by_processing_level = {
     "CSLC": [
         "C2777443834-ASF",
         "C1260721945-ASF",
-        "C1259976861-ASF",
-        "C2777443834-ASF",
-        "C1260721945-ASF",
+        "C2803501758-ASF",
         "C1259976861-ASF",
     ],
     "RTC": [
         "C2777436413-ASF",
         "C1260721853-ASF",
-        "C1259974840-ASF",
-        "C2777436413-ASF",
-        "C1260721853-ASF",
+        "C2803501097-ASF",
         "C1259974840-ASF",
     ],
     "GRD_FD": ["C1214471197-ASF", "C1212200781-ASF"],
     "METADATA_GRD_FD": ["C1214471960-ASF", "C1212209075-ASF"],
     "BURST": [
-        "C2709161906-ASF",
-        "C1257024016-ASF",
-        "C1257175154-ASFDEV",
         "C2709161906-ASF",
         "C1257024016-ASF",
         "C1257175154-ASFDEV",
@@ -897,12 +896,13 @@ collections_by_processing_level = {
         "C1595765183-ASF",
         "C1225776659-ASF",
     ],
-    "CSLC-STATIC": ["C1259982010-ASF", "C1259982010-ASF"],
+    "CSLC-STATIC": [
+        "C1259982010-ASF", 
+        "C2795135668-ASF"
+    ],
     "RTC-STATIC": [
-        "C1260726378-ASF",
         "C1259981910-ASF",
-        "C1260726378-ASF",
-        "C1259981910-ASF",
+        "C2795135174-ASF"
     ],
     "GRD": [
         "C1661710583-ASF",
