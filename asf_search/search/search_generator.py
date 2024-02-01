@@ -287,7 +287,7 @@ def _get_product_type_key(item: Dict) -> str:
 dataset_to_product_types = {
     'SENTINEL-1': ASFProductType.S1Product,
     'OPERA-S1': ASFProductType.OPERAS1Product,
-    'OPERA-S1-CALIBRATION': ASFProductType.OPERAS1Product,
+    'OPERA-S1-CALVAL': ASFProductType.OPERAS1Product,
     'SLC-BURST': ASFProductType.S1BurstProduct,
 
     'ALOS': ASFProductType.ALOSProduct,
