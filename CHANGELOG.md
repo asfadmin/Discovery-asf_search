@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.0.4)
+### Changed
+- `OPERA-S1-CALIBRATION` dataset is now the `OPERA-S1-CALVAL` dataset, uses the `OPERA_S1_CALVAL` constant
+
+------
 ## [v7.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.2...v7.0.3)
 ### Fixed
 - Fixes typo for constant variable name `constants.PRODUCT_TYPE.CSLC_STATIC`
