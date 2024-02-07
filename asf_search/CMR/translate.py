@@ -8,7 +8,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import dataset_collections, collections_per_platform
+from .datasets import collections_per_platform
 import dateparser
 import logging
 
@@ -147,6 +147,20 @@ def try_parse_float(value: str) -> Optional[float]:
     
     return float(value)
 
+def try_parse_date(value: str) -> Optional[str]:
+    if value is None:
+        return None
+
+    date = dateparser.parse(value)
+
+    if date is None:
+        return value
+
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=timezone.utc)
+        # Turn all inputs into a consistant format:
+
+    return date.strftime('%Y-%m-%dT%H:%M:%S%Z')
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
