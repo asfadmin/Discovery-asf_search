@@ -7,6 +7,8 @@ from typing import Union, Tuple, TypeVar, Callable, List, Type, Sequence
 import math
 from shapely import wkt, errors
 
+from asf_search.CMR.translate import try_parse_date
+
 number = TypeVar('number', int, float)
 
 def parse_string(value: str) -> str:
@@ -48,11 +50,15 @@ def parse_date(value: Union[str, datetime.datetime]) -> str:
     (Need to keep strings like "today" w/out converting them, but throw on "asdf")
     """
     if isinstance(value, datetime.datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=datetime.timezone.utc)
         return value
-    date = dateparser.parse(str(value))
+    
+    date = try_parse_date(str(value))
     if date is None:
         raise ValueError(f"Invalid date: '{value}'.")
-    return str(value)
+    
+    return date
 
 
 def parse_range(value: Tuple[number, number], h: Callable[[number], number]) -> Tuple[number, number]:
