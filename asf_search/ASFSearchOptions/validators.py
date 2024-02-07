@@ -1,5 +1,5 @@
 import dateparser
-import datetime
+from datetime import datetime, timezone
 
 import requests
 from typing import Union, Tuple, TypeVar, Callable, List, Type, Sequence
@@ -7,7 +7,6 @@ from typing import Union, Tuple, TypeVar, Callable, List, Type, Sequence
 import math
 from shapely import wkt, errors
 
-from asf_search.CMR.translate import try_parse_date
 
 number = TypeVar('number', int, float)
 
@@ -42,25 +41,24 @@ def parse_float(value: float) -> float:
     return value
 
 
-def parse_date(value: Union[str, datetime.datetime]) -> str:
+def parse_date(value: Union[str, datetime]) -> str:
     """
     Base date validator
     :param value: String or datetime object to be validated
     :return: String passed in, if it can successfully convert to Datetime.
     (Need to keep strings like "today" w/out converting them, but throw on "asdf")
     """
-    if isinstance(value, datetime.datetime):
-        if value.tzinfo is None:
-            value = value.replace(tzinfo=datetime.timezone.utc)
-        return value
+    if not isinstance(value, datetime):
+        value = dateparser.parse(value)
     
-    date = try_parse_date(str(value))
-    if date is None:
+    if value is None:
         raise ValueError(f"Invalid date: '{value}'.")
     
-    return date
-
-
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=timezone.utc)
+    
+    return value.strftime('%Y-%m-%dT%H:%M:%S%Z')
+    
 def parse_range(value: Tuple[number, number], h: Callable[[number], number]) -> Tuple[number, number]:
     """
     Base range validator. For our purposes, a range is a tuple with exactly two numeric elements (a, b), requiring a <= b.
@@ -85,7 +83,7 @@ def parse_range(value: Tuple[number, number], h: Callable[[number], number]) -> 
 
 
 # Parse and validate a date range: "1991-10-01T00:00:00Z,1991-10-02T00:00:00Z"
-def parse_date_range(value: Tuple[Union[str, datetime.datetime], Union[str, datetime.datetime]]) -> Tuple[datetime.datetime, datetime.datetime]:
+def parse_date_range(value: Tuple[Union[str, datetime], Union[str, datetime]]) -> Tuple[datetime, datetime]:
     return parse_range(value, parse_date)
 
 
