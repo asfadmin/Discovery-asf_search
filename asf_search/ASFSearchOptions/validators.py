@@ -2,12 +2,11 @@ import dateparser
 import datetime
 
 import requests
-from typing import Union, Tuple, TypeVar, Callable, List, Type, Sequence
+from typing import Optional, Union, Tuple, TypeVar, Callable, List, Type, Sequence
 
 import math
 from shapely import wkt, errors
 
-from asf_search.CMR.translate import try_parse_date
 
 number = TypeVar('number', int, float)
 
@@ -60,6 +59,20 @@ def parse_date(value: Union[str, datetime.datetime]) -> str:
     
     return date
 
+def try_parse_date(value: str) -> Optional[str]:
+    if value is None:
+        return None
+    
+    date = dateparser.parse(value)
+
+    if date is None:
+        return value
+    
+    if date.tzinfo is None:
+        date = date.replace(tzinfo=datetime.timezone.utc)
+        # Turn all inputs into a consistant format:
+    
+    return date.strftime('%Y-%m-%dT%H:%M:%S%Z')
 
 def parse_range(value: Tuple[number, number], h: Callable[[number], number]) -> Tuple[number, number]:
     """
