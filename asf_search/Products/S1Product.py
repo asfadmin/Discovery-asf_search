@@ -1,7 +1,7 @@
 import copy
 from typing import Dict, List, Optional, Tuple
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.CMR.translate import try_parse_int
+from asf_search.CMR.translate import try_parse_date, try_parse_int
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE
 
@@ -82,7 +82,7 @@ class S1Product(ASFStackableProduct):
         if timestamp is None:
             return None
 
-        return timestamp if timestamp.endswith('Z') else f'{timestamp}Z'
+        return try_parse_date(timestamp)
 
     def _parse_state_vector(self, state_vector: str) -> Tuple[Optional[List], Optional[str]]:
         if state_vector is None:

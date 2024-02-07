@@ -10,7 +10,7 @@ from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.download import download_url
 from asf_search.download.file_download_type import FileDownloadType
-from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
+from asf_search.CMR.translate import try_parse_date, try_parse_float, try_parse_int, try_round_float
 
 
 class ASFProduct:
@@ -44,7 +44,7 @@ class ASFProduct:
             # min viable product
             'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
             'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': try_parse_float},
-            'stopTime': {'path': ['TemporalExtent', 'RangeDateTime', 'EndingDateTime']}, # primary search results sort key
+            'stopTime': {'path': ['TemporalExtent', 'RangeDateTime', 'EndingDateTime'], 'cast': try_parse_date}, # primary search results sort key
             'fileID': {'path': ['GranuleUR']}, # secondary search results sort key
             'flightDirection': {'path': [ 'AdditionalAttributes', ('Name', 'ASCENDING_DESCENDING'), 'Values', 0]},
             'pathNumber': {'path': ['AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0], 'cast': try_parse_int},
@@ -52,7 +52,7 @@ class ASFProduct:
 
             # commonly used
             'url': {'path': [ 'RelatedUrls', ('Type', 'GET DATA'), 'URL']},
-            'startTime': {'path': [ 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime']},
+            'startTime': {'path': [ 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime'], 'cast': try_parse_date},
             'sceneName': {'path': [ 'DataGranule', 'Identifiers', ('IdentifierType', 'ProducerGranuleId'), 'Identifier']},
             'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
             'platform': {'path': [ 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
@@ -62,7 +62,7 @@ class ASFProduct:
             'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
             'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
             'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
-            'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], },
+            'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], 'cast': try_parse_date},
             'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
     """
