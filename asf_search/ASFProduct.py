@@ -10,7 +10,7 @@ from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.download import download_url
 from asf_search.download.file_download_type import FileDownloadType
-from asf_search.ASFSearchOptions.validators import try_parse_date
+from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 
 

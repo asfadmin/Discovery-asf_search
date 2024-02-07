@@ -15,7 +15,7 @@ from shapely.wkt import loads
 from shapely.ops import transform
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
-from asf_search.ASFSearchOptions.validators import try_parse_date
+from asf_search.CMR.translate import try_parse_date
 from asf_search.constants import PLATFORM
 import re
 

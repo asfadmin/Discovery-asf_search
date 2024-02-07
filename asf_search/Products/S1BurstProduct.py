@@ -2,7 +2,7 @@ import copy
 from typing import Dict, Union
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
-from asf_search.ASFSearchOptions.validators import try_parse_date
+from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PRODUCT_TYPE
 

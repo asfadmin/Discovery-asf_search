@@ -1,7 +1,7 @@
 import copy
 from typing import Dict, List, Optional, Tuple
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.ASFSearchOptions.validators import try_parse_date
+from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PLATFORM
 from asf_search.constants import PRODUCT_TYPE

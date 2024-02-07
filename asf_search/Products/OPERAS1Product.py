@@ -1,6 +1,6 @@
-from typing import Dict, Optional
+from typing import Dict
 from asf_search import ASFSearchOptions, ASFSession
-from asf_search.ASFSearchOptions.validators import try_parse_date
+from asf_search.CMR.translate import try_parse_date
 from asf_search.Products import S1Product
 
 
