@@ -586,21 +586,29 @@ tests:
   - test-aliasing-search-against-api SLC:
       params:
         processingLevel: SLC
+        start: '2023-12-01T00:00:00Z'
+        end: '2023-12-31T00:00:00Z'
 
   - test-aliasing-search-against-api S1A SLC:
       params:
         platform: SENTINEL-1A
         processingLevel: SLC
+        start: '2023-12-01T00:00:00Z'
+        end: '2023-12-31T00:00:00Z'
 
   - test-aliasing-search-against-api S1A RTC:
       params:
         platform: SENTINEL-1A
         processingLevel: RTC
+        start: '2023-12-01T00:00:00Z'
+        end: '2023-12-31T00:00:00Z'
 
   - test-aliasing-search-against-api S1A CSLC:
       params:
         platform: SENTINEL-1A
         processingLevel: CSLC
+        start: '2023-12-01T00:00:00Z'
+        end: '2023-12-31T00:00:00Z'
 
   - test-aliasing-search-against-api RTC-STATIC:
       params:
