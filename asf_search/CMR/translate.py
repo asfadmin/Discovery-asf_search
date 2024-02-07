@@ -160,7 +160,7 @@ def try_parse_date(value: str) -> Optional[str]:
         date = date.replace(tzinfo=timezone.utc)
         # Turn all inputs into a consistant format:
 
-    return date.strftime('%Y-%m-%dT%H:%M:%S%Z')
+    return date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 def fix_date(fixed_params: Dict[str, Any]):
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
