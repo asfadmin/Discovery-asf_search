@@ -1,8 +1,10 @@
-from asf_search import ASFProduct, ASFSearchResults
+from asf_search import ASFProduct, ASFSearchResults, ASFSession
 from asf_search.ASFSearchOptions.ASFSearchOptions import ASFSearchOptions
 
 import os
 import json
+
+from asf_search.search.search_generator import as_ASFProduct
 
 
 
@@ -36,10 +38,9 @@ def run_test_serialization(product=None, results=None, opts=ASFSearchOptions()):
 
 
 def json_to_product(product):
-    output = ASFProduct()
+    output = as_ASFProduct(product, session=ASFSession())
     output.meta = product['meta']
     output.properties = product['properties']
     output.geometry = product['geometry']
     output.umm = product['umm']
-    
     return output

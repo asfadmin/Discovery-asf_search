@@ -1,4 +1,4 @@
-from typing import Union, Iterable, Tuple
+from typing import Union, Sequence, Tuple
 from copy import copy
 import datetime
 
@@ -7,11 +7,11 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.search.search_generator import search_generator
 
 def search(
-        absoluteOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
-        asfFrame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
-        beamMode: Union[str, Iterable[str]] = None,
-        beamSwath: Union[str, Iterable[str]] = None,
-        campaign: Union[str, Iterable[str]] = None,
+        absoluteOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
+        asfFrame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
+        beamMode: Union[str, Sequence[str]] = None,
+        beamSwath: Union[str, Sequence[str]] = None,
+        campaign: Union[str, Sequence[str]] = None,
         circle: Tuple[float, float, float] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
@@ -20,27 +20,29 @@ def search(
         minFaradayRotation: float = None,
         flightDirection: str = None,
         flightLine: str = None,
-        frame: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
-        granule_list: Union[str, Iterable[str]] = None,
-        groupID: Union[str, Iterable[str]] = None,
+        frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
+        granule_list: Union[str, Sequence[str]] = None,
+        groupID: Union[str, Sequence[str]] = None,
         insarStackId: str = None,
-        instrument: Union[str, Iterable[str]] = None,
+        instrument: Union[str, Sequence[str]] = None,
         intersectsWith: str = None,
-        lookDirection: Union[str, Iterable[str]] = None,
-        offNadirAngle: Union[float, Tuple[float, float], Iterable[Union[float, Tuple[float, float]]]] = None,
-        platform: Union[str, Iterable[str]] = None,
-        polarization: Union[str, Iterable[str]] = None,
+        lookDirection: Union[str, Sequence[str]] = None,
+        offNadirAngle: Union[float, Tuple[float, float], Sequence[Union[float, Tuple[float, float]]]] = None,
+        platform: Union[str, Sequence[str]] = None,
+        polarization: Union[str, Sequence[str]] = None,
         processingDate: Union[datetime.datetime, str] = None,
-        processingLevel: Union[str, Iterable[str]] = None,
-        product_list: Union[str, Iterable[str]] = None,
-        relativeOrbit: Union[int, Tuple[int, int], Iterable[Union[int, Tuple[int, int]]]] = None,
+        processingLevel: Union[str, Sequence[str]] = None,
+        product_list: Union[str, Sequence[str]] = None,
+        relativeOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
         season: Tuple[int, int] = None,
         start: Union[datetime.datetime, str] = None,
-        absoluteBurstID: Union[int, Iterable[int]] = None,
-        relativeBurstID: Union[int, Iterable[int]] = None,
-        fullBurstID: Union[str, Iterable[str]] = None,
-        collections: Union[str, Iterable[str]] = None,
-        temporalBaselineDays: Union[str, Iterable[str]] = None,
+        absoluteBurstID: Union[int, Sequence[int]] = None,
+        relativeBurstID: Union[int, Sequence[int]] = None,
+        fullBurstID: Union[str, Sequence[str]] = None,
+        collections: Union[str, Sequence[str]] = None,
+        temporalBaselineDays: Union[str, Sequence[str]] = None,
+        operaBurstID: Union[str, Sequence[str]] = None,
+        dataset: Union[str, Sequence[str]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
@@ -97,9 +99,6 @@ def search(
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
     
-    # Raise if they didn't get everything. If you're okay with partial
-    # results, use asf.search_generator directly
-    results.raise_if_incomplete()
-    results.sort(key=lambda p: (p.properties['stopTime'], p.properties['fileID']), reverse=True)
+    results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
     
     return results

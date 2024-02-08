@@ -1,40 +1,46 @@
+from typing import Tuple, List
 from dateutil.parser import parse
 import pytz
+
 from .calc import calculate_perpendicular_baselines
-from asf_search import ASFProduct, ASFSearchResults
+from asf_search import ASFProduct, ASFStackableProduct, ASFSearchResults
 
-precalc_datasets = ['AL', 'R1', 'E1', 'E2', 'J1']
 
-def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults):
-    warnings = None
+def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults) -> Tuple[ASFSearchResults, List[dict]]:
+    warnings = []
 
     if len(stack) == 0:
         raise ValueError('No products found matching stack parameters')
-    stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata') and product.baseline != None]
-    reference, stack, warnings = check_reference(reference, stack)
+
+    stack = [product for product in stack if not product.properties['processingLevel'].lower().startswith('metadata') and product.baseline is not None]
+    reference, stack, reference_warnings = check_reference(reference, stack)
     
+    if reference_warnings is not None:
+        warnings.append(reference_warnings)
+
+
     stack = calculate_temporal_baselines(reference, stack)
 
-    if get_platform(reference.properties['sceneName']) in precalc_datasets:
+    if reference.baseline_type == ASFStackableProduct.BaselineCalcType.PRE_CALCULATED:
         stack = offset_perpendicular_baselines(reference, stack)
     else:
         stack = calculate_perpendicular_baselines(reference.properties['sceneName'], stack)
 
+        missing_state_vectors = _count_missing_state_vectors(stack)
+        if missing_state_vectors > 0:
+            warnings.append({'MISSING STATE VECTORS': f'{missing_state_vectors} scenes in stack missing State Vectors, perpendicular baseline not calculated for these scenes'})
+    
     return ASFSearchResults(stack), warnings
-
-def valid_state_vectors(product: ASFProduct):
-    if product is None:
-        raise ValueError('Attempting to check state vectors on None, this is fatal')
-    for key in ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']:
-        if key not in product.baseline['stateVectors']['positions'] or product.baseline['stateVectors']['positions'][key] == None:
-            return False
-    return True
+    
+def _count_missing_state_vectors(stack) -> int:
+    return len([scene for scene in stack if scene.baseline.get('noStateVectors')])
 
 def find_new_reference(stack: ASFSearchResults):
     for product in stack:
-        if valid_state_vectors(product):
+        if product.is_valid_reference():
             return product
     return None
+
 
 def check_reference(reference: ASFProduct, stack: ASFSearchResults):
     warnings = None
@@ -42,33 +48,15 @@ def check_reference(reference: ASFProduct, stack: ASFSearchResults):
         reference = stack[0]
         warnings = [{'NEW_REFERENCE': 'A new reference scene had to be selected in order to calculate baseline values.'}]
 
-    if get_platform(reference.properties['sceneName']) in precalc_datasets:
-            if 'insarBaseline' not in reference.baseline:
-                raise ValueError('No baseline values available for precalculated dataset')
-    else:
-        if not valid_state_vectors(reference): # the reference might be missing state vectors, pick a valid reference, replace above warning if it also happened
-            reference = find_new_reference(stack)
-            if reference == None:
-                raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
-            warnings = [{'NEW_REFERENCE': 'A new reference had to be selected in order to calculate baseline values.'}]
+    # non-s1 is_valid_reference raise an error, while we try to find a valid s1 reference
+    # do we want this behaviour for pre-calc stacks?
+    if not reference.is_valid_reference():
+        reference = find_new_reference(stack)
+        if reference == None:
+            raise ValueError('No valid state vectors on any scenes in stack, this is fatal')
 
     return reference, stack, warnings
 
-def get_platform(reference: str):
-    return reference[0:2].upper()
-
-def get_default_product_type(product: ASFProduct):
-    scene_name = product.properties['sceneName']
-    
-    if get_platform(scene_name) in ['AL']:
-        return 'L1.1'
-    if get_platform(scene_name) in ['R1', 'E1', 'E2', 'J1']:
-        return 'L0'
-    if get_platform(scene_name) in ['S1']:
-        if product.properties['processingLevel'] == 'BURST':
-            return 'BURST'
-        return 'SLC'
-    return None
 
 def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults):
     """
@@ -87,13 +75,13 @@ def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults)
         if secondary_time.tzinfo is None:
             secondary_time = pytz.utc.localize(secondary_time)
         secondary.properties['temporalBaseline'] = (secondary_time.date() - reference_time.date()).days
-    
+
     return stack
 
 def offset_perpendicular_baselines(reference: ASFProduct, stack: ASFSearchResults):
     reference_offset = float(reference.baseline['insarBaseline'])
-    
+
     for product in stack:
             product.properties['perpendicularBaseline'] = round(float(product.baseline['insarBaseline']) - reference_offset)
-    
+
     return stack

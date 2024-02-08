@@ -130,3 +130,5 @@ dmypy.json
 
 # VS Code
 .vscode/
+search_results.csv
+search_results.metalink

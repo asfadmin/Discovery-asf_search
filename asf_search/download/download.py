@@ -1,16 +1,19 @@
 from typing import Iterable
 from multiprocessing import Pool
 import os.path
-import urllib.parse
+from urllib import parse
 from requests import Response
 from requests.exceptions import HTTPError
 import warnings
-import regex as re
 
 from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError
-from asf_search import ASFSession
-from remotezip import RemoteZip
+from asf_search import ASF_LOGGER, ASFSession
 from tenacity import retry, stop_after_delay, retry_if_result, wait_fixed
+
+try:
+    from remotezip import RemoteZip
+except ImportError:
+    RemoteZip = None
 
 def _download_url(arg):
     url, path, session = arg
@@ -56,7 +59,7 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     """
     
     if filename is None:
-        filename = os.path.split(urllib.parse.urlparse(url).path)[1]
+        filename = os.path.split(parse.urlparse(url).path)[1]
     
     if not os.path.isdir(path):
         raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
@@ -74,17 +77,19 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
 
-def remotezip(url: str, session: ASFSession) -> RemoteZip:
+def remotezip(url: str, session: ASFSession) -> 'RemoteZip':
     """
     :param url: the url to the zip product
     :param session: the authenticated ASFSession to read and download from the zip file
     """
-
+    if RemoteZip is None:
+        raise ImportError("Could not find remotezip package in current python environment. \"remotezip\" is an optional dependency of asf-search required for the `remotezip()` method. Enable by including the appropriate pip or conda install. Ex: `python3 -m pip install asf-search[extras]`")
+    
     session.hooks['response'].append(strip_auth_if_aws)
     return RemoteZip(url, session=session)
 
 def strip_auth_if_aws(r, *args, **kwargs):
-    if 300 <= r.status_code <= 399 and 'amazonaws.com' in urllib.parse.urlparse(r.headers['location']).netloc:
+    if 300 <= r.status_code <= 399 and 'amazonaws.com' in parse.urlparse(r.headers['location']).netloc:
         location = r.headers['location']
         r.headers.clear()
         r.headers['location'] = location

@@ -11,9 +11,6 @@ tests:
 - Test Get test-invalid-insarStackID Stack Params:
     product: Alos_response.yml
 
-- Test Get test-invalid-platform Stack Params:
-    product: S1_response.yml
-
 - Test Get test-temporal-baseline test-product-stack SLC Params:
     product: S1_response.yml
     stack: S1_baseline_stack.yml
@@ -25,6 +22,14 @@ tests:
 - Test get test-temporal-baseline test-product-stack BURST Params:
     product: SLC_BURST.yml
     stack: SLC_BURST_stack.yml
+
+- Test get test-temporal-baseline test-product-stack JERS Params:
+    product: JERS.yml
+    stack: JERS_stack.yml
+
+- Test get test-temporal-baseline test-product-stack RADARSAT Params:
+    product: RADARSAT.yml
+    stack: RADARSAT_stack.yml
 
 - test-stack-id empty ID:
     stack_id: ''

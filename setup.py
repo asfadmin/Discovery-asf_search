@@ -9,7 +9,6 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "remotezip >= 0.10.0",
     "tenacity == 8.2.2"
 ]
 
@@ -22,8 +21,13 @@ test_requirements = [
     "requests-mock",
     "nbformat",
     "nbconvert",
-    "ipykernel", 
+    "ipykernel",
 ]
+
+extra_requirements = [
+    "remotezip>=0.10.0"
+]
+
 
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
@@ -43,9 +47,9 @@ setup(
     packages=find_packages(exclude=["tests.*", "tests", "examples.*", "examples"]),
     package_dir={'asf_search': 'asf_search'},
     include_package_data=True,
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=requirements,
-    extras_require={ "test": test_requirements },
+    extras_require={ "test": test_requirements, "extras": extra_requirements},
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[
@@ -56,8 +60,6 @@ setup(
         "Intended Audience :: Science/Research",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3 :: Only",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Topic :: Software Development",

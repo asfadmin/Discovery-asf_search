@@ -26,13 +26,109 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [TODO](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...TODO)
+## [v7.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.1.0)
 ### Added
 - Added `asf.ASFSearchOptions(circle=[lat, long, radius])` search param. Takes list of exactly 3 numbers.
 - Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.
 - Exposed `ASFProduct.get_urls` which returns the URL's for it's products directly. Can control which products with the `fileType` enum.
+
+------
+## [v7.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.0.4)
+### Changed
+- `OPERA-S1-CALIBRATION` dataset is now the `OPERA-S1-CALVAL` dataset, uses the `OPERA_S1_CALVAL` constant
+
+------
+## [v7.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.2...v7.0.3)
 ### Fixed
-- Fixed bug in `ASFProduct` where asking for `asf.ADDITIONAL_FILES` on non-burst products would throw a KeyError.
+- Fixes typo for constant variable name `constants.PRODUCT_TYPE.CSLC_STATIC`
+- Normalizes concept-id lists for `OPERA-S1` dataset product types
+
+### Changed
+- Completely removes `CSLC-STATIC` Calval and `RTC-STATIC` Calval collections from concept-id lists
+
+------
+## [v7.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.1...v7.0.2)
+### Added
+- Adds `AUTH_COOKIES` to `constants.INTERNAL` and `auth_cookie_names` variable for `ASFSession`, used by `auth_with_creds()` and `auth_with_cookiejar()` to confirm login.
+
+### Fixed
+- Attempting to authorize `ASFSession` against CMR UAT using `auth_with_creds()` and `auth_with_cookiejar()` no longer raises an exception on valid login
+- Fixes custom host in `ASFSearchOptions` raising type error while searching.
+
+------
+## [v7.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.0...v7.0.1)
+### Fixed
+- Fixed `OPERA-S1-CALIBRATION` dataset products raising error during search.
+
+------
+## [v7.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.3...v7.0.0)
+### Added
+- `ASFProduct` now has 13 sublcasses for different sub-products that correspond to datasets:
+  - `S1Product`, `S1BurstProduct`, `OPERAS1Product`, `ARIAS1GUNWProduct`, `ALOSProduct`, `RADARSATProduct`, `AIRSARProduct`, `ERSProduct`, `JERSProduct`, `UAVSARProduct`, `SIRCProduct`, `SEASATProduct`, `SMAPProduct`
+  - Each subclass defines relevant keys to pull from `umm` response, reducing the amount of irrelevant values in `properties` dict for certain product types 
+- Adds `collectionAlias` to `ASFSearchOptions` validator map as config param. Set to `False` to disable concept-id aliasing behaviour for `processingLevel` and `platform`.
+- Adds warning when scenes in stack are missing state vectors, and logs baseline warnings with `ASF_LOGGER`
+- Adds `OPERA-S1-CALIBRATION` entry to `dataset_collections` and corresponding `OPERA_S1_CALIBRATION` constant to `DATASET.py`, used to search for OPERA-S1 `CSLC` and `RTC` calibration data.
+
+### Changed
+- `remotezip` is now an optional dependency of asf-search's pip and conda installs, (pip install example: `python3 -m pip install asf-search[extras]`).
+- Constants are no longer top level import, are now accessible through respective modules
+- `processingLevel` and `platform` are now aliased by collection concept-ids, (lists of concept ids by their processing levels/platforms viewable in `dataset.py`), improving search performance and dodging subquery system
+- Baseline stacking no longer excludes products with missing state vectors from final stack, like SearchAPI
+- `OPERA-S1` dataset no longer includes calibration data (moved to new dataset)
+- Adds optional `ASFSession` constructor keyword arguments for new class variables:
+   - `edl_host`
+   - `edl_client_id`
+   - `asf_auth_host`
+   - `cmr_host`
+   - `cmr_collections`
+   - `auth_domains`
+- `ASFSession` imports `asf_search.constants.INTERNAL` in constructor call
+- `ASFSession` methods `auth_with_creds()`, `auth_with_token()`, and `rebuild_auth()` use new class variables instead of constants
+
+------
+## [v6.7.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.2...v6.7.3)
+### Added
+- Adds OPERA-S1 constants `RTC`, `RTC_STATIC` (RTC-STATIC), `CSLC`, `CSLC_STATIC` (CSLC-STATIC) to `PRODUCT_TYPE.py`
+
+### Fixed
+- Harmonizes `search()`, `geo_search()`, and `search_count()` parameters
+- Updates python version requirement in `setup.py` to 3.8+
+
+### Changed
+- search method params with `Iterable` type hinting now changed to `Sequence`
+- search method param validators updated to support `Sequence` type
+
+------
+## [v6.7.2](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.1...v6.7.2)
+### Added
+- Adds constants for `dataset` keyword, under `asf_search.DATASET`
+- Adds CALVAL concept-ids to 'OPERA-S1' dataset
+- Adds `validityStartDate` for applicable OPERA-S1 products
+
+### Fixed
+- Fixes OPERA-S1 dataset `RTC-STATIC` and `CSLC-STATIC` breaking returned results, sorts by `validityStartDate` in place of `stopTime`
+
+------
+## [v6.7.1](https://github.com/asfadmin/Discovery-asf_search/compare/v6.7.0...v6.7.1)
+### Fixed
+- Fixes issue with certain S1 products not stacking properly in certain environments, which caused null `perpendicularBaseline` values
+
+------
+## [v6.7.0](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.3...v6.7.0)
+### Added
+- Adds new `dataset` keyword to `search()` as an alternative to `platform`. Allows users to get results from multiple platforms at once in a single page
+- Adds `operaBurstID` keyword to `search()`
+- Adds OPERA-S1 param `operaBurstID` to `ASFProduct.properties`, and adds Opera product urls to `additionalUrls`
+- OPERA-S1 RTC product `polarization` now shows both polarizations as list
+- adds `frameNumber` properties support for new `Sentinel-1 Interferogram` products
+- added `CMR_TIMEOUT` constant. This is the amount of time in seconds to wait without seeing *any* data. (Default=30)
+
+### Changed
+- Changes `CMR_FORMAT_EXT` constant from `umm_json_v1_4` to `umm_json`, umm returned from CMR will now be in latest umm format by default
+
+### Fixed
+- ERS-1, ERS-2, JERS-1, and RADARSAT-1 now assign `FRAME_NUMBER` to the `frameNumber` properties field
 
 ------
 ## [v6.6.3](https://github.com/asfadmin/Discovery-asf_search/compare/v6.6.2...v6.6.3)

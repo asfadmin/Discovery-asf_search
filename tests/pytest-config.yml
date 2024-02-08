@@ -56,12 +56,6 @@ test_types:
     method: test_get_stack_opts_invalid_insarStackId
 
 - For running Invalid Platform stack params tests:
-    required_keys: product
-    required_in_title: test-invalid-platform
-    method: test_get_stack_opts_invalid_platform
-
-
-- For running Invalid Platform stack params tests:
     required_keys: ["product", "stack"]
     required_in_title: test-temporal-baseline
     method: test_temporal_baseline
@@ -198,6 +192,21 @@ test_types:
     required_in_title: ASFSearchResults-format
     required_keys: results
     method: test_output_format
+
+- For running search-api keyword-collection aliasing tests:
+    required_in_title: test-aliasing-search-against-api
+    required_keys: params
+    method: test_keyword_aliasing_results
+
+- For running dataset keyword tests:
+    required_in_title: search-dataset
+    required_keys: dataset
+    method: test_search_dataset
+
+- For running build_subquery tests:
+    required_in_title: search-build_subquery
+    required_keys: ['params', 'expected']
+    method: test_build_subqueries
 
 - For running jupyter notebook example tests:
     required_keys: notebook

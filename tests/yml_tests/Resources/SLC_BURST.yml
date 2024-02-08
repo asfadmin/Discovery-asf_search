@@ -3,89 +3,131 @@
     {
       "beamModeType": "IW",
       "browse": None,
-      "bytes": None,
-      "centerLat": 57.37481196728577,
-      "centerLon": -133.71556178621003,
+      "bytes": 147215404,
+      "centerLat": 57.04282649297329,
+      "centerLon": -135.917406937361,
       "faradayRotation": None,
-      "fileID": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
-      "flightDirection": "ASCENDING",
-      "groupID": "S1A_IWDV_0184_0190_005051_079",
+      "fileID": "S1_372326_IW3_20180815T151558_VV_6BD3-BURST",
+      "flightDirection": "DESCENDING",
+      "groupID": "S1B_IWDV_0402_0407_012275_174",
       "granuleType": None,
       "insarStackId": None,
       "md5sum": None,
       "offNadirAngle": None,
-      "orbit": 5051,
-      "pathNumber": 79,
-      "platform": "SENTINEL-1A",
+      "orbit": 12275,
+      "pathNumber": 174,
+      "platform": "SENTINEL-1B",
       "pointingAngle": None,
-      "polarization": "VH",
+      "polarization": "VV",
       "processingDate": None,
       "processingLevel": "BURST",
-      "sceneName": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
+      "sceneName": "S1_372326_IW3_20180815T151558_VV_6BD3-BURST",
       "sensor": "C-SAR",
-      "startTime": "2015-03-16T02:37:31.036086Z",
-      "stopTime": "2015-03-16T02:37:32.077676Z",
-      "url": "https://sentinel1-burst.asf.alaska.edu/S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9/IW2/VH/5.tiff",
-      "fileName": "5.tiff",
+      "startTime": "2018-08-15T15:15:59.530553Z",
+      "stopTime": "2018-08-15T15:16:02.652943Z",
+      "url": "https://sentinel1-burst.asf.alaska.edu/S1B_IW_SLC__1SDV_20180815T151543_20180815T151610_012275_0169E6_6BD3/IW3/VV/5.tiff",
+      "pgeVersion": "002.91",
+      "fileName": "S1_372326_IW3_20180815T151558_VV_6BD3-BURST.tiff",
       "frameNumber": None,
       "burst":
         {
-          "absoluteBurstID": 10847375,
-          "relativeBurstID": 167878,
-          "fullBurstID": "079_167878_IW2",
+          "absoluteBurstID": 26364401,
+          "relativeBurstID": 372326,
+          "fullBurstID": "174_372326_IW3",
           "burstIndex": 5,
-          "samplesPerBurst": 25023,
-          "subswath": "IW2",
-          "azimuthTime": "2015-03-16T02:37:30.005466",
-          "azimuthAnxTime": "936.0866766603999",
+          "samplesPerBurst": 24229,
+          "subswath": "IW3",
+          "azimuthTime": "2018-08-15T15:15:58.385550",
+          "azimuthAnxTime": "2026.218343215",
         },
+      "additionalUrls":
+        [
+          "https://sentinel1-burst.asf.alaska.edu/S1B_IW_SLC__1SDV_20180815T151543_20180815T151610_012275_0169E6_6BD3/IW3/VV/5.xml",
+        ],
     },
   "meta":
     {
       "concept-type": "granule",
-      "concept-id": "G1257175671-ASFDEV",
-      "revision-id": 1,
-      "native-id": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
-      "provider-id": "ASFDEV",
+      "concept-id": "G2709386819-ASF",
+      "revision-id": 2,
+      "native-id": "S1_372326_IW3_20180815T151558_VV_6BD3-BURST",
+      "provider-id": "ASF",
       "format": "application/vnd.nasa.cmr.umm+json",
-      "revision-date": "2023-04-11T00:34:07.016Z",
+      "revision-date": "2023-06-16T01:24:43.705Z",
     },
   "umm":
     {
-      "TemporalExtent": { "RangeDateTime": { "BeginningDateTime": "2015-03-16T02:37:31.036086Z", "EndingDateTime": "2015-03-16T02:37:32.077676Z" } },
-      "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 5051 }],
-      "GranuleUR": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
+      "TemporalExtent":
+        {
+          "RangeDateTime":
+            {
+              "BeginningDateTime": "2018-08-15T15:15:59.530553Z",
+              "EndingDateTime": "2018-08-15T15:16:02.652943Z",
+            },
+        },
+      "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 12275 }],
+      "GranuleUR": "S1_372326_IW3_20180815T151558_VV_6BD3-BURST",
       "AdditionalAttributes":
         [
-          { "Name": "ASC_NODE_TIME", "Values": ["2015-03-16T02:21:53.918789"] },
-          { "Name": "ASCENDING_DESCENDING", "Values": ["ASCENDING"] },
-          { "Name": "AZIMUTH_ANX_TIME", "Values": ["936.0866766603999"] },
-          { "Name": "AZIMUTH_TIME", "Values": ["2015-03-16T02:37:30.005466"] },
+          {
+            "Name": "ASC_NODE_TIME",
+            "Values": ["2018-08-15T14:42:12.162110Z"],
+          },
+          { "Name": "ASCENDING_DESCENDING", "Values": ["DESCENDING"] },
+          { "Name": "AZIMUTH_ANX_TIME", "Values": ["2026.218343215"] },
+          { "Name": "AZIMUTH_TIME", "Values": ["2018-08-15T15:15:58.385550"] },
           { "Name": "BEAM_MODE", "Values": ["IW"] },
           {
             "Name": "BEAM_MODE_DESC",
-            "Values": ["Interferometric Wide. 250 km swath, 5 m x 20 m spatial resolution and burst synchronization for interferometry. IW is considered to be the standard mode over land masses."],
+            "Values":
+              [
+                "Interferometric Wide. 250 km swath, 5 m x 20 m spatial resolution and burst synchronization for interferometry. IW is considered to be the standard mode over land masses.",
+              ],
           },
-          { "Name": "BURST_ID_ABSOLUTE", "Values": ["10847375"] },
-          { "Name": "BURST_ID_FULL", "Values": ["079_167878_IW2"] },
-          { "Name": "BURST_ID_RELATIVE", "Values": ["167878"] },
+          { "Name": "BURST_ID_ABSOLUTE", "Values": ["26364401"] },
+          { "Name": "BURST_ID_FULL", "Values": ["174_372326_IW3"] },
+          { "Name": "BURST_ID_RELATIVE", "Values": ["372326"] },
           { "Name": "BURST_INDEX", "Values": ["5"] },
-          { "Name": "BYTE_LENGTH", "Values": ["151439196"] },
-          { "Name": "BYTE_OFFSET", "Values": ["757317335"] },
-          { "Name": "CENTER_LAT", "Values": ["57.37481196728577"] },
-          { "Name": "CENTER_LON", "Values": ["-133.71556178621003"] },
-          { "Name": "GROUP_ID", "Values": ["S1A_IWDV_0184_0190_005051_079"] },
-          { "Name": "LINES_PER_BURST", "Values": ["1513"] },
-          { "Name": "PATH_NUMBER", "Values": ["79"] },
-          { "Name": "POLARIZATION", "Values": ["VH"] },
+          { "Name": "BYTE_LENGTH", "Values": ["147215404"] },
+          { "Name": "BYTE_OFFSET", "Values": ["736186703"] },
+          { "Name": "CENTER_LAT", "Values": ["57.04282649297329"] },
+          { "Name": "CENTER_LON", "Values": ["-135.917406937361"] },
+          { "Name": "GROUP_ID", "Values": ["S1B_IWDV_0402_0407_012275_174"] },
+          { "Name": "LINES_PER_BURST", "Values": ["1519"] },
+          { "Name": "PATH_NUMBER", "Values": ["174"] },
+          { "Name": "POLARIZATION", "Values": ["VV"] },
           { "Name": "PROCESSING_LEVEL", "Values": ["L1"] },
           { "Name": "PROCESSING_TYPE", "Values": ["BURST"] },
-          { "Name": "SAMPLES_PER_BURST", "Values": ["25023"] },
-          { "Name": "SUBSWATH_NAME", "Values": ["IW2"] },
-          { "Name": "SV_POSITION_POST", "Values": ["-3078107.203128,-2429893.458311,5879766.359772,2015-03-16T02:37:34.000000"] },
-          { "Name": "SV_POSITION_PRE", "Values": ["-3111615.103481,-2484588.280656,5839224.145067,2015-03-16T02:37:24.000000"] },
-          { "Name": "SV_VELOCITY_POST", "Values": ["3372.083035,5480.744957,4021.123749,2015-03-16T02:37:34.000000"] },
-          { "Name": "SV_VELOCITY_PRE", "Values": ["3329.439778,5458.106882,4087.243253,2015-03-16T02:37:24.000000"] },
+          { "Name": "SAMPLES_PER_BURST", "Values": ["24229"] },
+          { "Name": "SUBSWATH_NAME", "Values": ["IW3"] },
+          {
+            "Name": "SV_POSITION_POST",
+            "Values":
+              [
+                "-2419229.546207,-3214436.538423,5811112.703184,2018-08-15T15:16:06.000000",
+              ],
+          },
+          {
+            "Name": "SV_POSITION_PRE",
+            "Values":
+              [
+                "-2365795.260173,-3179475.675198,5852106.264147,2018-08-15T15:15:56.000000",
+              ],
+          },
+          {
+            "Name": "SV_VELOCITY_POST",
+            "Values":
+              [
+                "-5332.523806,-3474.255053,-4132.218956,2018-08-15T15:16:06.000000",
+              ],
+          },
+          {
+            "Name": "SV_VELOCITY_PRE",
+            "Values":
+              [
+                "-5354.222875,-3517.857432,-4066.416445,2018-08-15T15:15:56.000000",
+              ],
+          },
         ],
       "SpatialExtent":
         {
@@ -100,13 +142,34 @@
                           {
                             "Points":
                               [
-                                { "Latitude": 57.208768, "Longitude": -134.429185 },
-                                { "Latitude": 57.283638, "Longitude": -133.668191 },
-                                { "Latitude": 57.349892, "Longitude": -132.947782 },
-                                { "Latitude": 57.541739, "Longitude": -133.009124 },
-                                { "Latitude": 57.471188, "Longitude": -133.731915 },
-                                { "Latitude": 57.391995, "Longitude": -134.49532 },
-                                { "Latitude": 57.208768, "Longitude": -134.429185 },
+                                {
+                                  "Latitude": 56.886748,
+                                  "Longitude": -135.291731,
+                                },
+                                {
+                                  "Latitude": 57.081936,
+                                  "Longitude": -135.229996,
+                                },
+                                {
+                                  "Latitude": 57.144214,
+                                  "Longitude": -135.894961,
+                                },
+                                {
+                                  "Latitude": 57.200845,
+                                  "Longitude": -136.536267,
+                                },
+                                {
+                                  "Latitude": 56.996278,
+                                  "Longitude": -136.593695,
+                                },
+                                {
+                                  "Latitude": 56.944328,
+                                  "Longitude": -135.954563,
+                                },
+                                {
+                                  "Latitude": 56.886748,
+                                  "Longitude": -135.291731,
+                                },
                               ],
                           },
                       },
@@ -114,19 +177,25 @@
                 },
             },
         },
-      "ProviderDates": [{ "Type": "Insert", "Date": "2023-04-11T00:34:06Z" }, { "Type": "Update", "Date": "2023-04-11T00:34:06Z" }],
-      "CollectionReference": { "ShortName": "SENTINEL-1_BURSTS_DEV10", "Version": "1" },
-      "PGEVersionClass": { "PGEName": "Sentinel-1 IPF", "PGEVersion": "002.72" },
+      "ProviderDates":
+        [
+          { "Type": "Insert", "Date": "2023-06-16T01:24:43Z" },
+          { "Type": "Update", "Date": "2023-06-16T01:24:43Z" },
+        ],
+      "CollectionReference":
+        { "ShortName": "SENTINEL-1_BURSTS", "Version": "1" },
+      "PGEVersionClass":
+        { "PGEName": "Sentinel-1 IPF", "PGEVersion": "002.91" },
       "RelatedUrls":
         [
           {
-            "URL": "https://sentinel1-burst.asf.alaska.edu/S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9/IW2/VH/5.tiff",
+            "URL": "https://sentinel1-burst.asf.alaska.edu/S1B_IW_SLC__1SDV_20180815T151543_20180815T151610_012275_0169E6_6BD3/IW3/VV/5.tiff",
             "Type": "USE SERVICE API",
             "Description": "Use the link to extract the burst as a GeoTIFF from the input granule.",
-            "Format": "Not provided",
+            "Format": "GeoTIFF",
           },
           {
-            "URL": "https://sentinel1-burst.asf.alaska.edu/S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9/IW2/VH/5.xml",
+            "URL": "https://sentinel1-burst.asf.alaska.edu/S1B_IW_SLC__1SDV_20180815T151543_20180815T151610_012275_0169E6_6BD3/IW3/VV/5.xml",
             "Type": "USE SERVICE API",
             "Description": "Use the link to extract an extended metadata file of the burst from the input granule.",
             "Format": "XML",
@@ -135,16 +204,47 @@
             "URL": "https://sentinel1-burst-docs.asf.alaska.edu/",
             "Type": "VIEW RELATED INFORMATION",
             "Description": "Usage information for the API used to extract a burst product from a Sentinel-1 SLC granule.",
-            "Format": "Not provided",
           },
         ],
-      "InputGranules": ["S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9-SLC"],
-      "Platforms": [{ "Instruments": [{ "ShortName": "C-SAR", "Characteristics": [{ "Name": "LookDirection", "Value": "RIGHT" }] }], "ShortName": "SENTINEL-1A" }],
+      "InputGranules":
+        [
+          "S1B_IW_SLC__1SDV_20180815T151543_20180815T151610_012275_0169E6_6BD3-SLC",
+        ],
+      "Platforms":
+        [
+          {
+            "Instruments":
+              [
+                {
+                  "ShortName": "C-SAR",
+                  "Characteristics":
+                    [{ "Name": "LookDirection", "Value": "RIGHT" }],
+                },
+              ],
+            "ShortName": "SENTINEL-1B",
+          },
+        ],
+      "MetadataSpecification":
+        {
+          "URL": "https://cdn.earthdata.nasa.gov/umm/granule/v1.6.5",
+          "Name": "UMM-G",
+          "Version": "1.6.5",
+        },
     },
   "geometry":
     {
       "coordinates":
-        [[[-134.429185, 57.208768], [-133.668191, 57.283638], [-132.947782, 57.349892], [-133.009124, 57.541739], [-133.731915, 57.471188], [-134.49532, 57.391995], [-134.429185, 57.208768]]],
+        [
+          [
+            [-135.291731, 56.886748],
+            [-135.229996, 57.081936],
+            [-135.894961, 57.144214],
+            [-136.536267, 57.200845],
+            [-136.593695, 56.996278],
+            [-135.954563, 56.944328],
+            [-135.291731, 56.886748],
+          ],
+        ],
       "type": "Polygon",
     },
   "baseline":
@@ -153,19 +253,193 @@
         {
           "positions":
             {
-              "prePosition": [-3111615.103481, -2484588.280656, 5839224.145067],
-              "prePositionTime": "2015-03-16T02:37:24.000000",
-              "postPosition": [-3078107.203128, -2429893.458311, 5879766.359772],
-              "postPositionTime": "2015-03-16T02:37:34.000000",
+              "prePosition": [-2365795.260173, -3179475.675198, 5852106.264147],
+              "prePositionTime": "2018-08-15T15:15:56.000000Z",
+              "postPosition":
+                [-2419229.546207, -3214436.538423, 5811112.703184],
+              "postPositionTime": "2018-08-15T15:16:06.000000Z",
             },
           "velocities":
             {
-              "preVelocity": [3329.439778, 5458.106882, 4087.243253],
-              "preVelocityTime": "2015-03-16T02:37:24.000000",
-              "postVelocity": [3372.083035, 5480.744957, 4021.123749],
-              "postVelocityTime": "2015-03-16T02:37:34.000000",
+              "preVelocity": [-5354.222875, -3517.857432, -4066.416445],
+              "preVelocityTime": "2018-08-15T15:15:56.000000",
+              "postVelocity": [-5332.523806, -3474.255053, -4132.218956],
+              "postVelocityTime": "2018-08-15T15:16:06.000000",
             },
         },
-      "ascendingNodeTime": "2015-03-16T02:21:53.918789",
+      "ascendingNodeTime": "2018-08-15T14:42:12.162110Z",
     },
 }
+# {
+#   "properties":
+#     {
+#       "beamModeType": "IW",
+#       "browse": None,
+#       "bytes": None,
+#       "centerLat": 57.37481196728577,
+#       "centerLon": -133.71556178621003,
+#       "faradayRotation": None,
+#       "fileID": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
+#       "flightDirection": "ASCENDING",
+#       "groupID": "S1A_IWDV_0184_0190_005051_079",
+#       "granuleType": None,
+#       "insarStackId": None,
+#       "md5sum": None,
+#       "offNadirAngle": None,
+#       "orbit": 5051,
+#       "pathNumber": 79,
+#       "platform": "SENTINEL-1A",
+#       "pointingAngle": None,
+#       "polarization": "VH",
+#       "processingDate": None,
+#       "processingLevel": "BURST",
+#       "sceneName": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
+#       "sensor": "C-SAR",
+#       "startTime": "2015-03-16T02:37:31.036086Z",
+#       "stopTime": "2015-03-16T02:37:32.077676Z",
+#       "url": "https://sentinel1-burst.asf.alaska.edu/S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9/IW2/VH/5.tiff",
+#       "fileName": "5.tiff",
+#       "frameNumber": None,
+#       "burst":
+#         {
+#           "absoluteBurstID": 10847375,
+#           "relativeBurstID": 167878,
+#           "fullBurstID": "079_167878_IW2",
+#           "burstIndex": 5,
+#           "samplesPerBurst": 25023,
+#           "subswath": "IW2",
+#           "azimuthTime": "2015-03-16T02:37:30.005466",
+#           "azimuthAnxTime": "936.0866766603999",
+#         },
+#     },
+#   "meta":
+#     {
+#       "concept-type": "granule",
+#       "concept-id": "G1257175671-ASFDEV",
+#       "revision-id": 1,
+#       "native-id": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
+#       "provider-id": "ASFDEV",
+#       "format": "application/vnd.nasa.cmr.umm+json",
+#       "revision-date": "2023-04-11T00:34:07.016Z",
+#     },
+#   "umm":
+#     {
+#       "TemporalExtent": { "RangeDateTime": { "BeginningDateTime": "2015-03-16T02:37:31.036086Z", "EndingDateTime": "2015-03-16T02:37:32.077676Z" } },
+#       "OrbitCalculatedSpatialDomains": [{ "OrbitNumber": 5051 }],
+#       "GranuleUR": "S1_167878_IW2_20150316T023730_VH_BAD9-BURST",
+#       "AdditionalAttributes":
+#         [
+#           { "Name": "ASC_NODE_TIME", "Values": ["2015-03-16T02:21:53.918789"] },
+#           { "Name": "ASCENDING_DESCENDING", "Values": ["ASCENDING"] },
+#           { "Name": "AZIMUTH_ANX_TIME", "Values": ["936.0866766603999"] },
+#           { "Name": "AZIMUTH_TIME", "Values": ["2015-03-16T02:37:30.005466"] },
+#           { "Name": "BEAM_MODE", "Values": ["IW"] },
+#           {
+#             "Name": "BEAM_MODE_DESC",
+#             "Values": ["Interferometric Wide. 250 km swath, 5 m x 20 m spatial resolution and burst synchronization for interferometry. IW is considered to be the standard mode over land masses."],
+#           },
+#           { "Name": "BURST_ID_ABSOLUTE", "Values": ["10847375"] },
+#           { "Name": "BURST_ID_FULL", "Values": ["079_167878_IW2"] },
+#           { "Name": "BURST_ID_RELATIVE", "Values": ["167878"] },
+#           { "Name": "BURST_INDEX", "Values": ["5"] },
+#           { "Name": "BYTE_LENGTH", "Values": ["151439196"] },
+#           { "Name": "BYTE_OFFSET", "Values": ["757317335"] },
+#           { "Name": "CENTER_LAT", "Values": ["57.37481196728577"] },
+#           { "Name": "CENTER_LON", "Values": ["-133.71556178621003"] },
+#           { "Name": "GROUP_ID", "Values": ["S1A_IWDV_0184_0190_005051_079"] },
+#           { "Name": "LINES_PER_BURST", "Values": ["1513"] },
+#           { "Name": "PATH_NUMBER", "Values": ["79"] },
+#           { "Name": "POLARIZATION", "Values": ["VH"] },
+#           { "Name": "PROCESSING_LEVEL", "Values": ["L1"] },
+#           { "Name": "PROCESSING_TYPE", "Values": ["BURST"] },
+#           { "Name": "SAMPLES_PER_BURST", "Values": ["25023"] },
+#           { "Name": "SUBSWATH_NAME", "Values": ["IW2"] },
+#           { "Name": "SV_POSITION_POST", "Values": ["-3078107.203128,-2429893.458311,5879766.359772,2015-03-16T02:37:34.000000"] },
+#           { "Name": "SV_POSITION_PRE", "Values": ["-3111615.103481,-2484588.280656,5839224.145067,2015-03-16T02:37:24.000000"] },
+#           { "Name": "SV_VELOCITY_POST", "Values": ["3372.083035,5480.744957,4021.123749,2015-03-16T02:37:34.000000"] },
+#           { "Name": "SV_VELOCITY_PRE", "Values": ["3329.439778,5458.106882,4087.243253,2015-03-16T02:37:24.000000"] },
+#         ],
+#       "SpatialExtent":
+#         {
+#           "HorizontalSpatialDomain":
+#             {
+#               "Geometry":
+#                 {
+#                   "GPolygons":
+#                     [
+#                       {
+#                         "Boundary":
+#                           {
+#                             "Points":
+#                               [
+#                                 { "Latitude": 57.208768, "Longitude": -134.429185 },
+#                                 { "Latitude": 57.283638, "Longitude": -133.668191 },
+#                                 { "Latitude": 57.349892, "Longitude": -132.947782 },
+#                                 { "Latitude": 57.541739, "Longitude": -133.009124 },
+#                                 { "Latitude": 57.471188, "Longitude": -133.731915 },
+#                                 { "Latitude": 57.391995, "Longitude": -134.49532 },
+#                                 { "Latitude": 57.208768, "Longitude": -134.429185 },
+#                               ],
+#                           },
+#                       },
+#                     ],
+#                 },
+#             },
+#         },
+#       "ProviderDates": [{ "Type": "Insert", "Date": "2023-04-11T00:34:06Z" }, { "Type": "Update", "Date": "2023-04-11T00:34:06Z" }],
+#       "CollectionReference": { "ShortName": "SENTINEL-1_BURSTS_DEV10", "Version": "1" },
+#       "PGEVersionClass": { "PGEName": "Sentinel-1 IPF", "PGEVersion": "002.72" },
+#       "RelatedUrls":
+#         [
+#           {
+#             "URL": "https://sentinel1-burst.asf.alaska.edu/S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9/IW2/VH/5.tiff",
+#             "Type": "USE SERVICE API",
+#             "Description": "Use the link to extract the burst as a GeoTIFF from the input granule.",
+#             "Format": "Not provided",
+#           },
+#           {
+#             "URL": "https://sentinel1-burst.asf.alaska.edu/S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9/IW2/VH/5.xml",
+#             "Type": "USE SERVICE API",
+#             "Description": "Use the link to extract an extended metadata file of the burst from the input granule.",
+#             "Format": "XML",
+#           },
+#           {
+#             "URL": "https://sentinel1-burst-docs.asf.alaska.edu/",
+#             "Type": "VIEW RELATED INFORMATION",
+#             "Description": "Usage information for the API used to extract a burst product from a Sentinel-1 SLC granule.",
+#             "Format": "Not provided",
+#           },
+#         ],
+#       "InputGranules": ["S1A_IW_SLC__1SDV_20150316T023715_20150316T023745_005051_006577_BAD9-SLC"],
+#       "Platforms": [{ "Instruments": [{ "ShortName": "C-SAR", "Characteristics": [{ "Name": "LookDirection", "Value": "RIGHT" }] }], "ShortName": "SENTINEL-1A" }],
+#     },
+#   "geometry":
+#     {
+#       "coordinates":
+#         [[[-134.429185, 57.208768], [-133.668191, 57.283638], [-132.947782, 57.349892], [-133.009124, 57.541739], [-133.731915, 57.471188], [-134.49532, 57.391995], [-134.429185, 57.208768]]],
+#       "type": "Polygon",
+#     },
+#   "baseline":
+#     {
+#       "stateVectors":
+#         {
+#           "positions":
+#             {
+#               "prePosition": [-3111615.103481, -2484588.280656, 5839224.145067],
+#               "prePositionTime": "2015-03-16T02:37:24.000000",
+#               "postPosition": [-3078107.203128, -2429893.458311, 5879766.359772],
+#               "postPositionTime": "2015-03-16T02:37:34.000000",
+#             },
+#           "velocities":
+#             {
+#               "preVelocity": [3329.439778, 5458.106882, 4087.243253],
+#               "preVelocityTime": "2015-03-16T02:37:24.000000",
+#               "postVelocity": [3372.083035, 5480.744957, 4021.123749],
+#               "postVelocityTime": "2015-03-16T02:37:34.000000",
+#             },
+#         },
+#       "ascendingNodeTime": "2015-03-16T02:21:53.918789",
+#     },
+# },
+
+# {"properties": product.properties,"meta": product.meta,"umm": product.umm,"geometry": product.geometry,"baseline": product.baseline}

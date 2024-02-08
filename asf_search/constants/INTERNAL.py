@@ -1,7 +1,8 @@
 ASF_AUTH_HOST = 'auth.asf.alaska.edu'
 
 CMR_HOST = 'cmr.earthdata.nasa.gov'
-CMR_FORMAT_EXT = 'umm_json_v1_4'
+CMR_TIMEOUT = 30
+CMR_FORMAT_EXT = 'umm_json'
 CMR_GRANULE_PATH = f'/search/granules.{CMR_FORMAT_EXT}'
 CMR_COLLECTIONS = f'/search/collections'
 CMR_COLLECTIONS_PATH = f'{CMR_COLLECTIONS}.{CMR_FORMAT_EXT}'
@@ -13,5 +14,6 @@ EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'
 DEFAULT_PROVIDER = 'ASF'
 
 AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov']
+AUTH_COOKIES = ['urs_user_already_logged', 'uat_urs_user_already_logged']
 
 ERROR_REPORTING_ENDPOINT = 'search-error-report.asf.alaska.edu'
