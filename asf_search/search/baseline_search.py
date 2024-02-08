@@ -3,10 +3,8 @@ from asf_search.baseline.stack import get_baseline_from_stack
 from asf_search import ASF_LOGGER
 from copy import copy
 
-from asf_search import ASF_LOGGER
-from asf_search.baseline.stack import get_baseline_from_stack, get_default_product_type
 from asf_search.search import search, product_search
-from asf_search.ASFSearchOptions import ASFSearchOptions, config
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search import ASFProduct
 from asf_search.constants import PLATFORM
