@@ -85,7 +85,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
         results = search(opts=searchOptions)
         
         assert results is not None
-        assert 0 < len(results) <= INTERNAL.CMR_PAGE_SIZE
+        assert 0 <= len(results) <= INTERNAL.CMR_PAGE_SIZE
         with raises(ASFSearchError):
             results.raise_if_incomplete()
 

@@ -99,6 +99,7 @@ def search(
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
     
+    results.raise_if_incomplete()
     results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
     
     return results

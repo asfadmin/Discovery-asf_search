@@ -54,12 +54,16 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             'pge': p['pgeVersion']
         }
 
-        if 'temporalBaseline' in p.keys() or 'perpendicularBaseline' in p.keys():
+        if 'temporalBaseline' in p.keys():
             result['tb'] = p['temporalBaseline']
+        if 'perpendicularBaseline' in p.keys():
             result['pb'] = p['perpendicularBaseline']
 
         if p.get('burst') is not None: # is a burst product
             result['s1b'] = p['burst']
+
+        if p.get('opera') is not None:
+            result['s1o'] = p['opera']
         
         return result
 

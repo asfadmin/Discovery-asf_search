@@ -103,7 +103,13 @@ def search_generator(
                 logging.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
-                return
+                # If it's a CMRIncompleteError, we can just stop here and return what we have
+                # It's up to the user to call .raise_if_incomplete() if they're using the
+                # generator directly.
+                if type(exc) == CMRIncompleteError:
+                    return
+                else:
+                    raise
 
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
