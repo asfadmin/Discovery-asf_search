@@ -55,9 +55,6 @@ class OPERAS1Product(S1Product):
                 self.properties['noiseCorrection'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'NOISE_CORRECTION'), 'Values', 0)
                 self.properties['postProcessingFilter'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'POST_PROCESSING_FILTER'), 'Values', 0)
 
-    def get_stack_opts(self, opts: ASFSearchOptions = ASFSearchOptions()) -> ASFSearchOptions:
-        return opts
-
     @staticmethod
     def get_property_paths() -> Dict:
         return {
