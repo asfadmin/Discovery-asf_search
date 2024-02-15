@@ -182,4 +182,7 @@ def run_test_ASFSearchResults_intersection(wkt: str):
                 product_geom_wrapped, product_geom_unwrapped, _ = asf.validate_wkt(shape(product.geometry))
                 original_shape = unchanged_aoi
 
-                assert overlap_check(product_geom_wrapped, wrapped) or overlap_check(product_geom_wrapped, original_shape), f"OVERLAP FAIL: {product.properties['sceneName']}, {product.geometry} \nproduct: {product_geom_wrapped.wkt} \naoi: {wrapped.wkt}"
+                if asf.translate.should_use_bbox(original_shape):
+                    assert overlap_check(product_geom_unwrapped, unwrapped) or overlap_check(product_geom_unwrapped, original_shape), f"OVERLAP FAIL: {product.properties['sceneName']}, {product.geometry} \nproduct: {product_geom_wrapped.wkt} \naoi: {wrapped.wkt}"
+                else:
+                    assert overlap_check(product_geom_wrapped, wrapped) or overlap_check(product_geom_wrapped, original_shape), f"OVERLAP FAIL: {product.properties['sceneName']}, {product.geometry} \nproduct: {product_geom_wrapped.wkt} \naoi: {wrapped.wkt}"
