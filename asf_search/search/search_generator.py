@@ -17,6 +17,7 @@ from asf_search.CMR.datasets import dataset_collections
 
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
+from asf_search.CMR.translate import should_use_bbox
 from asf_search.exceptions import ASFSearch4xxError, ASFSearch5xxError, ASFSearchError, CMRIncompleteError
 from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
@@ -82,7 +83,17 @@ def search_generator(
     
     if opts.dataset is not None and opts.platform is not None:
         raise ValueError("Cannot use dataset along with platform keyword in search.")
-    
+
+    # if opts.dataset is not None and opts.platform is not None:
+    #     raise ValueError("Cannot use dataset along with platform keyword in search.")
+    if opts.intersectsWith is not None:
+        wrapped, unwrapped = fix_wkt(opts=opts)
+        if should_use_bbox(wrapped):
+            opts.intersectsWith = unwrapped.wkt
+        else:
+            opts.intersectsWith = wrapped.wkt
+
+
     preprocess_opts(opts)
 
     url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
@@ -170,7 +181,7 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
 
 def preprocess_opts(opts: ASFSearchOptions):
     # Repair WKT here so it only happens once, and you can save the result to the new Opts object:
-    wrap_wkt(opts=opts)
+    # wrap_wkt(opts=opts)
 
     # Date/Time logic, convert "today" to the literal timestamp if needed:
     set_default_dates(opts=opts)
@@ -178,11 +189,14 @@ def preprocess_opts(opts: ASFSearchOptions):
     # Platform Alias logic:
     set_platform_alias(opts=opts)
 
+def fix_wkt(opts: ASFSearchOptions):
+    wrapped, unwrapped, _ = validate_wkt(opts.intersectsWith)
+    return wrapped, unwrapped
+# def wrap_wkt(opts: ASFSearchOptions):
+#     if opts.intersectsWith is not None:
+#         wrapped, _, __ = validate_wkt(opts.intersectsWith)
+#         opts.intersectsWith = wrapped.wkt
 
-def wrap_wkt(opts: ASFSearchOptions):
-    if opts.intersectsWith is not None:
-        wrapped, _, __ = validate_wkt(opts.intersectsWith)
-        opts.intersectsWith = wrapped.wkt
 
 
 def set_default_dates(opts: ASFSearchOptions):

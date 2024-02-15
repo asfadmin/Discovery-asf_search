@@ -11,7 +11,7 @@ from .RepairEntry import RepairEntry
 from asf_search.exceptions import ASFWKTError
 
 
-def validate_wkt(aoi: Union[str, BaseGeometry]) -> Tuple[BaseGeometry, List[RepairEntry]]:
+def validate_wkt(aoi: Union[str, BaseGeometry]) -> Tuple[BaseGeometry, BaseGeometry, List[RepairEntry]]:
     """
     Param aoi: the WKT string or Shapely Geometry to validate and prepare for the CMR query
     Validates the given area of interest, and returns a validated and simplified WKT string
@@ -52,7 +52,7 @@ def _search_wkt_prep(shape: BaseGeometry):
     if isinstance(shape, Polygon):
         return orient(Polygon(shape.exterior), sign=1.0)
 
-def _simplify_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, List[RepairEntry]]:
+def _simplify_geometry(geometry: BaseGeometry) -> Tuple[BaseGeometry, BaseGeometry, List[RepairEntry]]:
     """
     param geometry: AOI Shapely Geometry to be prepped for CMR 
     prepares geometry for CMR by:
