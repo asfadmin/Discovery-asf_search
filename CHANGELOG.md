@@ -28,7 +28,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v7.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.4...v7.0.5)
 ### Fixed
-- Use unwrapped wkt when rectangular AOI provided for bbox calculation
+- Unwrapped WKT used in bounding box calculation when searching rectangular AOI
+### Changed
+- `dataset` and `platform` search keywords can now be used at the same time
 
 ------
 ## [v7.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.0.4)
