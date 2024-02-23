@@ -288,6 +288,9 @@ def _get_product_type_key(item: Dict) -> str:
 
         return platform_shortname
 
+    if item['meta'].get('provider-id') == 'OB_DAAC':
+        return 'OB_DAAC'
+    
     return collection_shortName
 
 # Maps datasets from DATASET.py and collection/platform shortnames to ASFProduct subclasses
@@ -322,5 +325,8 @@ dataset_to_product_types = {
     'DC-8': ASFProductType.AIRSARProduct,
 
     'SEASAT': ASFProductType.SEASATProduct,
-    'SEASAT 1': ASFProductType.SEASATProduct
+    'SEASAT 1': ASFProductType.SEASATProduct,
+
+    # Non-ASF DAAC Product Types
+    'OB_DAAC': ASFProductType.OBProduct
 }

@@ -27,7 +27,7 @@ from .ASFSearchResults import ASFSearchResults
 from .ASFSearchOptions import ASFSearchOptions, validators, validator_map
 from .Products import *
 from .exceptions import *
-from .constants import BEAMMODE, FLIGHT_DIRECTION, INSTRUMENT, PLATFORM, POLARIZATION, PRODUCT_TYPE, INTERNAL, DATASET
+from .constants import BEAMMODE, FLIGHT_DIRECTION, INSTRUMENT, PLATFORM, POLARIZATION, PRODUCT_TYPE, INTERNAL, DATASET, PROVIDERS
 from .exceptions import *
 from .health import *
 from .search import *
