@@ -73,3 +73,10 @@ class ASFStackableProduct(ASFProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return None
+
+    def has_baseline(self) -> bool:
+        baseline = self.get_baseline_calc_properties()
+
+        return (
+            baseline is not None
+        )

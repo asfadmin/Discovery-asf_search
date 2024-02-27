@@ -30,10 +30,10 @@ class S1Product(ASFStackableProduct):
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
-        if self._has_baseline():
+        if self.has_baseline():
             self.baseline = self.get_baseline_calc_properties()
 
-    def _has_baseline(self) -> bool:
+    def has_baseline(self) -> bool:
         baseline = self.get_baseline_calc_properties()
 
         return (
