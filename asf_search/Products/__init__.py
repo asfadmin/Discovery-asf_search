@@ -11,3 +11,4 @@ from .SMAPProduct import SMAPProduct
 from .S1BurstProduct import S1BurstProduct
 from .OPERAS1Product import OPERAS1Product
 from .ARIAS1GUNWProduct import ARIAS1GUNWProduct
+from .NISARProduct import NISARProduct

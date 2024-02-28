@@ -315,5 +315,7 @@ dataset_to_product_types = {
     'DC-8': ASFProductType.AIRSARProduct,
 
     'SEASAT': ASFProductType.SEASATProduct,
-    'SEASAT 1': ASFProductType.SEASATProduct
+    'SEASAT 1': ASFProductType.SEASATProduct,
+
+    'NISAR': ASFProductType.NISARProduct
 }
