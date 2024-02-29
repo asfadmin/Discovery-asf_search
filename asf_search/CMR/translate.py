@@ -8,7 +8,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import dataset_collections, collections_per_platform
+from .datasets import collections_per_platform
 
 import logging
 
@@ -23,6 +23,14 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     for escape_commas in ["campaign"]:
         if escape_commas in dict_opts:
             dict_opts[escape_commas] = dict_opts[escape_commas].replace(",", "\,")
+
+    
+    if "linestring" in dict_opts:
+        dict_opts['linestring'] = ','.join(map(str, dict_opts['linestring']))
+
+    if "circle" in dict_opts:
+        # Map: to convert floats to strings before joining:
+        dict_opts['circle'] = ','.join(map(str, dict_opts['circle']))
 
     # Special case to unravel WKT field a little for compatibility
     if "intersectsWith" in dict_opts:
@@ -45,12 +53,6 @@ def translate_opts(opts: ASFSearchOptions) -> List:
             (shapeType, shape) = wkt_to_cmr_shape(shape).split(':')
             dict_opts[shapeType] = shape
 
-    if "circle" in dict_opts:
-        # Map: to convert floats to strings before joining:
-        dict_opts['circle'] = ','.join(map(str, dict_opts['circle']))
-
-    # if "linestring" in dict_opts:
-    #     dict_opts['linestring'] = ','.join(map(str, dict_opts['linestring']))
     
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
