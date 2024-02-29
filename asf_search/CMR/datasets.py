@@ -2,6 +2,46 @@ from typing import List
 
 
 dataset_collections = {
+    "NISAR": {
+        "NISAR_UR_L0B_RRSD": ["C1258125097-ASFDEV", "C1258836794-ASF"],
+        "NISAR_UR_L1": ["C1258290319-ASFDEV", "C1258836797-ASF", "C1258290319-ASF"],
+        "NISAR_UR_L2": ["C1258301530-ASFDEV", "C1258836800-ASF"],
+        "NISAR_STUF": ["C1256535568-ASFDEV", "C1257349089-ASF", "C2727913056-ASF"],
+        "NISAR_OE": ["C1256574227-ASFDEV", "C1257349088-ASF", "C2727908375-ASF"],
+        "NISAR_RP": ["C1256579794-ASFDEV", "C1257349083-ASF", "C2727912431-ASF"],
+        "NISAR_COP": ["C1256535570-ASFDEV", "C1257349082-ASF", "C2727904608-ASF"],
+        "NISAR_ANTPAT": ["C1256583888-ASFDEV", "C1257349081-ASF", "C2727903976-ASF"],
+        "NISAR_BFPQ": ["C1257088418-ASFDEV", "C1257349079-ASF", "C2727904134-ASF"],
+        "NISAR_OROST": ["C1256578011-ASFDEV", "C1257349074-ASF", "C2727911748-ASF"],
+        "NISAR_TFDB": ["C1256583659-ASFDEV", "C1257349073-ASF", "C2727913362-ASF"],
+        "NISAR_LDF": ["C1256737727-ASFDEV", "C1257349072-ASF", "C2727907155-ASF"],
+        "NISAR_LRCLK": ["C1256729502-ASFDEV", "C1257349067-ASF", "C2727907520-ASF"],
+        "NISAR_L_CHAN_DATA": [
+            "C1256832018-ASFDEV",
+            "C1257349066-ASF",
+            "C2727908129-ASF",
+        ],
+        "NISAR_SM_STATIC": ["C1256944038-ASFDEV", "C1257349065-ASF", "C2727912739-ASF"],
+        "NISAR_TEC": ["C1256802323-ASFDEV", "C1257349063-ASF", "C2727913160-ASF"],
+        "NISAR_DC_RADAR": ["C1256938783-ASFDEV", "C1257349059-ASF", "C2727904769-ASF"],
+        "NISAR_FT_WAVEFORM": [
+            "C1256621478-ASFDEV",
+            "C1257349054-ASF",
+            "C2727905298-ASF",
+        ],
+        "NISAR_FT_PARAM": ["C1256622937-ASFDEV", "C1257349053-ASF", "C2727905020-ASF"],
+        "NISAR_LSAR_EXT_CAL": [
+            "C1256983900-ASFDEV",
+            "C1257349048-ASF",
+            "C2727904288-ASF",
+        ],
+        "NISAR_LSAR_INT_CAL": [
+            "C1256984645-ASFDEV",
+            "C1257349023-ASF",
+            "C2727907902-ASF",
+        ],
+        "NISAR_ANC_AUX": ["C1261630276-ASFDEV"],
+    },
     "SENTINEL-1": {
         "SENTINEL-1A_SLC": ["C1214470488-ASF", "C1205428742-ASF", "C1234413245-ASFDEV"],
         "SENTINEL-1B_SLC": ["C1327985661-ASF", "C1216244348-ASF", "C1234413263-ASFDEV"],
@@ -230,7 +270,7 @@ dataset_collections = {
         "SENTINEL-1_INTERFEROGRAMS_UNWRAPPED_PHASE": [
             "C1595765183-ASF",
             "C1225776659-ASF",
-        ]
+        ],
     },
     "SMAP": {
         "SPL1A_RO_METADATA_003": ["C1243122884-ASF", "C1233103964-ASF"],
@@ -735,6 +775,72 @@ collections_per_platform = {
         "C1210599503-ASF",
         "C1210599673-ASF",
     ],
+    "NISAR": [  # TEST ASFDEV
+        "C1258125097-ASFDEV",
+        "C1258290319-ASFDEV",
+        "C1258301530-ASFDEV",
+        "C1256535568-ASFDEV",
+        "C1256574227-ASFDEV",
+        "C1256579794-ASFDEV",
+        "C1256535570-ASFDEV",
+        "C1256583888-ASFDEV",
+        "C1257088418-ASFDEV",
+        "C1256578011-ASFDEV",
+        "C1256583659-ASFDEV",
+        "C1256737727-ASFDEV",
+        "C1256729502-ASFDEV",
+        "C1256832018-ASFDEV",
+        "C1256944038-ASFDEV",
+        "C1256802323-ASFDEV",
+        "C1256938783-ASFDEV",
+        "C1256621478-ASFDEV",
+        "C1256622937-ASFDEV",
+        "C1256983900-ASFDEV",
+        "C1256984645-ASFDEV",
+        "C1261630276-ASFDEV",
+        "C1258290319-ASFDEV",
+        # TEST
+        "C1258836794-ASF",
+        "C1258836797-ASF",
+        "C1258836800-ASF",
+        "C1257349089-ASF",
+        "C1257349088-ASF",
+        "C1257349083-ASF",
+        "C1257349082-ASF",
+        "C1257349081-ASF",
+        "C1257349079-ASF",
+        "C1257349074-ASF",
+        "C1257349073-ASF",
+        "C1257349072-ASF",
+        "C1257349067-ASF",
+        "C1257349066-ASF",
+        "C1257349065-ASF",
+        "C1257349063-ASF",
+        "C1257349059-ASF",
+        "C1257349054-ASF",
+        "C1257349053-ASF",
+        "C1257349048-ASF",
+        "C1257349023-ASF",
+        # PROD
+        "C2727913056-ASF",
+        "C2727908375-ASF",
+        "C2727912431-ASF",
+        "C2727904608-ASF",
+        "C2727903976-ASF",
+        "C2727904134-ASF",
+        "C2727911748-ASF",
+        "C2727913362-ASF",
+        "C2727907155-ASF",
+        "C2727907520-ASF",
+        "C2727908129-ASF",
+        "C2727912739-ASF",
+        "C2727913160-ASF",
+        "C2727904769-ASF",
+        "C2727905298-ASF",
+        "C2727905020-ASF",
+        "C2727904288-ASF",
+        "C2727907902-ASF",
+    ],
 }
 
 
@@ -896,14 +1002,8 @@ collections_by_processing_level = {
         "C1595765183-ASF",
         "C1225776659-ASF",
     ],
-    "CSLC-STATIC": [
-        "C1259982010-ASF", 
-        "C2795135668-ASF"
-    ],
-    "RTC-STATIC": [
-        "C1259981910-ASF",
-        "C2795135174-ASF"
-    ],
+    "CSLC-STATIC": ["C1259982010-ASF", "C2795135668-ASF"],
+    "RTC-STATIC": ["C1259981910-ASF", "C2795135174-ASF"],
     "GRD": [
         "C1661710583-ASF",
         "C1661710586-ASF",
@@ -1077,13 +1177,14 @@ collections_by_processing_level = {
 
 #################### Helper Methods ####################
 
+
 def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[str]:
     """
     param: param_list (List[str]): list of search values to alias
     param: collections_dict (dict): The search value to concept-id dictionary to read from
 
     returns List[str]: Returns a list of concept-ids that correspond to the given list of search values
-    If any of the search values are not keys in the collections_dict, this will instead returns an empty list. 
+    If any of the search values are not keys in the collections_dict, this will instead returns an empty list.
     """
     concept_id_aliases = []
     for param in param_list:
@@ -1091,8 +1192,9 @@ def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[
             concept_id_aliases.extend(alias)
         else:
             return []
-    
+
     return concept_id_aliases
+
 
 def get_dataset_concept_ids(datasets: List[str]) -> List[str]:
     """
@@ -1108,6 +1210,8 @@ def get_dataset_concept_ids(datasets: List[str]) -> List[str]:
             for concept_ids in collections_by_short_name.values():
                 output.extend(concept_ids)
         else:
-            raise ValueError(f'Could not find dataset named "{dataset}" provided for dataset keyword.')
-    
+            raise ValueError(
+                f'Could not find dataset named "{dataset}" provided for dataset keyword.'
+            )
+
     return output
