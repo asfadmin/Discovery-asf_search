@@ -2,7 +2,7 @@ import dateparser
 import datetime
 
 import requests
-from typing import Union, Tuple, TypeVar, Callable, List, Type, Sequence
+from typing import Dict, Union, Tuple, TypeVar, Callable, List, Type, Sequence
 
 import math
 from shapely import wkt, errors
@@ -101,6 +101,24 @@ def parse_list(value: Sequence, h) -> List:
         return [h(a) for a in value]
     except ValueError as exc:
         raise ValueError(f'Invalid {h.__name__} list: {exc}') from exc
+
+def parse_cmr_keywords_list(value: Sequence[Dict]):
+    if not isinstance(value, Sequence):
+        value = [value]
+    
+    required_keys = ['key', 'fmt']
+
+    for idx, item in enumerate(value):
+        if not isinstance(item, dict):
+            raise ValueError(f"Expected item in umm search key list index {idx} to be dict, got value {item} of type {type(item)}")
+        for key in required_keys:
+            item_value = item.get(key)
+            if item_value is None:
+                raise ValueError(f"Expected key \"{key}\" in umm search key dict at index {idx}, got keys {item.keys()}")
+            elif not isinstance(item_value, str):
+                raise ValueError(f"Expected value at index {idx} for key \"{key}\" to be of type \"str\", got {type(item_value)} instead.")
+
+    return value
 
 # Parse and validate an iterable of strings: "foo,bar,baz"
 def parse_string_list(value: Sequence[str]) -> List[str]:

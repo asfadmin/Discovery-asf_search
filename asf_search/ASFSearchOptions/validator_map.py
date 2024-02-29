@@ -4,6 +4,7 @@ from .validators import (
     parse_string, parse_float, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
     parse_float_or_range_list, parse_circle, parse_linestring,
+    parse_cmr_keywords_list,
     parse_session
 )
 
@@ -64,6 +65,7 @@ validator_map = {
     'relativeBurstID':        parse_int_list,
     'fullBurstID':            parse_string_list,
     'dataset':                parse_string_list,
+    'cmr_keywords':           parse_cmr_keywords_list,
 
     # Config parameters       Parser
     'session':                parse_session,
