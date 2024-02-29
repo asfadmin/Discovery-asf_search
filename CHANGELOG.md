@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.4...v7.0.5)
+### Added
+- Adds `cmr_keywords` search keyword, enables passing CMR format strings in search directly
+
+------
 ## [v7.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.0.4)
 ### Changed
 - `OPERA-S1-CALIBRATION` dataset is now the `OPERA-S1-CALVAL` dataset, uses the `OPERA_S1_CALVAL` constant
