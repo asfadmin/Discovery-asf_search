@@ -201,6 +201,14 @@ def parse_circle(value: List[float]) -> str:
         raise ValueError(f'Invalid circle, must be 3 values (lat, long, radius). Got: {value}')
     return value
 
+# Parse a CMR linestring:
+#       [longitude, latitude, longitude, latitude, ...]
+def parse_linestring(value: List[float]) -> str:
+    value = parse_float_list(value)
+    if len(value) % 2 != 0:
+        raise ValueError(f'Invalid linestring, must be values of format (lat, long, lat, long, ...). Got: {value}')
+    return value
+
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):
     if issubclass(type(session), requests.Session):

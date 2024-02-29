@@ -49,6 +49,9 @@ def translate_opts(opts: ASFSearchOptions) -> List:
         # Map: to convert floats to strings before joining:
         dict_opts['circle'] = ','.join(map(str, dict_opts['circle']))
 
+    # if "linestring" in dict_opts:
+    #     dict_opts['linestring'] = ','.join(map(str, dict_opts['linestring']))
+    
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)

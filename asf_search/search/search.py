@@ -13,6 +13,7 @@ def search(
         beamSwath: Union[str, Sequence[str]] = None,
         campaign: Union[str, Sequence[str]] = None,
         circle: Tuple[float, float, float] = None,
+        linestring: Sequence[float] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
