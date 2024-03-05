@@ -60,10 +60,8 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
             m.register_uri('POST', f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}", status_code=status_code, json={'errors': {'report': report}})
             m.register_uri('POST', f"https://search-error-report.asf.alaska.edu/", real_http=True)
             searchOptions = ASFSearchOptions(**search_parameters)
-            results = search(opts=searchOptions)
-            assert len(results) == 0
             with raises(ASFSearchError):
-                results.raise_if_incomplete()
+                results = search(opts=searchOptions)
             return
 
     # If we're not doing an empty search we want to fire off one real query to CMR, then interrupt it with an error
@@ -82,12 +80,9 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
 
         search_parameters['maxResults'] = INTERNAL.CMR_PAGE_SIZE + 1
         searchOptions = ASFSearchOptions(**search_parameters)
-        results = search(opts=searchOptions)
         
-        assert results is not None
-        assert 0 <= len(results) <= INTERNAL.CMR_PAGE_SIZE
         with raises(ASFSearchError):
-            results.raise_if_incomplete()
+            results = search(opts=searchOptions)
 
 def run_test_dataset_search(datasets: List):
     if any(dataset for dataset in datasets if dataset_collections.get(dataset) is None):

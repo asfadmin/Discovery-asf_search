@@ -70,7 +70,7 @@ def run_test_product_get_stack_options(reference, options):
 def run_test_ASFProduct_download(reference, filename, filetype, additional_urls):
     product = as_ASFProduct(reference, ASFSession())
     product.properties['additionalUrls'] = additional_urls
-    with patch('asf_search.ASFSession.get') as mock_get:
+    with patch('asf_search.ASFSession.ASFSession.get') as mock_get:
         resp = requests.Response()
         resp.status_code = 200
         mock_get.return_value = resp

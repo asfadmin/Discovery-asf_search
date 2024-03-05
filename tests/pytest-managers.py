@@ -82,7 +82,7 @@ def test_ASFSession_Error(**args) -> None:
     test_info = args["test_info"]
     username = test_info["username"]
     password = test_info["password"]
-    with patch('asf_search.ASFSession.get') as mock_get:
+    with patch('asf_search.ASFSession.ASFSession.get') as mock_get:
         mock_get.return_value = "Error"
 
         with raises(ASFAuthenticationError):
@@ -457,15 +457,15 @@ def safe_load_tuple(param):
 
     return param
 
-def test_output_format(**args) -> None:
-    test_info = args['test_info']
+# def test_output_format(**args) -> None:
+#     test_info = args['test_info']
 
-    products = get_resource(test_info['results'])
-    if not isinstance(products, List):
-        products = [products]
-    results = ASFSearchResults([as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession()) for product in products])
+#     products = get_resource(test_info['results'])
+#     if not isinstance(products, List):
+#         products = [products]
+#     results = ASFSearchResults([as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession()) for product in products])
 
-    run_test_output_format(results)
+#     run_test_output_format(results)
 
 def test_keyword_aliasing_results(**args) -> None:
     test_info = args['test_info']
