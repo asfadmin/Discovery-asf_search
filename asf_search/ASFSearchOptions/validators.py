@@ -52,7 +52,7 @@ def parse_date(value: Union[str, datetime.datetime]) -> str:
     date = dateparser.parse(str(value))
     if date is None:
         raise ValueError(f"Invalid date: '{value}'.")
-    return str(value)
+    return str(date.date())
 
 
 def parse_range(value: Tuple[number, number], h: Callable[[number], number]) -> Tuple[number, number]:
@@ -213,7 +213,7 @@ def parse_wkt(value: str) -> str:
 
 # Parse a CMR circle:
 #       [longitude, latitude, radius(meters)]
-def parse_circle(value: List[float]) -> str:
+def parse_circle(value: List[float]) -> List[float]:
     value = parse_float_list(value)
     if len(value) != 3:
         raise ValueError(f'Invalid circle, must be 3 values (lat, long, radius). Got: {value}')
@@ -221,10 +221,23 @@ def parse_circle(value: List[float]) -> str:
 
 # Parse a CMR linestring:
 #       [longitude, latitude, longitude, latitude, ...]
-def parse_linestring(value: List[float]) -> str:
+def parse_linestring(value: List[float]) -> List[float]:
     value = parse_float_list(value)
     if len(value) % 2 != 0:
         raise ValueError(f'Invalid linestring, must be values of format (lat, long, lat, long, ...). Got: {value}')
+    return value
+
+def parse_point(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) != 2:
+        raise ValueError(f'Invalid point, must be values of format (lat, long). Got: {value}')
+    return value
+
+# Parse and validate a coordinate string
+def parse_coord_string(value: List):
+    value = parse_float_list(value)
+    if len(value) % 2 != 0:
+        raise ValueError(f'Invalid coordinate string, must be values of format (lat, long, lat, long, ...). Got: {value}')
     return value
 
 # Take "requests.Session", or anything that subclasses it:

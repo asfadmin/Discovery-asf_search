@@ -8,7 +8,7 @@ import datetime
 import dateparser
 import warnings
 
-from asf_search import __version__
+from asf_search import ASF_LOGGER, __version__
 
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -93,6 +93,7 @@ def search_generator(
     queries = build_subqueries(opts)
     for query in queries:
         translated_opts = translate_opts(query)
+        ASF_LOGGER.warning(f"TRANSLATED PARAMS: {translated_opts}")
         cmr_search_after_header = ""
         subquery_count = 0
 
