@@ -82,7 +82,7 @@ def test_ASFSession_Error(**args) -> None:
     test_info = args["test_info"]
     username = test_info["username"]
     password = test_info["password"]
-    with patch('asf_search.ASFSession.ASFSession.get') as mock_get:
+    with patch('asf_search.ASFSession.get') as mock_get:
         mock_get.return_value = "Error"
 
         with raises(ASFAuthenticationError):
