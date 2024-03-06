@@ -31,6 +31,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Adds `cmr_keywords` search keyword, enables passing CMR format strings in search directly
 ### Changed
+- timestamps while building queries and reading results from CMR now use UTC if no timezone is provided
 - Changed what collections the `NISAR` dataset and platform collections lists are pointed at.
 
 ------
