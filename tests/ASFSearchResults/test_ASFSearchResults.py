@@ -1,4 +1,6 @@
 from typing import Dict, List
+
+import dateparser
 import asf_search as asf
 from asf_search import ASFSearchResults
 import defusedxml.ElementTree as DefusedETree
@@ -13,7 +15,9 @@ from shapely.wkt import loads
 from shapely.ops import transform
 from shapely.geometry import shape
 from shapely.geometry.base import BaseGeometry
+from asf_search.CMR.translate import try_parse_date
 from asf_search.constants import PLATFORM
+import re
 
 # when this replaces SearchAPI change values to cached
 API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?'
@@ -77,6 +81,18 @@ def check_kml(results: ASFSearchResults, expected_str: str):
     actual_canon = ETree.canonicalize( DefusedETree.tostring(actual_root), strip_text=True)
     expected_canon = ETree.canonicalize( DefusedETree.tostring(expected_root), strip_text=True)
     
+    date_pattern = r"\>(?P<variable>[\w ]*time|Time): *(?P<datestring>[^\<]*)\<"
+    
+    actual_dates = re.findall(date_pattern, actual_canon, re.MULTILINE)
+    expected_date = re.findall(date_pattern, expected_canon, re.MULTILINE)
+
+    for idx, match in enumerate(actual_dates):
+        date_str, date_value = match
+        assert expected_date[idx][0] == date_str
+        assert try_parse_date(expected_date[idx][1]) == try_parse_date(date_value)
+    
+    actual_canon = re.sub(date_pattern, '', actual_canon)
+    expected_canon = re.sub(date_pattern, '', expected_canon)
     assert actual_canon == expected_canon
 
 
@@ -115,10 +131,16 @@ def check_csv(results: ASFSearchResults, expected_str: str):
                     expected_value = float(expected_dict[key])
                     actual_value = float(actual_dict[key])
                     assert expected_value == actual_value, \
-                        f"expected \'{expected_dict[key]}\' for key \'{key}\', got \'{actual_dict[key]}\'"
+                        f"expected '{expected_dict[key]}' for key '{key}', got '{actual_dict[key]}'"
                 except ValueError:
-                    assert expected_dict[key] == actual_dict[key], \
-                        f"expected \'{expected_dict[key]}\' for key \'{key}\', got \'{actual_dict[key]}\'"
+                    try:
+                        expected_date = try_parse_date(expected_dict[key])
+                        actual_date = try_parse_date(actual_dict[key])
+                        assert expected_date == actual_date, \
+                        f"Expected date '{expected_date}' for key '{key}', got '{actual_date}'"
+                    except ValueError:
+                        assert expected_dict[key] == actual_dict[key], \
+                            f"expected '{expected_dict[key]}' for key '{key}', got '{actual_dict[key]}'"
  
  
 def check_jsonLite(results: ASFSearchResults, expected_str: str, output_type: str):
@@ -126,12 +148,19 @@ def check_jsonLite(results: ASFSearchResults, expected_str: str, output_type: st
     
     expected = json.loads(expected_str)['results']
 
+    
+    
     if jsonlite2:
         wkt_key = 'w'
         wkt_unwrapped_key = 'wu'
+        start_time_key = 'st'
+        stop_time_key = 'stp'
     else:
         wkt_key = 'wkt'
         wkt_unwrapped_key = 'wkt_unwrapped'
+        start_time_key = 'startTime'
+        stop_time_key = 'stopTime'
+
 
     actual = json.loads(''.join(results.jsonlite2() if jsonlite2 else results.jsonlite()))['results']
 
@@ -139,11 +168,16 @@ def check_jsonLite(results: ASFSearchResults, expected_str: str, output_type: st
         wkt = expected_product.pop(wkt_key)
         wkt_unwrapped = expected_product.pop(wkt_unwrapped_key)
         
+        startTime = expected_product.pop(start_time_key)
+        stopTime = expected_product.pop(stop_time_key)
+
         for key in expected_product.keys():
             assert actual[idx][key] == expected_product[key]
         
         assert WKT.loads(actual[idx][wkt_key]).equals(WKT.loads(wkt))
         assert WKT.loads(actual[idx][wkt_unwrapped_key]).equals(WKT.loads(wkt_unwrapped))
+        assert actual[idx][start_time_key] == try_parse_date(startTime)
+        assert actual[idx][stop_time_key] == try_parse_date(stopTime)
 
 def check_geojson(results: ASFSearchResults):
     expected = results.geojson()
