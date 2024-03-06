@@ -6,6 +6,7 @@ from asf_search import ASFSession
 from tenacity import retry, retry_if_exception_type, stop_after_attempt
 from asf_search import ASF_LOGGER, ASFSearchOptions
 from asf_search.CMR.subquery import build_subqueries
+from asf_search.CMR.translate import try_parse_date
 from asf_search.constants import INTERNAL
 from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
@@ -39,6 +40,8 @@ def run_test_ASFSearchResults(search_resp):
                 assert search_resp[idx]['properties']['frameNumber'] == item
             elif 'esaFrame' in feature.geojson()['properties'].keys() and key == 'frameNumber':
                 continue
+            elif key in ['stopTime', 'startTime', 'processingDate']:
+                assert try_parse_date(item) == try_parse_date(search_resp[idx]['properties'][key])
             elif search_resp[idx]['properties'].get(key) is not None and item is not None:
                 assert item == search_resp[idx]['properties'][key]
 

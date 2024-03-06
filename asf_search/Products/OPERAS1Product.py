@@ -1,5 +1,6 @@
-from typing import Dict, Optional
+from typing import Dict
 from asf_search import ASFSearchOptions, ASFSession
+from asf_search.CMR.translate import try_parse_date
 from asf_search.Products import S1Product
 
 
@@ -12,7 +13,7 @@ class OPERAS1Product(S1Product):
         'centerLon': {'path': []},
         'frameNumber': {'path': []},
         'operaBurstID': {'path': ['AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0]},
-        'validityStartDate': {'path': ['TemporalExtent', 'SingleDateTime']},
+        'validityStartDate': {'path': ['TemporalExtent', 'SingleDateTime'], 'cast': try_parse_date},
         'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
         'subswath': {'path': ['AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0]},
         'polarization': {'path': ['AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values']} # dual polarization is in list rather than a 'VV+VH' style format
