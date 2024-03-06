@@ -30,9 +30,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v7.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.5...v7.0.6)
 ### Added
 - Adds `cmr_keywords` search keyword, enables passing CMR format strings in search directly
-
-------
-## [v7.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.5...v7.0.6)
 ### Changed
 - Changed what collections the `NISAR` dataset and platform collections lists are pointed at.
 
