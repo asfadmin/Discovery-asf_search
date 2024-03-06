@@ -2,6 +2,7 @@ import copy
 from typing import Dict, Union
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.Products import S1Product
+from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_int
 from asf_search.constants import PRODUCT_TYPE
 
@@ -24,7 +25,7 @@ class S1BurstProduct(S1Product):
         'burstIndex': {'path': ['AdditionalAttributes', ('Name', 'BURST_INDEX'), 'Values', 0], 'cast': try_parse_int},
         'samplesPerBurst': {'path': ['AdditionalAttributes', ('Name', 'SAMPLES_PER_BURST'), 'Values', 0], 'cast': try_parse_int},
         'subswath': {'path': ['AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0]},
-        'azimuthTime': {'path': ['AdditionalAttributes', ('Name', 'AZIMUTH_TIME'), 'Values', 0]},
+        'azimuthTime': {'path': ['AdditionalAttributes', ('Name', 'AZIMUTH_TIME'), 'Values', 0], 'cast': try_parse_date},
         'azimuthAnxTime': {'path': ['AdditionalAttributes', ('Name', 'AZIMUTH_ANX_TIME'), 'Values', 0]},
     }
 

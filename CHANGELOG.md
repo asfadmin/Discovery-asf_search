@@ -28,6 +28,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v7.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.5...v7.0.6)
 ### Changed
+- timestamps while building queries and reading results from CMR now use UTC if no timezone is provided
 - Changed what collections the `NISAR` dataset and platform collections lists are pointed at.
 
 ------
