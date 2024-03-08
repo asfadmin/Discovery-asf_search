@@ -7,7 +7,11 @@ from .jsonlite import JSONLiteStreamArray
 
 def results_to_jsonlite2(results):
     ASF_LOGGER.info('started translating results to jsonlite2 format')
-
+    
+    if len(results) == 0:
+            yield from json.JSONEncoder(indent=2, sort_keys=True).iterencode({'results': []})
+            return
+        
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
         results = [results]
     

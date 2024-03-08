@@ -129,7 +129,7 @@ def parse_cmr_keywords_list(value: Sequence[Dict]):
 
 # Parse and validate an iterable of strings: "foo,bar,baz"
 def parse_string_list(value: Sequence[str]) -> List[str]:
-    return parse_list(value, str)
+    return parse_list(value, parse_string)
 
 
 # Parse and validate an iterable of integers: "1,2,3"
