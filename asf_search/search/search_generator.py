@@ -8,7 +8,7 @@ import datetime
 import dateparser
 import warnings
 
-from asf_search import __version__
+from asf_search import ASF_LOGGER, __version__
 
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -30,6 +30,8 @@ def search_generator(
         beamMode: Union[str, Sequence[str]] = None,
         beamSwath: Union[str, Sequence[str]] = None,
         campaign: Union[str, Sequence[str]] = None,
+        circle: Tuple[float, float, float] = None,
+        linestring: Sequence[float] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
@@ -91,18 +93,25 @@ def search_generator(
     queries = build_subqueries(opts)
     for query in queries:
         translated_opts = translate_opts(query)
+        ASF_LOGGER.warning(f"TRANSLATED PARAMS: {translated_opts}")
         cmr_search_after_header = ""
         subquery_count = 0
 
         while(cmr_search_after_header is not None):
             try:
                 items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
-            except (ASFSearchError, CMRIncompleteError) as e:
-                message = str(e)
+            except (ASFSearchError, CMRIncompleteError) as exc:
+                message = str(exc)
                 logging.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
-                return
+                # If it's a CMRIncompleteError, we can just stop here and return what we have
+                # It's up to the user to call .raise_if_incomplete() if they're using the
+                # generator directly.
+                if type(exc) == CMRIncompleteError:
+                    return
+                else:
+                    raise
 
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)

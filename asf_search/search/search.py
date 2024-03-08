@@ -12,6 +12,8 @@ def search(
         beamMode: Union[str, Sequence[str]] = None,
         beamSwath: Union[str, Sequence[str]] = None,
         campaign: Union[str, Sequence[str]] = None,
+        circle: Tuple[float, float, float] = None,
+        linestring: Sequence[float] = None,
         maxDoppler: float = None,
         minDoppler: float = None,
         end: Union[datetime.datetime, str] = None,
@@ -53,6 +55,7 @@ def search(
     :param beamMode: The beam mode used to acquire the data.
     :param beamSwath: Encompasses a look angle and beam mode.
     :param campaign: For UAVSAR and AIRSAR data collections only. Search by general location, site description, or data grouping as supplied by flight agency or project.
+    :param circle: Search by circle defined by list of three floats: [longitude, latitude, radius in meters]
     :param maxDoppler: Doppler provides an indication of how much the look direction deviates from the ideal perpendicular flight direction acquisition.
     :param minDoppler: Doppler provides an indication of how much the look direction deviates from the ideal perpendicular flight direction acquisition.
     :param end: End date of data acquisition. Supports timestamps as well as natural language such as "3 weeks ago"
@@ -97,6 +100,7 @@ def search(
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
     
+    results.raise_if_incomplete()
     results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
     
     return results

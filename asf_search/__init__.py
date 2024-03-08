@@ -1,6 +1,12 @@
 # backport of importlib.metadata for python < 3.8
 from importlib_metadata import PackageNotFoundError, version
+
+## Setup logging now, so it's available if __version__ fails:
 import logging
+ASF_LOGGER = logging.getLogger(__name__)
+# Add null handle so we do nothing by default. It's up to whatever
+# imports us, if they want logging.
+ASF_LOGGER.addHandler(logging.NullHandler())
 
 try:
     __version__ = version(__name__)
@@ -14,16 +20,11 @@ except PackageNotFoundError as e:
     ASF_LOGGER.exception(msg)
     raise PackageNotFoundError("Install with 'python3 -m pip install -e .' to use") from e
 
-ASF_LOGGER = logging.getLogger(__name__)
-# Add null handle so we do nothing by default. It's up to whatever
-# imports us, if they want logging.
-ASF_LOGGER.addHandler(logging.NullHandler())
-
 from .ASFSession import ASFSession
 from .ASFProduct import ASFProduct
 from .ASFStackableProduct import ASFStackableProduct
 from .ASFSearchResults import ASFSearchResults
-from .ASFSearchOptions import ASFSearchOptions, validators
+from .ASFSearchOptions import ASFSearchOptions, validators, validator_map
 from .Products import *
 from .exceptions import *
 from .constants import BEAMMODE, FLIGHT_DIRECTION, INSTRUMENT, PLATFORM, POLARIZATION, PRODUCT_TYPE, INTERNAL, DATASET

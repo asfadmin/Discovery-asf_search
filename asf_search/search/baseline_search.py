@@ -71,9 +71,7 @@ def stack_from_id(
     
     :return: ASFSearchResults(list) of search results
     """
-
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-
 
     reference_results = product_search(product_list=reference_id, opts=opts)
     

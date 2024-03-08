@@ -26,6 +26,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.1.0)
+### Added
+- Added `asf.ASFSearchOptions(circle=[lat, long, radius])` search param. Takes list of exactly 3 numbers.
+- Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.
+- Exposed `ASFProduct.get_urls` which returns the URL's for it's products directly. Can control which products with the `fileType` enum.
+
+------
 ## [v7.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.5...v7.0.6)
 ### Changed
 - timestamps while building queries and reading results from CMR now use UTC if no timezone is provided
@@ -35,6 +42,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v7.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.4...v7.0.5)
 ### Added
 - Adds basic NISAR dataset search and product functionality for test data
+- Adds `cmr_keywords` search keyword, enables passing CMR format strings in search directly
 
 ------
 ## [v7.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.0.4)

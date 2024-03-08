@@ -115,32 +115,40 @@ class ASFProduct:
         default_filename = self.properties['fileName']
 
         if filename is not None:
-            multiple_files = (
-                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1)
-                or fileType == FileDownloadType.ALL_FILES
-            )
-            if multiple_files:
-                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
+            # Check if we should support the filename argument:
+            if self._has_multiple_files() and fileType in [FileDownloadType.ADDITIONAL_FILES, FileDownloadType.ALL_FILES]:
+                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument '{filename}', using default.")
             else:
                 default_filename = filename
 
         if session is None:
             session = self.session
 
+        urls = self.get_urls(fileType=fileType)
+
+        for url in urls:
+            base_filename = '.'.join(default_filename.split('.')[:-1])
+            extension = url.split('.')[-1]
+            download_url(
+                url=url,
+                path=path,
+                filename=f"{base_filename}.{extension}",
+                session=session
+            )
+
+    def get_urls(self, fileType = FileDownloadType.DEFAULT_FILE) -> list:
         urls = []
 
         if fileType == FileDownloadType.DEFAULT_FILE:
-            urls.append((default_filename, self.properties['url']))
+            urls.append(self.properties['url'])
         elif fileType == FileDownloadType.ADDITIONAL_FILES:
-            urls.extend(self._get_additional_filenames_and_urls(default_filename))
+            urls.extend(self.properties.get('additionalUrls', []))
         elif fileType == FileDownloadType.ALL_FILES:
-            urls.append((default_filename, self.properties['url']))
-            urls.extend(self._get_additional_filenames_and_urls(default_filename))
+            urls.append(self.properties['url'])
+            urls.extend(self.properties.get('additionalUrls', []))
         else:
             raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
-
-        for filename, url in urls:
-            download_url(url=url, path=path, filename=filename, session=session)
+        return urls
 
     def _get_additional_filenames_and_urls(
             self,
@@ -208,6 +216,9 @@ class ASFProduct:
 
         return remotezip(self.properties['url'], session=session)
 
+    def _has_multiple_files(self):
+        return 'additionalUrls' in self.properties and len(self.properties['additionalUrls']) > 0
+    
     def _read_umm_property(self, umm: Dict, mapping: Dict) -> Any:
         value = self.umm_get(umm, *mapping['path'])
         if mapping.get('cast') is None:

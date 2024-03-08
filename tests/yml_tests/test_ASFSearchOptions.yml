@@ -161,3 +161,9 @@ tests:
     expect_output:
         host: does-not-exist.asf.alaska.edu
         provider: TOTALLY NOT ASF
+
+- test-ASFSearchOptions - Circle works:
+    exception: Null
+    circle: [0, 0, 100]
+    expect_output:
+        circle: [0, 0, 100]
