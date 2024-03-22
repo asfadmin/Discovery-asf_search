@@ -1,4 +1,4 @@
-from typing import Tuple, Union, Sequence
+from typing import Dict, Tuple, Union, Sequence
 import datetime
 from copy import copy
 
@@ -44,6 +44,7 @@ def geo_search(
         operaBurstID: Union[str, Sequence[str]] = None,
         dataset: Union[str, Sequence[str]] = None,
         shortName: Union[str, Sequence[str]] = None,
+        cmr_keywords: Union[Dict[str, str], Sequence[Dict[str, str]]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:

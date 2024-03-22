@@ -22,7 +22,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         if params.get(chunked_key) is not None:
             params[chunked_key] = chunk_list(params[chunked_key], CMR_PAGE_SIZE)
 
-    list_param_names = ['platform', 'season', 'collections', 'dataset']  # these parameters will dodge the subquery system
+    list_param_names = ['platform', 'season', 'collections', 'dataset', 'cmr_keywords', 'shortName']  # these parameters will dodge the subquery system
     skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL
     
     collections, aliased_keywords = get_keyword_concept_ids(params, opts.collectionAlias)
