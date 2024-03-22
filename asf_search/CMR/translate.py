@@ -51,6 +51,10 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
+
+    # user provided umm fields
+    custom_cmr_keywords = dict_opts.pop('cmr_keywords', [])
+
     for (key, val) in dict_opts.items():
         # If it's "session" or something else CMR doesn't accept, don't send it:
         if key not in field_map:
@@ -73,6 +77,8 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
+
+    cmr_opts.extend(custom_cmr_keywords)
 
     additional_keys = [
         ('page_size', CMR_PAGE_SIZE),

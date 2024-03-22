@@ -117,12 +117,16 @@ def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
         for key, actual_val in a:
             expected_val = getattr(b, key)
             if isinstance(actual_val, list):
-                if len(actual_val) > 0: # ASFSearchOptions leaves empty lists as None
-                    expected_set = set(expected_val)
-                    actual_set = set(actual_val)
+                if key == 'cmr_keywords':
+                    for idx, key_value_pair in enumerate(actual_val):
+                        assert key_value_pair == expected_val[idx]
+                else:
+                    if len(actual_val) > 0: # ASFSearchOptions leaves empty lists as None
+                        expected_set = set(expected_val)
+                        actual_set = set(actual_val)
 
-                    difference = expected_set.symmetric_difference(actual_set)
-                    assert len(difference) == 0, f"Found {len(difference)} missing entries for subquery generated keyword: \"{key}\"\n{list(difference)}"
+                        difference = expected_set.symmetric_difference(actual_set)
+                        assert len(difference) == 0, f"Found {len(difference)} missing entries for subquery generated keyword: \"{key}\"\n{list(difference)}"
             else:
                 assert actual_val == expected_val
 

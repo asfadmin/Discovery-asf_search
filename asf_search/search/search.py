@@ -43,6 +43,7 @@ def search(
         operaBurstID: Union[str, Sequence[str]] = None,
         dataset: Union[str, Sequence[str]] = None,
         shortName: Union[str, Sequence[str]] = None,
+        cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
