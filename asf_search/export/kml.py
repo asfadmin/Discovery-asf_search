@@ -126,7 +126,9 @@ class KMLStreamArray(MetalinkStreamArray):
         outerBondaryIs.append(linearRing)
         
         coordinates = ETree.Element('coordinates')
-        coordinates.text = '\n' + (14 * ' ') + ('\n' + (14 * ' ')).join([f"{c['Longitude']},{c['Latitude']},2000" for c in p['shape']]) + '\n' + (14 * ' ')
+        
+        if p.get('shape') is not None:
+            coordinates.text = '\n' + (14 * ' ') + ('\n' + (14 * ' ')).join([f"{c['Longitude']},{c['Latitude']},2000" for c in p.get('shape')]) + '\n' + (14 * ' ')
         linearRing.append(coordinates)
 
         self.indent(placemark, 3)
