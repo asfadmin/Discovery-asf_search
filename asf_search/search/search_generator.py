@@ -60,6 +60,8 @@ def search_generator(
         temporalBaselineDays: Union[str, Sequence[str]] = None,
         operaBurstID: Union[str, Sequence[str]] = None,
         dataset: Union[str, Sequence[str]] = None,
+        shortName: Union[str, Sequence[str]] = None,
+        cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
         ) -> Generator[ASFSearchResults, None, None]:
@@ -79,9 +81,6 @@ def search_generator(
     if maxResults is not None and \
         (getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)):
             raise ValueError("Cannot use maxResults along with product_list/granule_list.")
-    
-    if opts.dataset is not None and opts.platform is not None:
-        raise ValueError("Cannot use dataset along with platform keyword in search.")
     
     preprocess_opts(opts)
 

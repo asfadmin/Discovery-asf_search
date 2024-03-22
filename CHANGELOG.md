@@ -25,6 +25,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+
+------
+## [v7.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.6...v7.0.7)
+### Added
+- Adds `cmr_keywords` search keyword, enables passing CMR format strings in search directly
+- Adds `shortName` keyword, for use with lists of collection short names
+### Changed
+- Allows using `dataset` and `platform` in same search
+
 ------
 ## [v7.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.5...v7.0.6)
 ### Changed

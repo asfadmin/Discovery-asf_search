@@ -3,7 +3,7 @@ from asf_search import ASF_LOGGER
 from .validators import (
     parse_string, parse_float, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
-    parse_float_or_range_list,
+    parse_float_or_range_list, parse_cmr_keywords_list,
     parse_session
 )
 
@@ -56,12 +56,14 @@ validator_map = {
     'insarStackId':           parse_string,
     'instrument':             parse_string,
     'collections':            parse_string_list,
+    'shortName':              parse_string_list,
     'temporalBaselineDays':   parse_string_list,
     'operaBurstID':           parse_string_list,
     'absoluteBurstID':        parse_int_list,
     'relativeBurstID':        parse_int_list,
     'fullBurstID':            parse_string_list,
     'dataset':                parse_string_list,
+    'cmr_keywords':           parse_cmr_keywords_list,
 
     # Config parameters       Parser
     'session':                parse_session,

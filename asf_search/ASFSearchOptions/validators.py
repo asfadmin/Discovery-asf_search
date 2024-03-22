@@ -2,7 +2,7 @@ import dateparser
 from datetime import datetime, timezone
 
 import requests
-from typing import Union, Tuple, TypeVar, Callable, List, Type, Sequence
+from typing import Dict, Union, Tuple, TypeVar, Callable, List, Type, Sequence
 
 import math
 from shapely import wkt, errors
@@ -108,6 +108,22 @@ def parse_list(value: Sequence, h) -> List:
         return [h(a) for a in value]
     except ValueError as exc:
         raise ValueError(f'Invalid {h.__name__} list: {exc}') from exc
+
+def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
+    if not isinstance(value, Sequence) or (len(value) == 2 and isinstance(value[0], str)): # in case we're passed single key value pair as sequence
+        value = [value]
+    
+    for idx, item in enumerate(value):
+        if not isinstance(item, tuple) and not isinstance(item, Sequence):
+            raise ValueError(f"Expected item in cmr_keywords list index {idx} to be tuple pair, got value {item} of type {type(item)}")
+        if len(item) != 2:
+            raise ValueError(f"Expected item in cmr_keywords list index {idx} to be of length 2, got value {item} of length {len(item)}")
+        
+        search_key, search_value = item
+        if not isinstance(search_key, str) or not isinstance(search_value, str):
+            raise ValueError(f"Expected tuple pair of types: \"{type(str)}, {type(str)}\" in cmr_keywords at index {idx}, got value \"{str(item)}\" of types: \"{type(search_key)}, {type(search_value)}\"")
+
+    return value
 
 # Parse and validate an iterable of strings: "foo,bar,baz"
 def parse_string_list(value: Sequence[str]) -> List[str]:

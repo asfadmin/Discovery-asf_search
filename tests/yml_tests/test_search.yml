@@ -570,6 +570,30 @@ tests:
             "C1244598379-ASFDEV",
           ]
         }]
+
+  - test-search-build_subquery shortName:
+      params:
+        shortName: 'newShortName'
+      expected:
+        - shortName: ['newShortName']
+
+  - test-search-build_subquery shortName multiple:
+      params:
+        shortName: ['newShortName', 'oldShortName']
+      expected:
+        - shortName: ['newShortName', 'oldShortName']
+
+  - test-search-build_subquery cmr_keywords:
+      params:
+        cmr_keywords: ['attribute[]', 'unique_value']
+      expected:
+        - cmr_keywords: [['attribute[]', 'unique_value']]
+  - test-search-build_subquery multiple cmr_keywords:
+      params:
+        cmr_keywords: [['attribute[]', 'unique_value'],['special_key', 'special_value']]
+      expected:
+        - cmr_keywords: [['attribute[]', 'unique_value'],['special_key', 'special_value']]
+
   - test-search-build_subquery configuration params:
       params:
         host: 'cmr.uat.earthdata.nasa.gov'
