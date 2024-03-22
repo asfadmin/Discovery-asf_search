@@ -1,5 +1,5 @@
 import datetime
-from typing import Dict, Sequence, Tuple, Union
+from typing import Sequence, Tuple, Union
 from copy import copy
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR.subquery import build_subqueries
@@ -45,7 +45,7 @@ def search_count(
         operaBurstID: Union[str, Sequence[str]] = None,
         dataset: Union[str, Sequence[str]] = None,
         shortName: Union[str, Sequence[str]] = None,
-        cmr_keywords: Union[Dict[str, str], Sequence[Dict[str, str]]] = None,
+        cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> int:

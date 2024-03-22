@@ -1,4 +1,4 @@
-from typing import Dict, Union, Sequence, Tuple
+from typing import Union, Sequence, Tuple
 from copy import copy
 import datetime
 
@@ -43,7 +43,7 @@ def search(
         operaBurstID: Union[str, Sequence[str]] = None,
         dataset: Union[str, Sequence[str]] = None,
         shortName: Union[str, Sequence[str]] = None,
-        cmr_keywords: Union[Dict[str, str], Sequence[Dict[str, str]]] = None,
+        cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
