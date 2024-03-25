@@ -181,6 +181,30 @@ class ASFProduct:
         """
         return None
 
+    def _get_access_urls(self, url_types: List[str] = ['GET DATA', 'EXTENDED METADATA']) -> List[str]:
+        accessUrls = []
+
+        for url_type in url_types:
+            if urls := self.umm_get(self.umm, 'RelatedUrls', ('Type', [(url_type, 'URL')]), 0):
+                accessUrls.extend(urls)
+
+        return sorted(list(set(accessUrls)))
+    
+    def _get_additional_urls(self) -> List[str]:
+        accessUrls = self._get_access_urls(['GET DATA', 'EXTENDED METADATA'])
+        return [
+            url for url in accessUrls if not url.endswith('.md5')
+            and not url.startswith('s3://')
+            and 's3credentials' not in url
+            and not url.endswith('.png')
+            and url != self.properties['url']
+        ]
+    
+    def _get_s3_urls(self) -> List[str]:
+        s3_urls = self._get_access_urls(['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS'])
+        return [url for url in s3_urls if url.startswith('s3://')]
+
+
     def centroid(self) -> Point:
         """
         Finds the centroid of a product
