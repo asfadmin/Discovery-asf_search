@@ -41,6 +41,16 @@ class OPERAS1Product(S1Product):
             and url != self.properties['url']
         ])
 
+        s3_urls = []
+
+        if direct_access_urls := self.umm_get(self.umm, 'RelatedUrls', ('Type', [('GET DATA VIA DIRECT ACCESS', 'URL')]), 0):
+            s3_urls.extend(direct_access_urls)
+        
+        if s3_access_urls := set([url for url in accessUrls if url.startswith('s3://')]):
+            s3_urls.extend(s3_access_urls)
+
+        self.properties['s3Urls'] = sorted([url for url in list(set(s3_urls))])
+
         self.properties['operaBurstID'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
         self.properties['bytes'] = {entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']} for entry in self.properties['bytes']}
 

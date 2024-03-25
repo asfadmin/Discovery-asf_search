@@ -32,6 +32,9 @@ class NISARProduct(ASFStackableProduct):
             and url != self.properties['url']
         ])
 
+        if s3_urls := self.umm_get(self.umm, 'RelatedUrls', ('Type', [('GET DATA VIA DIRECT ACCESS', 'URL')]), 0):
+            self.properties['s3Urls'] = s3_urls
+
         if self.properties.get('groupID') is None:
             self.properties['groupID'] = self.properties['sceneName']
 
