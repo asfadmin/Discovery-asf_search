@@ -47,7 +47,6 @@ def geo_search(
         shortName: Union[str, Sequence[str]] = None,
         cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
-        session: ASFSession = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """

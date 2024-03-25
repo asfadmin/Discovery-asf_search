@@ -4,7 +4,6 @@ import datetime
 
 from asf_search import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.ASFSession import ASFSession
 from asf_search.search.search_generator import search_generator
 
 def search(
@@ -46,7 +45,6 @@ def search(
         shortName: Union[str, Sequence[str]] = None,
         cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
-        session: ASFSession = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """

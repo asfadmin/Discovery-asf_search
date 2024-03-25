@@ -10,7 +10,6 @@ from asf_search.ASFSearchResults import ASFSearchResults
 def product_search(
         product_list: Sequence[str],
         opts: ASFSearchOptions = None,
-        session: ASFSession = None,
 ) -> ASFSearchResults:
     """
     Performs a product ID search using the ASF SearchAPI
@@ -25,4 +24,4 @@ def product_search(
 
     opts.merge_args(product_list=product_list)
     
-    return search(opts=opts, session=session)
+    return search(opts=opts)

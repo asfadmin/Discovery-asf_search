@@ -10,7 +10,6 @@ from asf_search.ASFSearchResults import ASFSearchResults
 def granule_search(
         granule_list: Sequence[str],
         session: ASFSession = None,
-        opts: ASFSearchOptions = None
 ) -> ASFSearchResults:
     """
     Performs a granule name search using the ASF SearchAPI
@@ -25,4 +24,4 @@ def granule_search(
     
     opts.merge_args(granule_list=granule_list)
     
-    return search(opts=opts, session=session)
+    return search(opts=opts)

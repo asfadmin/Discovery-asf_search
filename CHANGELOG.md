@@ -29,7 +29,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v7.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.7...v7.0.8)
 ### Added
 - `s3Urls` property added to `OPERAS1Product` and `NISARProduct` types, exposes direct access S3 links
-- Adds `session` as searchable keyword directly within search methods
 
 ------
 ## [v7.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.6...v7.0.7)
