@@ -63,6 +63,7 @@ def search_generator(
         shortName: Union[str, Sequence[str]] = None,
         cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
+        session: ASFSession = None,
         opts: ASFSearchOptions = None,
         ) -> Generator[ASFSearchResults, None, None]:
     # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:
