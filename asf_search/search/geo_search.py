@@ -2,6 +2,7 @@ from typing import Tuple, Union, Sequence
 import datetime
 from copy import copy
 
+from asf_search.ASFSession import ASFSession
 from asf_search.search import search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
@@ -46,6 +47,7 @@ def geo_search(
         shortName: Union[str, Sequence[str]] = None,
         cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
         maxResults: int = None,
+        session: ASFSession = None,
         opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
