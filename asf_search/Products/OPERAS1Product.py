@@ -27,7 +27,6 @@ class OPERAS1Product(S1Product):
         self.properties['beamMode'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
 
         self.properties['additionalUrls'] = self._get_additional_urls()
-        self.properties['s3Urls'] = self._get_s3_urls()
 
         self.properties['operaBurstID'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
         self.properties['bytes'] = {entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']} for entry in self.properties['bytes']}
