@@ -1,7 +1,6 @@
 from typing import Sequence
 from copy import copy
 
-from asf_search import ASFSession
 from asf_search.search import search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
@@ -9,7 +8,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 
 def product_search(
         product_list: Sequence[str],
-        opts: ASFSearchOptions = None,
+        opts: ASFSearchOptions = None
 ) -> ASFSearchResults:
     """
     Performs a product ID search using the ASF SearchAPI
