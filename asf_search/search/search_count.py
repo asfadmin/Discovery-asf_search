@@ -2,6 +2,7 @@ import datetime
 from typing import Sequence, Tuple, Union
 from copy import copy
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSession import ASFSession
 from asf_search.CMR.subquery import build_subqueries
 from asf_search.CMR import translate_opts
 from asf_search.search.search_generator import get_page, preprocess_opts
@@ -46,6 +47,7 @@ def search_count(
         dataset: Union[str, Sequence[str]] = None,
         shortName: Union[str, Sequence[str]] = None,
         cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
+        session: ASFSession = None,
         maxResults: int = None,
         opts: ASFSearchOptions = None,
 ) -> int:
