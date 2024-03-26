@@ -3,6 +3,7 @@ from typing import Any, Dict, Tuple, Type, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
+import re
 
 from urllib import parse
 
@@ -204,7 +205,28 @@ class ASFProduct:
         s3_urls = self._get_access_urls(['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS'])
         return [url for url in s3_urls if url.startswith('s3://')]
 
+    def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
+        """
+        Searches for all urls matching a given extension and/or pattern
+        param extension: the file extension to search for. (Defaults to `None`)
+            - Example: '.tiff'
+        param pattern: A regex pattern to search each url for.(Defaults to `False`)
+            - Example: `r'(QA_)+'` to find urls with 'QA_' at least once
+        param directAccess: should search in s3 bucket urls (Defaults to `False`)
+        """
+        search_list =  self._get_s3_urls() if directAccess else self._get_additional_urls()
+        
+        def _get_extension(file_url: str):
+            path = parse.urlparse(file_url).path
+            return os.path.splitext(path)[-1]
+        
+        if extension is not None:
+            search_list = [url for url in search_list if _get_extension(url) == extension] 
 
+        regexp = re.compile(pattern=pattern)
+
+        return [url for url in search_list if regexp.search(url) is not None]
+    
     def centroid(self) -> Point:
         """
         Finds the centroid of a product
