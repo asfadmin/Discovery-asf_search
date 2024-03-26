@@ -1,46 +1,47 @@
 import warnings
 import json
 
-from .validator_map import validator_map, validate
+from .validator_map import ASFSearchOptionsModel
 from .config import config
 from asf_search import ASF_LOGGER
 
-class ASFSearchOptions:
-    def __init__(self, **kwargs):
-        """
-        Initialize the object, creating the list of attributes based on the contents of validator_map, and assign them based on kwargs
+class ASFSearchOptions(ASFSearchOptionsModel):
+    # def __init__(...):
+    #     """
+    #     Initialize the object, creating the list of attributes based on the contents of validator_map, and assign them based on kwargs
 
-        :param kwargs: any search options to be set immediately
-        """
-        # init the built in attrs:
-        for key in validator_map:
-            self.__setattr__(key, None)
+    #     :param kwargs: any search options to be set immediately
+    #     """
+    #     # # init the built in attrs:
+    #     # for key in validator_map:
+    #     #     self.__setattr__(key, None)
         
-        # Apply any parameters passed in:
-        for key, value in kwargs.items():
-            self.__setattr__(key, value)
+    #     # # Apply any parameters passed in:
+    #     # for key, value in kwargs.items():
+    #     #     self.__setattr__(key, value)
+    #     pass
 
-    def __setattr__(self, key, value):
-        """
-        Set a search option, restricting to the keys in validator_map only, and applying validation to the value before setting
+    # def __setattr__(self, key, value):
+    #     """
+    #     Set a search option, restricting to the keys in validator_map only, and applying validation to the value before setting
         
-        :param key: the name of the option to be set
-        :param value: the value to which to set the named option
-        """
-        # self.* calls custom __setattr__ method, creating inf loop. Use super().*
-        # Let values always be None, even if their validator doesn't agree. Used to delete them too:
-        if key in validator_map:
-            if value is None:  # always maintain config on required fields
-                if key in config:
-                    super().__setattr__(key, config[key])
-                else:
-                    super().__setattr__(key, None)
-            else:
-                super().__setattr__(key, validate(key, value))
-        else:
-            msg = f"key '{key}' is not a valid search option (setattr)"
-            ASF_LOGGER.error(msg)
-            raise KeyError(msg)
+    #     :param key: the name of the option to be set
+    #     :param value: the value to which to set the named option
+    #     """
+    #     # self.* calls custom __setattr__ method, creating inf loop. Use super().*
+    #     # Let values always be None, even if their validator doesn't agree. Used to delete them too:
+    #     if key in validator_map:
+    #         if value is None:  # always maintain config on required fields
+    #             if key in config:
+    #                 super().__setattr__(key, config[key])
+    #             else:
+    #                 super().__setattr__(key, None)
+    #         else:
+    #             super().__setattr__(key, validate(key, value))
+    #     else:
+    #         msg = f"key '{key}' is not a valid search option (setattr)"
+    #         ASF_LOGGER.error(msg)
+    #         raise KeyError(msg)
 
     def __delattr__(self, item):
         """
@@ -48,28 +49,24 @@ class ASFSearchOptions:
 
         :param item: the name of the option to clear
         """
-        if item in validator_map:
-            self.__setattr__(item, None)
-        else:
-            msg = f"key '{item}' is not a valid search option (delattr)"
-            ASF_LOGGER.error(msg)
-            raise KeyError(msg)
+        self.__setattr__(item, None)
 
     def __iter__(self):
         """
         Filters search parameters, only returning populated fields. Used when casting to a dict.
         """
-
-        for key in validator_map:
-            if not self._is_val_default(key):
-                value = self.__getattribute__(key)
-                yield key, value
+        for key, value in self.model_dump(exclude_defaults=True).items():
+            yield key, value
+        # for key in validator_map:
+        #     if not self._is_val_default(key):
+        #         value = self.__getattribute__(key)
+        #         yield key, value
 
     def __str__(self):
         """
         What to display if `print(opts)` is called.
         """
-        return json.dumps(dict(self), indent=4)
+        return self.model_dump_json(exclude=['session', 'maxResults'], exclude_unset=True, indent=4)
 
     # Default is set to '...', since 'None' is a very valid value here
     def pop(self, key, default=...):
@@ -78,7 +75,7 @@ class ASFSearchOptions:
 
         :param key: name of key to return value of, and delete
         """
-        if key not in validator_map:
+        if key not in self.model_dump():
             msg = f"key '{key}' is not a valid key for ASFSearchOptions. (pop)"
             ASF_LOGGER.error(msg)
             raise KeyError(msg)
