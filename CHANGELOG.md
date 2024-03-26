@@ -25,6 +25,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+------
+## [v7.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.7...v7.0.8)
+### Added
+- `s3Urls` property added to `S1Product`, `OPERAS1Product`, and `NISARProduct` types, exposing direct access S3 links
 
 ------
 ## [v7.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.6...v7.0.7)

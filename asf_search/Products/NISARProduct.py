@@ -17,20 +17,8 @@ class NISARProduct(ASFStackableProduct):
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
-        accessUrls = []
-
-        if related_data_urls := self.umm_get(self.umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0):
-            accessUrls.extend(related_data_urls)
-        if related_metadata_urls := self.umm_get(self.umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0):
-            accessUrls.extend(related_metadata_urls)
-
-        self.properties['additionalUrls'] = sorted([
-            url for url in list(set(accessUrls)) if not url.endswith('.md5')
-            and not url.startswith('s3://')
-            and 's3credentials' not in url
-            and not url.endswith('.png')
-            and url != self.properties['url']
-        ])
+        self.properties['additionalUrls'] = self._get_additional_urls()
+        self.properties['s3Urls'] = self._get_s3_urls()
 
         if self.properties.get('groupID') is None:
             self.properties['groupID'] = self.properties['sceneName']

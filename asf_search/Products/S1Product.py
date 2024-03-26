@@ -31,6 +31,8 @@ class S1Product(ASFStackableProduct):
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
+        self.properties['s3Urls'] = self._get_s3_urls()
+        
         if self._has_baseline():
             self.baseline = self.get_baseline_calc_properties()
 

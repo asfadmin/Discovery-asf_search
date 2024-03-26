@@ -26,20 +26,7 @@ class OPERAS1Product(S1Product):
 
         self.properties['beamMode'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
 
-        accessUrls = []
-
-        if related_data_urls := self.umm_get(self.umm, 'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0):
-            accessUrls.extend(related_data_urls)
-        if related_metadata_urls := self.umm_get(self.umm, 'RelatedUrls', ('Type', [('EXTENDED METADATA', 'URL')]), 0):
-            accessUrls.extend(related_metadata_urls)
-
-        self.properties['additionalUrls'] = sorted([
-            url for url in list(set(accessUrls)) if not url.endswith('.md5')
-            and not url.startswith('s3://')
-            and 's3credentials' not in url
-            and not url.endswith('.png')
-            and url != self.properties['url']
-        ])
+        self.properties['additionalUrls'] = self._get_additional_urls()
 
         self.properties['operaBurstID'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0)
         self.properties['bytes'] = {entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']} for entry in self.properties['bytes']}
