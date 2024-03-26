@@ -1,6 +1,7 @@
 from collections import UserList
 from multiprocessing import Pool
 import json
+from typing import List
 from asf_search import ASFSession, ASFSearchOptions
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.exceptions import ASFSearchError
@@ -41,6 +42,15 @@ class ASFSearchResults(UserList):
     def jsonlite2(self):
         return results_to_jsonlite2(self)  
 
+    def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
+        """Returns a list of all https or s3 urls from all results matching an extension and/or regex pattern"""
+        urls = []
+
+        for product in self:
+            urls.extend(product.find_urls(extension=extension, pattern=pattern, directAccess=directAccess))
+        
+        return urls
+    
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
