@@ -214,7 +214,7 @@ class ASFProduct:
             - Example: `r'(QA_)+'` to find urls with 'QA_' at least once
         param directAccess: should search in s3 bucket urls (Defaults to `False`)
         """
-        search_list =  self._get_s3_urls() if directAccess else self._get_additional_urls()
+        search_list = self._get_s3_urls() if directAccess else self._get_additional_urls()
         
         def _get_extension(file_url: str):
             path = parse.urlparse(file_url).path
