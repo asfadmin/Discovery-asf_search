@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Dict, Iterable, List
 from multiprocessing import Pool
 import os.path
 from urllib import parse
@@ -12,8 +12,10 @@ from tenacity import retry, stop_after_delay, retry_if_result, wait_fixed
 
 try:
     from remotezip import RemoteZip
+    import boto3
 except ImportError:
     RemoteZip = None
+    boto3 = None
 
 def _download_url(arg):
     url, path, session = arg
@@ -116,3 +118,56 @@ def _try_get_response(session: ASFSession, url: str):
         raise e
 
     return response
+
+def download_s3_urls(urls: Iterable[str], path: str, botoS3Client, extraArgs: Dict = {}, processes: int = 1):
+    if processes <= 1:
+        for url in urls:
+            download_s3_url(url=url, path=path, botoS3Client=botoS3Client, extraArgs=extraArgs)
+    else:
+        pool = Pool(processes=processes)
+        args = [(url, path, botoS3Client, extraArgs) for url in urls]
+        pool.map(_download_s3_url, args)
+        pool.close()
+        pool.join()
+
+def _download_s3_url(arg):
+    url, path, botoS3Client, extraArgs = arg
+    download_s3_url(
+        url=url,
+        path=path,
+        botoS3Client=botoS3Client,
+        extraArgs=extraArgs)
+    
+def download_s3_url(url: str, path: str, botoS3Client = None, extraArgs: Dict = {}, fileName=None) -> None:
+    if boto3 is None:
+        raise ImportError("Could not find boto3 package in current python environment. \"boto3\" is an optional dependency of asf-search required for the `download_from_s3()` method. Enable by including the appropriate pip or conda install. Ex: `python3 -m pip install asf-search[extras]`")
+    
+    if botoS3Client is None:
+        botoS3Client = boto3.client('s3')
+    
+    if not os.path.isdir(path):
+        raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
+
+    parsed = parse.urlparse(url)
+    
+    if fileName is None:
+        filename = os.path.join(path, os.path.basename(parsed.path))
+    else:
+        fileName = os.path.join(path, fileName)
+    
+    if os.path.isfile(filename):
+        warnings.warn(f'File already exists, skipping download: {os.path.join(path, filename)}')
+        return
+    
+    bucket = parsed.netloc
+    object_name = parsed.path.lstrip('/')
+
+    ASF_LOGGER.info(f"Downloading object \"{object_name}\" from s3 bucket: \"{bucket}\"")
+
+    try:
+        botoS3Client.download_file(bucket, object_name, filename, extraArgs)
+        ASF_LOGGER.info(f"Object \"{object_name}\" downloaded from s3 bucket: \"{bucket}\"")
+    except Exception as exc:
+        error_message = f"Error downloading \"{object_name}\" from s3 bucket: \"{bucket}\". Reason: {exc}"
+        ASF_LOGGER.warning(error_message)
+        raise ASFDownloadError(error_message)

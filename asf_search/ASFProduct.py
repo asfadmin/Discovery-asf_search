@@ -10,6 +10,7 @@ from urllib import parse
 from asf_search import ASFSession, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.download import download_url
+from asf_search.download.download import download_s3_urls
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
@@ -143,6 +144,11 @@ class ASFProduct:
         for filename, url in urls:
             download_url(url=url, path=path, filename=filename, session=session)
 
+    def download_s3(self, path: str, filename: str = None, botoS3Client = None, extraArgs: Dict = {}, extension: str = None, pattern=r'.*', processes=1):
+        urls = self.find_urls(extension=extension, pattern=pattern, directAccess=True)
+        
+        download_s3_urls(urls, path=path, botoS3Client=botoS3Client, extraArgs=extraArgs, processes=processes)
+    
     def _get_additional_filenames_and_urls(
             self,
             default_filename: str = None  # for subclasses without fileName in url (see S1BurstProduct implementation)

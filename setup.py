@@ -25,7 +25,8 @@ test_requirements = [
 ]
 
 extra_requirements = [
-    "remotezip>=0.10.0"
+    "remotezip>=0.10.0",
+    "boto3"
 ]
 
 
