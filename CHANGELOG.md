@@ -33,6 +33,19 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Exposed `ASFProduct.get_urls` which returns the URL's for it's products directly. Can control which products with the `fileType` enum.
 
 ------
+## [v7.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.7...v7.0.8)
+### Added
+- `s3Urls` property added to `S1Product`, `OPERAS1Product`, and `NISARProduct` types, exposing direct access S3 links
+
+------
+## [v7.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.6...v7.0.7)
+### Added
+- Adds `cmr_keywords` search keyword, enables passing CMR format strings in search directly
+- Adds `shortName` keyword, for use with lists of collection short names
+### Changed
+- Allows using `dataset` and `platform` in same search
+
+------
 ## [v7.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.5...v7.0.6)
 ### Changed
 - timestamps while building queries and reading results from CMR now use UTC if no timezone is provided
@@ -42,7 +55,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v7.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.4...v7.0.5)
 ### Added
 - Adds basic NISAR dataset search and product functionality for test data
-- Adds `cmr_keywords` search keyword, enables passing CMR format strings in search directly
 
 ------
 ## [v7.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.3...v7.0.4)

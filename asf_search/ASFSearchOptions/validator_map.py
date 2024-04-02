@@ -66,6 +66,7 @@ validator_map = {
     'insarStackId':           parse_string,
     'instrument':             parse_string,
     'collections':            parse_string_list,
+    'shortName':              parse_string_list,
     'temporalBaselineDays':   parse_string_list,
     'operaBurstID':           parse_string_list,
     'absoluteBurstID':        parse_int_list,

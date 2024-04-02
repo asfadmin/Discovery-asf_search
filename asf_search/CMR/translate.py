@@ -83,9 +83,8 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     if should_use_asf_frame(cmr_opts):
             cmr_opts = use_asf_frame(cmr_opts)
 
-    for search_keyword in custom_cmr_keywords:
-        cmr_opts.append((search_keyword['key'], search_keyword['fmt']))
-    
+    cmr_opts.extend(custom_cmr_keywords)
+
     additional_keys = [
         ('page_size', CMR_PAGE_SIZE),
         ('options[temporal][and]', 'true'), 

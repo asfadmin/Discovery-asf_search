@@ -109,21 +109,19 @@ def parse_list(value: Sequence, h) -> List:
     except ValueError as exc:
         raise ValueError(f'Invalid {h.__name__} list: {exc}') from exc
 
-def parse_cmr_keywords_list(value: Sequence[Dict]):
-    if not isinstance(value, Sequence):
+def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
+    if not isinstance(value, Sequence) or (len(value) == 2 and isinstance(value[0], str)): # in case we're passed single key value pair as sequence
         value = [value]
     
-    required_keys = ['key', 'fmt']
-
     for idx, item in enumerate(value):
-        if not isinstance(item, dict):
-            raise ValueError(f"Expected item in umm search key list index {idx} to be dict, got value {item} of type {type(item)}")
-        for key in required_keys:
-            item_value = item.get(key)
-            if item_value is None:
-                raise ValueError(f"Expected key \"{key}\" in umm search key dict at index {idx}, got keys {item.keys()}")
-            elif not isinstance(item_value, str):
-                raise ValueError(f"Expected value at index {idx} for key \"{key}\" to be of type \"str\", got {type(item_value)} instead.")
+        if not isinstance(item, tuple) and not isinstance(item, Sequence):
+            raise ValueError(f"Expected item in cmr_keywords list index {idx} to be tuple pair, got value {item} of type {type(item)}")
+        if len(item) != 2:
+            raise ValueError(f"Expected item in cmr_keywords list index {idx} to be of length 2, got value {item} of length {len(item)}")
+        
+        search_key, search_value = item
+        if not isinstance(search_key, str) or not isinstance(search_value, str):
+            raise ValueError(f"Expected tuple pair of types: \"{type(str)}, {type(str)}\" in cmr_keywords at index {idx}, got value \"{str(item)}\" of types: \"{type(search_key)}, {type(search_value)}\"")
 
     return value
 
