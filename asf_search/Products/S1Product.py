@@ -33,7 +33,7 @@ class S1Product(ASFStackableProduct):
 
         self.properties['s3Urls'] = self._get_s3_urls()
         
-        if self._has_baseline():
+        if self.has_baseline():
             self.baseline = self.get_baseline_calc_properties()
 
     def has_baseline(self) -> bool:
