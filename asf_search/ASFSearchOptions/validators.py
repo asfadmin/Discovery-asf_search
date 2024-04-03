@@ -7,6 +7,8 @@ from typing import Dict, Union, Tuple, TypeVar, Callable, List, Type, Sequence
 import math
 from shapely import wkt, errors
 
+from asf_search import ASF_LOGGER
+
 
 number = TypeVar('number', int, float)
 
@@ -122,6 +124,18 @@ def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
         search_key, search_value = item
         if not isinstance(search_key, str) or not isinstance(search_value, str):
             raise ValueError(f"Expected tuple pair of types: \"{type(str)}, {type(str)}\" in cmr_keywords at index {idx}, got value \"{str(item)}\" of types: \"{type(search_key)}, {type(search_value)}\"")
+
+    return value
+
+# parse granule_list or product_list, warn users in case they're potentially not following best practices
+def parse_granule_or_products_list(value: Sequence[str]):
+    value = parse_string_list(value)
+
+    if len(value) == 1 and "*" not in value[0] and "?" not in value[0]: # if a user attempts to search a single granule/product by its full name
+        ASF_LOGGER.warn('When searching via \"granule_list\" or \"product_list\" it is best practice to search for multiple granules/products at a time to minimize queries to CMR and maximize search effeciency.')
+    elif any("*" in name or "?" in name for name in value): # or if a user attempts to use any pattern matching schemes
+        ASF_LOGGER.warn('When searching for granules or products with pattern matching, please be sure to be aware of CMR\'s best practices regarding leading wildcards, or consider using asf-search\'s other filters to narrow search to desired results: \
+                            https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#Parameter-Options')
 
     return value
 

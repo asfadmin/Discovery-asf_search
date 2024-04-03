@@ -1,6 +1,7 @@
 from typing import Sequence
 from copy import copy
 
+from asf_search import ASF_LOGGER
 from asf_search.search import search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults

@@ -4,6 +4,7 @@ from .validators import (
     parse_string, parse_float, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
     parse_float_or_range_list, parse_cmr_keywords_list,
+    parse_granule_or_products_list,
     parse_session
 )
 
@@ -39,8 +40,8 @@ validator_map = {
     'flightDirection':        parse_string,
     'flightLine':             parse_string,
     'frame':                  parse_int_or_range_list,
-    'granule_list':           parse_string_list,
-    'product_list':           parse_string_list,
+    'granule_list':           parse_granule_or_products_list,
+    'product_list':           parse_granule_or_products_list,
     'intersectsWith':         parse_wkt,
     'lookDirection':          parse_string,
     'offNadirAngle':          parse_float_or_range_list,
