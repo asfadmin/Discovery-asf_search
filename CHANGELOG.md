@@ -26,6 +26,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.0.9](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.8...v7.0.9)
+### Added
+- Adds `ASF_LOGGER` logging in `search_generator()` and related methods
+### Changed
+- UMM Platform ShortName used as final fallback criteria for product subclass assignment
+### Fixed
+- `ASFProduct.get_sort_keys()` will no longer returns `None` if missing sort key, defaults to empty string 
+
+------
 ## [v7.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.7...v7.0.8)
 ### Added
 - `s3Urls` property added to `S1Product`, `OPERAS1Product`, and `NISARProduct` types, exposing direct access S3 links
