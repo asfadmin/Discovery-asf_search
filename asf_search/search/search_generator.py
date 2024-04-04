@@ -206,10 +206,8 @@ def wrap_wkt(opts: ASFSearchOptions):
         wrapped, _, repairs = validate_wkt(opts.intersectsWith)
         opts.intersectsWith = wrapped.wkt
         if len(repairs):
-            ASF_LOGGER.warning(f"WKT REPAIR/VALIDATION: Repair(s) were made to the provided aoi {aoi}")
-            
-            for repair in repairs:
-                ASF_LOGGER.warning(repair)
+            # for repair in repairs:
+            ASF_LOGGER.warning(f"WKT REPAIR/VALIDATION: The following repairs were performed on the provided AOI:\n{[str(repair) for repair in repairs]}")
 
 
 def set_default_dates(opts: ASFSearchOptions):
