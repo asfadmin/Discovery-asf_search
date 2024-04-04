@@ -1,5 +1,6 @@
 from typing import Dict
 from asf_search import ASFSession
+from asf_search.ASFProduct import ASFProduct
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_float
@@ -51,3 +52,12 @@ class ARIAS1GUNWProduct(S1Product):
         Returns the product type to search for when building a baseline stack.
         """
         return None
+
+    @staticmethod
+    def is_ARIAS1GUNWProduct(item: Dict) -> bool:
+        platform = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
+        if platform in ['SENTINEL-1A', 'SENTINEL-1B']:
+            asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
+            return 'Sentinel-1 Interferogram' in asf_platform
+
+        return False

@@ -289,7 +289,7 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
 
     # If the platform exists, try to match it
     platform = _get_platform(item=item)
-    if _is_ARIA_S1_GUNW(platform=platform, item=item):
+    if ASFProductType.ARIAS1GUNWProduct.is_ARIAS1GUNWProduct(item=item):
         return dataset_to_product_types.get('ARIA S1 GUNW')(item, session=session)
     elif (subclass := dataset_to_product_types.get(platform)) is not None:
         return subclass(item, session=session)
@@ -313,7 +313,7 @@ def _get_product_type_key(item: Dict) -> str:
 
     if collection_shortName is None:
         platform = _get_platform(item=item)
-        if _is_ARIA_S1_GUNW(platform=platform, item=item):
+        if ASFProductType.ARIAS1GUNWProduct.is_ARIAS1GUNWProduct(item=item):
             return 'ARIA S1 GUNW'
 
         return platform
@@ -323,12 +323,6 @@ def _get_product_type_key(item: Dict) -> str:
 def _get_platform(item: Dict):
     return ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
 
-def _is_ARIA_S1_GUNW(platform: str, item: Dict) -> bool:
-    if platform in ['SENTINEL-1A', 'SENTINEL-1B']:
-        asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
-        return 'Sentinel-1 Interferogram' in asf_platform
-    
-    return False
 # Maps datasets from DATASET.py and collection/platform shortnames to ASFProduct subclasses
 dataset_to_product_types = {
     'SENTINEL-1': ASFProductType.S1Product,
