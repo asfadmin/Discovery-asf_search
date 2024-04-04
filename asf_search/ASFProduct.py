@@ -284,12 +284,28 @@ class ASFProduct:
         """
         return ASFProduct._base_properties
 
-    def get_sort_keys(self) -> Tuple:
+    def get_sort_keys(self) -> Tuple[str, str]:
         """
         Returns tuple of primary and secondary date values used for sorting final search results
+        Any subclasses must return string for final `sort()` to work
         """
-        return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
+        # sort() will raise an error when comparing NoneType
+        populated_properties = self._get_populated_properties()
+        
+        primary_key = populated_properties.get('stopTime', '')
+        secondary_key = populated_properties.get('fileID')
+        
+        if secondary_key is None:
+            secondary_key = populated_properties.get('sceneName', '')
 
+        return (primary_key, secondary_key)
+    
+    def _get_populated_properties(self) -> Dict:
+        """
+        Returns dict of all properties where the value is not None.
+        """
+        return {prop_key: prop_value for prop_key, prop_value in self.properties.items() if prop_value is not None}
+    
     @final
     @staticmethod
     def umm_get(item: Dict, *args):

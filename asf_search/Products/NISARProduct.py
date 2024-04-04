@@ -50,8 +50,8 @@ class NISARProduct(ASFStackableProduct):
 
     def get_sort_keys(self):
         keys = super().get_sort_keys()
-
-        if keys[0] is None:
-            return (self.properties.get('processingDate', ''), keys[1])
+        
+        if keys[0] == '':
+            return (self._get_populated_properties().get('processingDate', ''), keys[1])
 
         return keys
