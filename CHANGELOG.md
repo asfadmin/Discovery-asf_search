@@ -26,6 +26,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.0.9](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.8...v7.0.9)
+### Added
+- Improved logging in `ASFSession` authentication methods
+
+### Changed
+- `ASFSession` now allows for authorized user access to hidden/restricted CMR datasets via `auth_with_creds()` or `auth_with_cookiejar()` authentication methods (previously only supported via `auth_with_token()` method)
+- `ASFSession.auth_with_token()` now authenticates directly against EDL endpoint
+
+------
 ## [v7.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.7...v7.0.8)
 ### Added
 - `s3Urls` property added to `S1Product`, `OPERAS1Product`, and `NISARProduct` types, exposing direct access S3 links

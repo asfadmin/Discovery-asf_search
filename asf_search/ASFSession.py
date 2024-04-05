@@ -3,7 +3,8 @@ from typing import Dict, List, Union
 import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
-from asf_search import __name__ as asf_name, __version__ as asf_version
+
+from asf_search import ASF_LOGGER, __name__ as asf_name, __version__ as asf_version
 from asf_search.exceptions import ASFAuthenticationError
 
 class ASFSession(requests.Session):
@@ -72,11 +73,22 @@ class ASFSession(requests.Session):
         login_url = f'https://{self.edl_host}/oauth/authorize?client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'
 
         self.auth = (username, password)
+
+        ASF_LOGGER.info(f'Attempting to login via "{login_url}"')
         self.get(login_url)
 
         if not self._check_auth_cookies(self.cookies.get_dict()):
             raise ASFAuthenticationError("Username or password is incorrect")
 
+        ASF_LOGGER.info(f'Login successful')
+        token = self.cookies.get_dict().get('urs-access-token')
+        if token is not None:
+            ASF_LOGGER.info(f'Acquired valid application bearer token, ASFSession will use this to validate future queries (required for accessing authorized hidden/restricted datasets)')
+            self.auth = None
+            self._update_edl_token(token=token)
+        else:
+            ASF_LOGGER.error(f"Configured ASFSession Auth Host {self.asf_auth_host} failed to return a user token. A valid token is required for accessing hidden/restricted datasets")
+        
         return self
 
     def auth_with_token(self, token: str):
@@ -87,16 +99,24 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
-        self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
-
-        url = f"https://{self.cmr_host}{self.cmr_collections}"
-        response = self.get(url)
+        oauth_authorization = f"https://{self.edl_host}/oauth/tokens/user?client_id={self.edl_client_id}"
+        
+        ASF_LOGGER.info(f"Authenticating EDL token against {oauth_authorization}")
+        response = self.post(url=oauth_authorization, data={
+            'token': token
+        })
 
         if not 200 <= response.status_code <= 299:
             raise ASFAuthenticationError("Invalid/Expired token passed")
 
+        ASF_LOGGER.info(f"EDL token authenticated successfully")
+        self._update_edl_token(token=token)
+
         return self
 
+    def _update_edl_token(self, token: str):
+        self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
+    
     def auth_with_cookiejar(self, cookies: http.cookiejar.CookieJar):
         """
         Authenticates the session using a pre-existing cookiejar
@@ -115,6 +135,15 @@ class ASFSession(requests.Session):
 
         self.cookies = cookies
 
+        token = self.cookies.get_dict().get('urs-access-token')
+        if token is not None:
+            ASF_LOGGER.info(f'Found EDL token cookie "urs-access-token" in cookiejar, attempting to validate to enable Restricted/Hidden CMR datasets access for current ASFSession')
+            try:
+                self.auth_with_token(token)
+            except ASFAuthenticationError:
+                ASF_LOGGER.warning(f'Unable to use EDL token (cookie: "urs-access-token") from cookiejar. \
+                                   Restricted/Hidden CMR datasets will not be accessible \
+                                   unless re-authenticated with "auth_with_creds()" or "auth_with_token()"')
         return self
 
     def _check_auth_cookies(self, cookies: Union[http.cookiejar.CookieJar, Dict]) -> bool:
