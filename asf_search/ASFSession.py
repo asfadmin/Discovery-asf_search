@@ -1,5 +1,5 @@
 import platform
-from typing import Dict, List, Union
+from typing import Dict, List
 import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
@@ -167,7 +167,7 @@ class ASFSession(requests.Session):
 
         return self
 
-    def _check_auth_cookies(self, cookies: Union[http.cookiejar.CookieJar, Dict]) -> bool:
+    def _check_auth_cookies(self, cookies: Dict) -> bool:
         return any(cookie in self.auth_cookie_names for cookie in cookies)
 
     def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):
