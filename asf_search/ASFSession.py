@@ -1,5 +1,5 @@
 import platform
-from typing import Dict, List
+from typing import Dict, List, Union
 import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
@@ -141,7 +141,7 @@ class ASFSession(requests.Session):
     def _update_edl_token(self, token: str):
         self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
     
-    def auth_with_cookiejar(self, cookies: http.cookiejar.CookieJar):
+    def auth_with_cookiejar(self, cookies: Union[http.cookiejar.CookieJar, requests.cookies.RequestsCookieJar]):
         """
         Authenticates the session using a pre-existing cookiejar
 
@@ -149,8 +149,7 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
-        
-        if not self._check_auth_cookies(dict(cookies)):
+        if not self._check_auth_cookies(cookies):
             raise ASFAuthenticationError("Cookiejar does not contain login cookies")
 
         for cookie in cookies:
@@ -167,7 +166,10 @@ class ASFSession(requests.Session):
 
         return self
 
-    def _check_auth_cookies(self, cookies: Dict) -> bool:
+    def _check_auth_cookies(self, cookies: Union[http.cookiejar.CookieJar, requests.cookies.RequestsCookieJar]) -> bool:
+        if isinstance(cookies, requests.cookies.RequestsCookieJar):
+            cookies = dict(cookies)
+
         return any(cookie in self.auth_cookie_names for cookie in cookies)
 
     def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):

@@ -28,8 +28,13 @@ def run_auth_with_cookiejar(cookies: List):
     cookiejar = http.cookiejar.CookieJar()
     for cookie in cookies:
         cookiejar.set_cookie(create_cookie(name=cookie.pop('name'), **cookie))
+
+    # requests.cookies.RequestsCookieJar, which has slightly different behaviour
     session = ASFSession()
-    session.auth_with_cookiejar(cookies)
+    session.auth_with_cookiejar(cookiejar)
+
+    request_cookiejar_session = ASFSession()
+    request_cookiejar_session.auth_with_cookiejar(session.cookies)
 
 def run_test_asf_session_rebuild_auth(
     original_domain: str, 
