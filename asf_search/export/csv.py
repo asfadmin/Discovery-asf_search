@@ -122,7 +122,7 @@ class CSVStreamArray(list):
             "Sensor":p.get('sensor'),
             "Beam Mode":p.get('beamModeType'),
             "Beam Mode Description":p.get('configurationName'),
-            "Orbit":p.get('orbit') if not isinstance(p.get('orbit'), list) else p.get('orbit')[0],
+            "Orbit":p.get('orbit'),
             "Path Number":p.get('pathNumber'),
             "Frame Number":p.get('frameNumber'),
             "Acquisition Date":p.get('sceneDate'),
