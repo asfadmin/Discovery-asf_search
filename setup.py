@@ -25,7 +25,12 @@ test_requirements = [
 ]
 
 extra_requirements = [
-    "remotezip>=0.10.0"
+    "remotezip>=0.10.0", # required for remote zip functionality
+    "geopandas", # required for FilesToWKT functionality
+    "geomet",
+    "kml2geojson",
+    "shapefile",
+    "zipfile"
 ]
 
 

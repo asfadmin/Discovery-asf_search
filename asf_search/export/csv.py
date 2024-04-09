@@ -20,7 +20,7 @@ extra_csv_fields = [
     ('doppler', ['AdditionalAttributes', ('Name', 'DOPPLER'), 'Values', 0]),
     ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
     ('insarStackSize', ['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0]),
-    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0])
+    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0]),
 ]
 
 fieldnames = (
@@ -122,7 +122,7 @@ class CSVStreamArray(list):
             "Sensor":p.get('sensor'),
             "Beam Mode":p.get('beamModeType'),
             "Beam Mode Description":p.get('configurationName'),
-            "Orbit":p.get('orbit'),
+            "Orbit":p.get('orbit') if not isinstance(p.get('orbit'), list) else p.get('orbit')[0],
             "Path Number":p.get('pathNumber'),
             "Frame Number":p.get('frameNumber'),
             "Acquisition Date":p.get('sceneDate'),

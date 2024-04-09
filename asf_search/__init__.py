@@ -34,7 +34,7 @@ from .search import *
 from .download import *
 from .CMR import *
 from .baseline import *
-from .WKT import validate_wkt
+from .WKT import validate_wkt, filesToWKT
 from .export import *
 
 REPORT_ERRORS=True
