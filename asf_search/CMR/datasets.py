@@ -433,6 +433,7 @@ dataset_collections = {
             "C1595765183-ASF",
             "C1225776659-ASF",
         ],
+        "ARIA_S1_GUNW": ["C2859376221-ASF", "C1261881077-ASF"]
     },
     "SMAP": {
         "SPL1A_RO_METADATA_003": ["C1243122884-ASF", "C1233103964-ASF"],
@@ -539,6 +540,8 @@ collections_per_platform = {
         "C1214470533-ASF",
         "C1214470576-ASF",
         "C1595422627-ASF",
+        "C2859376221-ASF",
+        "C1261881077-ASF",
         "C1214470496-ASF",
         "C1214470532-ASF",
         "C1214472977-ASF",
