@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import Dict, Generator, Union, Sequence, Tuple, List
 from copy import copy
 from requests.exceptions import HTTPError
@@ -92,7 +93,6 @@ def search_generator(
     queries = build_subqueries(opts)
     for query in queries:
         translated_opts = translate_opts(query)
-        ASF_LOGGER.warning(f"TRANSLATED PARAMS: {translated_opts}")
         cmr_search_after_header = ""
         subquery_count = 0
 
@@ -113,7 +113,9 @@ def search_generator(
                     raise
 
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
+            perf = time.time()
             last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
+            ASF_LOGGER.warning(f"Page Processing Time {time.time() - perf}")
             subquery_count += len(last_page)
             total += len(last_page)
             last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
@@ -137,9 +139,12 @@ def search_generator(
 def query_cmr(session: ASFSession, url: str, translated_opts: Dict, sub_query_count: int):
     response = get_page(session=session, url=url, translated_opts=translated_opts)
 
+    perf = time.time()
     items = [as_ASFProduct(f, session=session) for f in response.json()['items']]
+    ASF_LOGGER.warning(f"Product Subclassing Time {time.time() - perf}")
     hits: int = response.json()['hits'] # total count of products given search opts
-
+    # 9-10 per process
+    # 3.9-5 per process
     # sometimes CMR returns results with the wrong page size
     if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + sub_query_count < hits:
         raise CMRIncompleteError(f"CMR returned page of incomplete results. Expected {min(INTERNAL.CMR_PAGE_SIZE, hits - sub_query_count)} results, got {len(items)}")
@@ -161,6 +166,8 @@ def process_page(items: List[ASFProduct], max_results: int, subquery_max_results
        stop=stop_after_attempt(3),
     )
 def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
+    
+    perf = time.time()
     try:
         response = session.post(url=url, data=translated_opts, timeout=INTERNAL.CMR_TIMEOUT)
         response.raise_for_status()
@@ -173,6 +180,7 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
     except ReadTimeout as exc:
         raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "CMR_TIMEOUT" to increase. ({url=}, timeout={INTERNAL.CMR_TIMEOUT})') from exc
 
+    ASF_LOGGER.warning(f"Query Time Elapsed {time.time() - perf}")
     return response
 
 
@@ -246,6 +254,8 @@ def set_platform_alias(opts: ASFSearchOptions):
 
         opts.platform = list(set(platform_list))
 
+_dataset_collection_items = dataset_collections.items()
+
 def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
     """ Returns the granule umm as the corresponding ASFProduct subclass,
     or ASFProduct if no equivalent is found
@@ -258,18 +268,23 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
     product_type_key = _get_product_type_key(item)
 
     # if there's a direct entry in our dataset to product type dict
+    # perf = time.time()
     subclass = dataset_to_product_types.get(product_type_key)
     if subclass is not None:
+        # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
         return subclass(item, session=session)
 
     # or if the key matches one of the shortnames in any of our datasets
-    for dataset, collections in dataset_collections.items():
+    
+    for dataset, collections in _dataset_collection_items:
         if collections.get(product_type_key) is not None:
             subclass = dataset_to_product_types.get(dataset)
             if subclass is not None:
+                # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
                 return subclass(item, session=session)
             break # dataset exists, but is not in dataset_to_product_types yet
-
+    
+    # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
     return ASFProduct(item, session=session)
 
 def _get_product_type_key(item: Dict) -> str:

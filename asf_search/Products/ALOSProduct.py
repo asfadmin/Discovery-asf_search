@@ -10,7 +10,8 @@ class ALOSProduct(ASFStackableProduct):
 
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/alos-palsar/
     """
-    _base_properties = {
+    _properties_paths = {
+        **ASFStackableProduct._properties_paths,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
         'faradayRotation': {'path': ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
         'offNadirAngle': {'path': ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
@@ -31,10 +32,3 @@ class ALOSProduct(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L1_1
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFStackableProduct.get_property_paths(),
-            **ALOSProduct._base_properties
-        }

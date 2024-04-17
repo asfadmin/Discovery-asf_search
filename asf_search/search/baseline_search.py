@@ -100,18 +100,11 @@ def _cast_to_subclass(product: ASFProduct, subclass: Type[ASFProduct]) -> ASFPro
     example:
     ```
     class MyCustomClass(ASFProduct):
-        _base_properties = {
+        _properties_paths = {
+        **ASFProduct._properties_paths,
         'some_unique_property': {'path': ['AdditionalAttributes', 'UNIQUE_PROPERTY', ...]}
         }
         
-        ...
-        
-        @staticmethod
-        def get_property_paths() -> dict:
-        return {
-            **ASFProduct.get_property_paths(),
-            **MyCustomClass._base_properties
-        }
     
     # subclass as constructor
     customReference = reference.cast_to_subclass(MyCustomClass)

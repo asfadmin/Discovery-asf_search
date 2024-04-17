@@ -15,7 +15,8 @@ class S1Product(ASFStackableProduct):
     ASF Dataset Overview Page: https://asf.alaska.edu/datasets/daac/sentinel-1/
     """
 
-    _base_properties = {
+    _properties_paths = {
+        **ASFStackableProduct._properties_paths,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
@@ -119,13 +120,6 @@ class S1Product(ASFStackableProduct):
         stack_opts.intersectsWith = self.centroid().wkt
 
         return stack_opts
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFStackableProduct.get_property_paths(),
-            **S1Product._base_properties
-        }
 
     def is_valid_reference(self) -> bool:
         keys = ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']
