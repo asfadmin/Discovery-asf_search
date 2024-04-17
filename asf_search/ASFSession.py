@@ -88,13 +88,17 @@ class ASFSession(requests.Session):
         if not self._check_auth_cookies(self.cookies.get_dict()):
             raise ASFAuthenticationError("Username or password is incorrect")
 
-        token = self.cookies.get_dict().get('urs-access-token')
-        if token is None:
-            raise ASFAuthenticationError(f'Provided asf_auth_host "{self.asf_auth_host}" failed to return an EDL token during ASFSession validation. "urs-access-token" cookie expected.')
-        
-        self.auth = None
-        self._update_edl_token(token=token)
         ASF_LOGGER.info(f'Login successful')
+
+        token = self.cookies.get_dict().get('urs-access-token')
+
+        if token is None:
+            ASF_LOGGER.warning(f'Provided asf_auth_host "{self.asf_auth_host}" returned no EDL token during ASFSession validation. EDL Token expected in "urs-access-token" cookie, required for hidden/restricted dataset access. The current session will use basic authorization.')
+        else:
+            ASF_LOGGER.info(f'Found "urs-access-token" cookie in response from auth host, using token for downloads and cmr queries.')
+            self.auth = None
+            self._update_edl_token(token=token)
+        
 
         return self
 
@@ -158,10 +162,14 @@ class ASFSession(requests.Session):
 
         token = cookies.get_dict().get('urs-access-token')
         if token is None:
-            raise ASFAuthenticationError(f'Failed to find EDL Token in cookiejar. "urs-access-token" cookie expected.')
+            ASF_LOGGER.warning(f'Failed to find EDL Token in cookiejar. EDL Token expected in "urs-access-token" cookie, required for hidden/restricted dataset access.')
+        else:
+            ASF_LOGGER.info(f'Authenticating EDL token found in "urs-access-token" cookie')
+            try:
+                self.auth_with_token(token)
+            except ASFAuthenticationError:
+                ASF_LOGGER.warning(f'Failed to authenticate with found EDL token found. Access to hidden/restricted cmr data may be limited.')
 
-        ASF_LOGGER.info(f'Authenticating EDL token found in "urs-access-token" cookie')
-        self.auth_with_token(token)
         self.cookies = cookies
 
         return self
