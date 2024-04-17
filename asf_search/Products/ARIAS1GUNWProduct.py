@@ -14,7 +14,9 @@ class ARIAS1GUNWProduct(S1Product):
     """
     _base_properties = {
         'perpendicularBaseline': {'path': ['AdditionalAttributes', ('Name', 'PERPENDICULAR_BASELINE'), 'Values', 0], 'cast': try_parse_float},
-        'orbit': {'path': ['OrbitCalculatedSpatialDomains']}
+        'orbit': {'path': ['OrbitCalculatedSpatialDomains']},
+        'inputGranules': {'path': ['InputGranules']},
+        'ariaVersion': {'path': ['AdditionalAttributes', ('Name', 'VERSION'), 'Values', 0]}
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -22,10 +24,12 @@ class ARIAS1GUNWProduct(S1Product):
         self.properties['orbit'] = [orbit['OrbitNumber'] for orbit in self.properties['orbit']]
 
         urls = self.umm_get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
+        
+        self.properties['additionalUrls'] = []
         if urls is not None:
             self.properties['url'] = urls[0]
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
-            self.properties['additionalUrls'] = [urls[1]]
+            self.properties['additionalUrls'] = urls[1:]
 
     @staticmethod
     def get_property_paths() -> Dict:
