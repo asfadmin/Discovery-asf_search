@@ -9,7 +9,7 @@ from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 from .datasets import collections_per_platform
-import dateparser
+import ciso8601
 import logging
 
 
@@ -157,8 +157,11 @@ def try_parse_date(value: str) -> Optional[str]:
     if value is None:
         return None
 
-    date = dateparser.parse(value)
-
+    try:
+        date = ciso8601.parse_datetime(value)
+    except ValueError:
+        return None
+    
     if date is None:
         return value
 
