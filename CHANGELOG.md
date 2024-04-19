@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.0.11](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.10...v7.0.11)
+### Changed
+- Uses `ciso8601` module for parsing dates from CMR response, significant performance improvement post-query
+
+------
 ## [v7.0.10](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.9...v7.0.10)
 ### Added
 - Improved logging in `ASFSession` authentication methods
