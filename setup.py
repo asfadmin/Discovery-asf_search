@@ -9,7 +9,8 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "tenacity == 8.2.2"
+    "tenacity == 8.2.2",
+    "ciso8601"
 ]
 
 test_requirements = [
