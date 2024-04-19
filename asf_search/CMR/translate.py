@@ -9,7 +9,6 @@ from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 from .datasets import collections_per_platform
-import dateparser
 import ciso8601
 import logging
 
