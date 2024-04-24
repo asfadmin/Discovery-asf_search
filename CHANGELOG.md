@@ -26,12 +26,16 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v7.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.9...v7.1.0)
+## [v7.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.1.1)
 ### Added
-- Improved logging in `ASFSession` authentication methods
 - Adds `ASF_LOGGER` logging in `search_generator()` and related methods
 ### Fixed
 - `ASFProduct.get_sort_keys()` will no longer returns `None` if missing sort key, defaults to empty string 
+
+------
+## [v7.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.9...v7.1.0)
+### Added
+- Improved logging in `ASFSession` authentication methods
 ### Changed
 - Uses `ciso8601` module for parsing dates from CMR response, significant performance improvement post-query
 - `ASFSession` now allows for authorized user access to hidden/restricted CMR datasets via `auth_with_creds()` or `auth_with_cookiejar()` authentication methods (previously only supported via `auth_with_token()` method)
