@@ -2,7 +2,7 @@ from typing import Union, Sequence, Tuple
 from copy import copy
 import datetime
 
-from asf_search import ASFSearchResults
+from asf_search import ASF_LOGGER, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.search.search_generator import search_generator
 
@@ -99,6 +99,9 @@ def search(
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
     
-    results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
+    try:
+        results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
+    except TypeError as exc:
+        ASF_LOGGER.warning(f"Failed to sort final results, leaving results unsorted. Reason: {exc}")
     
     return results
