@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Tuple
 from asf_search import ASFSearchOptions, ASFSession
 from asf_search.CMR.translate import try_parse_date
 from asf_search.Products import S1Product
@@ -71,10 +71,10 @@ class OPERAS1Product(S1Product):
         """
         return None
 
-    def get_sort_keys(self):
+    def get_sort_keys(self) -> Tuple[str, str]:
         keys = super().get_sort_keys()
 
-        if keys[0] is None:
-            keys = self.properties.get('validityStartDate'), keys[1]
+        if keys[0] == '':
+            return (self._read_property('validityStartDate', ''), keys[1])
 
         return keys
