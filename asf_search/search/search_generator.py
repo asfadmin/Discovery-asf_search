@@ -198,15 +198,9 @@ def preprocess_opts(opts: ASFSearchOptions):
 
 def wrap_wkt(opts: ASFSearchOptions):
     if opts.intersectsWith is not None:
-        aoi = opts.intersectsWith
-        if not isinstance(aoi, str):
-            if isinstance(aoi, BaseGeometry):
-                aoi = aoi.wkt
-        
         wrapped, _, repairs = validate_wkt(opts.intersectsWith)
         opts.intersectsWith = wrapped.wkt
         if len(repairs):
-            # for repair in repairs:
             ASF_LOGGER.warning(f"WKT REPAIR/VALIDATION: The following repairs were performed on the provided AOI:\n{[str(repair) for repair in repairs]}")
 
 
