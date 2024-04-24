@@ -14,8 +14,8 @@ requirements = [
 ]
 
 test_requirements = [
-    "pytest < 7.2.0",
-    "pytest-automation",
+    "pytest==8.1.1",
+    "pytest-automation==3.0.0",
     "pytest-cov",
     "pytest-xdist",
     "coverage",
