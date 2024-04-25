@@ -4,7 +4,6 @@ from setuptools import find_packages, setup
 requirements = [
     "requests",
     "shapely",
-    "python-dateutil",
     "pytz",
     "importlib_metadata",
     "numpy",
