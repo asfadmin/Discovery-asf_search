@@ -27,6 +27,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v7.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.1.1)
+### Changed
+- Uses `ciso8601.parse_datetime()` in baseline calculations, speeds up calculations on larger stacks
 ### Added
 - Adds `ASF_LOGGER` logging in `search_generator()` and related methods
 ### Fixed
