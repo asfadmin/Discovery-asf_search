@@ -1,6 +1,5 @@
 from typing import Dict, List
 
-import dateparser
 import asf_search as asf
 from asf_search import ASFSearchResults
 import defusedxml.ElementTree as DefusedETree

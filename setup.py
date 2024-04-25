@@ -4,17 +4,17 @@ from setuptools import find_packages, setup
 requirements = [
     "requests",
     "shapely",
-    "python-dateutil",
     "pytz",
     "importlib_metadata",
     "numpy",
     "dateparser",
-    "tenacity == 8.2.2"
+    "tenacity == 8.2.2",
+    "ciso8601"
 ]
 
 test_requirements = [
-    "pytest < 7.2.0",
-    "pytest-automation",
+    "pytest==8.1.1",
+    "pytest-automation==3.0.0",
     "pytest-cov",
     "pytest-xdist",
     "coverage",
@@ -53,7 +53,7 @@ setup(
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Intended Audience :: Developers",
@@ -62,6 +62,9 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Software Development",
         "Topic :: Scientific/Engineering :: Atmospheric Science",
         "Topic :: Scientific/Engineering :: GIS",

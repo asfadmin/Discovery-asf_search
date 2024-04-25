@@ -3,8 +3,10 @@ from typing import Dict, List, Union
 import requests
 from requests.utils import get_netrc_auth
 import http.cookiejar
-from asf_search import __name__ as asf_name, __version__ as asf_version
+
+from asf_search import ASF_LOGGER, __name__ as asf_name, __version__ as asf_version
 from asf_search.exceptions import ASFAuthenticationError
+from warnings import warn
 
 class ASFSession(requests.Session):
     def __init__(self, 
@@ -28,7 +30,7 @@ class ASFSession(requests.Session):
         `edl_host`: the Earthdata login endpoint used by auth_with_creds(). Defaults to `asf_search.constants.INTERNAL.EDL_HOST`
         `edl_client_id`: The Earthdata Login client ID for this package. Defaults to `asf_search.constants.INTERNAL.EDL_CLIENT_ID`
         `asf_auth_host`: the ASF auth endpoint . Defaults to `asf_search.constants.INTERNAL.ASF_AUTH_HOST`
-        `cmr_host`: the base CMR endpoint to test EDL login tokens against. Defaults to `asf_search.constants.INTERNAL.CMR_HOST`
+        `cmr_host (DEPRECATED V7.0.9)`: the base CMR endpoint to test EDL login tokens against. Defaults to `asf_search.constants.INTERNAL.CMR_HOST`
         `cmr_collections`: the CMR endpoint path login tokens will be tested against. Defaults to `asf_search.constants.INTERNAL.CMR_COLLECTIONS`
         `auth_domains`: the list of authorized endpoints that are allowed to pass auth credentials. Defaults to `asf_search.constants.INTERNAL.AUTH_DOMAINS`. Authorization headers WILL NOT be stripped from the session object when redirected through these domains.
         `auth_cookie_names`: the list of cookie names to use when verifying with `auth_with_creds()` & `auth_with_cookiejar()`
@@ -49,10 +51,17 @@ class ASFSession(requests.Session):
         self.edl_host = INTERNAL.EDL_HOST if edl_host is None else edl_host
         self.edl_client_id = INTERNAL.EDL_CLIENT_ID if edl_client_id is None else edl_client_id
         self.asf_auth_host = INTERNAL.ASF_AUTH_HOST if asf_auth_host is None else asf_auth_host
-        self.cmr_host = INTERNAL.CMR_HOST if cmr_host is None else cmr_host
         self.cmr_collections = INTERNAL.CMR_COLLECTIONS if cmr_collections is None else cmr_collections
         self.auth_domains = INTERNAL.AUTH_DOMAINS if auth_domains is None else auth_domains
         self.auth_cookie_names = INTERNAL.AUTH_COOKIES if auth_cookie_names is None else auth_cookie_names
+
+        self.cmr_host = INTERNAL.CMR_HOST
+        
+        if cmr_host is not None:
+            warn(f'Use of `cmr_host` keyword with `ASFSession` is deprecated for asf-search versions >= 7.0.9, and will be removed with the next major version. \
+                \nTo authenticate an EDL token for a non-prod deployment of CMR, set the `edl_host` keyword instead. \
+                \n(ex: session arugments for authenticating against uat: `ASFSession(edl_host="uat.urs.earthdata.nasa.gov")`)', category=DeprecationWarning, stacklevel=2)
+            self.cmr_host = cmr_host
 
     def __eq__(self, other):
         return self.auth == other.auth \
@@ -72,10 +81,24 @@ class ASFSession(requests.Session):
         login_url = f'https://{self.edl_host}/oauth/authorize?client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'
 
         self.auth = (username, password)
+
+        ASF_LOGGER.info(f'Attempting to login via "{login_url}"')
         self.get(login_url)
 
         if not self._check_auth_cookies(self.cookies.get_dict()):
             raise ASFAuthenticationError("Username or password is incorrect")
+
+        ASF_LOGGER.info(f'Login successful')
+
+        token = self.cookies.get_dict().get('urs-access-token')
+
+        if token is None:
+            ASF_LOGGER.warning(f'Provided asf_auth_host "{self.asf_auth_host}" returned no EDL token during ASFSession validation. EDL Token expected in "urs-access-token" cookie, required for hidden/restricted dataset access. The current session will use basic authorization.')
+        else:
+            ASF_LOGGER.info(f'Found "urs-access-token" cookie in response from auth host, using token for downloads and cmr queries.')
+            self.auth = None
+            self._update_edl_token(token=token)
+        
 
         return self
 
@@ -87,17 +110,42 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
-        self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
-
-        url = f"https://{self.cmr_host}{self.cmr_collections}"
-        response = self.get(url)
+        oauth_authorization = f"https://{self.edl_host}/oauth/tokens/user?client_id={self.edl_client_id}"
+        
+        ASF_LOGGER.info(f"Authenticating EDL token against {oauth_authorization}")
+        response = self.post(url=oauth_authorization, data={
+            'token': token
+        })
 
         if not 200 <= response.status_code <= 299:
-            raise ASFAuthenticationError("Invalid/Expired token passed")
+            if not self._try_legacy_token_auth(token=token):
+                raise ASFAuthenticationError("Invalid/Expired token passed")
+
+        ASF_LOGGER.info(f"EDL token authentication successful")
+        self._update_edl_token(token=token)
 
         return self
 
-    def auth_with_cookiejar(self, cookies: http.cookiejar.CookieJar):
+    def _try_legacy_token_auth(self, token: str) -> False:
+        """
+        Checks `cmr_host` search endpoint directly with provided token using method used in previous versions of asf-search (<7.0.9).
+        This is to prevent breaking changes until next major release
+        """
+        from asf_search.constants import INTERNAL
+
+        if self.cmr_host != INTERNAL.CMR_HOST:
+            self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
+            legacy_auth_url = f"https://{self.cmr_host}{self.cmr_collections}"
+            response = self.get(legacy_auth_url)
+            self.headers.pop('Authorization')
+            return 200 <= response.status_code <= 299
+        
+        return False
+        
+    def _update_edl_token(self, token: str):
+        self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
+    
+    def auth_with_cookiejar(self, cookies: Union[http.cookiejar.CookieJar, requests.cookies.RequestsCookieJar]):
         """
         Authenticates the session using a pre-existing cookiejar
 
@@ -105,7 +153,6 @@ class ASFSession(requests.Session):
 
         :return ASFSession: returns self for convenience
         """
-        
         if not self._check_auth_cookies(cookies):
             raise ASFAuthenticationError("Cookiejar does not contain login cookies")
 
@@ -113,11 +160,24 @@ class ASFSession(requests.Session):
             if cookie.is_expired():
                 raise ASFAuthenticationError("Cookiejar contains expired cookies")
 
+        token = cookies.get_dict().get('urs-access-token')
+        if token is None:
+            ASF_LOGGER.warning(f'Failed to find EDL Token in cookiejar. EDL Token expected in "urs-access-token" cookie, required for hidden/restricted dataset access.')
+        else:
+            ASF_LOGGER.info(f'Authenticating EDL token found in "urs-access-token" cookie')
+            try:
+                self.auth_with_token(token)
+            except ASFAuthenticationError:
+                ASF_LOGGER.warning(f'Failed to authenticate with found EDL token found. Access to hidden/restricted cmr data may be limited.')
+
         self.cookies = cookies
 
         return self
 
-    def _check_auth_cookies(self, cookies: Union[http.cookiejar.CookieJar, Dict]) -> bool:
+    def _check_auth_cookies(self, cookies: Union[http.cookiejar.CookieJar, requests.cookies.RequestsCookieJar]) -> bool:
+        if isinstance(cookies, requests.cookies.RequestsCookieJar):
+            cookies = dict(cookies)
+
         return any(cookie in self.auth_cookie_names for cookie in cookies)
 
     def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):
