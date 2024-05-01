@@ -107,6 +107,10 @@ def search(
         perf = time.time()
     
     results.raise_if_incomplete()
-    results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
+    
+    try:
+        results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
+    except TypeError as exc:
+        ASF_LOGGER.warning(f"Failed to sort final results, leaving results unsorted. Reason: {exc}")
     
     return results

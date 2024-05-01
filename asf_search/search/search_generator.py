@@ -7,7 +7,6 @@ from requests import ReadTimeout, Response
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential, wait_fixed
 import datetime
 import dateparser
-import warnings
 
 from asf_search import ASF_LOGGER, __version__
 
@@ -23,7 +22,7 @@ from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
 import asf_search.Products as ASFProductType
-
+from shapely.geometry.base import BaseGeometry
 
 def search_generator(
         absoluteOrbit: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
@@ -85,23 +84,37 @@ def search_generator(
         (getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)):
             raise ValueError("Cannot use maxResults along with product_list/granule_list.")
     
+    ASF_LOGGER.debug(f'SEARCH: preprocessing opts: {opts}')
     preprocess_opts(opts)
+    ASF_LOGGER.debug(f'SEARCH: preprocessed opts: {opts}')
+    
+    ASF_LOGGER.info(f'SEARCH: Using search opts {opts}')
 
     url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
     total = 0
 
     queries = build_subqueries(opts)
-    for query in queries:
+
+    ASF_LOGGER.info(f'SEARCH: Using cmr endpoint: "{url}"')
+    ASF_LOGGER.debug(f'SEARCH: Built {len(queries)} subqueries')
+    
+    for subquery_idx, query in enumerate(queries):
+        ASF_LOGGER.info(f'SUBQUERY {subquery_idx + 1}: Beginning subquery with opts: {query}')
+
+        ASF_LOGGER.debug(f'TRANSLATION: Translating subquery:\n{query}')
         translated_opts = translate_opts(query)
+        ASF_LOGGER.debug(f'TRANSLATION: Subquery translated to cmr keywords:\n{translated_opts}')
         cmr_search_after_header = ""
         subquery_count = 0
 
+        page_number = 1
         while(cmr_search_after_header is not None):
             try:
+                ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Fetching page {page_number}')
                 items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
-            except (ASFSearchError, CMRIncompleteError) as exc:
-                message = str(exc)
-                logging.error(message)
+            except (ASFSearchError, CMRIncompleteError) as e:
+                message = str(e)
+                ASF_LOGGER.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
                 # If it's a CMRIncompleteError, we can just stop here and return what we have
@@ -112,6 +125,7 @@ def search_generator(
                 else:
                     raise
 
+            ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items.')
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             perf = time.time()
             last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
@@ -123,13 +137,18 @@ def search_generator(
 
             if last_page.searchComplete:
                 if total == maxResults: # the user has as many results as they wanted
+                    ASF_LOGGER.info(f'SEARCH COMPLETE: MaxResults ({maxResults}) reached')
                     opts.session.headers.pop('CMR-Search-After', None)
                     return
                 else: # or we've gotten all possible results for this subquery
+                    ASF_LOGGER.info(f'SUBQUERY {subquery_idx + 1} COMPLETE: results exhausted for subquery')
                     cmr_search_after_header = None
+            
+            page_number += 1
 
         opts.session.headers.pop('CMR-Search-After', None)
 
+    ASF_LOGGER.info(f'SEARCH COMPLETE: results exhausted for search opts {opts}')
 
 @retry(reraise=True,
        retry=retry_if_exception_type(CMRIncompleteError),
@@ -197,8 +216,10 @@ def preprocess_opts(opts: ASFSearchOptions):
 
 def wrap_wkt(opts: ASFSearchOptions):
     if opts.intersectsWith is not None:
-        wrapped, _, __ = validate_wkt(opts.intersectsWith)
+        wrapped, _, repairs = validate_wkt(opts.intersectsWith)
         opts.intersectsWith = wrapped.wkt
+        if len(repairs):
+            ASF_LOGGER.warning(f"WKT REPAIR/VALIDATION: The following repairs were performed on the provided AOI:\n{[str(repair) for repair in repairs]}")
 
 
 def set_default_dates(opts: ASFSearchOptions):
@@ -209,7 +230,7 @@ def set_default_dates(opts: ASFSearchOptions):
     # If both are used, make sure they're in the right order:
     if opts.start is not None and opts.end is not None:
         if opts.start > opts.end:
-            warnings.warn(f"Start date ({opts.start}) is after end date ({opts.end}). Switching the two.")
+            ASF_LOGGER.warning(f"Start date ({opts.start}) is after end date ({opts.end}). Switching the two.")
             opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
     if opts.start is not None:
@@ -269,23 +290,35 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
 
     # if there's a direct entry in our dataset to product type dict
     # perf = time.time()
-    subclass = dataset_to_product_types.get(product_type_key)
+    subclass = _dataset_collection_items.get(product_type_key)
     if subclass is not None:
         # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
         return subclass(item, session=session)
 
-    # or if the key matches one of the shortnames in any of our datasets
-    
-    for dataset, collections in _dataset_collection_items:
+    # if the key matches one of the shortnames in any of our datasets
+    for dataset, collections in dataset_collections.items():
         if collections.get(product_type_key) is not None:
             subclass = dataset_to_product_types.get(dataset)
             if subclass is not None:
                 # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
                 return subclass(item, session=session)
             break # dataset exists, but is not in dataset_to_product_types yet
+
+    # If the platform exists, try to match it
+    platform = _get_platform(item=item)
+    if ASFProductType.ARIAS1GUNWProduct.is_ARIAS1GUNWProduct(item=item):
+        return dataset_to_product_types.get('ARIA S1 GUNW')(item, session=session)
+    elif (subclass := dataset_to_product_types.get(platform)) is not None:
+        return subclass(item, session=session)
     
-    # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
-    return ASFProduct(item, session=session)
+    output = ASFProduct(item, session=session)
+    
+    granule_concept_id = output.meta.get('concept-id', 'Missing Granule Concept ID')
+    fileID = output.properties.get('fileID', output.properties.get('sceneName', 'fileID and sceneName Missing'))
+
+    ASF_LOGGER.warning(f'Failed to find corresponding ASFProduct subclass for \
+                       Product: "{fileID}", Granule Concept ID: "{granule_concept_id}", default to "ASFProduct"')
+    return output
 
 def _get_product_type_key(item: Dict) -> str:
     """Match the umm response to the right ASFProduct subclass by returning one of the following:
@@ -296,15 +329,16 @@ def _get_product_type_key(item: Dict) -> str:
     collection_shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
 
     if collection_shortName is None:
-        platform_shortname = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
-        if platform_shortname in ['SENTINEL-1A', 'SENTINEL-1B']:
-            asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
-            if 'Sentinel-1 Interferogram' in asf_platform:
-                return 'ARIA S1 GUNW'
+        platform = _get_platform(item=item)
+        if ASFProductType.ARIAS1GUNWProduct.is_ARIAS1GUNWProduct(item=item):
+            return 'ARIA S1 GUNW'
 
-        return platform_shortname
+        return platform
 
     return collection_shortName
+
+def _get_platform(item: Dict):
+    return ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
 
 # Maps datasets from DATASET.py and collection/platform shortnames to ASFProduct subclasses
 dataset_to_product_types = {

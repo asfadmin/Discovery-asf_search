@@ -282,12 +282,45 @@ class ASFProduct:
 
         return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
 
-    def get_sort_keys(self) -> Tuple:
+    # ASFProduct subclasses define extra/override param key + UMM pathing here
+    @staticmethod
+    def get_property_paths() -> Dict:
+        """
+        Returns _base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
+        define which properties they want in their subclass's properties dict.
+
+        (See `S1Product.get_property_paths()` for example of combining _base_properties of multiple classes)
+
+        :returns dictionary, {`PROPERTY_NAME`: {'path': [umm, path, to, value], 'cast (optional)': Callable_to_cast_value}, ...}
+        """
+        return ASFProduct._base_properties
+
+    def get_sort_keys(self) -> Tuple[str, str]:
         """
         Returns tuple of primary and secondary date values used for sorting final search results
+        Any subclasses must return string for final `sort()` to work
         """
-        return (self.properties.get('stopTime'), self.properties.get('fileID', 'sceneName'))
-
+        # `sort()` will raise an error when comparing `NoneType`,
+        # using self._read_property() to wrap standard `dict.get()` for possible `None` values
+        primary_key = self._read_property(key='stopTime', default='')
+        secondary_key = self._read_property(
+            key='fileID', 
+            default=self._read_property('sceneName', '')
+        )
+        
+        return (primary_key, secondary_key)
+    
+    def _read_property(self, key: str, default: Any = None) -> Any:
+        """
+        Helper method wraps `properties.get()`.
+        Since a property can be `None`, if the key exists `dict.get('key', 'default')` will never return the default
+        """
+        output = default
+        if (value:=self.properties.get(key)) is not None:
+            output = value
+        
+        return output
+            
     @final
     @staticmethod
     def umm_get(item: Dict, *args):

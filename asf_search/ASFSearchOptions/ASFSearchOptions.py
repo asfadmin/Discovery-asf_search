@@ -69,7 +69,7 @@ class ASFSearchOptions:
         """
         What to display if `print(opts)` is called.
         """
-        return json.dumps(dict(self), default=str, indent=4)
+        return json.dumps(dict(self), indent=4, default=str)
 
     # Default is set to '...', since 'None' is a very valid value here
     def pop(self, key, default=...):

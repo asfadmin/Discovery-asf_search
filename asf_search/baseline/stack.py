@@ -1,5 +1,5 @@
 from typing import Tuple, List
-from dateutil.parser import parse
+from ciso8601 import parse_datetime
 import pytz
 
 from .calc import calculate_perpendicular_baselines
@@ -66,12 +66,12 @@ def calculate_temporal_baselines(reference: ASFProduct, stack: ASFSearchResults)
     :param stack: The stack to operate on.
     :return: None, as the operation occurs in-place on the stack provided.
     """
-    reference_time = parse(reference.properties['startTime'])
+    reference_time = parse_datetime(reference.properties['startTime'])
     if reference_time.tzinfo is None:
         reference_time = pytz.utc.localize(reference_time)
 
     for secondary in stack:
-        secondary_time = parse(secondary.properties['startTime'])
+        secondary_time = parse_datetime(secondary.properties['startTime'])
         if secondary_time.tzinfo is None:
             secondary_time = pytz.utc.localize(secondary_time)
         secondary.properties['temporalBaseline'] = (secondary_time.date() - reference_time.date()).days
