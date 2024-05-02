@@ -1,5 +1,6 @@
 from typing import Dict
 from asf_search import ASFSession
+from asf_search.ASFProduct import ASFProduct
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_float
@@ -13,7 +14,9 @@ class ARIAS1GUNWProduct(S1Product):
     """
     _base_properties = {
         'perpendicularBaseline': {'path': ['AdditionalAttributes', ('Name', 'PERPENDICULAR_BASELINE'), 'Values', 0], 'cast': try_parse_float},
-        'orbit': {'path': ['OrbitCalculatedSpatialDomains']}
+        'orbit': {'path': ['OrbitCalculatedSpatialDomains']},
+        'inputGranules': {'path': ['InputGranules']},
+        'ariaVersion': {'path': ['AdditionalAttributes', ('Name', 'VERSION'), 'Values', 0]}
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -21,10 +24,12 @@ class ARIAS1GUNWProduct(S1Product):
         self.properties['orbit'] = [orbit['OrbitNumber'] for orbit in self.properties['orbit']]
 
         urls = self.umm_get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
+        
+        self.properties['additionalUrls'] = []
         if urls is not None:
             self.properties['url'] = urls[0]
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
-            self.properties['additionalUrls'] = [urls[1]]
+            self.properties['additionalUrls'] = urls[1:]
 
     @staticmethod
     def get_property_paths() -> Dict:
@@ -51,3 +56,12 @@ class ARIAS1GUNWProduct(S1Product):
         Returns the product type to search for when building a baseline stack.
         """
         return None
+
+    @staticmethod
+    def is_ARIAS1GUNWProduct(item: Dict) -> bool:
+        platform = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
+        if platform in ['SENTINEL-1A', 'SENTINEL-1B']:
+            asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
+            return 'Sentinel-1 Interferogram' in asf_platform
+
+        return False

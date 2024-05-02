@@ -66,7 +66,7 @@ class ASFSearchOptions(ASFSearchOptionsModel):
         """
         What to display if `print(opts)` is called.
         """
-        return self.model_dump_json(exclude=['session', 'maxResults'], exclude_unset=True, indent=4)
+        return json.dumps(self.model_dump(dict(self), exclude_unset=True), indent=4, default=str)
 
     # Default is set to '...', since 'None' is a very valid value here
     def pop(self, key, default=...):
