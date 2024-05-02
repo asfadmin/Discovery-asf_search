@@ -7,6 +7,8 @@ from typing import Dict, Union, Tuple, TypeVar, Callable, List, Type, Sequence
 import math
 from shapely import wkt, errors
 
+from asf_search import ASFSession
+
 
 number = TypeVar('number', int, float)
 
@@ -48,6 +50,9 @@ def parse_date(value: Union[str, datetime]) -> Union[datetime, str]:
     :return: String passed in, if it can successfully convert to Datetime.
     (Need to keep strings like "today" w/out converting them, but throw on "asdf")
     """
+    if value is None:
+        return None
+    
     if isinstance(value, datetime):
         return _to_utc(value)
     
@@ -110,18 +115,19 @@ def parse_list(value: Sequence, h) -> List:
         raise ValueError(f'Invalid {h.__name__} list: {exc}') from exc
 
 def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
-    if not isinstance(value, Sequence) or (len(value) == 2 and isinstance(value[0], str)): # in case we're passed single key value pair as sequence
-        value = [value]
-    
-    for idx, item in enumerate(value):
-        if not isinstance(item, tuple) and not isinstance(item, Sequence):
-            raise ValueError(f"Expected item in cmr_keywords list index {idx} to be tuple pair, got value {item} of type {type(item)}")
-        if len(item) != 2:
-            raise ValueError(f"Expected item in cmr_keywords list index {idx} to be of length 2, got value {item} of length {len(item)}")
-        
-        search_key, search_value = item
-        if not isinstance(search_key, str) or not isinstance(search_value, str):
-            raise ValueError(f"Expected tuple pair of types: \"{type(str)}, {type(str)}\" in cmr_keywords at index {idx}, got value \"{str(item)}\" of types: \"{type(search_key)}, {type(search_value)}\"")
+    if value is not None:
+        if not isinstance(value, Sequence) or (len(value) == 2 and isinstance(value[0], str)): # in case we're passed single key value pair as sequence
+            value = [value]
+
+        for idx, item in enumerate(value):
+            if not isinstance(item, tuple) and not isinstance(item, Sequence):
+                raise ValueError(f"Expected item in cmr_keywords list index {idx} to be tuple pair, got value {item} of type {type(item)}")
+            if len(item) != 2:
+                raise ValueError(f"Expected item in cmr_keywords list index {idx} to be of length 2, got value {item} of length {len(item)}")
+
+            search_key, search_value = item
+            if not isinstance(search_key, str) or not isinstance(search_value, str):
+                raise ValueError(f"Expected tuple pair of types: \"{type(str)}, {type(str)}\" in cmr_keywords at index {idx}, got value \"{str(item)}\" of types: \"{type(search_key)}, {type(search_value)}\"")
 
     return value
 
@@ -218,6 +224,9 @@ def parse_wkt(value: str) -> str:
 
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):
+    if session is None:
+        return ASFSession()
+    
     if issubclass(type(session), requests.Session):
         return session
     else:

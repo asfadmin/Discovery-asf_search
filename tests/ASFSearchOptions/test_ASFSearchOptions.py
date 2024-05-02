@@ -1,21 +1,24 @@
 import copy
+
+from pydantic import ValidationError
 from asf_search.ASFSearchOptions import validators, ASFSearchOptions
 from asf_search.ASFSearchOptions.config import config
-from asf_search.ASFSearchOptions.validator_map import validate, validator_map
+from asf_search.ASFSearchOptions.validator_map import SearchOptionsModel
 from pytest import raises
 
 def run_test_validator_map_validate(key, value, output):
-    if key not in list(validator_map.keys()):
+    if key not in list(SearchOptionsModel.model_fields.keys()):
         
         with raises(KeyError) as keyerror:
-            validate(key, value)
+            ASFSearchOptions(**{key: value})
+            # validate(key, value)
 
-        if key in [validator_key.lower() for validator_key in list(validator_map.keys()) if key not in config.keys()]:
+        if key in [validator_key.lower() for validator_key in list(SearchOptionsModel.model_fields.keys()) if key not in config.keys()]:
             assert "Did you mean" in str(keyerror.value) 
 
         return
 
-    assert validate(key, value) == output
+    assert dict(ASFSearchOptions(**{key: value}))[key] == output
 
 def run_test_ASFSearchOptions_validator(validator_name, param, output, error):
     validator = getattr(validators, validator_name)

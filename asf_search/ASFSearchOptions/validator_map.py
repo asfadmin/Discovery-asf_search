@@ -1,5 +1,6 @@
 import datetime
-from typing import Optional, Sequence, Tuple, Union
+from typing import Any, ClassVar, List, Optional, Sequence, Tuple, Union
+from typing_extensions import Annotated
 from asf_search import ASF_LOGGER
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFSearchOptions.config import config
@@ -16,205 +17,126 @@ from .validators import (
     parse_float_or_range_list,
     parse_cmr_keywords_list,
     parse_session,
+    parse_float_list
 )
 
-from pydantic import ValidationError, create_model, field_validator, InstanceOf
+from pydantic import BaseModel, ConfigDict, Field, InstanceOf, PlainValidator, ValidationError, ValidationInfo, field_validator, model_validator
 
+int_range_or_list = Annotated[
+    Optional[Union[int, Tuple[int, int], Sequence[Union[int, Tuple[int, int]]]]],
+    PlainValidator(parse_int_or_range_list), 
+    # BeforeValidator(string_to_num_or_range_list)
+    ]
 
-# def validate(key, value):
-#     if key not in validator_map:
-#         error_msg = f"Key '{key}' is not a valid search option."
-#         # See if they just missed up case sensitivity:
-#         for valid_key in validator_map:
-#             if key.lower() == valid_key.lower():
-#                 error_msg += f" (Did you mean '{valid_key}'?)"
-#                 break
-#         ASF_LOGGER.error(error_msg)
-#         raise KeyError(error_msg)
-#     try:
-#         return validator_map[key](value)
-#     except ValueError as exc:
-#         ASF_LOGGER.exception(
-#             f"Failed to parse item in ASFSearchOptions: {key=} {value=} {exc=}"
-#         )
-#         raise
+float_range_or_list = Annotated[
+    Optional[Union[int, Tuple[float, float], Sequence[Union[float, Tuple[float, float]]]]],
+    PlainValidator(parse_float_or_range_list), 
+    # BeforeValidator(string_to_num_or_range_list)
+    ]
 
+string_list = Annotated[
+    Optional[Union[str, Sequence[str]]], 
+    PlainValidator(parse_string_list),
+    # BeforeValidator(string_to_list)
+    ]
 
-validators = {
-    "int_or_range_list_validator": field_validator("absoluteOrbit", "asfFrame", "frame", "relativeOrbit")(parse_int_or_range_list),
-    "string_list_validator": field_validator(
-        "beamMode",
-        "beamSwath",
-        "granule_list",
-        "product_list",
-        "platform",
-        "polarization",
-        "processingLevel",
-        "groupID",
-        "collections",
-        "shortName",
-        "temporalBaselineDays",
-        "operaBurstID",
-        "fullBurstID",
-        "dataset")(parse_string_list),
-    "string_validator": field_validator("campaign",
-        "flightDirection",
-        "flightLine",
-        "lookDirection",
-        "insarStackId",
-        "instrument",
-        "host",
-        "provider")(parse_string),
-    "float_or_range_list_validator": field_validator("offNadirAngle")(parse_float_or_range_list),
-    "float_validator": field_validator(
-        "maxDoppler",
-        "minDoppler",
-        "maxFaradayRotation",
-        "minFaradayRotation",)(parse_float),
-    "wkt_validator": field_validator("intersectsWith")(parse_wkt),
-    "date_validator": field_validator("processingDate", "start", "end")(parse_date),
-    "cmr_keywords_list_validator": field_validator("cmr_keywords")(parse_cmr_keywords_list),
-    "session_validator": field_validator("session")(parse_session),
-}
+int_list = Annotated[
+    Optional[Union[int, Sequence[int]]],
+    PlainValidator(parse_int_list),
+    # BeforeValidator(string_to_list)
+]
 
-ASFSearchOptionsModel = create_model(
-    "ASFSearchOptionsModel",
-    absoluteOrbit = (Optional[Union[int, Tuple[int, int], type(range), Sequence[Union[int, Tuple[int, int], type(range)]]]],  None),
-    asfFrame = (Optional[Union[int, Tuple[int, int], type(range), Sequence[Union[int, Tuple[int, int], type(range)]]]],  None),
-    beamMode = (Optional[Union[str, Sequence[str]]],  None),
-    beamSwath = (Optional[Union[str, Sequence[str]]],  None),
-    campaign = (Optional[Union[str, Sequence[str]]],  None),
-    maxDoppler = (Optional[float],  None),
-    minDoppler = (Optional[float],  None),
-    end = (Optional[Union[datetime.datetime, str]],  None),
-    maxFaradayRotation = (Optional[float],  None),
-    minFaradayRotation = (Optional[float],  None),
-    flightDirection = (Optional[str],  None),
-    flightLine = (Optional[str],  None),
-    frame = (Optional[Union[int, Tuple[int, int], type(range), Sequence[Union[int, Tuple[int, int], type(range)]]]],  None),
-    granule_list = (Optional[Union[str, Sequence[str]]],  None),
-    groupID = (Optional[Union[str, Sequence[str]]],  None),
-    insarStackId = (Optional[str],  None),
-    instrument = (Optional[Union[str, Sequence[str]]],  None),
-    intersectsWith = (Optional[str],  None),
-    lookDirection = (Optional[Union[str, Sequence[str]]],  None),
-    offNadirAngle = (Optional[Union[float, Tuple[float, float], Sequence[Union[float, Tuple[float, float]]]]],  None),
-    platform = (Optional[Union[str, Sequence[str]]],  None),
-    polarization = (Optional[Union[str, Sequence[str]]],  None),
-    processingDate = (Optional[Union[datetime.datetime, str]],  None),
-    processingLevel = (Optional[Union[str, Sequence[str]]],  None),
-    product_list = (Optional[Union[str, Sequence[str]]],  None),
-    relativeOrbit = (Optional[Union[int, Tuple[int, int], type(range), Sequence[Union[int, Tuple[int, int], type(range)]]]],  None),
-    season = (Optional[Tuple[int, int]],  None),
-    start = (Optional[Union[datetime.datetime, str]],  None),
-    absoluteBurstID = (Optional[Union[int, Sequence[int]]],  None),
-    relativeBurstID = (Optional[Union[int, Sequence[int]]],  None),
-    fullBurstID = (Optional[Union[str, Sequence[str]]],  None),
-    collections = (Optional[Union[str, Sequence[str]]],  None),
-    temporalBaselineDays = (Optional[Union[str, Sequence[str]]],  None),
-    operaBurstID = (Optional[Union[str, Sequence[str]]],  None),
-    dataset = (Optional[Union[str, Sequence[str]]],  None),
-    shortName = (Optional[Union[str, Sequence[str]]],  None),
-    cmr_keywords = (Optional[Union[Tuple[str, str], Sequence[Tuple[str, str]]]],  None),
-    maxResults = (Optional[int],  None),
-    session = (Optional[InstanceOf[ASFSession]], config['session']),
-    host = (Optional[str], config['host']),
-    provider = (Optional[str], config['provider']),
-    collectionAlias = (Optional[bool], config['collectionAlias']),
-    __validators__= validators,
-    __config__= {
-        'validate_assignment': True
-    }
+float_list = Annotated[
+    Optional[Union[float, Sequence[float]]],
+    PlainValidator(parse_float_list),
+    # BeforeValidator(string_to_list)
+]
+
+date_type = Annotated[Optional[Union[datetime.datetime, str]], PlainValidator(parse_date)]
+
+cmr_keyword_type = Annotated[Optional[Union[Tuple[str, str], Sequence[Tuple[str, str]]]], PlainValidator(parse_cmr_keywords_list)]
+class SearchOptionsModel(BaseModel):
+    absoluteOrbit: int_range_or_list = None
+    asfFrame: int_range_or_list = None
+    beamMode: string_list = None
+    beamSwath: string_list = None
+    campaign: string_list = None # Field(validation_alias=AliasPath('collectionname', None))
+    # circle:  cirle_type = None
+    # linestring: linestring_type = None
+    maxDoppler: Optional[float] = None
+    minDoppler: Optional[float] = None
+    end: date_type = None
+    maxFaradayRotation: Optional[float] = None
+    minFaradayRotation: Optional[float] = None
+    flightDirection: Optional[str] = None
+    flightLine: Optional[str] = None
+    frame: int_range_or_list = None
+    granule_list: string_list = None
+    groupID: string_list = None
+    insarStackId: Optional[str] = None
+    instrument: string_list = None
+    intersectsWith: Optional[str] = None
+    lookDirection: string_list = None
+    offNadirAngle: float_range_or_list = None
+    platform: string_list = None
+    polarization: string_list = None
+    processingDate: date_type = None
+    processingLevel: string_list = None
+    product_list: string_list = None
+    relativeOrbit: int_range_or_list = None
+    season: int_list = None
+    start: date_type = None
+    absoluteBurstID: int_list = None
+    relativeBurstID: int_list = None
+    fullBurstID: string_list = None
+    collections: string_list = None
+    temporalBaselineDays: string_list = None
+    operaBurstID: string_list = None
+    dataset: string_list = None
+    shortName: string_list = None
+    cmr_keywords: cmr_keyword_type = None
+
+    maxResults: Optional[int] = Field(default=None, gt=0)
+
+    # config
+    session: Annotated[Optional[InstanceOf[ASFSession]], PlainValidator(parse_session)] = config['session']
+    host: Optional[str] = config['host']
+    provider: Optional[str] = config['provider']
+    collectionAlias: Optional[bool] = config['collectionAlias']
     
-)
 
+    output: str = 'metalink'
+    maturity: Optional[str] = None
+    cmr_token: Optional[str] = None
 
-# {
-#     "int": ["maxResults"],
-#     "parse_int_or_type(range)_list": ["absoluteOrbit", "asfFrame", "frame", "relativeOrbit"],
-#     "parse_string_list": [
-#         "beamMode",
-#         "beamSwath",
-#         "granule_list",
-#         "product_list",
-#         "platform",
-#         "polarization",
-#         "processingLevel",
-#         "groupID",
-#         "collections",
-#         "shortName",
-#         "temporalBaselineDays",
-#         "operaBurstID",
-#         "fullBurstID",
-#         "dataset",
-#     ],
-#     "parse_string": [
-#         "campaign",
-#         "flightDirection",
-#         "flightLine",
-#         "lookDirection",
-#         "insarStackId",
-#         "instrument",
-#         "host",
-#         "provider",
-#     ],
-#     "parse_float": [
-#         "maxDoppler",
-#         "minDoppler",
-#         "maxFaradayRotation",
-#         "minFaradayRotation",
-#     ],
-#     "parse_wkt": ["intersectsWith"],
-#     "parse_float_or_type(range)_list": ["offNadirAngle"],
-#     "parse_date": ["processingDate", "start", "end"],
-#     "parse_int_list": ["season", "absoluteBurstID", "relativeBurstID"],
-#     "parse_cmr_keywords_list": ["cmr_keywords"],
-#     "parse_session": ["session"],
-#     "bool": ["collectionAlias"],
-# }
-# validator_map = {
-#     # Search parameters       Parser
-#     "maxResults": int,
-#     "absoluteOrbit": parse_int_or_type(range)_list,
-#     "asfFrame": parse_int_or_type(range)_list,
-#     "beamMode": parse_string_list,
-#     "beamSwath": parse_string_list,
-#     "campaign": parse_string,
-#     "maxDoppler": parse_float,
-#     "minDoppler": parse_float,
-#     "maxFaradayRotation": parse_float,
-#     "minFaradayRotation": parse_float,
-#     "flightDirection": parse_string,
-#     "flightLine": parse_string,
-#     "frame": parse_int_or_type(range)_list,
-#     "granule_list": parse_string_list,
-#     "product_list": parse_string_list,
-#     "intersectsWith": parse_wkt,
-#     "lookDirection": parse_string,
-#     "offNadirAngle": parse_float_or_type(range)_list,
-#     "platform": parse_string_list,
-#     "polarization": parse_string_list,
-#     "processingLevel": parse_string_list,
-#     "relativeOrbit": parse_int_or_type(range)_list,
-#     "processingDate": parse_date,
-#     "start": parse_date,
-#     "end": parse_date,
-#     "season": parse_int_list,
-#     "groupID": parse_string_list,
-#     "insarStackId": parse_string,
-#     "instrument": parse_string,
-#     "collections": parse_string_list,
-#     "shortName": parse_string_list,
-#     "temporalBaselineDays": parse_string_list,
-#     "operaBurstID": parse_string_list,
-#     "absoluteBurstID": parse_int_list,
-#     "relativeBurstID": parse_int_list,
-#     "fullBurstID": parse_string_list,
-#     "dataset": parse_string_list,
-#     "cmr_keywords": parse_cmr_keywords_list,
-#     # Config parameters       Parser
-#     "session": parse_session,
-#     "host": parse_string,
-#     "provider": parse_string,
-#     "collectionAlias": bool,
-# }
+    excluded_fields: ClassVar[List[str]] = ['cmr_token', 'maturity', 'output']
+
+    model_config = ConfigDict(extra='forbid', validate_assignment=True)
+    
+    def _get_search_options_dict(self) -> dict:
+        return self.model_dump(exclude_none=True, exclude_unset=True, exclude=self.excluded_fields)
+    
+    # @model_validator(mode='before')
+    # @classmethod
+    # def validate_field(cls, data):
+    #     key = data.field_name
+    #     print(f"KEY {key}")
+    #     if key not in SearchOptionsModel.model_fields:
+    #         error_msg = f"Key '{key}' is not a valid search option."
+    #         # See if they just missed up case sensitivity:
+    #         for valid_key in SearchOptionsModel.model_fields:
+    #             if key.lower() == valid_key.lower():
+    #                 error_msg += f" (Did you mean '{valid_key}'?)"
+    #                 break
+    #         ASF_LOGGER.error(error_msg)
+    #         raise ValidationError(error_msg)
+        
+    #     return v
+        
+        # try:
+        #     return handler(v)
+        # except ValueError as exc:
+        #     ASF_LOGGER.exception(
+        #         f"Failed to parse item in ASFSearchOptions: {key=} {v=} {exc=}"
+        #     )
+        #     raise

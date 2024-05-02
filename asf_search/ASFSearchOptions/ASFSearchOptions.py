@@ -1,11 +1,11 @@
 import warnings
 import json
 
-from .validator_map import ASFSearchOptionsModel
+from .validator_map import SearchOptionsModel #ASFSearchOptionsModel
 from .config import config
 from asf_search import ASF_LOGGER
 
-class ASFSearchOptions(ASFSearchOptionsModel):
+class ASFSearchOptions(SearchOptionsModel):
     # def __init__(...):
     #     """
     #     Initialize the object, creating the list of attributes based on the contents of validator_map, and assign them based on kwargs
@@ -66,7 +66,7 @@ class ASFSearchOptions(ASFSearchOptionsModel):
         """
         What to display if `print(opts)` is called.
         """
-        return json.dumps(self.model_dump(dict(self), exclude_unset=True), indent=4, default=str)
+        return json.dumps(self.model_dump(exclude_unset=True), indent=4, default=str)
 
     # Default is set to '...', since 'None' is a very valid value here
     def pop(self, key, default=...):

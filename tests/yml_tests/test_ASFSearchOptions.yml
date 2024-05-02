@@ -2,7 +2,7 @@ tests:
 - test-validator-map-validate parse-string campaign:
     key: campaign
     value: 123
-    output: '123'
+    output: ['123']
 
 - test-validator-map-validate parse-float maxDoppler:
     key: maxDoppler
@@ -132,11 +132,11 @@ tests:
 
 - test-ASFSearchOptions - create with bad key:
     doesNotExist: whatevs
-    exception: KeyError
+    exception: ValidationError
 
 - test-ASFSearchOptions - create with bad value:
     asfFrame: potato
-    exception: ValueError
+    exception: ValidationError
 
 - test-ASFSearchOptions - create with valid dates:
     exception: Null
