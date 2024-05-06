@@ -112,8 +112,8 @@ def search_generator(
             try:
                 ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Fetching page {page_number}')
                 items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
-            except (ASFSearchError, CMRIncompleteError) as e:
-                message = str(e)
+            except (ASFSearchError, CMRIncompleteError) as exc:
+                message = str(exc)
                 ASF_LOGGER.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
@@ -274,7 +274,6 @@ def set_platform_alias(opts: ASFSearchOptions):
                 platform_list.append(plat)
 
         opts.platform = list(set(platform_list))
-
 _dataset_collection_items = dataset_collections.items()
 
 def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
@@ -290,13 +289,13 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
 
     # if there's a direct entry in our dataset to product type dict
     # perf = time.time()
-    subclass = _dataset_collection_items.get(product_type_key)
+    subclass = dataset_collections.get(product_type_key)
     if subclass is not None:
         # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
         return subclass(item, session=session)
 
     # if the key matches one of the shortnames in any of our datasets
-    for dataset, collections in dataset_collections.items():
+    for dataset, collections in _dataset_collection_items:
         if collections.get(product_type_key) is not None:
             subclass = dataset_to_product_types.get(dataset)
             if subclass is not None:

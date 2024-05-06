@@ -261,11 +261,11 @@ class ASFProduct:
 
         umm = item.get('umm')
 
-        additionalAttributes = {attr['Name']: attr['Values'] for attr in umm['AdditionalAttributes']}
+        # additionalAttributes = {attr['Name']: attr['Values'] for attr in umm['AdditionalAttributes']}
 
         properties = {
-            prop: additionalAttributes.get(umm_mapping['path'][1][1])[0] if umm_mapping[0] == 'AdditionalAttributes' else self._read_umm_property(umm, umm_mapping)
-            for prop, umm_mapping in self._properties_paths
+            prop:  self._read_umm_property(umm, umm_mapping)
+            for prop, umm_mapping in self._properties_paths.items()
         }
 
         if properties.get('url') is not None:
