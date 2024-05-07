@@ -139,12 +139,12 @@ class KMLStreamArray(MetalinkStreamArray):
     # Helper method for getting additional fields in <ul> tag
     def metadata_fields(self, item: Dict):
         required = {
-            'Processing type: ': item['processingTypeDisplay'],
-            'Frame: ': item['frameNumber'],
-            'Path: ': item['pathNumber'],
-            'Orbit: ': item['orbit'],
-            'Start time: ': item['startTime'],
-            'End time: ': item['stopTime'],
+            'Processing type: ': item.get('processingTypeDisplay'),
+            'Frame: ': item.get('frameNumber'),
+            'Path: ': item.get('pathNumber'),
+            'Orbit: ': item.get('orbit'),
+            'Start time: ': item.get('startTime'),
+            'End time: ': item.get('stopTime'),
         }
         
         optional = {}

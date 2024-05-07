@@ -19,7 +19,10 @@ extra_jsonlite_fields = [
 
 def results_to_jsonlite(results):
     ASF_LOGGER.info('started translating results to jsonlite format')
-
+    if len(results) == 0:
+        yield from json.JSONEncoder(indent=2, sort_keys=True).iterencode({'results': []})
+        return
+    
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
         results = [results]
     
@@ -129,7 +132,7 @@ class JSONLiteStreamArray(list):
             pass
 
         try:
-            p['frameNumber'] = int(p['frameNumber'])
+            p['frameNumber'] = int(p.get('frameNumber'))
         except TypeError:
             pass
 
@@ -176,12 +179,21 @@ class JSONLiteStreamArray(list):
             if result[key] in [ 'NA', 'NULL']:
                 result[key] = None
 
-        if 'temporalBaseline' in p.keys() or 'perpendicularBaseline' in p.keys():
+        if 'temporalBaseline' in p.keys():
             result['temporalBaseline'] = p['temporalBaseline']
+        if 'perpendicularBaseline' in p.keys():
             result['perpendicularBaseline'] = p['perpendicularBaseline']
 
         if p.get('processingLevel') == 'BURST': # is a burst product
             result['burst'] = p['burst']
+
+        if p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
+            result['opera'] = {
+                'operaBurstID': p.get('operaBurstID'),
+                'additionalUrls': p.get('additionalUrls'),
+            }
+            if p.get('validityStartDate'):
+                result['opera']['validityStartDate'] = p.get('validityStartDate')
 
         return result
 
