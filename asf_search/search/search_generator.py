@@ -289,7 +289,7 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
 
     # if there's a direct entry in our dataset to product type dict
     # perf = time.time()
-    subclass = dataset_collections.get(product_type_key)
+    subclass = dataset_to_product_types.get(product_type_key)
     if subclass is not None:
         # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
         return subclass(item, session=session)
