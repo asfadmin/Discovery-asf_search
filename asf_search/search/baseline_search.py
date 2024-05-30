@@ -52,7 +52,7 @@ def stack_from_product(
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     for warning in warnings:
-        ASF_LOGGER.warn(f'{warning}')
+        ASF_LOGGER.warning(f'{warning}')
     
     return stack
 

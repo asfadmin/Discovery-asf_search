@@ -424,3 +424,14 @@ class ASFProduct:
             return f(v)
         except TypeError:
             return None
+
+    @staticmethod
+    def _is_subclass(item: Dict) -> bool:
+        """
+        Used to determine which subclass to use for specific edge-cases when parsing results in search methods
+        (Currently implemented for ARIA and OPERA subclasses).
+
+        params:
+        - item (dict): the CMR UMM-G item to read from
+        """
+        raise NotImplementedError()
