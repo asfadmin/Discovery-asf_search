@@ -19,6 +19,8 @@ class OPERAS1Product(S1Product):
         'polarization': {'path': ['AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values']} # dual polarization is in list rather than a 'VV+VH' style format
     }
 
+    _subclass_concept_ids = { 'C1257995185-ASF', 'C1257995186-ASF', 'C1258354200-ASF', 'C1258354201-ASF', 'C1259974840-ASF', 'C1259976861-ASF', 'C1259981910-ASF', 'C1259982010-ASF', 'C2777436413-ASF', 'C2777443834-ASF', 'C2795135174-ASF', 'C2795135668-ASF','C1260721853-ASF', 'C1260721945-ASF', 'C2803501097-ASF', 'C2803501758-ASF' }
+
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
@@ -78,3 +80,10 @@ class OPERAS1Product(S1Product):
             return (self._read_property('validityStartDate', ''), keys[1])
 
         return keys
+
+    @staticmethod
+    def _is_subclass(item: Dict) -> bool:
+        # not all umm products have this field set, 
+        # but when it's available it's convenient for fast matching
+        concept_id = item['meta'].get('collection-concept-id')
+        return concept_id in OPERAS1Product._subclass_concept_ids
