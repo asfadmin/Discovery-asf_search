@@ -26,7 +26,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v7.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.1.1)
+## [v7.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.1...v7.1.2)
 ### Fixed
 - `OPERAS1Product` subclass now properly assigned to PGE v2.0.1 results
 ### Changed
