@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.2...v7.1.3)
+### Fixed
+- Adds missing values for polarization constants `DUAL_HH`, `DUAL_VV`, `DUAL_HV`, `DUAL_VH`, `HH_3SCAN`, `HH_4SCAN`, `HH_5SCAN`
+- processingLevel `RAW` now includes `C1234413256-ASFDEV` in collection alias list (`SENTINEL-1B_RAW`'s collection for ASFDEV provider)
+
+------
 ## [v7.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.1...v7.1.2)
 ### Fixed
 - `OPERAS1Product` subclass now properly assigned to PGE v2.0.1 results
