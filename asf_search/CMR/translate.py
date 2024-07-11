@@ -9,8 +9,12 @@ from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 from .datasets import collections_per_platform
-import ciso8601
 import logging
+
+try:
+    from ciso8601 import parse_datetime
+except ImportError:
+    from dateutil.parser import parse as parse_datetime
 
 
 def translate_opts(opts: ASFSearchOptions) -> List:
@@ -158,7 +162,7 @@ def try_parse_date(value: str) -> Optional[str]:
         return None
 
     try:
-        date = ciso8601.parse_datetime(value)
+        date = parse_datetime(value)
     except ValueError:
         return None
     
