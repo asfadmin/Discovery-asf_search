@@ -12,6 +12,7 @@ from asf_search.export.jsonlite2 import results_to_jsonlite2
 from asf_search.export.kml import results_to_kml
 from asf_search.export.metalink import results_to_metalink
 
+
 class ASFSearchResults(UserList):
     def __init__(self, *args, opts: ASFSearchOptions = None):
         super().__init__(*args)
@@ -22,8 +23,8 @@ class ASFSearchResults(UserList):
 
     def geojson(self):
         return {
-            'type': 'FeatureCollection',
-            'features': [product.geojson() for product in self]
+            "type": "FeatureCollection",
+            "features": [product.geojson() for product in self],
         }
 
     def csv(self):
@@ -31,7 +32,7 @@ class ASFSearchResults(UserList):
 
     def kml(self):
         return results_to_kml(self)
-    
+
     def metalink(self):
         return results_to_metalink(self)
 
@@ -39,26 +40,31 @@ class ASFSearchResults(UserList):
         return results_to_jsonlite(self)
 
     def jsonlite2(self):
-        return results_to_jsonlite2(self)  
+        return results_to_jsonlite2(self)
 
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
     def download(
-            self,
-            path: str,
-            session: ASFSession = None,
-            processes: int = 1,
-            fileType = FileDownloadType.DEFAULT_FILE
+        self,
+        path: str,
+        session: ASFSession = None,
+        processes: int = 1,
+        fileType=FileDownloadType.DEFAULT_FILE,
     ) -> None:
         """
         Iterates over each ASFProduct and downloads them to the specified path.
 
-        :param path: The directory into which the products should be downloaded.
-        :param session: The session to use. Defaults to the session used to fetch the results, or a new one if none was used.
-        :param processes: Number of download processes to use. Defaults to 1 (i.e. sequential download)
+        Parameters
+        ----------
+        path:
+            The directory into which the products should be downloaded.
+        session:
+            The session to use
+            Defaults to the session used to fetch the results, or a new one if none was used.
+        processes:
+            Number of download processes to use. Defaults to 1 (i.e. sequential download)
 
-        :return: None
         """
         ASF_LOGGER.info(f"Started downloading ASFSearchResults of size {len(self)}.")
         if processes == 1:
@@ -72,10 +78,14 @@ class ASFSearchResults(UserList):
             pool.close()
             pool.join()
         ASF_LOGGER.info(f"Finished downloading ASFSearchResults of size {len(self)}.")
-        
+
     def raise_if_incomplete(self) -> None:
         if not self.searchComplete:
-            msg = "Results are incomplete due to a search error. See logging for more details. (ASFSearchResults.raise_if_incomplete called)"
+            msg = (
+                'Results are incomplete due to a search error. '
+                'See logging for more details. (ASFSearchResults.raise_if_incomplete called)'
+                )
+
             ASF_LOGGER.error(msg)
             raise ASFSearchError(msg)
 
@@ -91,12 +101,12 @@ class ASFSearchResults(UserList):
 
             if subclasses.get(product_type) is None:
                 subclasses[product_type] = ASFSearchResults([])
-            
+
             subclasses[product_type].append(product)
-        
+
         return subclasses
-    
+
+
 def _download_product(args) -> None:
     product, path, session, fileType = args
     product.download(path=path, session=session, fileType=fileType)
-

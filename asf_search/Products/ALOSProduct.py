@@ -1,5 +1,5 @@
 from typing import Dict, Union
-from asf_search import ASFSession, ASFProduct, ASFStackableProduct, ASFSearchOptions
+from asf_search import ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.constants import PRODUCT_TYPE
 
@@ -10,19 +10,34 @@ class ALOSProduct(ASFStackableProduct):
 
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/alos-palsar/
     """
+
     _base_properties = {
-        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
-        'faradayRotation': {'path': ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
-        'offNadirAngle': {'path': ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
-        'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
-        'insarStackId': {'path': ['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
+        "frameNumber": {
+            "path": ["AdditionalAttributes", ("Name", "FRAME_NUMBER"), "Values", 0],
+            "cast": try_parse_int,
+        },
+        "faradayRotation": {
+            "path": ["AdditionalAttributes", ("Name", "FARADAY_ROTATION"), "Values", 0],
+            "cast": try_parse_float,
+        },
+        "offNadirAngle": {
+            "path": ["AdditionalAttributes", ("Name", "OFF_NADIR_ANGLE"), "Values", 0],
+            "cast": try_parse_float,
+        },
+        "bytes": {
+            "path": ["AdditionalAttributes", ("Name", "BYTES"), "Values", 0],
+            "cast": try_round_float,
+        },
+        "insarStackId": {
+            "path": ["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0]
+        },
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
-        if self.properties.get('groupID') is None:
-            self.properties['groupID'] = self.properties['sceneName']
+        if self.properties.get("groupID") is None:
+            self.properties["groupID"] = self.properties["sceneName"]
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
@@ -35,5 +50,5 @@ class ALOSProduct(ASFStackableProduct):
     def get_property_paths() -> Dict:
         return {
             **ASFStackableProduct.get_property_paths(),
-            **ALOSProduct._base_properties
+            **ALOSProduct._base_properties,
         }

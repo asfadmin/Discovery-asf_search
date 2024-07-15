@@ -10,46 +10,61 @@ class ARIAS1GUNWProduct(S1Product):
     """
     Used for ARIA S1 GUNW Products
 
-    ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/derived-data-sets/sentinel-1-interferograms/
+    ASF Dataset Documentation Page:
+        https://asf.alaska.edu/data-sets/derived-data-sets/sentinel-1-interferograms/
     """
+
     _base_properties = {
-        'perpendicularBaseline': {'path': ['AdditionalAttributes', ('Name', 'PERPENDICULAR_BASELINE'), 'Values', 0], 'cast': try_parse_float},
-        'orbit': {'path': ['OrbitCalculatedSpatialDomains']},
-        'inputGranules': {'path': ['InputGranules']},
-        'ariaVersion': {'path': ['AdditionalAttributes', ('Name', 'VERSION'), 'Values', 0]}
+        "perpendicularBaseline": {
+            "path": [
+                "AdditionalAttributes",
+                ("Name", "PERPENDICULAR_BASELINE"),
+                "Values",
+                0,
+            ],
+            "cast": try_parse_float,
+        },
+        "orbit": {"path": ["OrbitCalculatedSpatialDomains"]},
+        "inputGranules": {"path": ["InputGranules"]},
+        "ariaVersion": {
+            "path": ["AdditionalAttributes", ("Name", "VERSION"), "Values", 0]
+        },
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
-        self.properties['orbit'] = [orbit['OrbitNumber'] for orbit in self.properties['orbit']]
+        self.properties["orbit"] = [
+            orbit["OrbitNumber"] for orbit in self.properties["orbit"]
+        ]
 
-        urls = self.umm_get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
-        
-        self.properties['additionalUrls'] = []
+        urls = self.umm_get(
+            self.umm, "RelatedUrls", ("Type", [("USE SERVICE API", "URL")]), 0
+        )
+
+        self.properties["additionalUrls"] = []
         if urls is not None:
-            self.properties['url'] = urls[0]
-            self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
-            self.properties['additionalUrls'] = urls[1:]
+            self.properties["url"] = urls[0]
+            self.properties["fileName"] = (
+                self.properties["fileID"] + "." + urls[0].split(".")[-1]
+            )
+            self.properties["additionalUrls"] = urls[1:]
 
     @staticmethod
     def get_property_paths() -> Dict:
-        return {
-            **S1Product.get_property_paths(),
-            **ARIAS1GUNWProduct._base_properties
-        }
+        return {**S1Product.get_property_paths(), **ARIAS1GUNWProduct._base_properties}
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
 
-        :return: ASFSearchOptions describing appropriate options for building a stack from this product
+        :return: ASFSearchOptions describing appropriate options
+        for building a stack from this product
         """
         return None
-    
 
     def is_valid_reference(self):
         return False
-    
+
     @staticmethod
     def get_default_baseline_product_type() -> None:
         """
@@ -59,9 +74,15 @@ class ARIAS1GUNWProduct(S1Product):
 
     @staticmethod
     def _is_subclass(item: Dict) -> bool:
-        platform = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
-        if platform in ['SENTINEL-1A', 'SENTINEL-1B']:
-            asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)
-            return 'Sentinel-1 Interferogram' in asf_platform
+        platform = ASFProduct.umm_get(item["umm"], "Platforms", 0, "ShortName")
+        if platform in ["SENTINEL-1A", "SENTINEL-1B"]:
+            asf_platform = ASFProduct.umm_get(
+                item["umm"],
+                "AdditionalAttributes",
+                ("Name", "ASF_PLATFORM"),
+                "Values",
+                0,
+            )
+            return "Sentinel-1 Interferogram" in asf_platform
 
         return False

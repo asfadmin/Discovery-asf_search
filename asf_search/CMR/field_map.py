@@ -10,9 +10,9 @@ field_map = {
     'campaign':             {'key': 'attribute[]',             'fmt': 'string,MISSION_NAME,{0}'},
     'maxDoppler':           {'key': 'attribute[]',             'fmt': 'float,DOPPLER,,{0}'},
     'minDoppler':           {'key': 'attribute[]',             'fmt': 'float,DOPPLER,{0},'},
-    'maxFaradayRotation':   {'key': 'attribute[]',             'fmt': 'float,FARADAY_ROTATION,,{0}'},
-    'minFaradayRotation':   {'key': 'attribute[]',             'fmt': 'float,FARADAY_ROTATION,{0},'},
-    'flightDirection':      {'key': 'attribute[]',             'fmt': 'string,ASCENDING_DESCENDING,{0}'},
+    'maxFaradayRotation':   {'key': 'attribute[]',             'fmt': 'float,FARADAY_ROTATION,,{0}'},  # noqa F401
+    'minFaradayRotation':   {'key': 'attribute[]',             'fmt': 'float,FARADAY_ROTATION,{0},'},  # noqa F401
+    'flightDirection':      {'key': 'attribute[]',             'fmt': 'string,ASCENDING_DESCENDING,{0}'},  # noqa F401
     'flightLine':           {'key': 'attribute[]',             'fmt': 'string,FLIGHT_LINE,{0}'},
     'frame':                {'key': 'attribute[]',             'fmt': 'int,CENTER_ESA_FRAME,{0}'},
     'granule_list':         {'key': 'readable_granule_name[]', 'fmt': '{0}'},
@@ -36,8 +36,8 @@ field_map = {
     'temporal':             {'key': 'temporal',                'fmt': '{0}'},
     'collections':          {'key': 'echo_collection_id[]',    'fmt': '{0}'},
     'shortName':            {'key': 'shortName',               'fmt': '{0}'},
-    'temporalBaselineDays': {'key': 'attribute[]',             'fmt': 'int,TEMPORAL_BASELINE_DAYS,{0}'},
-    
+    'temporalBaselineDays': {'key': 'attribute[]',             'fmt': 'int,TEMPORAL_BASELINE_DAYS,{0}'},  # noqa F401
+
     # SLC BURST fields
     'absoluteBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_ABSOLUTE,{0}'},
     'relativeBurstID':      {'key': 'attribute[]',             'fmt': 'int,BURST_ID_RELATIVE,{0}'},

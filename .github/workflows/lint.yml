@@ -13,3 +13,4 @@ jobs:
         with:
           flake8_version: 6.0.0
           path: asf_search
+          max_line_length: 100

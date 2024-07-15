@@ -7,7 +7,7 @@ from requests.exceptions import HTTPError
 import warnings
 
 from asf_search.exceptions import ASFAuthenticationError, ASFDownloadError
-from asf_search import ASF_LOGGER, ASFSession
+from asf_search import ASFSession
 from tenacity import retry, stop_after_delay, retry_if_result, wait_fixed
 
 try:
@@ -15,15 +15,15 @@ try:
 except ImportError:
     RemoteZip = None
 
+
 def _download_url(arg):
     url, path, session = arg
-    download_url(
-        url=url,
-        path=path,
-        session=session)
+    download_url(url=url, path=path, session=session)
 
 
-def download_urls(urls: Iterable[str], path: str, session: ASFSession = None, processes: int = 1):
+def download_urls(
+    urls: Iterable[str], path: str, session: ASFSession = None, processes: int = 1
+):
     """
     Downloads all products from the specified URLs to the specified location.
 
@@ -47,7 +47,9 @@ def download_urls(urls: Iterable[str], path: str, session: ASFSession = None, pr
         pool.join()
 
 
-def download_url(url: str, path: str, filename: str = None, session: ASFSession = None) -> None:
+def download_url(
+    url: str, path: str, filename: str = None, session: ASFSession = None
+) -> None:
     """
     Downloads a product from the specified URL to the specified location and (optional) filename.
 
@@ -57,61 +59,79 @@ def download_url(url: str, path: str, filename: str = None, session: ASFSession 
     :param session: The session to use, in most cases should be authenticated beforehand
     :return:
     """
-    
+
     if filename is None:
         filename = os.path.split(parse.urlparse(url).path)[1]
-    
+
     if not os.path.isdir(path):
-        raise ASFDownloadError(f'Error downloading {url}: directory not found: {path}')
+        raise ASFDownloadError(f"Error downloading {url}: directory not found: {path}")
 
     if os.path.isfile(os.path.join(path, filename)):
-        warnings.warn(f'File already exists, skipping download: {os.path.join(path, filename)}')
+        warnings.warn(
+            f"File already exists, skipping download: {os.path.join(path, filename)}"
+        )
         return
 
     if session is None:
         session = ASFSession()
 
     response = _try_get_response(session=session, url=url)
-    
-    with open(os.path.join(path, filename), 'wb') as f:
+
+    with open(os.path.join(path, filename), "wb") as f:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
 
-def remotezip(url: str, session: ASFSession) -> 'RemoteZip':
+
+def remotezip(url: str, session: ASFSession) -> "RemoteZip":  # type: ignore # noqa: F821
     """
     :param url: the url to the zip product
     :param session: the authenticated ASFSession to read and download from the zip file
     """
     if RemoteZip is None:
-        raise ImportError("Could not find remotezip package in current python environment. \"remotezip\" is an optional dependency of asf-search required for the `remotezip()` method. Enable by including the appropriate pip or conda install. Ex: `python3 -m pip install asf-search[extras]`")
-    
-    session.hooks['response'].append(strip_auth_if_aws)
+        raise ImportError(
+            'Could not find remotezip package in current python environment.'
+            '"remotezip" is an optional dependency of asf-search required'
+            'for the `remotezip()` method.'
+            'Enable by including the appropriate pip or conda install.'
+            'Ex: `python3 -m pip install asf-search[extras]`'
+        )
+
+    session.hooks["response"].append(strip_auth_if_aws)
     return RemoteZip(url, session=session)
 
-def strip_auth_if_aws(r, *args, **kwargs):
-    if 300 <= r.status_code <= 399 and 'amazonaws.com' in parse.urlparse(r.headers['location']).netloc:
-        location = r.headers['location']
-        r.headers.clear()
-        r.headers['location'] = location
 
-# if it's an unprocessed burst product it'll return a 202 and we'll have to query again 
+def strip_auth_if_aws(r, *args, **kwargs):
+    if (
+        300 <= r.status_code <= 399 and
+        "amazonaws.com" in parse.urlparse(r.headers["location"]).netloc
+    ):
+        location = r.headers["location"]
+        r.headers.clear()
+        r.headers["location"] = location
+
+
+# if it's an unprocessed burst product it'll return a 202 and we'll have to query again
 # https://sentinel1-burst-docs.asf.alaska.edu/
 def _is_burst_processing(response: Response):
     return response.status_code == 202
 
-@retry(reraise=True,
-       retry=retry_if_result(_is_burst_processing),
-       wait=wait_fixed(1),
-       stop=stop_after_delay(90),
-    )
+
+@retry(
+    reraise=True,
+    retry=retry_if_result(_is_burst_processing),
+    wait=wait_fixed(1),
+    stop=stop_after_delay(90),
+)
 def _try_get_response(session: ASFSession, url: str):
-    response = session.get(url, stream=True, hooks={'response': strip_auth_if_aws})
+    response = session.get(url, stream=True, hooks={"response": strip_auth_if_aws})
 
     try:
         response.raise_for_status()
     except HTTPError as e:
         if 400 <= response.status_code <= 499:
-            raise ASFAuthenticationError(f'HTTP {e.response.status_code}: {e.response.text}')
+            raise ASFAuthenticationError(
+                f"HTTP {e.response.status_code}: {e.response.text}"
+            )
 
         raise e
 

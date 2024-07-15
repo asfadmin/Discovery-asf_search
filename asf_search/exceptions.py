@@ -29,14 +29,18 @@ class ASFDownloadError(ASFError):
 class ASFAuthenticationError(ASFError):
     """Base download-related Exception"""
 
+
 class ASFWKTError(ASFError):
     """Raise when wkt related errors occur"""
+
 
 class CMRError(Exception):
     """Base CMR Exception"""
 
+
 class CMRConceptIDError(CMRError):
     """Raise when CMR encounters a concept-id error"""
+
 
 class CMRIncompleteError(CMRError):
     """Raise when CMR returns an incomplete page of results"""
