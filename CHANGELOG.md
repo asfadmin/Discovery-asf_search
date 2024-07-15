@@ -27,6 +27,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v7.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.3...v7.1.4)
+### Changed
+- replaces `ciso8601` package with `dateutil` for package wheel compatibility. `ciso8601` used when installed via `extra` dependency
 ### Fixed
 - Fixes syntax warning with escaped slash in `translate.py`
 

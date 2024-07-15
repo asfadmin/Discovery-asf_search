@@ -8,8 +8,8 @@ requirements = [
     "importlib_metadata",
     "numpy",
     "dateparser",
+    "python-dateutil",
     "tenacity == 8.2.2",
-    "ciso8601"
 ]
 
 test_requirements = [
@@ -25,7 +25,8 @@ test_requirements = [
 ]
 
 extra_requirements = [
-    "remotezip>=0.10.0"
+    "remotezip>=0.10.0",
+    "ciso8601",
 ]
 
 
