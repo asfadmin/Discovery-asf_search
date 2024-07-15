@@ -18,13 +18,14 @@ class MetalinkStreamArray(list):
     def __init__(self, results):
         self.pages = results
         self.len = 1
-        self.header = """<?xml version="1.0"?>
-<metalink xmlns="http://www.metalinker.org/" version="3.0">
-    <publisher><name>Alaska Satellite Facility</name><url>http://www.asf.alaska.edu/</url></publisher> # noqa F401
-    <files>"""
+        self.header = (
+            '<?xml version="1.0"?>'
+            '<metalink xmlns="http://www.metalinker.org/" version="3.0">\n'
+            '<publisher><name>Alaska Satellite Facility</name><url>http://www.asf.alaska.edu/</url></publisher>\n' # noqa F401
+            '<files>'
+        )
 
-        self.footer = """
-    </files>\n</metalink>"""
+        self.footer = '\n</files>\n</metalink>'
 
     def get_additional_fields(self, product):
         return {}
