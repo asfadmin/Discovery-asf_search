@@ -52,7 +52,7 @@ class ARIAS1GUNWProduct(S1Product):
         return None
 
     @staticmethod
-    def is_ARIAS1GUNWProduct(item: Dict) -> bool:
+    def _is_subclass(item: Dict) -> bool:
         platform = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
         if platform in ['SENTINEL-1A', 'SENTINEL-1B']:
             asf_platform = ASFProduct.umm_get(item['umm'], 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0)

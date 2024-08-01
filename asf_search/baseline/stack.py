@@ -1,10 +1,12 @@
-from typing import Tuple, List
-from ciso8601 import parse_datetime
-import pytz
-
-from .calc import calculate_perpendicular_baselines
 from asf_search import ASFProduct, ASFStackableProduct, ASFSearchResults
+from typing import Tuple, List
+import pytz
+from .calc import calculate_perpendicular_baselines
 
+try:
+    from ciso8601 import parse_datetime
+except ImportError:
+    from dateutil.parser import parse as parse_datetime
 
 def get_baseline_from_stack(reference: ASFProduct, stack: ASFSearchResults) -> Tuple[ASFSearchResults, List[dict]]:
     warnings = []

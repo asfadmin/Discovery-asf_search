@@ -32,6 +32,25 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.
 - Exposed `ASFProduct.get_urls` which returns the URL's for it's products directly. Can control which products with the `fileType` enum.
 
+## [v7.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.3...v7.1.4)
+### Changed
+- replaces `ciso8601` package with `dateutil` for package wheel compatibility. `ciso8601` used when installed via `extra` dependency
+### Fixed
+- Fixes syntax warning with escaped slash in `translate.py`
+
+------
+## [v7.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.2...v7.1.3)
+### Fixed
+- Adds missing values for polarization constants `DUAL_HH`, `DUAL_VV`, `DUAL_HV`, `DUAL_VH`, `HH_3SCAN`, `HH_4SCAN`, `HH_5SCAN`
+- processingLevel `RAW` now includes `C1234413256-ASFDEV` in collection alias list (`SENTINEL-1B_RAW`'s collection for ASFDEV provider)
+
+------
+## [v7.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.1...v7.1.2)
+### Fixed
+- `OPERAS1Product` subclass now properly assigned to PGE v2.0.1 results
+### Changed
+- `ARIAS1GUNWProduct.is_ARIAS1GUNWProduct()` removed, replaced with `ASFProduct._is_subclass()` implementation
+
 ------
 ## [v7.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.1.1)
 ### Changed

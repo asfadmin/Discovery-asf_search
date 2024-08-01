@@ -285,6 +285,9 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
 
     :returns the granule as an object of type ASFProduct
     """
+    if ASFProductType.OPERAS1Product._is_subclass(item):
+        return ASFProductType.OPERAS1Product(item, session=session)
+
     product_type_key = _get_product_type_key(item)
 
     # if there's a direct entry in our dataset to product type dict
@@ -305,7 +308,7 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
 
     # If the platform exists, try to match it
     platform = _get_platform(item=item)
-    if ASFProductType.ARIAS1GUNWProduct.is_ARIAS1GUNWProduct(item=item):
+    if ASFProductType.ARIAS1GUNWProduct._is_subclass(item=item):
         return dataset_to_product_types.get('ARIA S1 GUNW')(item, session=session)
     elif (subclass := dataset_to_product_types.get(platform)) is not None:
         return subclass(item, session=session)
@@ -328,10 +331,10 @@ def _get_product_type_key(item: Dict) -> str:
     collection_shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
 
     if collection_shortName is None:
-        platform = _get_platform(item=item)
-        if ASFProductType.ARIAS1GUNWProduct.is_ARIAS1GUNWProduct(item=item):
+        if ASFProductType.ARIAS1GUNWProduct._is_subclass(item=item):
             return 'ARIA S1 GUNW'
 
+        platform = _get_platform(item=item)
         return platform
 
     return collection_shortName
