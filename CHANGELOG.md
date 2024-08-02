@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.2.0)
+### Added
+- Added `asf.ASFSearchOptions(circle=[lat, long, radius])` search param. Takes list of exactly 3 numbers.
+- Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.
+- Exposed `ASFProduct.get_urls` which returns the URL's for it's products directly. Can control which products with the `fileType` enum.
+
 ## [v7.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.3...v7.1.4)
 ### Changed
 - replaces `ciso8601` package with `dateutil` for package wheel compatibility. `ciso8601` used when installed via `extra` dependency

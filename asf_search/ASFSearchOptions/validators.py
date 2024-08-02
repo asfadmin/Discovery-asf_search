@@ -22,7 +22,7 @@ def parse_string(value: str) -> str:
     except ValueError as exc: # If this happens, printing v's value would fail too...
         raise ValueError(f"Invalid string: Can't cast type '{type(value)}' to string.") from exc
     if len(value) == 0:
-        raise ValueError(f'Invalid string: Empty.')
+        raise ValueError('Invalid string: Empty.')
     return value
 
 
@@ -36,7 +36,7 @@ def parse_float(value: float) -> float:
         value = float(value)
     except ValueError as exc:
         raise ValueError(f'Invalid float: {value}') from exc
-    if math.isinf(value):
+    if math.isinf(value) or math.isnan(value):
         raise ValueError(f'Float values must be finite: got {value}')
     return value
 
@@ -127,7 +127,7 @@ def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
 
 # Parse and validate an iterable of strings: "foo,bar,baz"
 def parse_string_list(value: Sequence[str]) -> List[str]:
-    return parse_list(value, str)
+    return parse_list(value, parse_string)
 
 
 # Parse and validate an iterable of integers: "1,2,3"
@@ -215,6 +215,35 @@ def parse_wkt(value: str) -> str:
     except errors.WKTReadingError as exc:
         raise ValueError(f'Invalid wkt: {exc}') from exc
     return wkt.dumps(value)
+
+# Parse a CMR circle:
+#       [longitude, latitude, radius(meters)]
+def parse_circle(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) != 3:
+        raise ValueError(f'Invalid circle, must be 3 values (lat, long, radius). Got: {value}')
+    return value
+
+# Parse a CMR linestring:
+#       [longitude, latitude, longitude, latitude, ...]
+def parse_linestring(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) % 2 != 0:
+        raise ValueError(f'Invalid linestring, must be values of format (lat, long, lat, long, ...). Got: {value}')
+    return value
+
+def parse_point(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) != 2:
+        raise ValueError(f'Invalid point, must be values of format (lat, long). Got: {value}')
+    return value
+
+# Parse and validate a coordinate string
+def parse_coord_string(value: List):
+    value = parse_float_list(value)
+    if len(value) % 2 != 0:
+        raise ValueError(f'Invalid coordinate string, must be values of format (lat, long, lat, long, ...). Got: {value}')
+    return value
 
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):

@@ -3,7 +3,8 @@ from asf_search import ASF_LOGGER
 from .validators import (
     parse_string, parse_float, parse_wkt, parse_date,
     parse_string_list, parse_int_list, parse_int_or_range_list,
-    parse_float_or_range_list, parse_cmr_keywords_list,
+    parse_float_or_range_list, parse_circle, parse_linestring,
+    parse_cmr_keywords_list, parse_point, parse_coord_string,
     parse_session
 )
 
@@ -32,10 +33,19 @@ validator_map = {
     'beamMode':               parse_string_list,
     'beamSwath':              parse_string_list,
     'campaign':               parse_string,
+    'circle':                 parse_circle, 
+    'linestring':             parse_linestring, 
+    'point':                  parse_point,
+    'maxBaselinePerp':        parse_float,
+    'minBaselinePerp':        parse_float,
+    'maxInsarStackSize':      parse_float,
+    'minInsarStackSize':      parse_float,
     'maxDoppler':             parse_float,
     'minDoppler':             parse_float,
     'maxFaradayRotation':     parse_float,
     'minFaradayRotation':     parse_float,
+    'maxInsarStackSize':      parse_int_or_range_list,
+    'minInsarStackSize':      parse_int_or_range_list,
     'flightDirection':        parse_string,
     'flightLine':             parse_string,
     'frame':                  parse_int_or_range_list,

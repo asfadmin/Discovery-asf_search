@@ -11,6 +11,7 @@ class NISARProduct(ASFStackableProduct):
     ASF Dataset Documentation Page: https://asf.alaska.edu/nisar/
     """
     _base_properties = {
+        **ASFStackableProduct._base_properties,
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']}
     }
 
@@ -40,13 +41,6 @@ class NISARProduct(ASFStackableProduct):
         :return: ASFSearchOptions describing appropriate options for building a stack from this product
         """
         return None
-    
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFStackableProduct.get_property_paths(),
-            **NISARProduct._base_properties
-        }
 
     def get_sort_keys(self) -> Tuple[str, str]:
         keys = super().get_sort_keys()

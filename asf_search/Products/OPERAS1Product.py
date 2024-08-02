@@ -9,6 +9,7 @@ class OPERAS1Product(S1Product):
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/opera/
     """
     _base_properties = {
+        **S1Product._base_properties,
         'centerLat': {'path': []}, # Opera products lacks these fields
         'centerLon': {'path': []},
         'frameNumber': {'path': []},
@@ -48,13 +49,6 @@ class OPERAS1Product(S1Product):
     def get_stack_opts(self, opts: ASFSearchOptions = ASFSearchOptions()) -> ASFSearchOptions:
         return opts
 
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **S1Product.get_property_paths(),
-            **OPERAS1Product._base_properties
-        }
-    
     @staticmethod
     def get_default_baseline_product_type() -> None:
         """

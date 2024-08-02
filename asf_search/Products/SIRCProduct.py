@@ -6,6 +6,7 @@ class SIRCProduct(ASFProduct):
     Dataset Documentation Page: https://eospso.nasa.gov/missions/spaceborne-imaging-radar-c
     """
     _base_properties = {
+        **ASFProduct._base_properties,
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion'] },
@@ -14,10 +15,3 @@ class SIRCProduct(ASFProduct):
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFProduct.get_property_paths(),
-            **SIRCProduct._base_properties
-        }

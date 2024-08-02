@@ -13,8 +13,6 @@ class ASFStackableProduct(ASFProduct):
     ASF ERS-1 Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/ers-1/
     ASF ERS-2 Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/ers-2/
     """
-    _base_properties = {
-    }
 
     class BaselineCalcType(Enum):
         """
@@ -53,13 +51,6 @@ class ASFStackableProduct(ASFProduct):
         stack_opts.insarStackId = self.properties['insarStackId']
         return stack_opts
 
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFProduct.get_property_paths(),
-            **ASFStackableProduct._base_properties
-        }
-
     def is_valid_reference(self):
         # we don't stack at all if any of stack is missing insarBaseline, unlike stacking S1 products(?)
         if 'insarBaseline' not in self.baseline:
@@ -73,3 +64,10 @@ class ASFStackableProduct(ASFProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return None
+
+    def has_baseline(self) -> bool:
+        baseline = self.get_baseline_calc_properties()
+
+        return (
+            baseline is not None
+        )

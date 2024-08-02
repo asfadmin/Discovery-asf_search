@@ -74,9 +74,7 @@ class ASFProduct:
             - `path`: the expected path in the CMR UMM json granule response as a list
             - `cast`: (optional): the optional type casting method
 
-    Defining `_base_properties` in subclasses allows for defining custom properties or overiding existing ones.
-    See `S1Product.get_property_paths()` on how subclasses are expected to
-    combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
+    Defining `_properties_paths` in subclasses allows for defining custom properties or overiding existing ones.
     """
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -115,32 +113,40 @@ class ASFProduct:
         default_filename = self.properties['fileName']
 
         if filename is not None:
-            multiple_files = (
-                (fileType == FileDownloadType.ADDITIONAL_FILES and len(self.properties['additionalUrls']) > 1)
-                or fileType == FileDownloadType.ALL_FILES
-            )
-            if multiple_files:
-                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument \"{filename}\", using default.")
+            # Check if we should support the filename argument:
+            if self._has_multiple_files() and fileType in [FileDownloadType.ADDITIONAL_FILES, FileDownloadType.ALL_FILES]:
+                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument '{filename}', using default.")
             else:
                 default_filename = filename
 
         if session is None:
             session = self.session
 
+        urls = self.get_urls(fileType=fileType)
+
+        for url in urls:
+            base_filename = '.'.join(default_filename.split('.')[:-1])
+            extension = url.split('.')[-1]
+            download_url(
+                url=url,
+                path=path,
+                filename=f"{base_filename}.{extension}",
+                session=session
+            )
+
+    def get_urls(self, fileType = FileDownloadType.DEFAULT_FILE) -> list:
         urls = []
 
         if fileType == FileDownloadType.DEFAULT_FILE:
-            urls.append((default_filename, self.properties['url']))
+            urls.append(self.properties['url'])
         elif fileType == FileDownloadType.ADDITIONAL_FILES:
-            urls.extend(self._get_additional_filenames_and_urls(default_filename))
+            urls.extend(self.properties.get('additionalUrls', []))
         elif fileType == FileDownloadType.ALL_FILES:
-            urls.append((default_filename, self.properties['url']))
-            urls.extend(self._get_additional_filenames_and_urls(default_filename))
+            urls.append(self.properties['url'])
+            urls.extend(self.properties.get('additionalUrls', []))
         else:
             raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
-
-        for filename, url in urls:
-            download_url(url=url, path=path, filename=filename, session=session)
+        return urls
 
     def _get_additional_filenames_and_urls(
             self,
@@ -163,7 +169,7 @@ class ASFProduct:
 
         :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
         :param ASFProductSubclass: An ASFProduct subclass constructor.
-    
+
         :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
@@ -232,6 +238,9 @@ class ASFProduct:
 
         return remotezip(self.properties['url'], session=session)
 
+    def _has_multiple_files(self):
+        return 'additionalUrls' in self.properties and len(self.properties['additionalUrls']) > 0
+    
     def _read_umm_property(self, umm: Dict, mapping: Dict) -> Any:
         value = self.umm_get(umm, *mapping['path'])
         if mapping.get('cast') is None:
@@ -252,9 +261,11 @@ class ASFProduct:
 
         umm = item.get('umm')
 
+        # additionalAttributes = {attr['Name']: attr['Values'] for attr in umm['AdditionalAttributes']}
+
         properties = {
-            prop: self._read_umm_property(umm, umm_mapping)
-            for prop, umm_mapping in self.get_property_paths().items()
+            prop:  self._read_umm_property(umm, umm_mapping)
+            for prop, umm_mapping in self._base_properties.items()
         }
 
         if properties.get('url') is not None:
@@ -270,19 +281,6 @@ class ASFProduct:
             properties['platform'] = self.umm_get(umm, 'Platforms', 0, 'ShortName')
 
         return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
-
-    # ASFProduct subclasses define extra/override param key + UMM pathing here
-    @staticmethod
-    def get_property_paths() -> Dict:
-        """
-        Returns _base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
-        define which properties they want in their subclass's properties dict.
-
-        (See `S1Product.get_property_paths()` for example of combining _base_properties of multiple classes)
-
-        :returns dictionary, {`PROPERTY_NAME`: {'path': [umm, path, to, value], 'cast (optional)': Callable_to_cast_value}, ...}
-        """
-        return ASFProduct._base_properties
 
     def get_sort_keys(self) -> Tuple[str, str]:
         """
@@ -385,7 +383,9 @@ class ASFProduct:
         if item is None:
             return None
         for key in args:
-            if isinstance(key, int):
+            if isinstance(key, str):
+                item = item.get(key)
+            elif isinstance(key, int):
                 item = item[key] if key < len(item) else None
             elif isinstance(key, tuple):
                 (a, b) = key
@@ -408,8 +408,6 @@ class ASFProduct:
                         break
                 if not found:
                     return None
-            else:
-                item = item.get(key)
             if item is None:
                 return None
         if item in [None, 'NA', 'N/A', '']:
