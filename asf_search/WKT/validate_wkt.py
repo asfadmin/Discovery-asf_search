@@ -39,9 +39,7 @@ def validate_wkt(
                         f'WKT string: "{aoi_shape.wkt}" is a self intersecting polygon'
                     )
 
-            raise ASFWKTError(
-                f'WKT string: "{aoi_shape.wkt}" is not a valid WKT string'
-            )
+            raise ASFWKTError(f'WKT string: "{aoi_shape.wkt}" is not a valid WKT string')
 
     if aoi_shape.is_empty:
         raise ASFWKTError(f'WKT string: "{aoi_shape.wkt}" empty WKT is not a valid AOI')
@@ -90,7 +88,7 @@ def _simplify_geometry(
         RepairEntry(
             report_type="'type': 'EXTRA_DIMENSION'",
             report="'report': Only 2-Dimensional area of interests are supported (lon/lat), "
-            "higher dimension coordinates will be ignored",
+            'higher dimension coordinates will be ignored',
         )
         if geometry.has_z
         else None
@@ -109,11 +107,9 @@ def _simplify_geometry(
     ]
     for report in repair_reports:
         if report is not None:
-            logging.info(f"{report}")
+            logging.info(f'{report}')
 
-    validated_wrapped = transform(
-        lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), wrapped
-    )
+    validated_wrapped = transform(lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), wrapped)
     validated_unwrapped = transform(
         lambda x, y, z=None: tuple([round(x, 14), round(y, 14)]), unwrapped
     )
@@ -168,9 +164,7 @@ def _merge_overlapping_geometry(
         if isinstance(merged, BaseMultipartGeometry):
             unique_shapes = len(merged.geoms)
             merged = orient(
-                unary_union(
-                    GeometryCollection([geom.convex_hull for geom in merged.geoms])
-                )
+                unary_union(GeometryCollection([geom.convex_hull for geom in merged.geoms]))
             )
             if isinstance(merged, BaseMultipartGeometry):
                 if unique_shapes != len(merged.geoms):
@@ -182,7 +176,7 @@ def _merge_overlapping_geometry(
             else:
                 merge_report = RepairEntry(
                     "'type': 'OVERLAP_MERGE'",
-                    f"'report': {unique_shapes} non-overlapping shapes merged by their convex-hulls", # noqa F401
+                    f"'report': {unique_shapes} non-overlapping shapes merged by their convex-hulls",  # noqa F401
                 )
         else:
             merge_report = RepairEntry(
@@ -201,9 +195,7 @@ def _counter_clockwise_reorientation(geometry: Union[Point, LineString, Polygon]
     Ensures the geometry coordinates are wound counter-clockwise
     output: counter-clockwise oriented geometry
     """
-    reoriented_report = RepairEntry(
-        "'type': 'REVERSE'", "'report': Reversed polygon winding order"
-    )
+    reoriented_report = RepairEntry("'type': 'REVERSE'", "'report': Reversed polygon winding order")
     reoriented = orient(geometry)
 
     if isinstance(geometry, Polygon):
@@ -284,16 +276,16 @@ def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]
     output: convex hull of multi-part geometry, or the original single-shaped geometry
     """
     if geometry.geom_type not in [
-        "MultiPoint",
-        "MultiLineString",
-        "MultiPolygon",
-        "GeometryCollection",
+        'MultiPoint',
+        'MultiLineString',
+        'MultiPolygon',
+        'GeometryCollection',
     ]:
         return geometry, None
 
     possible_repair = RepairEntry(
         "'type': 'CONVEX_HULL_INDIVIDUAL'",
-        "'report': 'Unconnected shapes: Convex-hulled each INDIVIDUAL shape to merge them together.'", # noqa F401
+        "'report': 'Unconnected shapes: Convex-hulled each INDIVIDUAL shape to merge them together.'",  # noqa F401
     )
     return geometry.convex_hull, possible_repair
 
@@ -313,7 +305,7 @@ def _simplify_aoi(
     """
     repairs = []
 
-    if shape.geom_type == "Point":
+    if shape.geom_type == 'Point':
         return shape, repairs
 
     # Check for very small shapes and collapse accordingly
@@ -325,13 +317,13 @@ def _simplify_aoi(
         repair = RepairEntry(
             "'type': 'GEOMETRY_SIMPLIFICATION'",
             "'report': 'Shape Collapsed to Point: "
-            f"shape of {_get_shape_coords_len(shape)} "
-            f"simplified to {_get_shape_coords_len(simplified)} "
+            f'shape of {_get_shape_coords_len(shape)} '
+            f'simplified to {_get_shape_coords_len(simplified)} '
             f"with proximity threshold of {threshold}'",
         )
         return simplified, [*repairs, repair]
     # If it's a single line segment, it's already as simple as can be. Don't do anything
-    elif shape.geom_type == "LineString" and len(shape.coords) == 2:
+    elif shape.geom_type == 'LineString' and len(shape.coords) == 2:
         return shape, repairs
     # Else, check if it's slim enough to become a linestring:
     elif mbr_width <= threshold:
@@ -340,7 +332,7 @@ def _simplify_aoi(
         repair = RepairEntry(
             "'type': 'GEOMETRY_SIMPLIFICATION'",
             f"'report': 'Shape Collapsed to Vertical Line: shape of {_get_shape_coords_len(shape)} "
-            f"simplified to {_get_shape_coords_len(simplified)} "
+            f'simplified to {_get_shape_coords_len(simplified)} '
             f"with proximity threshold of {threshold}'",
         )
         return simplified, [*repairs, repair]
@@ -350,7 +342,7 @@ def _simplify_aoi(
         repair = RepairEntry(
             "'type': 'GEOMETRY_SIMPLIFICATION'",
             "'report': 'Shape Collapsed to Horizontal Line: "
-            f"shape of {_get_shape_coords_len(shape)} simplified "
+            f'shape of {_get_shape_coords_len(shape)} simplified '
             f"to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'",
         )
         return simplified, [*repairs, repair]
@@ -372,7 +364,7 @@ def _simplify_aoi(
         if coords_length <= 300:
             return simplifed, repairs
 
-    raise ASFWKTError(f"Failed to simplify wkt string: {shape.wkt}")
+    raise ASFWKTError(f'Failed to simplify wkt string: {shape.wkt}')
 
 
 def _clamp(num):
@@ -386,13 +378,13 @@ def _get_shape_coords_len(geometry: BaseGeometry):
 
 def _get_shape_coords(geometry: BaseGeometry):
     """Returns flattened coordinates of input Shapely geometry"""
-    if geometry.geom_type == "Polygon":
+    if geometry.geom_type == 'Polygon':
         return list(geometry.exterior.coords[:-1])
 
-    if geometry.geom_type == "LineString":
+    if geometry.geom_type == 'LineString':
         return list(geometry.coords)
 
-    if geometry.geom_type == "Point":
+    if geometry.geom_type == 'Point':
         return list(geometry.coords)
 
     output = []

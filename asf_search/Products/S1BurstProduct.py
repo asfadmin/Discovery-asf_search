@@ -22,55 +22,6 @@ class S1BurstProduct(S1Product):
     """
 
     _base_properties = {
-<<<<<<< HEAD
-        "bytes": {
-            "path": ["AdditionalAttributes", ("Name", "BYTE_LENGTH"), "Values", 0]
-        },
-        "absoluteBurstID": {
-            "path": [
-                "AdditionalAttributes",
-                ("Name", "BURST_ID_ABSOLUTE"),
-                "Values",
-                0,
-            ],
-            "cast": try_parse_int,
-        },
-        "relativeBurstID": {
-            "path": [
-                "AdditionalAttributes",
-                ("Name", "BURST_ID_RELATIVE"),
-                "Values",
-                0,
-            ],
-            "cast": try_parse_int,
-        },
-        "fullBurstID": {
-            "path": ["AdditionalAttributes", ("Name", "BURST_ID_FULL"), "Values", 0]
-        },
-        "burstIndex": {
-            "path": ["AdditionalAttributes", ("Name", "BURST_INDEX"), "Values", 0],
-            "cast": try_parse_int,
-        },
-        "samplesPerBurst": {
-            "path": [
-                "AdditionalAttributes",
-                ("Name", "SAMPLES_PER_BURST"),
-                "Values",
-                0,
-            ],
-            "cast": try_parse_int,
-        },
-        "subswath": {
-            "path": ["AdditionalAttributes", ("Name", "SUBSWATH_NAME"), "Values", 0]
-        },
-        "azimuthTime": {
-            "path": ["AdditionalAttributes", ("Name", "AZIMUTH_TIME"), "Values", 0],
-            "cast": try_parse_date,
-        },
-        "azimuthAnxTime": {
-            "path": ["AdditionalAttributes", ("Name", "AZIMUTH_ANX_TIME"), "Values", 0]
-        },
-=======
         **S1Product._base_properties,
         'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0]},
         'absoluteBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0], 'cast': try_parse_int},
@@ -81,7 +32,6 @@ class S1BurstProduct(S1Product):
         'subswath': {'path': ['AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0]},
         'azimuthTime': {'path': ['AdditionalAttributes', ('Name', 'AZIMUTH_TIME'), 'Values', 0], 'cast': try_parse_date},
         'azimuthAnxTime': {'path': ['AdditionalAttributes', ('Name', 'AZIMUTH_ANX_TIME'), 'Values', 0]},
->>>>>>> master
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -126,13 +76,6 @@ class S1BurstProduct(S1Product):
         stack_opts.polarization = [self.properties["polarization"]]
         return stack_opts
 
-<<<<<<< HEAD
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {**S1Product.get_property_paths(), **S1BurstProduct._base_properties}
-
-=======
->>>>>>> master
     def _get_additional_filenames_and_urls(self, default_filename: str = None):
         # Burst XML filenames are just numbers, this makes it more indentifiable
         if default_filename is None:

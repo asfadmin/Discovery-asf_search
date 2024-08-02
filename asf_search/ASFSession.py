@@ -61,32 +61,26 @@ class ASFSession(requests.Session):
         https://urs.earthdata.nasa.gov/documentation/faq
         """
         super().__init__()
-        user_agent = "; ".join(
+        user_agent = '; '.join(
             [
-                f"Python/{platform.python_version()}",
-                f"{requests.__name__}/{requests.__version__}",
-                f"{asf_name}/{asf_version}",
+                f'Python/{platform.python_version()}',
+                f'{requests.__name__}/{requests.__version__}',
+                f'{asf_name}/{asf_version}',
             ]
         )
 
-        self.headers.update({"User-Agent": user_agent})  # For all hosts
-        self.headers.update({"Client-Id": f"{asf_name}_v{asf_version}"})  # For CMR
+        self.headers.update({'User-Agent': user_agent})  # For all hosts
+        self.headers.update({'Client-Id': f'{asf_name}_v{asf_version}'})  # For CMR
 
         from asf_search.constants import INTERNAL
 
         self.edl_host = INTERNAL.EDL_HOST if edl_host is None else edl_host
-        self.edl_client_id = (
-            INTERNAL.EDL_CLIENT_ID if edl_client_id is None else edl_client_id
-        )
-        self.asf_auth_host = (
-            INTERNAL.ASF_AUTH_HOST if asf_auth_host is None else asf_auth_host
-        )
+        self.edl_client_id = INTERNAL.EDL_CLIENT_ID if edl_client_id is None else edl_client_id
+        self.asf_auth_host = INTERNAL.ASF_AUTH_HOST if asf_auth_host is None else asf_auth_host
         self.cmr_collections = (
             INTERNAL.CMR_COLLECTIONS if cmr_collections is None else cmr_collections
         )
-        self.auth_domains = (
-            INTERNAL.AUTH_DOMAINS if auth_domains is None else auth_domains
-        )
+        self.auth_domains = INTERNAL.AUTH_DOMAINS if auth_domains is None else auth_domains
         self.auth_cookie_names = (
             INTERNAL.AUTH_COOKIES if auth_cookie_names is None else auth_cookie_names
         )
@@ -131,7 +125,7 @@ class ASFSession(requests.Session):
         ----------
         ASFSession
         """
-        login_url = f"https://{self.edl_host}/oauth/authorize?client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login"  # noqa F401
+        login_url = f'https://{self.edl_host}/oauth/authorize?client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'  # noqa F401
 
         self.auth = (username, password)
 
@@ -139,11 +133,11 @@ class ASFSession(requests.Session):
         self.get(login_url)
 
         if not self._check_auth_cookies(self.cookies.get_dict()):
-            raise ASFAuthenticationError("Username or password is incorrect")
+            raise ASFAuthenticationError('Username or password is incorrect')
 
         ASF_LOGGER.info('Login successful')
 
-        token = self.cookies.get_dict().get("urs-access-token")
+        token = self.cookies.get_dict().get('urs-access-token')
 
         if token is None:
             ASF_LOGGER.warning(
@@ -176,15 +170,15 @@ class ASFSession(requests.Session):
         ASFSession
         """
         oauth_authorization = (
-            f"https://{self.edl_host}/oauth/tokens/user?client_id={self.edl_client_id}"
+            f'https://{self.edl_host}/oauth/tokens/user?client_id={self.edl_client_id}'
         )
 
-        ASF_LOGGER.info(f"Authenticating EDL token against {oauth_authorization}")
-        response = self.post(url=oauth_authorization, data={"token": token})
+        ASF_LOGGER.info(f'Authenticating EDL token against {oauth_authorization}')
+        response = self.post(url=oauth_authorization, data={'token': token})
 
         if not 200 <= response.status_code <= 299:
             if not self._try_legacy_token_auth(token=token):
-                raise ASFAuthenticationError("Invalid/Expired token passed")
+                raise ASFAuthenticationError('Invalid/Expired token passed')
 
         ASF_LOGGER.info('EDL token authentication successful')
         self._update_edl_token(token=token)
@@ -201,16 +195,16 @@ class ASFSession(requests.Session):
         from asf_search.constants import INTERNAL
 
         if self.cmr_host != INTERNAL.CMR_HOST:
-            self.headers.update({"Authorization": "Bearer {0}".format(token)})
-            legacy_auth_url = f"https://{self.cmr_host}{self.cmr_collections}"
+            self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
+            legacy_auth_url = f'https://{self.cmr_host}{self.cmr_collections}'
             response = self.get(legacy_auth_url)
-            self.headers.pop("Authorization")
+            self.headers.pop('Authorization')
             return 200 <= response.status_code <= 299
 
         return False
 
     def _update_edl_token(self, token: str):
-        self.headers.update({"Authorization": "Bearer {0}".format(token)})
+        self.headers.update({'Authorization': 'Bearer {0}'.format(token)})
 
     def auth_with_cookiejar(
         self,
@@ -224,13 +218,13 @@ class ASFSession(requests.Session):
         :return ASFSession: returns self for convenience
         """
         if not self._check_auth_cookies(cookies):
-            raise ASFAuthenticationError("Cookiejar does not contain login cookies")
+            raise ASFAuthenticationError('Cookiejar does not contain login cookies')
 
         for cookie in cookies:
             if cookie.is_expired():
-                raise ASFAuthenticationError("Cookiejar contains expired cookies")
+                raise ASFAuthenticationError('Cookiejar contains expired cookies')
 
-        token = cookies.get_dict().get("urs-access-token")
+        token = cookies.get_dict().get('urs-access-token')
         if token is None:
             ASF_LOGGER.warning(
                 'Failed to find EDL Token in cookiejar. '
@@ -238,9 +232,7 @@ class ASFSession(requests.Session):
                 'required for hidden/restricted dataset access.'
             )
         else:
-            ASF_LOGGER.info(
-                'Authenticating EDL token found in "urs-access-token" cookie'
-            )
+            ASF_LOGGER.info('Authenticating EDL token found in "urs-access-token" cookie')
             try:
                 self.auth_with_token(token)
             except ASFAuthenticationError:
@@ -262,9 +254,7 @@ class ASFSession(requests.Session):
 
         return any(cookie in self.auth_cookie_names for cookie in cookies)
 
-    def rebuild_auth(
-        self, prepared_request: requests.Request, response: requests.Response
-    ):
+    def rebuild_auth(self, prepared_request: requests.Request, response: requests.Response):
         """
         Overrides requests.Session.rebuild_auth()
         default behavior of stripping the Authorization header
@@ -274,17 +264,14 @@ class ASFSession(requests.Session):
         headers = prepared_request.headers
         url = prepared_request.url
 
-        if "Authorization" in headers:
-            original_domain = ".".join(
-                self._get_domain(response.request.url).split(".")[-3:]
-            )
-            redirect_domain = ".".join(self._get_domain(url).split(".")[-3:])
+        if 'Authorization' in headers:
+            original_domain = '.'.join(self._get_domain(response.request.url).split('.')[-3:])
+            redirect_domain = '.'.join(self._get_domain(url).split('.')[-3:])
 
             if original_domain != redirect_domain and (
-                original_domain not in self.auth_domains
-                or redirect_domain not in self.auth_domains
+                original_domain not in self.auth_domains or redirect_domain not in self.auth_domains
             ):
-                del headers["Authorization"]
+                del headers['Authorization']
 
         new_auth = get_netrc_auth(url) if self.trust_env else None
         if new_auth is not None:
@@ -299,12 +286,12 @@ class ASFSession(requests.Session):
         state = super().__getstate__()
         state = {
             **state,
-            "edl_host": self.edl_host,
-            "edl_client_id": self.edl_client_id,
-            "asf_auth_host": self.asf_auth_host,
-            "cmr_host": self.cmr_host,
-            "cmr_collections": self.cmr_collections,
-            "auth_domains": self.auth_domains,
-            "auth_cookie_names": self.auth_cookie_names,
+            'edl_host': self.edl_host,
+            'edl_client_id': self.edl_client_id,
+            'asf_auth_host': self.asf_auth_host,
+            'cmr_host': self.cmr_host,
+            'cmr_collections': self.cmr_collections,
+            'auth_domains': self.auth_domains,
+            'auth_cookie_names': self.auth_cookie_names,
         }
         return state

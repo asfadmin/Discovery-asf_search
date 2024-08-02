@@ -25,9 +25,7 @@ def search_count(
     minFaradayRotation: float = None,
     flightDirection: str = None,
     flightLine: str = None,
-    frame: Union[
-        int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]
-    ] = None,
+    frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
     granule_list: Union[str, Sequence[str]] = None,
     groupID: Union[str, Sequence[str]] = None,
     insarStackId: str = None,
@@ -61,8 +59,8 @@ def search_count(
 ) -> int:
     # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:
     kwargs = locals()
-    opts = ASFSearchOptions() if kwargs["opts"] is None else copy(opts)
-    del kwargs["opts"]
+    opts = ASFSearchOptions() if kwargs['opts'] is None else copy(opts)
+    del kwargs['opts']
 
     kwargs = dict((k, v) for k, v in kwargs.items() if v is not None)
     kw_opts = ASFSearchOptions(**kwargs)
@@ -72,18 +70,14 @@ def search_count(
 
     preprocess_opts(opts)
 
-    url = "/".join(
-        s.strip("/") for s in [f"https://{opts.host}", f"{INTERNAL.CMR_GRANULE_PATH}"]
-    )
+    url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
 
     count = 0
     for query in build_subqueries(opts):
         translated_opts = translate_opts(query)
-        idx = translated_opts.index(("page_size", INTERNAL.CMR_PAGE_SIZE))
-        translated_opts[idx] = ("page_size", 0)
+        idx = translated_opts.index(('page_size', INTERNAL.CMR_PAGE_SIZE))
+        translated_opts[idx] = ('page_size', 0)
 
-        response = get_page(
-            session=opts.session, url=url, translated_opts=translated_opts
-        )
-        count += response.json()["hits"]
+        response = get_page(session=opts.session, url=url, translated_opts=translated_opts)
+        count += response.json()['hits']
     return count

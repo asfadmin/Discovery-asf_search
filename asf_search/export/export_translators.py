@@ -19,19 +19,19 @@ def ASFSearchResults_to_properties_list(
     # Format dates to match format used by SearchAPI output formats
     for product in property_list:
         # S1 date properties are formatted differently from other platforms
-        is_S1 = product["platform"].upper() in [
-            "SENTINEL-1",
-            "SENTINEL-1B",
-            "SENTINEL-1A",
+        is_S1 = product['platform'].upper() in [
+            'SENTINEL-1',
+            'SENTINEL-1B',
+            'SENTINEL-1A',
         ]
         for key, data in product.items():
-            if ("date" in key.lower() or "time" in key.lower()) and data is not None:
+            if ('date' in key.lower() or 'time' in key.lower()) and data is not None:
                 if not is_S1:
                     # Remove trailing zeroes from miliseconds, add Z
-                    if len(data.split(".")) == 2:
-                        d = len(data.split(".")[0])
-                        data = data[:d] + "Z"
-                    time = datetime.strptime(data, "%Y-%m-%dT%H:%M:%SZ")
-                    product[key] = time.strftime("%Y-%m-%dT%H:%M:%SZ")
+                    if len(data.split('.')) == 2:
+                        d = len(data.split('.')[0])
+                        data = data[:d] + 'Z'
+                    time = datetime.strptime(data, '%Y-%m-%dT%H:%M:%SZ')
+                    product[key] = time.strftime('%Y-%m-%dT%H:%M:%SZ')
 
     return property_list

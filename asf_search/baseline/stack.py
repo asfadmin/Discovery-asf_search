@@ -1,13 +1,5 @@
-<<<<<<< HEAD
-from typing import Tuple, List, Union
-from ciso8601 import parse_datetime
-import pytz
-
-from .calc import calculate_perpendicular_baselines
-=======
->>>>>>> master
 from asf_search import ASFProduct, ASFStackableProduct, ASFSearchResults
-from typing import Tuple, List
+from typing import Tuple, List, Union
 import pytz
 from .calc import calculate_perpendicular_baselines
 

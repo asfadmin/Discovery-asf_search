@@ -7,7 +7,7 @@ from typing import Dict, Union, Tuple, TypeVar, Callable, List, Type, Sequence
 import math
 from shapely import wkt, errors
 
-number = TypeVar("number", int, float)
+number = TypeVar('number', int, float)
 
 
 def parse_string(value: str) -> str:
@@ -18,13 +18,11 @@ def parse_string(value: str) -> str:
     """
     # Convert to string first, so length is checked against only str types:
     try:
-        value = f"{value}"
+        value = f'{value}'
     except ValueError as exc:  # If this happens, printing v's value would fail too...
-        raise ValueError(
-            f"Invalid string: Can't cast type '{type(value)}' to string."
-        ) from exc
+        raise ValueError(f"Invalid string: Can't cast type '{type(value)}' to string.") from exc
     if len(value) == 0:
-        raise ValueError("Invalid string: Empty.")
+        raise ValueError('Invalid string: Empty.')
     return value
 
 
@@ -37,9 +35,9 @@ def parse_float(value: float) -> float:
     try:
         value = float(value)
     except ValueError as exc:
-        raise ValueError(f"Invalid float: {value}") from exc
+        raise ValueError(f'Invalid float: {value}') from exc
     if math.isinf(value) or math.isnan(value):
-        raise ValueError(f"Float values must be finite: got {value}")
+        raise ValueError(f'Float values must be finite: got {value}')
     return value
 
 
@@ -57,7 +55,7 @@ def parse_date(value: Union[str, datetime]) -> Union[datetime, str]:
     if date is None:
         raise ValueError(f"Invalid date: '{value}'.")
 
-    return _to_utc(date).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return _to_utc(date).strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 def _to_utc(date: datetime):
@@ -84,26 +82,24 @@ def parse_range(
     """
     if isinstance(value, tuple):
         if len(value) < 2:
-            raise ValueError(f"Not enough values in min/max tuple: {value}")
+            raise ValueError(f'Not enough values in min/max tuple: {value}')
         if len(value) > 2:
-            raise ValueError(f"Too many values in min/max tuple: {value}")
+            raise ValueError(f'Too many values in min/max tuple: {value}')
         value = (h(value[0]), h(value[1]))
         if math.isinf(value[0]) or math.isnan(value[0]):
             raise ValueError(
-                f"Expected finite numeric min in min/max tuple, got {value[0]}: {value}"
+                f'Expected finite numeric min in min/max tuple, got {value[0]}: {value}'
             )
         if math.isinf(value[1]) or math.isnan(value[1]):
             raise ValueError(
-                f"Expected finite numeric max in min/max tuple, got {value[1]}: {value}"
+                f'Expected finite numeric max in min/max tuple, got {value[1]}: {value}'
             )
         if value[0] > value[1]:
             raise ValueError(
-                f"Min must be less than max when using min/max tuples to search: {value}"
+                f'Min must be less than max when using min/max tuples to search: {value}'
             )
         return value
-    raise ValueError(
-        f"Invalid range. Expected 2-value numeric tuple, got {type(value)}: {value}"
-    )
+    raise ValueError(f'Invalid range. Expected 2-value numeric tuple, got {type(value)}: {value}')
 
 
 # Parse and validate a date range: "1991-10-01T00:00:00Z,1991-10-02T00:00:00Z"
@@ -131,7 +127,7 @@ def parse_list(value: Sequence, h) -> List:
     try:
         return [h(a) for a in value]
     except ValueError as exc:
-        raise ValueError(f"Invalid {h.__name__} list: {exc}") from exc
+        raise ValueError(f'Invalid {h.__name__} list: {exc}') from exc
 
 
 def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
@@ -143,19 +139,19 @@ def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
     for idx, item in enumerate(value):
         if not isinstance(item, tuple) and not isinstance(item, Sequence):
             raise ValueError(
-                f"Expected item in cmr_keywords list index {idx} to be tuple pair, "
-                f"got value {item} of type {type(item)}"
+                f'Expected item in cmr_keywords list index {idx} to be tuple pair, '
+                f'got value {item} of type {type(item)}'
             )
         if len(item) != 2:
             raise ValueError(
-                f"Expected item in cmr_keywords list index {idx} to be of length 2, "
-                f"got value {item} of length {len(item)}"
+                f'Expected item in cmr_keywords list index {idx} to be of length 2, '
+                f'got value {item} of length {len(item)}'
             )
 
         search_key, search_value = item
         if not isinstance(search_key, str) or not isinstance(search_value, str):
             raise ValueError(
-                f"Expected tuple pair of types: "
+                f'Expected tuple pair of types: '
                 f'"{type(str)}, {type(str)}" in cmr_keywords at index {idx}, '
                 f'got value "{str(item)}" '
                 f'of types: "{type(search_key)}, {type(search_value)}"'
@@ -190,7 +186,7 @@ def parse_number_or_range(value: Union[List, Tuple[number, number], range], h):
         return h(value)
 
     except ValueError as exc:
-        raise ValueError(f"Invalid {h.__name__} or range: {exc}") from exc
+        raise ValueError(f'Invalid {h.__name__} or range: {exc}') from exc
 
 
 # Parse and validate an iterable of numbers or number ranges, using h() to validate each value:
@@ -215,18 +211,14 @@ def parse_float_or_range_list(value: Sequence) -> List:
 # Parse and validate a coordinate list
 def parse_coord_list(value: Sequence[float]) -> List[float]:
     if not isinstance(value, Sequence):
-        raise ValueError(
-            f"Invalid coord list list: Must pass in an iterable. Got {type(value)}."
-        )
+        raise ValueError(f'Invalid coord list list: Must pass in an iterable. Got {type(value)}.')
     for coord in value:
         try:
             float(coord)
         except ValueError as exc:
-            raise ValueError(f"Invalid coordinate: {coord}") from exc
+            raise ValueError(f'Invalid coordinate: {coord}') from exc
     if len(value) % 2 != 0:
-        raise ValueError(
-            f"Invalid coordinate list, odd number of values provided: {value}"
-        )
+        raise ValueError(f'Invalid coordinate list, odd number of values provided: {value}')
     return value
 
 
@@ -236,9 +228,9 @@ def parse_bbox_list(value: Sequence[float]) -> List[float]:
         # This also makes sure v is an iterable:
         value = parse_coord_list(value)
     except ValueError as exc:
-        raise ValueError(f"Invalid bbox: {exc}") from exc
+        raise ValueError(f'Invalid bbox: {exc}') from exc
     if len(value) != 4:
-        raise ValueError(f"Invalid bbox, must be 4 values: {value}")
+        raise ValueError(f'Invalid bbox, must be 4 values: {value}')
     return value
 
 
@@ -248,9 +240,9 @@ def parse_point_list(value: Sequence[float]) -> List[float]:
         # This also makes sure v is an iterable:
         value = parse_coord_list(value)
     except ValueError as exc:
-        raise ValueError(f"Invalid point: {exc}") from exc
+        raise ValueError(f'Invalid point: {exc}') from exc
     if len(value) != 2:
-        raise ValueError(f"Invalid point, must be 2 values: {value}")
+        raise ValueError(f'Invalid point, must be 2 values: {value}')
     return value
 
 
@@ -259,7 +251,7 @@ def parse_wkt(value: str) -> str:
     try:
         value = wkt.loads(value)
     except errors.WKTReadingError as exc:
-        raise ValueError(f"Invalid wkt: {exc}") from exc
+        raise ValueError(f'Invalid wkt: {exc}') from exc
     return wkt.dumps(value)
 
 
@@ -268,9 +260,7 @@ def parse_wkt(value: str) -> str:
 def parse_circle(value: List[float]) -> List[float]:
     value = parse_float_list(value)
     if len(value) != 3:
-        raise ValueError(
-            f"Invalid circle, must be 3 values (lat, long, radius). Got: {value}"
-        )
+        raise ValueError(f'Invalid circle, must be 3 values (lat, long, radius). Got: {value}')
     return value
 
 
@@ -280,7 +270,7 @@ def parse_linestring(value: List[float]) -> List[float]:
     value = parse_float_list(value)
     if len(value) % 2 != 0:
         raise ValueError(
-            f"Invalid linestring, must be values of format (lat, long, lat, long, ...). Got: {value}"
+            f'Invalid linestring, must be values of format (lat, long, lat, long, ...). Got: {value}'
         )
     return value
 
@@ -288,9 +278,7 @@ def parse_linestring(value: List[float]) -> List[float]:
 def parse_point(value: List[float]) -> List[float]:
     value = parse_float_list(value)
     if len(value) != 2:
-        raise ValueError(
-            f"Invalid point, must be values of format (lat, long). Got: {value}"
-        )
+        raise ValueError(f'Invalid point, must be values of format (lat, long). Got: {value}')
     return value
 
 
@@ -299,7 +287,7 @@ def parse_coord_string(value: List):
     value = parse_float_list(value)
     if len(value) % 2 != 0:
         raise ValueError(
-            f"Invalid coordinate string, must be values of format (lat, long, lat, long, ...). Got: {value}"
+            f'Invalid coordinate string, must be values of format (lat, long, lat, long, ...). Got: {value}'
         )
     return value
 
@@ -310,6 +298,6 @@ def parse_session(session: Type[requests.Session]):
         return session
     else:
         raise ValueError(
-            "Invalid Session: expected ASFSession or a requests.Session subclass. "
-            f"Got {type(session)}"
+            'Invalid Session: expected ASFSession or a requests.Session subclass. '
+            f'Got {type(session)}'
         )

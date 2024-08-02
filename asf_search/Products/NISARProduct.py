@@ -8,19 +8,20 @@ class NISARProduct(ASFStackableProduct):
 
     ASF Dataset Documentation Page: https://asf.alaska.edu/nisar/
     """
+
     _base_properties = {
         **ASFStackableProduct._base_properties,
-        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']}
+        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
-        self.properties["additionalUrls"] = self._get_additional_urls()
-        self.properties["s3Urls"] = self._get_s3_urls()
+        self.properties['additionalUrls'] = self._get_additional_urls()
+        self.properties['s3Urls'] = self._get_s3_urls()
 
-        if self.properties.get("groupID") is None:
-            self.properties["groupID"] = self.properties["sceneName"]
+        if self.properties.get('groupID') is None:
+            self.properties['groupID'] = self.properties['sceneName']
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
@@ -44,7 +45,7 @@ class NISARProduct(ASFStackableProduct):
     def get_sort_keys(self) -> Tuple[str, str]:
         keys = super().get_sort_keys()
 
-        if keys[0] == "":
-            return (self._read_property("processingDate", ""), keys[1])
+        if keys[0] == '':
+            return (self._read_property('processingDate', ''), keys[1])
 
         return keys

@@ -15,7 +15,10 @@ class ERSProduct(ASFStackableProduct):
     _base_properties = {
         **ASFStackableProduct._base_properties,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0]},
-        'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
+        'bytes': {
+            'path': ['AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0],
+            'cast': try_round_float,
+        },
         'esaFrame': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0]},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]},

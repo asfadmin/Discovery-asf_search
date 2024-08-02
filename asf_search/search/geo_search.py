@@ -24,9 +24,7 @@ def geo_search(
     minFaradayRotation: float = None,
     flightDirection: str = None,
     flightLine: str = None,
-    frame: Union[
-        int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]
-    ] = None,
+    frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
     granule_list: Union[str, Sequence[str]] = None,
     groupID: Union[str, Sequence[str]] = None,
     insarStackId: str = None,
@@ -159,9 +157,7 @@ def geo_search(
     """
 
     kwargs = locals()
-    data = dict(
-        (k, v) for k, v in kwargs.items() if k not in ["host", "opts"] and v is not None
-    )
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts'] and v is not None)
 
     opts = ASFSearchOptions() if opts is None else copy(opts)
     opts.merge_args(**data)

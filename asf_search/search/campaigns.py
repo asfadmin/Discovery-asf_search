@@ -12,19 +12,19 @@ def campaigns(platform: str) -> List[str]:
 
     :return: A list of campaign names for the given platform
     """
-    data = {"include_facets": "true", "provider": "ASF"}
+    data = {'include_facets': 'true', 'provider': 'ASF'}
 
     if platform is not None:
-        if platform == "UAVSAR":
-            data["platform[]"] = "G-III"
-            data["instrument[]"] = "UAVSAR"
-        elif platform == "AIRSAR":
-            data["platform[]"] = "DC-8"
-            data["instrument[]"] = "AIRSAR"
-        elif platform == "SENTINEL-1 INTERFEROGRAM (BETA)":
-            data["platform[]"] = "SENTINEL-1A"
+        if platform == 'UAVSAR':
+            data['platform[]'] = 'G-III'
+            data['instrument[]'] = 'UAVSAR'
+        elif platform == 'AIRSAR':
+            data['platform[]'] = 'DC-8'
+            data['instrument[]'] = 'AIRSAR'
+        elif platform == 'SENTINEL-1 INTERFEROGRAM (BETA)':
+            data['platform[]'] = 'SENTINEL-1A'
         else:
-            data["platform[]"] = platform
+            data['platform[]'] = platform
 
     missions = get_campaigns(data)
     mission_names = _get_project_names(missions)
@@ -44,7 +44,7 @@ def _get_project_names(data: Union[Dict, List]) -> List[str]:
     output = []
     if isinstance(data, Dict):
         for key, value in data.items():
-            if key == "Projects":
+            if key == 'Projects':
                 return [list(item.values())[0] for item in value]
             output.extend(_get_project_names(value))
     elif isinstance(data, List):

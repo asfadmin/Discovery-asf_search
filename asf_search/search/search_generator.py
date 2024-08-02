@@ -51,9 +51,7 @@ def search_generator(
     minFaradayRotation: float = None,
     flightDirection: str = None,
     flightLine: str = None,
-    frame: Union[
-        int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]
-    ] = None,
+    frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
     granule_list: Union[str, Sequence[str]] = None,
     groupID: Union[str, Sequence[str]] = None,
     insarStackId: str = None,
@@ -191,8 +189,8 @@ def search_generator(
 
     # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:
     kwargs = locals()
-    opts = ASFSearchOptions() if kwargs["opts"] is None else copy(opts)
-    del kwargs["opts"]
+    opts = ASFSearchOptions() if kwargs['opts'] is None else copy(opts)
+    del kwargs['opts']
 
     kwargs = dict((k, v) for k, v in kwargs.items() if v is not None)
     kw_opts = ASFSearchOptions(**kwargs)
@@ -200,47 +198,43 @@ def search_generator(
     # Anything passed in as kwargs has priority over anything in opts:
     opts.merge_args(**dict(kw_opts))
 
-    maxResults = opts.pop("maxResults", None)
+    maxResults = opts.pop('maxResults', None)
 
     if maxResults is not None and (
-        getattr(opts, "granule_list", False) or getattr(opts, "product_list", False)
+        getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)
     ):
-        raise ValueError("Cannot use maxResults along with product_list/granule_list.")
+        raise ValueError('Cannot use maxResults along with product_list/granule_list.')
 
-    ASF_LOGGER.debug(f"SEARCH: preprocessing opts: {opts}")
+    ASF_LOGGER.debug(f'SEARCH: preprocessing opts: {opts}')
     preprocess_opts(opts)
-    ASF_LOGGER.debug(f"SEARCH: preprocessed opts: {opts}")
+    ASF_LOGGER.debug(f'SEARCH: preprocessed opts: {opts}')
 
-    ASF_LOGGER.info(f"SEARCH: Using search opts {opts}")
+    ASF_LOGGER.info(f'SEARCH: Using search opts {opts}')
 
-    url = "/".join(
-        s.strip("/") for s in [f"https://{opts.host}", f"{INTERNAL.CMR_GRANULE_PATH}"]
-    )
+    url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
     total = 0
 
     queries = build_subqueries(opts)
 
     ASF_LOGGER.info(f'SEARCH: Using cmr endpoint: "{url}"')
-    ASF_LOGGER.debug(f"SEARCH: Built {len(queries)} subqueries")
+    ASF_LOGGER.debug(f'SEARCH: Built {len(queries)} subqueries')
 
     for subquery_idx, query in enumerate(queries):
-        ASF_LOGGER.info(
-            f"SUBQUERY {subquery_idx + 1}: Beginning subquery with opts: {query}"
-        )
+        ASF_LOGGER.info(f'SUBQUERY {subquery_idx + 1}: Beginning subquery with opts: {query}')
 
-        ASF_LOGGER.debug(f"TRANSLATION: Translating subquery:\n{query}")
+        ASF_LOGGER.debug(f'TRANSLATION: Translating subquery:\n{query}')
         translated_opts = translate_opts(query)
-        ASF_LOGGER.debug(
-            f"TRANSLATION: Subquery translated to cmr keywords:\n{translated_opts}"
-        )
-        cmr_search_after_header = ""
+        ASF_LOGGER.debug(f'TRANSLATION: Subquery translated to cmr keywords:\n{translated_opts}')
+        cmr_search_after_header = ''
         subquery_count = 0
 
         page_number = 1
         while cmr_search_after_header is not None:
             try:
                 ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Fetching page {page_number}')
-                items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
+                items, subquery_max_results, cmr_search_after_header = query_cmr(
+                    opts.session, url, translated_opts, subquery_count
+                )
             except (ASFSearchError, CMRIncompleteError) as exc:
                 message = str(exc)
                 ASF_LOGGER.error(message)
@@ -249,41 +243,41 @@ def search_generator(
                 # If it's a CMRIncompleteError, we can just stop here and return what we have
                 # It's up to the user to call .raise_if_incomplete() if they're using the
                 # generator directly.
-                if type(exc) == CMRIncompleteError:
+                if isinstance(exc, CMRIncompleteError):
                     return
                 else:
                     raise
 
-            ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items.')
+            ASF_LOGGER.debug(
+                f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items.'
+            )
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             perf = time.time()
-            last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
-            ASF_LOGGER.warning(f"Page Processing Time {time.time() - perf}")
+            last_page = process_page(
+                items, maxResults, subquery_max_results, total, subquery_count, opts
+            )
+            ASF_LOGGER.warning(f'Page Processing Time {time.time() - perf}')
             subquery_count += len(last_page)
             total += len(last_page)
-            last_page.searchComplete = (
-                subquery_count == subquery_max_results or total == maxResults
-            )
+            last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
             yield last_page
 
             if last_page.searchComplete:
                 if total == maxResults:  # the user has as many results as they wanted
-                    ASF_LOGGER.info(
-                        f"SEARCH COMPLETE: MaxResults ({maxResults}) reached"
-                    )
-                    opts.session.headers.pop("CMR-Search-After", None)
+                    ASF_LOGGER.info(f'SEARCH COMPLETE: MaxResults ({maxResults}) reached')
+                    opts.session.headers.pop('CMR-Search-After', None)
                     return
                 else:  # or we've gotten all possible results for this subquery
                     ASF_LOGGER.info(
-                        f"SUBQUERY {subquery_idx + 1} COMPLETE: results exhausted for subquery"
+                        f'SUBQUERY {subquery_idx + 1} COMPLETE: results exhausted for subquery'
                     )
                     cmr_search_after_header = None
 
             page_number += 1
 
-        opts.session.headers.pop("CMR-Search-After", None)
+        opts.session.headers.pop('CMR-Search-After', None)
 
-    ASF_LOGGER.info(f"SEARCH COMPLETE: results exhausted for search opts {opts}")
+    ASF_LOGGER.info(f'SEARCH COMPLETE: results exhausted for search opts {opts}')
 
 
 @retry(
@@ -298,14 +292,12 @@ def query_cmr(
     translated_opts: Dict,
     sub_query_count: int,
 ):
-    response = get_page(
-        session=session, url=url, translated_opts=translated_opts
-    )
+    response = get_page(session=session, url=url, translated_opts=translated_opts)
 
     perf = time.time()
     items = [as_ASFProduct(f, session=session) for f in response.json()['items']]
-    ASF_LOGGER.warning(f"Product Subclassing Time {time.time() - perf}")
-    hits: int = response.json()['hits'] # total count of products given search opts
+    ASF_LOGGER.warning(f'Product Subclassing Time {time.time() - perf}')
+    hits: int = response.json()['hits']  # total count of products given search opts
     # 9-10 per process
     # 3.9-5 per process
     # sometimes CMR returns results with the wrong page size
@@ -316,7 +308,7 @@ def query_cmr(
             f'got {len(items)}'
         )
 
-    return items, hits, response.headers.get("CMR-Search-After", None)
+    return items, hits, response.headers.get('CMR-Search-After', None)
 
 
 def process_page(
@@ -332,19 +324,21 @@ def process_page(
             items[: min(subquery_max_results - subquery_count, len(items))], opts=opts
         )
     else:
-        last_page = ASFSearchResults(
-            items[: min(max_results - total, len(items))], opts=opts
-        )
+        last_page = ASFSearchResults(items[: min(max_results - total, len(items))], opts=opts)
     return last_page
 
 
-@retry(reraise=True,
-       retry=retry_if_exception_type(ASFSearch5xxError),
-       wait=wait_exponential(multiplier=1, min=3, max=10),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
-       stop=stop_after_attempt(3),
-    )
+@retry(
+    reraise=True,
+    retry=retry_if_exception_type(ASFSearch5xxError),
+    wait=wait_exponential(
+        multiplier=1, min=3, max=10
+    ),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
+    stop=stop_after_attempt(3),
+)
 def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
     from asf_search.constants.INTERNAL import CMR_TIMEOUT
+
     perf = time.time()
     try:
         response = session.post(url=url, data=translated_opts, timeout=CMR_TIMEOUT)
@@ -356,9 +350,11 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(error_message) from exc
     except ReadTimeout as exc:
-        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "asf_search.constants.INTERNAL.CMR_TIMEOUT" to increase. ({url=}, timeout={CMR_TIMEOUT})') from exc
+        raise ASFSearchError(
+            f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "asf_search.constants.INTERNAL.CMR_TIMEOUT" to increase. ({url=}, timeout={CMR_TIMEOUT})'
+        ) from exc
 
-    ASF_LOGGER.warning(f"Query Time Elapsed {time.time() - perf}")
+    ASF_LOGGER.warning(f'Query Time Elapsed {time.time() - perf}')
     return response
 
 
@@ -386,25 +382,21 @@ def wrap_wkt(opts: ASFSearchOptions):
 
 def set_default_dates(opts: ASFSearchOptions):
     if opts.start is not None and isinstance(opts.start, str):
-        opts.start = dateparser.parse(
-            opts.start, settings={"RETURN_AS_TIMEZONE_AWARE": True}
-        )
+        opts.start = dateparser.parse(opts.start, settings={'RETURN_AS_TIMEZONE_AWARE': True})
     if opts.end is not None and isinstance(opts.end, str):
-        opts.end = dateparser.parse(
-            opts.end, settings={"RETURN_AS_TIMEZONE_AWARE": True}
-        )
+        opts.end = dateparser.parse(opts.end, settings={'RETURN_AS_TIMEZONE_AWARE': True})
     # If both are used, make sure they're in the right order:
     if opts.start is not None and opts.end is not None:
         if opts.start > opts.end:
             ASF_LOGGER.warning(
-                f"Start date ({opts.start}) is after end date ({opts.end}). Switching the two."
+                f'Start date ({opts.start}) is after end date ({opts.end}). Switching the two.'
             )
             opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
     if opts.start is not None:
-        opts.start = opts.start.strftime("%Y-%m-%dT%H:%M:%SZ")
+        opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
     if opts.end is not None:
-        opts.end = opts.end.strftime("%Y-%m-%dT%H:%M:%SZ")
+        opts.end = opts.end.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 def set_platform_alias(opts: ASFSearchOptions):
@@ -412,26 +404,26 @@ def set_platform_alias(opts: ASFSearchOptions):
     if opts.platform is not None:
         plat_aliases = {
             # Groups:
-            "S1": ["SENTINEL-1A", "SENTINEL-1B"],
-            "SENTINEL-1": ["SENTINEL-1A", "SENTINEL-1B"],
-            "SENTINEL": ["SENTINEL-1A", "SENTINEL-1B"],
-            "ERS": ["ERS-1", "ERS-2"],
-            "SIR-C": ["STS-59", "STS-68"],
+            'S1': ['SENTINEL-1A', 'SENTINEL-1B'],
+            'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B'],
+            'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B'],
+            'ERS': ['ERS-1', 'ERS-2'],
+            'SIR-C': ['STS-59', 'STS-68'],
             # Singles / Aliases:
-            "R1": ["RADARSAT-1"],
-            "E1": ["ERS-1"],
-            "E2": ["ERS-2"],
-            "J1": ["JERS-1"],
-            "A3": ["ALOS"],
-            "AS": ["DC-8"],
-            "AIRSAR": ["DC-8"],
-            "SS": ["SEASAT 1"],
-            "SEASAT": ["SEASAT 1"],
-            "SA": ["SENTINEL-1A"],
-            "SB": ["SENTINEL-1B"],
-            "SP": ["SMAP"],
-            "UA": ["G-III"],
-            "UAVSAR": ["G-III"],
+            'R1': ['RADARSAT-1'],
+            'E1': ['ERS-1'],
+            'E2': ['ERS-2'],
+            'J1': ['JERS-1'],
+            'A3': ['ALOS'],
+            'AS': ['DC-8'],
+            'AIRSAR': ['DC-8'],
+            'SS': ['SEASAT 1'],
+            'SEASAT': ['SEASAT 1'],
+            'SA': ['SENTINEL-1A'],
+            'SB': ['SENTINEL-1B'],
+            'SP': ['SMAP'],
+            'UA': ['G-III'],
+            'UAVSAR': ['G-III'],
         }
         platform_list = []
         for plat in opts.platform:
@@ -442,6 +434,8 @@ def set_platform_alias(opts: ASFSearchOptions):
                 platform_list.append(plat)
 
         opts.platform = list(set(platform_list))
+
+
 _dataset_collection_items = dataset_collections.items()
 
 
@@ -478,21 +472,22 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
     # If the platform exists, try to match it
     platform = _get_platform(item=item)
     if ASFProductType.ARIAS1GUNWProduct._is_subclass(item=item):
-        return dataset_to_product_types.get("ARIA S1 GUNW")(item, session=session)
+        return dataset_to_product_types.get('ARIA S1 GUNW')(item, session=session)
     elif (subclass := dataset_to_product_types.get(platform)) is not None:
         return subclass(item, session=session)
 
     output = ASFProduct(item, session=session)
 
-    granule_concept_id = output.meta.get("concept-id", "Missing Granule Concept ID")
+    granule_concept_id = output.meta.get('concept-id', 'Missing Granule Concept ID')
     fileID = output.properties.get(
-        "fileID", output.properties.get("sceneName", "fileID and sceneName Missing")
+        'fileID', output.properties.get('sceneName', 'fileID and sceneName Missing')
     )
 
     ASF_LOGGER.warning(
         f'Failed to find corresponding ASFProduct subclass for \
         Product: "{fileID}", Granule Concept ID: "{granule_concept_id}", \
-        default to "ASFProduct"')
+        default to "ASFProduct"'
+    )
     return output
 
 
@@ -502,13 +497,11 @@ def _get_product_type_key(item: Dict) -> str:
     2. platform_shortName (Fallback)
         - special case: Aria S1 GUNW
     """
-    collection_shortName = ASFProduct.umm_get(
-        item["umm"], "CollectionReference", "ShortName"
-    )
+    collection_shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
 
     if collection_shortName is None:
         if ASFProductType.ARIAS1GUNWProduct._is_subclass(item=item):
-            return "ARIA S1 GUNW"
+            return 'ARIA S1 GUNW'
 
         platform = _get_platform(item=item)
         return platform
@@ -517,31 +510,31 @@ def _get_product_type_key(item: Dict) -> str:
 
 
 def _get_platform(item: Dict):
-    return ASFProduct.umm_get(item["umm"], "Platforms", 0, "ShortName")
+    return ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
 
 
 # Maps datasets from DATASET.py and collection/platform shortnames to ASFProduct subclasses
 dataset_to_product_types = {
-    "SENTINEL-1": ASFProductType.S1Product,
-    "OPERA-S1": ASFProductType.OPERAS1Product,
-    "OPERA-S1-CALVAL": ASFProductType.OPERAS1Product,
-    "SLC-BURST": ASFProductType.S1BurstProduct,
-    "ALOS": ASFProductType.ALOSProduct,
-    "SIR-C": ASFProductType.SIRCProduct,
-    "STS-59": ASFProductType.SIRCProduct,
-    "STS-68": ASFProductType.SIRCProduct,
-    "ARIA S1 GUNW": ASFProductType.ARIAS1GUNWProduct,
-    "SMAP": ASFProductType.SMAPProduct,
-    "UAVSAR": ASFProductType.UAVSARProduct,
-    "G-III": ASFProductType.UAVSARProduct,
-    "RADARSAT-1": ASFProductType.RADARSATProduct,
-    "ERS": ASFProductType.ERSProduct,
-    "ERS-1": ASFProductType.ERSProduct,
-    "ERS-2": ASFProductType.ERSProduct,
-    "JERS-1": ASFProductType.JERSProduct,
-    "AIRSAR": ASFProductType.AIRSARProduct,
-    "DC-8": ASFProductType.AIRSARProduct,
-    "SEASAT": ASFProductType.SEASATProduct,
-    "SEASAT 1": ASFProductType.SEASATProduct,
-    "NISAR": ASFProductType.NISARProduct,
+    'SENTINEL-1': ASFProductType.S1Product,
+    'OPERA-S1': ASFProductType.OPERAS1Product,
+    'OPERA-S1-CALVAL': ASFProductType.OPERAS1Product,
+    'SLC-BURST': ASFProductType.S1BurstProduct,
+    'ALOS': ASFProductType.ALOSProduct,
+    'SIR-C': ASFProductType.SIRCProduct,
+    'STS-59': ASFProductType.SIRCProduct,
+    'STS-68': ASFProductType.SIRCProduct,
+    'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
+    'SMAP': ASFProductType.SMAPProduct,
+    'UAVSAR': ASFProductType.UAVSARProduct,
+    'G-III': ASFProductType.UAVSARProduct,
+    'RADARSAT-1': ASFProductType.RADARSATProduct,
+    'ERS': ASFProductType.ERSProduct,
+    'ERS-1': ASFProductType.ERSProduct,
+    'ERS-2': ASFProductType.ERSProduct,
+    'JERS-1': ASFProductType.JERSProduct,
+    'AIRSAR': ASFProductType.AIRSARProduct,
+    'DC-8': ASFProductType.AIRSARProduct,
+    'SEASAT': ASFProductType.SEASATProduct,
+    'SEASAT 1': ASFProductType.SEASATProduct,
+    'NISAR': ASFProductType.NISARProduct,
 }

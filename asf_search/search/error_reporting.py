@@ -18,18 +18,16 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
         )
         return
 
-    user_agent = search_options.session.headers.get("User-Agent")
-    search_options_list = "\n".join(
-        [f"\t{option}: {key}" for option, key in dict(search_options).items()]
+    user_agent = search_options.session.headers.get('User-Agent')
+    search_options_list = '\n'.join(
+        [f'\t{option}: {key}' for option, key in dict(search_options).items()]
     )
-    message = f"Error Message: {str(message)}\nUser Agent: {user_agent} \
-    \nSearch Options: {{\n{search_options_list}\n}}"
+    message = f'Error Message: {str(message)}\nUser Agent: {user_agent} \
+    \nSearch Options: {{\n{search_options_list}\n}}'
 
     response = requests.post(
-        f"https://{INTERNAL.ERROR_REPORTING_ENDPOINT}",
-        data={
-            "Message": f"This error message and info was automatically generated:\n\n{message}"
-        },
+        f'https://{INTERNAL.ERROR_REPORTING_ENDPOINT}',
+        data={'Message': f'This error message and info was automatically generated:\n\n{message}'},
     )
 
     try:
@@ -38,7 +36,8 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
         logging.error(
             'asf-search failed to automatically report an error,'
             'if you have any questions email uso@asf.alaska.edu'
-            f"\nError Text: HTTP {response.status_code}: {response.json()['errors']}")
+            f"\nError Text: HTTP {response.status_code}: {response.json()['errors']}"
+        )
         return
     if response.status_code == 200:
         logging.error(
@@ -46,6 +45,6 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
                 'The asf-search module ecountered an error with CMR,'
                 'and the following message was automatically reported to ASF:'
                 '\n\n"\nmessage\n"'
-                "If you have any questions email uso@asf.alaska.edu"
+                'If you have any questions email uso@asf.alaska.edu'
             )
         )

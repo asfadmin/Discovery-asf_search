@@ -25,9 +25,7 @@ def search(
     minFaradayRotation: float = None,
     flightDirection: str = None,
     flightLine: str = None,
-    frame: Union[
-        int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]
-    ] = None,
+    frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
     granule_list: Union[str, Sequence[str]] = None,
     groupID: Union[str, Sequence[str]] = None,
     insarStackId: str = None,
@@ -164,9 +162,7 @@ def search(
     `asf_search.ASFSearchResults` (list of search results of subclass ASFProduct)
     """
     kwargs = locals()
-    data = dict(
-        (k, v) for k, v in kwargs.items() if k not in ["host", "opts"] and v is not None
-    )
+    data = dict((k, v) for k, v in kwargs.items() if k not in ['host', 'opts'] and v is not None)
 
     opts = ASFSearchOptions() if opts is None else copy(opts)
     opts.merge_args(**data)
@@ -176,7 +172,7 @@ def search(
     # The last page will be marked as complete if results sucessful
     perf = time.time()
     for page in search_generator(opts=opts):
-        ASF_LOGGER.warning(f"Page Time Elapsed {time.time() - perf}")
+        ASF_LOGGER.warning(f'Page Time Elapsed {time.time() - perf}')
         results.extend(page)
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
@@ -187,8 +183,6 @@ def search(
     try:
         results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
     except TypeError as exc:
-        ASF_LOGGER.warning(
-            f"Failed to sort final results, leaving results unsorted. Reason: {exc}"
-        )
+        ASF_LOGGER.warning(f'Failed to sort final results, leaving results unsorted. Reason: {exc}')
 
     return results

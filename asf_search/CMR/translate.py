@@ -24,15 +24,15 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     # Escape commas for each key in the list.
     # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
-    for escape_commas in ["campaign"]:
+    for escape_commas in ['campaign']:
         if escape_commas in dict_opts:
-            dict_opts[escape_commas] = dict_opts[escape_commas].replace(",", "\\,")
+            dict_opts[escape_commas] = dict_opts[escape_commas].replace(',', '\\,')
 
     dict_opts = fix_cmr_shapes(dict_opts)
 
     # Special case to unravel WKT field a little for compatibility
-    if "intersectsWith" in dict_opts:
-        shape = wkt.loads(dict_opts.pop("intersectsWith", None))
+    if 'intersectsWith' in dict_opts:
+        shape = wkt.loads(dict_opts.pop('intersectsWith', None))
 
         # If a wide rectangle is provided, make sure to use the bounding box
         # instead of the wkt for better responses from CMR
@@ -48,14 +48,14 @@ def translate_opts(opts: ASFSearchOptions) -> List:
             bottom_left = [str(coord) for coord in bounds[:2]]
             top_right = [str(coord) for coord in bounds[2:]]
 
-            bbox = ",".join([*bottom_left, *top_right])
-            dict_opts["bbox"] = bbox
+            bbox = ','.join([*bottom_left, *top_right])
+            dict_opts['bbox'] = bbox
         else:
-            (shapeType, shape) = wkt_to_cmr_shape(shape).split(":")
+            (shapeType, shape) = wkt_to_cmr_shape(shape).split(':')
             dict_opts[shapeType] = shape
 
     # If you need to use the temporal key:
-    if any(key in dict_opts for key in ["start", "end", "season"]):
+    if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
 
     dict_opts = fix_range_params(dict_opts)
@@ -64,7 +64,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     cmr_opts = []
 
     # user provided umm fields
-    custom_cmr_keywords = dict_opts.pop("cmr_keywords", [])
+    custom_cmr_keywords = dict_opts.pop('cmr_keywords', [])
 
     for key, val in dict_opts.items():
         # If it's "session" or something else CMR doesn't accept, don't send it:
@@ -72,19 +72,19 @@ def translate_opts(opts: ASFSearchOptions) -> List:
             continue
         if isinstance(val, list):
             for x in val:
-                if key in ["granule_list", "product_list"]:
-                    for y in x.split(","):
+                if key in ['granule_list', 'product_list']:
+                    for y in x.split(','):
                         cmr_opts.append((key, y))
                 else:
                     if isinstance(x, tuple):
-                        cmr_opts.append((key, ",".join([str(t) for t in x])))
+                        cmr_opts.append((key, ','.join([str(t) for t in x])))
                     else:
                         cmr_opts.append((key, x))
         else:
             cmr_opts.append((key, val))
     # translate the above tuples to CMR key/values
     for i, opt in enumerate(cmr_opts):
-        cmr_opts[i] = field_map[opt[0]]["key"], field_map[opt[0]]["fmt"].format(opt[1])
+        cmr_opts[i] = field_map[opt[0]]['key'], field_map[opt[0]]['fmt'].format(opt[1])
 
     if should_use_asf_frame(cmr_opts):
         cmr_opts = use_asf_frame(cmr_opts)
@@ -92,12 +92,12 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     cmr_opts.extend(custom_cmr_keywords)
 
     additional_keys = [
-        ("page_size", CMR_PAGE_SIZE),
-        ("options[temporal][and]", "true"),
-        ("sort_key[]", "-end_date"),
-        ("sort_key[]", "granule_ur"),
-        ("options[platform][ignore_case]", "true"),
-        ("provider", opts.provider),
+        ('page_size', CMR_PAGE_SIZE),
+        ('options[temporal][and]', 'true'),
+        ('sort_key[]', '-end_date'),
+        ('sort_key[]', 'granule_ur'),
+        ('options[platform][ignore_case]', 'true'),
+        ('provider', opts.provider),
     ]
 
     cmr_opts.extend(additional_keys)
@@ -107,25 +107,23 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
 def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
     """Fixes raw CMR lon lat coord shapes"""
-    for param in ["point", "linestring", "circle"]:
+    for param in ['point', 'linestring', 'circle']:
         if param in fixed_params:
-            fixed_params[param] = ",".join(map(str, fixed_params[param]))
+            fixed_params[param] = ','.join(map(str, fixed_params[param]))
 
     return fixed_params
 
 
 def should_use_asf_frame(cmr_opts):
-    asf_frame_platforms = ["SENTINEL-1A", "SENTINEL-1B", "ALOS"]
+    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
 
-    asf_frame_collections = get_concept_id_alias(
-        asf_frame_platforms, collections_per_platform
-    )
+    asf_frame_collections = get_concept_id_alias(asf_frame_platforms, collections_per_platform)
 
     return any(
         [
-            p[0] == "platform[]"
+            p[0] == 'platform[]'
             and p[1].upper() in asf_frame_platforms
-            or p[0] == "echo_collection_id[]"
+            or p[0] == 'echo_collection_id[]'
             and p[1] in asf_frame_collections
             for p in cmr_opts
         ]
@@ -145,13 +143,13 @@ def use_asf_frame(cmr_opts):
         if not isinstance(p[1], str):
             continue
 
-        m = re.search(r"CENTER_ESA_FRAME", p[1])
+        m = re.search(r'CENTER_ESA_FRAME', p[1])
         if m is None:
             continue
 
-        logging.debug("Sentinel/ALOS subquery, using ASF frame instead of ESA frame")
+        logging.debug('Sentinel/ALOS subquery, using ASF frame instead of ESA frame')
 
-        cmr_opts[n] = (p[0], p[1].replace(",CENTER_ESA_FRAME,", ",FRAME_NUMBER,"))
+        cmr_opts[n] = (p[0], p[1].replace(',CENTER_ESA_FRAME,', ',FRAME_NUMBER,'))
 
     return cmr_opts
 
@@ -195,33 +193,29 @@ def try_parse_date(value: str) -> Optional[str]:
         date = date.replace(tzinfo=timezone.utc)
         # Turn all inputs into a consistant format:
 
-    return date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    return date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 def fix_date(fixed_params: Dict[str, Any]):
-    if "start" in fixed_params or "end" in fixed_params or "season" in fixed_params:
-        fixed_params["start"] = (
-            fixed_params["start"] if "start" in fixed_params else "1978-01-01T00:00:00Z"
+    if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
+        fixed_params['start'] = (
+            fixed_params['start'] if 'start' in fixed_params else '1978-01-01T00:00:00Z'
         )
-        fixed_params["end"] = (
-            fixed_params["end"]
-            if "end" in fixed_params
-            else datetime.now(datetime.UTC).isoformat()
+        fixed_params['end'] = (
+            fixed_params['end'] if 'end' in fixed_params else datetime.now(datetime.UTC).isoformat()
         )
-        fixed_params["season"] = (
-            ",".join(str(x) for x in fixed_params["season"])
-            if "season" in fixed_params
-            else ""
+        fixed_params['season'] = (
+            ','.join(str(x) for x in fixed_params['season']) if 'season' in fixed_params else ''
         )
 
-        fixed_params["temporal"] = (
+        fixed_params['temporal'] = (
             f'{fixed_params["start"]},{fixed_params["end"]},{fixed_params["season"]}'
         )
 
         # And a little cleanup
-        fixed_params.pop("start", None)
-        fixed_params.pop("end", None)
-        fixed_params.pop("season", None)
+        fixed_params.pop('start', None)
+        fixed_params.pop('end', None)
+        fixed_params.pop('season', None)
 
     return fixed_params
 
@@ -229,14 +223,14 @@ def fix_date(fixed_params: Dict[str, Any]):
 def fix_range_params(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
     """Converts ranges to comma separated strings"""
     for param in [
-        "offNadirAngle",
-        "relativeOrbit",
-        "absoluteOrbit",
-        "frame",
-        "asfFrame",
+        'offNadirAngle',
+        'relativeOrbit',
+        'absoluteOrbit',
+        'frame',
+        'asfFrame',
     ]:
         if param in fixed_params.keys() and isinstance(fixed_params[param], list):
-            fixed_params[param] = ",".join([str(val) for val in fixed_params[param]])
+            fixed_params[param] = ','.join([str(val) for val in fixed_params[param]])
 
     return fixed_params
 
@@ -261,10 +255,10 @@ def should_use_bbox(shape: BaseGeometry):
 
 def wkt_to_cmr_shape(shape: BaseGeometry):
     # take note of the WKT type
-    if shape.geom_type not in ["Point", "LineString", "Polygon"]:
-        raise ValueError("Unsupported WKT: {0}.".format(shape.wkt))
+    if shape.geom_type not in ['Point', 'LineString', 'Polygon']:
+        raise ValueError('Unsupported WKT: {0}.'.format(shape.wkt))
 
-    if shape.geom_type == "Polygon":
+    if shape.geom_type == 'Polygon':
         coords = shape.exterior.coords
     else:  # type == Point | Linestring
         coords = shape.coords
@@ -273,5 +267,5 @@ def wkt_to_cmr_shape(shape: BaseGeometry):
     for lon_lat in coords:
         lon_lat_sequence.extend(lon_lat)
     # Turn any "6e8" to a literal number. (As a sting):
-    coords = ["{:.16f}".format(float(cord)) for cord in lon_lat_sequence]
-    return "{0}:{1}".format(shape.geom_type.lower(), ",".join(coords))
+    coords = ['{:.16f}'.format(float(cord)) for cord in lon_lat_sequence]
+    return '{0}:{1}'.format(shape.geom_type.lower(), ','.join(coords))

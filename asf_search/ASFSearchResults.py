@@ -23,8 +23,8 @@ class ASFSearchResults(UserList):
 
     def geojson(self):
         return {
-            "type": "FeatureCollection",
-            "features": [product.geojson() for product in self],
+            'type': 'FeatureCollection',
+            'features': [product.geojson() for product in self],
         }
 
     def csv(self):
@@ -66,25 +66,25 @@ class ASFSearchResults(UserList):
             Number of download processes to use. Defaults to 1 (i.e. sequential download)
 
         """
-        ASF_LOGGER.info(f"Started downloading ASFSearchResults of size {len(self)}.")
+        ASF_LOGGER.info(f'Started downloading ASFSearchResults of size {len(self)}.')
         if processes == 1:
             for product in self:
                 product.download(path=path, session=session, fileType=fileType)
         else:
-            ASF_LOGGER.info(f"Using {processes} threads - starting up pool.")
+            ASF_LOGGER.info(f'Using {processes} threads - starting up pool.')
             pool = Pool(processes=processes)
             args = [(product, path, session, fileType) for product in self]
             pool.map(_download_product, args)
             pool.close()
             pool.join()
-        ASF_LOGGER.info(f"Finished downloading ASFSearchResults of size {len(self)}.")
+        ASF_LOGGER.info(f'Finished downloading ASFSearchResults of size {len(self)}.')
 
     def raise_if_incomplete(self) -> None:
         if not self.searchComplete:
             msg = (
                 'Results are incomplete due to a search error. '
                 'See logging for more details. (ASFSearchResults.raise_if_incomplete called)'
-                )
+            )
 
             ASF_LOGGER.error(msg)
             raise ASFSearchError(msg)

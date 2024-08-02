@@ -6,9 +6,7 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 
 
-def granule_search(
-    granule_list: Sequence[str], opts: ASFSearchOptions = None
-) -> ASFSearchResults:
+def granule_search(granule_list: Sequence[str], opts: ASFSearchOptions = None) -> ASFSearchResults:
     """
     Performs a granule name search using the ASF SearchAPI
 

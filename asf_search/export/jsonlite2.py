@@ -5,15 +5,6 @@ from types import GeneratorType
 from asf_search import ASF_LOGGER
 from .jsonlite import JSONLiteStreamArray
 
-<<<<<<< HEAD
-
-def results_to_jsonlite2(results):
-    ASF_LOGGER.info("started translating results to jsonlite2 format")
-
-    if not inspect.isgeneratorfunction(results) and not isinstance(
-        results, GeneratorType
-    ):
-=======
 def results_to_jsonlite2(results):
     ASF_LOGGER.info('started translating results to jsonlite2 format')
     
@@ -22,7 +13,6 @@ def results_to_jsonlite2(results):
             return
         
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
->>>>>>> master
         results = [results]
 
     streamer = JSONLite2StreamArray(results)
@@ -75,15 +65,6 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             "pge": p["pgeVersion"],
         }
 
-<<<<<<< HEAD
-        if "temporalBaseline" in p.keys() or "perpendicularBaseline" in p.keys():
-            result["tb"] = p["temporalBaseline"]
-            result["pb"] = p["perpendicularBaseline"]
-
-        if p.get("burst") is not None:  # is a burst product
-            result["s1b"] = p["burst"]
-
-=======
         if 'temporalBaseline' in p.keys():
             result['tb'] = p['temporalBaseline']
         if 'perpendicularBaseline' in p.keys():
@@ -95,7 +76,6 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
         if p.get('opera') is not None:
             result['s1o'] = p['opera']
         
->>>>>>> master
         return result
 
     def getOutputType(self) -> str:

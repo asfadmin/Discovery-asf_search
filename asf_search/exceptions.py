@@ -13,6 +13,7 @@ class ASFSearch4xxError(ASFSearchError):
 class ASFSearch5xxError(ASFSearchError):
     """Raise when CMR returns a 5xx error"""
 
+
 class ASFBaselineError(ASFSearchError):
     """Raise when baseline related errors occur"""
 

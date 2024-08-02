@@ -16,29 +16,31 @@ class ARIAS1GUNWProduct(S1Product):
 
     _base_properties = {
         **S1Product._base_properties,
-        'perpendicularBaseline': {'path': ['AdditionalAttributes', ('Name', 'PERPENDICULAR_BASELINE'), 'Values', 0], 'cast': try_parse_float},
+        'perpendicularBaseline': {
+            'path': [
+                'AdditionalAttributes',
+                ('Name', 'PERPENDICULAR_BASELINE'),
+                'Values',
+                0,
+            ],
+            'cast': try_parse_float,
+        },
         'orbit': {'path': ['OrbitCalculatedSpatialDomains']},
         'inputGranules': {'path': ['InputGranules']},
-        'ariaVersion': {'path': ['AdditionalAttributes', ('Name', 'VERSION'), 'Values', 0]}
+        'ariaVersion': {'path': ['AdditionalAttributes', ('Name', 'VERSION'), 'Values', 0]},
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
-        self.properties["orbit"] = [
-            orbit["OrbitNumber"] for orbit in self.properties["orbit"]
-        ]
+        self.properties['orbit'] = [orbit['OrbitNumber'] for orbit in self.properties['orbit']]
 
-        urls = self.umm_get(
-            self.umm, "RelatedUrls", ("Type", [("USE SERVICE API", "URL")]), 0
-        )
+        urls = self.umm_get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
 
-        self.properties["additionalUrls"] = []
+        self.properties['additionalUrls'] = []
         if urls is not None:
-            self.properties["url"] = urls[0]
-            self.properties["fileName"] = (
-                self.properties["fileID"] + "." + urls[0].split(".")[-1]
-            )
-            self.properties["additionalUrls"] = urls[1:]
+            self.properties['url'] = urls[0]
+            self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
+            self.properties['additionalUrls'] = urls[1:]
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
@@ -61,15 +63,15 @@ class ARIAS1GUNWProduct(S1Product):
 
     @staticmethod
     def _is_subclass(item: Dict) -> bool:
-        platform = ASFProduct.umm_get(item["umm"], "Platforms", 0, "ShortName")
-        if platform in ["SENTINEL-1A", "SENTINEL-1B"]:
+        platform = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
+        if platform in ['SENTINEL-1A', 'SENTINEL-1B']:
             asf_platform = ASFProduct.umm_get(
-                item["umm"],
-                "AdditionalAttributes",
-                ("Name", "ASF_PLATFORM"),
-                "Values",
+                item['umm'],
+                'AdditionalAttributes',
+                ('Name', 'ASF_PLATFORM'),
+                'Values',
                 0,
             )
-            return "Sentinel-1 Interferogram" in asf_platform
+            return 'Sentinel-1 Interferogram' in asf_platform
 
         return False

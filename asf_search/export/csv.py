@@ -6,7 +6,6 @@ from asf_search.export.export_translators import ASFSearchResults_to_properties_
 import inspect
 
 extra_csv_fields = [
-<<<<<<< HEAD
     ("sceneDate", ["AdditionalAttributes", ("Name", "ACQUISITION_DATE"), "Values", 0]),
     ("nearStartLat", ["AdditionalAttributes", ("Name", "NEAR_START_LAT"), "Values", 0]),
     ("nearStartLon", ["AdditionalAttributes", ("Name", "NEAR_START_LON"), "Values", 0]),
@@ -34,23 +33,6 @@ extra_csv_fields = [
         "offNadirAngle",
         ["AdditionalAttributes", ("Name", "OFF_NADIR_ANGLE"), "Values", 0],
     ),
-=======
-    ('sceneDate', ['AdditionalAttributes', ('Name', 'ACQUISITION_DATE'), 'Values', 0]),
-    ('nearStartLat', ['AdditionalAttributes', ('Name', 'NEAR_START_LAT'), 'Values', 0]),
-    ('nearStartLon', ['AdditionalAttributes', ('Name', 'NEAR_START_LON'), 'Values', 0]),
-    ('farStartLat', ['AdditionalAttributes', ('Name', 'FAR_START_LAT'), 'Values', 0]),
-    ('farStartLon', ['AdditionalAttributes', ('Name', 'FAR_START_LON'), 'Values', 0]),
-    ('nearEndLat', ['AdditionalAttributes', ('Name', 'NEAR_END_LAT'), 'Values', 0]),
-    ('nearEndLon', ['AdditionalAttributes', ('Name', 'NEAR_END_LON'), 'Values', 0]),
-    ('farEndLat', ['AdditionalAttributes', ('Name', 'FAR_END_LAT'), 'Values', 0]),
-    ('farEndLon', ['AdditionalAttributes', ('Name', 'FAR_END_LON'), 'Values', 0]),
-    ('faradayRotation', ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0]),
-    ('configurationName', ['AdditionalAttributes', ('Name', 'BEAM_MODE_DESC'), 'Values', 0]),
-    ('doppler', ['AdditionalAttributes', ('Name', 'DOPPLER'), 'Values', 0]),
-    ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
-    ('insarStackSize', ['AdditionalAttributes', ('Name', 'INSAR_STACK_SIZE'), 'Values', 0]),
-    ('offNadirAngle', ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0]),
->>>>>>> master
 ]
 
 fieldnames = (

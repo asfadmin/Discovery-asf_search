@@ -59,10 +59,10 @@ def stack_from_product(
     stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
     stack.searchComplete = is_complete  # preserve final outcome of earlier search()
 
-    stack.sort(key=lambda product: product.properties["temporalBaseline"])
+    stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     for warning in warnings:
-        ASF_LOGGER.warning(f"{warning}")
+        ASF_LOGGER.warning(f'{warning}')
 
     return stack
 
@@ -99,7 +99,7 @@ def stack_from_id(
     reference_results.raise_if_incomplete()
 
     if len(reference_results) <= 0:
-        raise ASFSearchError(f"Reference product not found: {reference_id}")
+        raise ASFSearchError(f'Reference product not found: {reference_id}')
     reference = reference_results[0]
 
     if useSubclass is not None:
@@ -108,9 +108,7 @@ def stack_from_id(
     return reference.stack(opts=opts, useSubclass=useSubclass)
 
 
-def _cast_results_to_subclass(
-    stack: ASFSearchResults, ASFProductSubclass: Type[ASFProduct]
-):
+def _cast_results_to_subclass(stack: ASFSearchResults, ASFProductSubclass: Type[ASFProduct]):
     """
     Converts results from default ASFProduct subclasses to custom ones
     """
@@ -142,11 +140,9 @@ def _cast_to_subclass(product: ASFProduct, subclass: Type[ASFProduct]) -> ASFPro
     try:
         if isinstance(subclass, type(ASFProduct)):
             return subclass(
-                args={"umm": product.umm, "meta": product.meta}, session=product.session
+                args={'umm': product.umm, 'meta': product.meta}, session=product.session
             )
     except Exception as e:
-        raise ValueError(
-            f"Unable to use provided subclass {type(subclass)}, \nError Message: {e}"
-        )
+        raise ValueError(f'Unable to use provided subclass {type(subclass)}, \nError Message: {e}')
 
-    raise ValueError(f"Expected ASFProduct subclass constructor, got {type(subclass)}")
+    raise ValueError(f'Expected ASFProduct subclass constructor, got {type(subclass)}')

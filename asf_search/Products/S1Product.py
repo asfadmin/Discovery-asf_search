@@ -17,7 +17,10 @@ class S1Product(ASFStackableProduct):
 
     _base_properties = {
         **ASFStackableProduct._base_properties,
-        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
+        'frameNumber': {
+            'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0],
+            'cast': try_parse_int,
+        },  # Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
@@ -40,10 +43,7 @@ class S1Product(ASFStackableProduct):
     def has_baseline(self) -> bool:
         baseline = self.get_baseline_calc_properties()
 
-        return (
-            baseline is not None
-            and None not in baseline["stateVectors"]["positions"].values()
-        )
+        return baseline is not None and None not in baseline['stateVectors']['positions'].values()
 
     def get_baseline_calc_properties(self) -> Dict:
         """
@@ -51,14 +51,12 @@ class S1Product(ASFStackableProduct):
         """
         ascendingNodeTime = self.umm_cast(
             self._parse_timestamp,
-            self.umm_get(
-                self.umm, "AdditionalAttributes", ("Name", "ASC_NODE_TIME"), "Values", 0
-            ),
+            self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0),
         )
 
         return {
-            "stateVectors": self.get_state_vectors(),
-            "ascendingNodeTime": ascendingNodeTime,
+            'stateVectors': self.get_state_vectors(),
+            'ascendingNodeTime': ascendingNodeTime,
         }
 
     def get_state_vectors(self) -> Dict:
@@ -70,32 +68,32 @@ class S1Product(ASFStackableProduct):
         velocities = {}
 
         sv_pre_position = self.umm_get(
-            self.umm, "AdditionalAttributes", ("Name", "SV_POSITION_PRE"), "Values", 0
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0
         )
         sv_post_position = self.umm_get(
-            self.umm, "AdditionalAttributes", ("Name", "SV_POSITION_POST"), "Values", 0
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0
         )
         sv_pre_velocity = self.umm_get(
-            self.umm, "AdditionalAttributes", ("Name", "SV_VELOCITY_PRE"), "Values", 0
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0
         )
         sv_post_velocity = self.umm_get(
-            self.umm, "AdditionalAttributes", ("Name", "SV_VELOCITY_POST"), "Values", 0
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0
         )
 
-        positions["prePosition"], positions["prePositionTime"] = self.umm_cast(
+        positions['prePosition'], positions['prePositionTime'] = self.umm_cast(
             self._parse_state_vector, sv_pre_position
         )
-        positions["postPosition"], positions["postPositionTime"] = self.umm_cast(
+        positions['postPosition'], positions['postPositionTime'] = self.umm_cast(
             self._parse_state_vector, sv_post_position
         )
-        velocities["preVelocity"], velocities["preVelocityTime"] = self.umm_cast(
+        velocities['preVelocity'], velocities['preVelocityTime'] = self.umm_cast(
             self._parse_state_vector, sv_pre_velocity
         )
-        velocities["postVelocity"], velocities["postVelocityTime"] = self.umm_cast(
+        velocities['postVelocity'], velocities['postVelocityTime'] = self.umm_cast(
             self._parse_state_vector, sv_post_velocity
         )
 
-        return {"positions": positions, "velocities": velocities}
+        return {'positions': positions, 'velocities': velocities}
 
     def _parse_timestamp(self, timestamp: str) -> Optional[str]:
         if timestamp is None:
@@ -103,14 +101,12 @@ class S1Product(ASFStackableProduct):
 
         return try_parse_date(timestamp)
 
-    def _parse_state_vector(
-        self, state_vector: str
-    ) -> Tuple[Optional[List], Optional[str]]:
+    def _parse_state_vector(self, state_vector: str) -> Tuple[Optional[List], Optional[str]]:
         if state_vector is None:
             return None, None
 
-        velocity = [float(val) for val in state_vector.split(",")[:3]]
-        timestamp = self._parse_timestamp(state_vector.split(",")[-1])
+        velocity = [float(val) for val in state_vector.split(',')[:3]]
+        timestamp = self._parse_timestamp(state_vector.split(',')[-1])
 
         return velocity, timestamp
 
@@ -125,25 +121,25 @@ class S1Product(ASFStackableProduct):
         stack_opts = ASFSearchOptions() if opts is None else copy(opts)
 
         stack_opts.processingLevel = self.get_default_baseline_product_type()
-        stack_opts.beamMode = [self.properties["beamModeType"]]
-        stack_opts.flightDirection = self.properties["flightDirection"]
-        stack_opts.relativeOrbit = [int(self.properties["pathNumber"])]  # path
+        stack_opts.beamMode = [self.properties['beamModeType']]
+        stack_opts.flightDirection = self.properties['flightDirection']
+        stack_opts.relativeOrbit = [int(self.properties['pathNumber'])]  # path
         stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
 
-        if self.properties["polarization"] in ["HH", "HH+HV"]:
-            stack_opts.polarization = ["HH", "HH+HV"]
+        if self.properties['polarization'] in ['HH', 'HH+HV']:
+            stack_opts.polarization = ['HH', 'HH+HV']
         else:
-            stack_opts.polarization = ["VV", "VV+VH"]
+            stack_opts.polarization = ['VV', 'VV+VH']
 
         stack_opts.intersectsWith = self.centroid().wkt
 
         return stack_opts
 
     def is_valid_reference(self) -> bool:
-        keys = ["postPosition", "postPositionTime", "prePosition", "postPositionTime"]
+        keys = ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']
 
         for key in keys:
-            if self.baseline["stateVectors"]["positions"].get(key) is None:
+            if self.baseline['stateVectors']['positions'].get(key) is None:
                 return False
 
         return True

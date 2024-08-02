@@ -23,23 +23,13 @@ extra_jsonlite_fields = [
     ("missionName", ["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0]),
 ]
 
-<<<<<<< HEAD
-
-def results_to_jsonlite(results):
-    ASF_LOGGER.info("started translating results to jsonlite format")
-
-    if not inspect.isgeneratorfunction(results) and not isinstance(
-        results, GeneratorType
-    ):
-=======
 def results_to_jsonlite(results):
     ASF_LOGGER.info('started translating results to jsonlite format')
     if len(results) == 0:
         yield from json.JSONEncoder(indent=2, sort_keys=True).iterencode({'results': []})
         return
-    
+
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
->>>>>>> master
         results = [results]
 
     streamer = JSONLiteStreamArray(results)
@@ -173,11 +163,7 @@ class JSONLiteStreamArray(list):
             pass
 
         try:
-<<<<<<< HEAD
-            p["frameNumber"] = int(p["frameNumber"])
-=======
             p['frameNumber'] = int(p.get('frameNumber'))
->>>>>>> master
         except TypeError:
             pass
 
@@ -228,16 +214,9 @@ class JSONLiteStreamArray(list):
             if result[key] in ["NA", "NULL"]:
                 result[key] = None
 
-<<<<<<< HEAD
         if "temporalBaseline" in p.keys() or "perpendicularBaseline" in p.keys():
             result["temporalBaseline"] = p["temporalBaseline"]
             result["perpendicularBaseline"] = p["perpendicularBaseline"]
-=======
-        if 'temporalBaseline' in p.keys():
-            result['temporalBaseline'] = p['temporalBaseline']
-        if 'perpendicularBaseline' in p.keys():
-            result['perpendicularBaseline'] = p['perpendicularBaseline']
->>>>>>> master
 
         if p.get("processingLevel") == "BURST":  # is a burst product
             result["burst"] = p["burst"]

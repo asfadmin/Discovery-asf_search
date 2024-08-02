@@ -1,9 +1,4 @@
-name: Lint
-
-on: 
-    pull_request:
-        types: [opened, edited, reopened]
-    push:
+on: push
 
 jobs:
   lint:
@@ -11,8 +6,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: TrueBrain/actions-flake8@v2
+      - uses: chartboost/ruff-action@v1
         with:
-          flake8_version: 6.0.0
-          path: asf_search
-          max_line_length: 100
+            src: asf_search

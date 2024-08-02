@@ -5,5 +5,5 @@ config = {
     'host': INTERNAL.CMR_HOST,
     'provider': INTERNAL.DEFAULT_PROVIDER,
     'session': ASFSession(),
-    'collectionAlias': True
+    'collectionAlias': True,
 }
