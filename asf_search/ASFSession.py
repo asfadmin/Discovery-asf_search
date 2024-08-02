@@ -6,7 +6,7 @@ import http.cookiejar
 
 from asf_search import ASF_LOGGER, __name__ as asf_name, __version__ as asf_version
 from asf_search.exceptions import ASFAuthenticationError
-from warnings import warn
+
 
 
 class ASFSession(requests.Session):
@@ -88,10 +88,10 @@ class ASFSession(requests.Session):
         self.cmr_host = INTERNAL.CMR_HOST
 
         if cmr_host is not None:
-            warn(
+            ASF_LOGGER.warning(
                 'Use of `cmr_host` keyword with `ASFSession` is deprecated '
                 'for asf-search versions >= 7.0.9, '
-                'and will be removed with the next major version.'
+                'and may be removed in a future major release.'
                 '\nTo authenticate an EDL token for a non-prod deployment of CMR, '
                 'set the `edl_host` keyword instead. '
                 '\n(ex: session arugments for authenticating against uat: '
@@ -190,7 +190,7 @@ class ASFSession(requests.Session):
         Checks `cmr_host` search endpoint directly with provided token
         using method used in previous versions of asf-search (<7.0.9).
 
-        This is to prevent breaking changes until next major release
+        This may be removed in a future release
         """
         from asf_search.constants import INTERNAL
 

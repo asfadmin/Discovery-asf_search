@@ -1,4 +1,4 @@
-from asf_search import ASFProduct, ASFSearchResults, ASFSession
+from asf_search import ASFSearchResults, ASFSession
 from asf_search.ASFSearchOptions.ASFSearchOptions import ASFSearchOptions
 
 import os

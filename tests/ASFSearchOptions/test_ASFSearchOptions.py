@@ -25,7 +25,7 @@ def run_test_validator_map_validate(key, value, output):
 def run_test_ASFSearchOptions_validator(validator_name, param, output, error):
     validator = getattr(validators, validator_name)
 
-    if error == None:
+    if error is None:
         assert output == validator(param)
     else:
         with raises(ValueError) as e:
@@ -54,7 +54,7 @@ def run_test_ASFSearchOptions(**kwargs):
         return
     else:
         assert (
-            exception == None
+            exception is None
         ), f'ERROR: Expected exception {exception}, but SearchOptions never threw.'
 
     for key, val in expect_output.items():

@@ -50,7 +50,7 @@ def run_test_download_url(url, path, filename):
                 mock_get_burst.return_value = resp_2
                 resp_2.iter_content = lambda chunk_size: []
 
-                with patch('builtins.open', unittest.mock.mock_open()) as m:
+                with patch('builtins.open', unittest.mock.mock_open()):
                     download_url(url, path, filename)
     else:
         with patch('asf_search.ASFSession.get') as mock_get:
@@ -59,5 +59,5 @@ def run_test_download_url(url, path, filename):
             mock_get.return_value = resp
             resp.iter_content = lambda chunk_size: []
 
-            with patch('builtins.open', unittest.mock.mock_open()) as m:
+            with patch('builtins.open', unittest.mock.mock_open()):
                 download_url(url, path, filename)

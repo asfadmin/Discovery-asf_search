@@ -4,7 +4,7 @@ from asf_search import ASFSession
 # from asf_search.CMR.translate import get
 
 from tenacity import retry, retry_if_exception_type, stop_after_attempt
-from asf_search import ASF_LOGGER, ASFSearchOptions
+from asf_search import ASF_LOGGER
 from asf_search.CMR.subquery import build_subqueries
 from asf_search.CMR.translate import try_parse_date
 from asf_search.constants import INTERNAL
@@ -73,10 +73,10 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
                 status_code=status_code,
                 json={'errors': {'report': report}},
             )
-            m.register_uri('POST', f'https://search-error-report.asf.alaska.edu/', real_http=True)
+            m.register_uri('POST', 'https://search-error-report.asf.alaska.edu/', real_http=True)
             searchOptions = ASFSearchOptions(**search_parameters)
             with raises(ASFSearchError):
-                results = search(opts=searchOptions)
+                search(opts=searchOptions)
             return
 
     # If we're not doing an empty search we want to fire off one real query to CMR, then interrupt it with an error
@@ -101,13 +101,13 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
             status_code=status_code,
             json={'errors': {'report': report}},
         )
-        m.register_uri('POST', f'https://search-error-report.asf.alaska.edu/', real_http=True)
+        m.register_uri('POST', 'https://search-error-report.asf.alaska.edu/', real_http=True)
 
         search_parameters['maxResults'] = INTERNAL.CMR_PAGE_SIZE + 1
         searchOptions = ASFSearchOptions(**search_parameters)
 
         with raises(ASFSearchError):
-            results = search(opts=searchOptions)
+            search(opts=searchOptions)
 
 
 def run_test_dataset_search(datasets: List):
@@ -170,7 +170,7 @@ def run_test_keyword_aliasing_results(params: ASFSearchOptions):
 
     try:
         api_response = query_endpoint(dict(params))
-    except requests.ReadTimeout as exc:
+    except requests.ReadTimeout:
         ASF_LOGGER.warn(f'SearchAPI timed out, skipping test for params {str(params)}')
         return
 

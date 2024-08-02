@@ -11,7 +11,7 @@ def test_getMissions_error():
     with requests_mock.Mocker() as m:
         m.register_uri(
             'POST',
-            f'https://' + CMR_HOST + CMR_COLLECTIONS_PATH,
+            'https://' + CMR_HOST + CMR_COLLECTIONS_PATH,
             status_code=300,
             json={'error': {'report': ''}},
         )
@@ -22,7 +22,7 @@ def test_getMissions_error():
 
 def test_getMissions_error_parsing():
     with requests_mock.Mocker() as m:
-        m.post(f'https://' + CMR_HOST + CMR_COLLECTIONS_PATH)
+        m.post('https://' + CMR_HOST + CMR_COLLECTIONS_PATH)
 
         with pytest.raises(CMRError):
             get_campaigns({})

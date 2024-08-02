@@ -13,7 +13,7 @@ def run_test_find_new_reference(stack: List, output_index: Number) -> None:
     """
 
     if stack == []:
-        assert find_new_reference(stack) == None
+        assert find_new_reference(stack) is None
     else:
         products = [as_ASFProduct(product, ASFSession()) for product in stack]
         for idx, product in enumerate(products):
@@ -32,7 +32,7 @@ def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
     reference = as_ASFProduct(reference, ASFSession())
     stack = ASFSearchResults([as_ASFProduct(product, ASFSession()) for product in stack])
 
-    if error == None:
+    if error is None:
         stack, warnings = get_baseline_from_stack(reference, stack)
 
         keys = ['sceneName', 'perpendicularBaseline', 'temporalBaseline']
@@ -55,7 +55,7 @@ def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
 
 
 def run_test_valid_state_vectors(reference, output):
-    if reference != None:
+    if reference is not None:
         product = as_ASFProduct(reference, ASFSession())
         clear_baseline(reference, product)
         assert output == product.is_valid_reference()

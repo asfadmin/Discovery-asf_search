@@ -1,9 +1,11 @@
-from asf_search.search.search_generator import *
+
 from asf_search import ASFSearchOptions, ASFSearchResults
 from asf_search import INTERNAL
 from typing import List
 
 import math
+
+from asf_search.search import search_generator, preprocess_opts
 
 
 def run_test_search_generator_multi(search_opts: List[ASFSearchOptions]):
@@ -29,7 +31,7 @@ def run_test_search_generator_multi(search_opts: List[ASFSearchOptions]):
         queries_iter = iter(queries)
         for idx, query in enumerate(queries_iter):  # Alternate pages between results
             page = next(query, None)
-            if page != None:
+            if page is not None:
                 combined_results.extend(page)
                 page_count += 1
                 if page.searchComplete:
@@ -41,7 +43,7 @@ def run_test_search_generator_multi(search_opts: List[ASFSearchOptions]):
             else:
                 queries[idx] = None
 
-        queries = [query for query in queries if query != None]
+        queries = [query for query in queries if query is not None]
 
     assert page_count == expected_page_count
     assert len(combined_results) == expected_results_size
@@ -64,7 +66,7 @@ def run_test_search_generator(search_opts: ASFSearchOptions):
 
     assert page_count <= page_idx
     assert len(results) <= search_opts.maxResults
-    assert results.searchComplete == True
+    assert results.searchComplete
 
     preprocess_opts(search_opts)
 

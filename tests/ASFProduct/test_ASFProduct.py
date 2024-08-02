@@ -1,4 +1,3 @@
-import logging
 import pytest
 import unittest
 
@@ -58,8 +57,8 @@ def run_test_stack(reference, pre_processed_stack, processed_stack):
         stack = [
             product
             for product in stack
-            if product.properties['temporalBaseline'] != None
-            and product.properties['perpendicularBaseline'] != None
+            if product.properties['temporalBaseline'] is not None
+            and product.properties['perpendicularBaseline'] is not None
         ]
 
         for idx, secondary in enumerate(stack):
@@ -96,8 +95,8 @@ def run_test_ASFProduct_download(reference, filename, filetype, additional_urls)
         mock_get.return_value = resp
         resp.iter_content = lambda chunk_size: []
 
-        with patch('builtins.open', unittest.mock.mock_open()) as m:
-            if filename != None and (
+        with patch('builtins.open', unittest.mock.mock_open()):
+            if filename is not None and (
                 (filetype == FileDownloadType.ADDITIONAL_FILES and len(additional_urls) > 1)
                 or (filetype == FileDownloadType.ALL_FILES and len(additional_urls) > 0)
             ):
