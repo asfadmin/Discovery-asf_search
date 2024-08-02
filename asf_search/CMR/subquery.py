@@ -1,10 +1,10 @@
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 import itertools
 from copy import copy
 
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import CMR_PAGE_SIZE
-
+from asf_search.CMR.field_map import field_map
 from asf_search.CMR.datasets import collections_by_processing_level, collections_per_platform, dataset_collections, get_concept_id_alias, get_dataset_concept_ids
 from numpy import intersect1d, union1d
 
@@ -22,7 +22,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         if params.get(chunked_key) is not None:
             params[chunked_key] = chunk_list(params[chunked_key], CMR_PAGE_SIZE)
 
-    list_param_names = ['platform', 'season', 'collections', 'dataset', 'cmr_keywords', 'shortName']  # these parameters will dodge the subquery system
+    list_param_names = ['platform', 'season', 'collections', 'cmr_keywords', 'shortName', 'circle', 'linestring', 'point', 'dataset']  # these parameters will dodge the subquery system
     skip_param_names = ['maxResults']# these params exist in opts, but shouldn't be passed on to subqueries at ALL
     
     collections, aliased_keywords = get_keyword_concept_ids(params, opts.collectionAlias)

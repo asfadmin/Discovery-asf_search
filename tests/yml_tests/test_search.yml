@@ -1,6 +1,8 @@
 sentinel-1_collections: &sentinel-1_collections
   - "C2803501758-ASF"
   - "C2803501097-ASF"
+  - "C1261881077-ASF"
+  - "C2859376221-ASF"
   - "C1214470488-ASF" # S1A
   - "C1214470533-ASF"
   - "C1214470576-ASF"
@@ -355,6 +357,8 @@ tests:
         collections: [
             "C1214353986-ASF",
             "C1214336045-ASF",
+            "C1261881077-ASF",
+            "C2859376221-ASF",
             "C1214336717-ASF",
             "C1214335430-ASF",
             "C1214335471-ASF",
@@ -633,6 +637,12 @@ tests:
         processingLevel: CSLC
         start: '2023-12-01T00:00:00Z'
         end: '2023-12-31T00:00:00Z'
+
+  - test-ASFSearch-search-error 400-Error circle radius too small:
+      parameters:
+          circle: [0, 0, 2]
+      status_code: 400
+      report: "Circle radius must be between 10 and 6000000, but was 2.0"
 
   - test-aliasing-search-against-api RTC-STATIC:
       params:

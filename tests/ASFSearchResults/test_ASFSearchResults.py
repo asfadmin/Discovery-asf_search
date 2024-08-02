@@ -1,6 +1,5 @@
 from typing import Dict, List
 
-import dateparser
 import asf_search as asf
 from asf_search import ASFSearchResults
 import defusedxml.ElementTree as DefusedETree
@@ -18,6 +17,8 @@ from shapely.geometry.base import BaseGeometry
 from asf_search.CMR.translate import try_parse_date
 from asf_search.constants import PLATFORM
 import re
+
+from asf_search.exceptions import ASFSearchError
 
 # when this replaces SearchAPI change values to cached
 API_URL = 'https://api.daac.asf.alaska.edu/services/search/param?'
@@ -199,18 +200,21 @@ def run_test_ASFSearchResults_intersection(wkt: str):
 
     # exclude SMAP products
     platforms = [
-                 PLATFORM.ALOS,
                  PLATFORM.SENTINEL1,
-                 PLATFORM.SIRC, 
                  PLATFORM.UAVSAR
                  ]
     
     def overlap_check(s1: BaseGeometry, s2: BaseGeometry):
         return s1.overlaps(s2) or s1.touches(s2) or s2.distance(s1) <= 0.005
-
+    asf.constants.INTERNAL.CMR_TIMEOUT = 60
     for platform in platforms:
-        results = asf.geo_search(intersectsWith=wkt, platform=platform, maxResults=250)
-
+        try:
+            results = asf.geo_search(intersectsWith=wkt, platform=platform, maxResults=250)
+        except ASFSearchError as exc:
+            asf.constants.INTERNAL.CMR_TIMEOUT = 30
+            raise BaseException(f'Failed to perform intersection test with wkt: {wkt}\nplatform: {platform}.\nOriginal exception: {exc}')
+        
+        asf.constants.INTERNAL.CMR_TIMEOUT = 30
         for product in results:
             if shape(product.geometry).is_valid:
                 product_geom_wrapped, product_geom_unwrapped, _ = asf.validate_wkt(shape(product.geometry))

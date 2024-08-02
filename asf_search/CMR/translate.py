@@ -9,8 +9,12 @@ from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
 from .datasets import collections_per_platform
-import dateparser
 import logging
+
+try:
+    from ciso8601 import parse_datetime
+except ImportError:
+    from dateutil.parser import parse as parse_datetime
 
 
 def translate_opts(opts: ASFSearchOptions) -> List:
@@ -22,7 +26,9 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
     for escape_commas in ["campaign"]:
         if escape_commas in dict_opts:
-            dict_opts[escape_commas] = dict_opts[escape_commas].replace(",", "\,")
+            dict_opts[escape_commas] = dict_opts[escape_commas].replace(",", "\\,")
+
+    dict_opts = fix_cmr_shapes(dict_opts)
 
     # Special case to unravel WKT field a little for compatibility
     if "intersectsWith" in dict_opts:
@@ -45,10 +51,13 @@ def translate_opts(opts: ASFSearchOptions) -> List:
             (shapeType, shape) = wkt_to_cmr_shape(shape).split(':')
             dict_opts[shapeType] = shape
 
+    
     # If you need to use the temporal key:
     if any(key in dict_opts for key in ['start', 'end', 'season']):
         dict_opts = fix_date(dict_opts)
     
+    dict_opts = fix_range_params(dict_opts)
+
     # convert the above parameters to a list of key/value tuples
     cmr_opts = []
 
@@ -92,6 +101,14 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     cmr_opts.extend(additional_keys)
 
     return cmr_opts
+
+def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
+    """Fixes raw CMR lon lat coord shapes"""
+    for param in ['point', 'linestring', 'circle']:
+        if param in fixed_params:
+            fixed_params[param] = ','.join(map(str, fixed_params[param]))
+
+    return fixed_params
 
 def should_use_asf_frame(cmr_opts):
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'ALOS']
@@ -157,8 +174,11 @@ def try_parse_date(value: str) -> Optional[str]:
     if value is None:
         return None
 
-    date = dateparser.parse(value)
-
+    try:
+        date = parse_datetime(value)
+    except ValueError:
+        return None
+    
     if date is None:
         return value
 
@@ -168,7 +188,7 @@ def try_parse_date(value: str) -> Optional[str]:
 
     return date.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-def fix_date(fixed_params: Dict[str, Any]):
+def fix_date(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
     if 'start' in fixed_params or 'end' in fixed_params or 'season' in fixed_params:
         fixed_params["start"] = fixed_params["start"] if "start" in fixed_params else "1978-01-01T00:00:00Z"
         fixed_params["end"] = fixed_params["end"] if "end" in fixed_params else datetime.utcnow().isoformat()
@@ -183,6 +203,13 @@ def fix_date(fixed_params: Dict[str, Any]):
         
     return fixed_params
 
+def fix_range_params(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
+    """Converts ranges to comma separated strings"""
+    for param in ['offNadirAngle', 'relativeOrbit', 'absoluteOrbit', 'frame', 'asfFrame']:
+        if param in fixed_params.keys() and isinstance(fixed_params[param], list):
+            fixed_params[param] = ','.join([str(val) for val in fixed_params[param]])
+    
+    return fixed_params
 
 def should_use_bbox(shape: BaseGeometry):
     """

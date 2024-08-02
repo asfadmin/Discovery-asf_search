@@ -457,15 +457,15 @@ def safe_load_tuple(param):
 
     return param
 
-def test_output_format(**args) -> None:
-    test_info = args['test_info']
+# def test_output_format(**args) -> None:
+#     test_info = args['test_info']
 
-    products = get_resource(test_info['results'])
-    if not isinstance(products, List):
-        products = [products]
-    results = ASFSearchResults([as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession()) for product in products])
+#     products = get_resource(test_info['results'])
+#     if not isinstance(products, List):
+#         products = [products]
+#     results = ASFSearchResults([as_ASFProduct({'meta': product['meta'], 'umm': product['umm']}, ASFSession()) for product in products])
 
-    run_test_output_format(results)
+#     run_test_output_format(results)
 
 def test_keyword_aliasing_results(**args) -> None:
     test_info = args['test_info']

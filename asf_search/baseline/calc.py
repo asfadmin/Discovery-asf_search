@@ -1,10 +1,14 @@
+from asf_search import ASFProduct
 from math import sqrt, cos, sin, radians
 from typing import List
 
 import numpy as np
-from dateutil.parser import parse
 
-from asf_search import ASFProduct
+try:
+    from ciso8601 import parse_datetime
+except ImportError:
+    from dateutil.parser import parse as parse_datetime
+
 # WGS84 constants
 a = 6378137
 f = pow((1.0 - 1 / 298.257224), 2)
@@ -23,17 +27,17 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
             baselineProperties['noStateVectors'] = True
             continue
 
-        asc_node_time = parse(baselineProperties['ascendingNodeTime']).timestamp()
+        asc_node_time = parse_datetime(baselineProperties['ascendingNodeTime']).timestamp()
 
-        start = parse(product.properties['startTime']).timestamp()
-        end = parse(product.properties['stopTime']).timestamp()
+        start = parse_datetime(product.properties['startTime']).timestamp()
+        end = parse_datetime(product.properties['stopTime']).timestamp()
         center = start + ((end - start) / 2)
         baselineProperties['relative_start_time'] = start - asc_node_time
         baselineProperties['relative_center_time'] = center - asc_node_time
         baselineProperties['relative_end_time'] = end - asc_node_time
 
-        t_pre = parse(positionProperties['prePositionTime']).timestamp()
-        t_post = parse(positionProperties['postPositionTime']).timestamp()
+        t_pre = parse_datetime(positionProperties['prePositionTime']).timestamp()
+        t_post = parse_datetime(positionProperties['postPositionTime']).timestamp()
         product.baseline['relative_sv_pre_time'] = t_pre - asc_node_time
         product.baseline['relative_sv_post_time'] = t_post - asc_node_time
 

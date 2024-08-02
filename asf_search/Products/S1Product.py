@@ -16,6 +16,7 @@ class S1Product(ASFStackableProduct):
     """
 
     _base_properties = {
+        **ASFStackableProduct._base_properties,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
@@ -33,10 +34,10 @@ class S1Product(ASFStackableProduct):
 
         self.properties['s3Urls'] = self._get_s3_urls()
         
-        if self._has_baseline():
+        if self.has_baseline():
             self.baseline = self.get_baseline_calc_properties()
 
-    def _has_baseline(self) -> bool:
+    def has_baseline(self) -> bool:
         baseline = self.get_baseline_calc_properties()
 
         return (
@@ -119,13 +120,6 @@ class S1Product(ASFStackableProduct):
         stack_opts.intersectsWith = self.centroid().wkt
 
         return stack_opts
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFStackableProduct.get_property_paths(),
-            **S1Product._base_properties
-        }
 
     def is_valid_reference(self) -> bool:
         keys = ['postPosition', 'postPositionTime', 'prePosition', 'postPositionTime']

@@ -26,6 +26,57 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v7.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.2.0)
+### Added
+- Added `asf.ASFSearchOptions(circle=[lat, long, radius])` search param. Takes list of exactly 3 numbers.
+- Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.
+- Exposed `ASFProduct.get_urls` which returns the URL's for it's products directly. Can control which products with the `fileType` enum.
+
+## [v7.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.3...v7.1.4)
+### Changed
+- replaces `ciso8601` package with `dateutil` for package wheel compatibility. `ciso8601` used when installed via `extra` dependency
+### Fixed
+- Fixes syntax warning with escaped slash in `translate.py`
+
+------
+## [v7.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.2...v7.1.3)
+### Fixed
+- Adds missing values for polarization constants `DUAL_HH`, `DUAL_VV`, `DUAL_HV`, `DUAL_VH`, `HH_3SCAN`, `HH_4SCAN`, `HH_5SCAN`
+- processingLevel `RAW` now includes `C1234413256-ASFDEV` in collection alias list (`SENTINEL-1B_RAW`'s collection for ASFDEV provider)
+
+------
+## [v7.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.1...v7.1.2)
+### Fixed
+- `OPERAS1Product` subclass now properly assigned to PGE v2.0.1 results
+### Changed
+- `ARIAS1GUNWProduct.is_ARIAS1GUNWProduct()` removed, replaced with `ASFProduct._is_subclass()` implementation
+
+------
+## [v7.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.1.1)
+### Changed
+- Uses `ciso8601.parse_datetime()` in baseline calculations, speeds up calculations on larger stacks
+### Added
+- Adds `ASF_LOGGER` logging in `search_generator()` and related methods
+### Fixed
+- `ASFProduct.get_sort_keys()` will no longer returns `None` if missing sort key, defaults to empty string 
+
+------
+## [v7.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.9...v7.1.0)
+### Added
+- Improved logging in `ASFSession` authentication methods
+### Changed
+- Uses `ciso8601` module for parsing dates from CMR response, significant performance improvement post-query
+- `ASFSession` now allows for authorized user access to hidden/restricted CMR datasets via `auth_with_creds()` or `auth_with_cookiejar()` authentication methods (previously only supported via `auth_with_token()` method)
+- `ASFSession.auth_with_token()` now authenticates directly against EDL endpoint
+- UMM Platform ShortName used as final fallback criteria for product subclass assignment
+
+------
+## [v7.0.9](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.8...v7.0.9)
+### Changed
+- collection "ARIA_S1_GUNW" added to `ARIA_S1_GUNW` dataset, V3 products now loaded as `ARIAS1GUNWProduct` subclass
+- `ARIAS1GUNWProduct` now exposes `ariaVersion` and (for V3 products) `inputGranules` in `ARIAS1GUNWProduct.properties`
+
+------
 ## [v7.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v7.0.7...v7.0.8)
 ### Added
 - `s3Urls` property added to `S1Product`, `OPERAS1Product`, and `NISARProduct` types, exposing direct access S3 links

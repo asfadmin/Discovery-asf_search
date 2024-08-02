@@ -17,17 +17,17 @@ def run_test_download_url_auth_error(url, path, filename):
             with pytest.raises(ASFDownloadError):
                 download_url(url, path, filename)
 
-        with patch('asf_search.download.os.path.isdir') as path_mock:
+        with patch('os.path.isdir') as path_mock:
             path_mock.return_value = True
 
             if url == "urlError":
-                with patch('asf_search.download.os.path.isfile') as isfile_mock:
+                with patch('os.path.isfile') as isfile_mock:
                     isfile_mock.return_value = False
 
                     with pytest.raises(ASFAuthenticationError):
                         download_url(url, path, filename)
 
-            with patch('asf_search.download.os.path.isfile') as isfile_mock:
+            with patch('os.path.isfile') as isfile_mock:
                 isfile_mock.return_value = True
         
                 with pytest.warns(Warning):

@@ -52,7 +52,7 @@ def stack_from_product(
     stack.sort(key=lambda product: product.properties['temporalBaseline'])
 
     for warning in warnings:
-        ASF_LOGGER.warn(f'{warning}')
+        ASF_LOGGER.warning(f'{warning}')
     
     return stack
 
@@ -71,9 +71,7 @@ def stack_from_id(
     
     :return: ASFSearchResults(list) of search results
     """
-
     opts = (ASFSearchOptions() if opts is None else copy(opts))
-
 
     reference_results = product_search(product_list=reference_id, opts=opts)
     
@@ -103,17 +101,10 @@ def _cast_to_subclass(product: ASFProduct, subclass: Type[ASFProduct]) -> ASFPro
     ```
     class MyCustomClass(ASFProduct):
         _base_properties = {
+        **ASFProduct._base_properties,
         'some_unique_property': {'path': ['AdditionalAttributes', 'UNIQUE_PROPERTY', ...]}
         }
         
-        ...
-        
-        @staticmethod
-        def get_property_paths() -> dict:
-        return {
-            **ASFProduct.get_property_paths(),
-            **MyCustomClass._base_properties
-        }
     
     # subclass as constructor
     customReference = reference.cast_to_subclass(MyCustomClass)

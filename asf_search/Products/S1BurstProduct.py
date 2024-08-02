@@ -18,6 +18,7 @@ class S1BurstProduct(S1Product):
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/data-sets/derived-data-sets/sentinel-1-bursts/
     """
     _base_properties = {
+        **S1Product._base_properties,
         'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0]},
         'absoluteBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0], 'cast': try_parse_int},
         'relativeBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_RELATIVE'), 'Values', 0], 'cast': try_parse_int},
@@ -65,14 +66,7 @@ class S1BurstProduct(S1Product):
         stack_opts.fullBurstID = self.properties['burst']['fullBurstID']
         stack_opts.polarization = [self.properties['polarization']]
         return stack_opts
-    
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **S1Product.get_property_paths(),
-            **S1BurstProduct._base_properties
-        }
-    
+
     def _get_additional_filenames_and_urls(self, default_filename: str = None):
         # Burst XML filenames are just numbers, this makes it more indentifiable
         if default_filename is None:
