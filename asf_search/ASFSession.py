@@ -7,7 +7,7 @@ import http.cookiejar
 
 from asf_search import ASF_LOGGER, __name__ as asf_name, __version__ as asf_version
 from asf_search.exceptions import ASFAuthenticationError
-from warnings import warn
+import warnings
 
 
 class ASFSession(requests.Session):
@@ -89,7 +89,7 @@ class ASFSession(requests.Session):
         self.cmr_host = INTERNAL.CMR_HOST
 
         if cmr_host is not None:
-            warn(
+            warnings.warn(
                 'Use of `cmr_host` keyword with `ASFSession` is deprecated '
                 'for asf-search versions >= 7.0.9, '
                 'and may be removed in a future major release.'
