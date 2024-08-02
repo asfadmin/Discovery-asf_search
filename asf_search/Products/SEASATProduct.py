@@ -7,7 +7,7 @@ class SEASATProduct(ASFProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/sar-data-sets/seasat/
     """
-   _base_properties = {
+    _base_properties = {
         **ASFProduct._properties_paths,
         'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},

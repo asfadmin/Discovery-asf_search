@@ -41,7 +41,7 @@ class ASFProduct:
     def get_classname(cls):
         return cls.__name__
 
-   _base_properties = {
+    _base_properties = {
             # min viable product
             'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
             'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': try_parse_float},
@@ -67,7 +67,7 @@ class ASFProduct:
             'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
     """
-   _base_properties dictionary, mapping readable property names to paths and optional type casting
+    _base_properties dictionary, mapping readable property names to paths and optional type casting
 
     entries are organized as such:
         - `PROPERTY_NAME`: The name the property should be called in `ASFProduct.properties`
@@ -169,7 +169,7 @@ class ASFProduct:
 
         :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
         :param ASFProductSubclass: An ASFProduct subclass constructor.
-    
+
         :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product

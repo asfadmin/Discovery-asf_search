@@ -7,7 +7,7 @@ class JERSProduct(ASFStackableProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/jers-1/
     """
-   _base_properties = {
+    _base_properties = {
         **ASFStackableProduct._properties_paths,
         'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},

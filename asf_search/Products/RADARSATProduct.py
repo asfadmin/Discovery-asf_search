@@ -8,7 +8,7 @@ class RADARSATProduct(ASFStackableProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/radarsat-1/
     """
-   _base_properties = {
+    _base_properties = {
         **ASFStackableProduct._properties_paths,
         'faradayRotation': {'path': ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
