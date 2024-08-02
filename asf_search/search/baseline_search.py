@@ -100,7 +100,7 @@ def _cast_to_subclass(product: ASFProduct, subclass: Type[ASFProduct]) -> ASFPro
     example:
     ```
     class MyCustomClass(ASFProduct):
-        _properties_paths = {
+       _base_properties = {
         **ASFProduct._properties_paths,
         'some_unique_property': {'path': ['AdditionalAttributes', 'UNIQUE_PROPERTY', ...]}
         }

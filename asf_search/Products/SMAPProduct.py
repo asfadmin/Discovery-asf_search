@@ -7,7 +7,7 @@ class SMAPProduct(ASFProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/sar-data-sets/soil-moisture-active-passive-smap-mission/
     """
-    _properties_paths = {
+   _base_properties = {
         **ASFProduct._properties_paths,
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},

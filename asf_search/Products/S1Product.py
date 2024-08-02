@@ -15,7 +15,7 @@ class S1Product(ASFStackableProduct):
     ASF Dataset Overview Page: https://asf.alaska.edu/datasets/daac/sentinel-1/
     """
 
-    _properties_paths = {
+   _base_properties = {
         **ASFStackableProduct._properties_paths,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},

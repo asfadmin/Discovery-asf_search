@@ -11,7 +11,7 @@ class ERSProduct(ASFStackableProduct):
     ASF ERS-1 Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/ers-1/
     ASF ERS-2 Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/ers-2/
     """
-    _properties_paths = {
+   _base_properties = {
         **ASFStackableProduct._properties_paths,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0]},
         'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},

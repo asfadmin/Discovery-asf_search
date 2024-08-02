@@ -10,7 +10,7 @@ class NISARProduct(ASFStackableProduct):
 
     ASF Dataset Documentation Page: https://asf.alaska.edu/nisar/
     """
-    _properties_paths = {
+   _base_properties = {
         **ASFStackableProduct._properties_paths,
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']}
     }

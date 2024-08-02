@@ -137,28 +137,6 @@ def format_query_params(params) -> List[List[dict]]:
 
 
 def translate_param(param_name, param_val) -> List[dict]:
-    # param_list = []
-
-    # cmr_input_map = field_map
-
-    # param_input_map = cmr_input_map[param_name]
-    # cmr_param = param_input_map['key']
-    # cmr_format_str = param_input_map['fmt']
-
-    # if not isinstance(param_val, list):
-    #     param_val = [param_val]
-
-    # for l in param_val:
-    #     format_val = l
-
-    #     if isinstance(l, list):
-    #         format_val = ','.join([f'{t}' for t in l])
-
-    #     param_list.append({
-    #         cmr_param: cmr_format_str.format(format_val)
-    #     })
-
-    # return param_list
     param_list = []
 
     if not isinstance(param_val, list):

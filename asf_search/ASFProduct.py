@@ -41,7 +41,7 @@ class ASFProduct:
     def get_classname(cls):
         return cls.__name__
 
-    _properties_paths = {
+   _base_properties = {
             # min viable product
             'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
             'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': try_parse_float},
@@ -67,7 +67,7 @@ class ASFProduct:
             'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
     }
     """
-    _properties_paths dictionary, mapping readable property names to paths and optional type casting
+   _base_properties dictionary, mapping readable property names to paths and optional type casting
 
     entries are organized as such:
         - `PROPERTY_NAME`: The name the property should be called in `ASFProduct.properties`
@@ -281,19 +281,6 @@ class ASFProduct:
             properties['platform'] = self.umm_get(umm, 'Platforms', 0, 'ShortName')
 
         return {'geometry': geometry, 'properties': properties, 'type': 'Feature'}
-
-    # ASFProduct subclasses define extra/override param key + UMM pathing here
-    @staticmethod
-    def get_property_paths() -> Dict:
-        """
-        Returns _base_properties of class, subclasses such as `S1Product` (or user provided subclasses) can override this to
-        define which properties they want in their subclass's properties dict.
-
-        (See `S1Product.get_property_paths()` for example of combining _base_properties of multiple classes)
-
-        :returns dictionary, {`PROPERTY_NAME`: {'path': [umm, path, to, value], 'cast (optional)': Callable_to_cast_value}, ...}
-        """
-        return ASFProduct._base_properties
 
     def get_sort_keys(self) -> Tuple[str, str]:
         """
