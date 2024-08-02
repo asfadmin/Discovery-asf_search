@@ -1,10 +1,17 @@
+from asf_search import ASFProduct
 from math import sqrt, cos, sin, radians
 from typing import List
 
 import numpy as np
-from ciso8601 import parse_datetime
 
+<<<<<<< HEAD
 from asf_search import ASFProduct
+=======
+try:
+    from ciso8601 import parse_datetime
+except ImportError:
+    from dateutil.parser import parse as parse_datetime
+>>>>>>> master
 
 # WGS84 constants
 a = 6378137

@@ -12,25 +12,13 @@ class ALOSProduct(ASFStackableProduct):
     """
 
     _base_properties = {
-        "frameNumber": {
-            "path": ["AdditionalAttributes", ("Name", "FRAME_NUMBER"), "Values", 0],
-            "cast": try_parse_int,
-        },
-        "faradayRotation": {
-            "path": ["AdditionalAttributes", ("Name", "FARADAY_ROTATION"), "Values", 0],
-            "cast": try_parse_float,
-        },
-        "offNadirAngle": {
-            "path": ["AdditionalAttributes", ("Name", "OFF_NADIR_ANGLE"), "Values", 0],
-            "cast": try_parse_float,
-        },
-        "bytes": {
-            "path": ["AdditionalAttributes", ("Name", "BYTES"), "Values", 0],
-            "cast": try_round_float,
-        },
-        "insarStackId": {
-            "path": ["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0]
-        },
+        **ASFStackableProduct._base_properties,
+        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
+        'faradayRotation': {'path': ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
+        'offNadirAngle': {'path': ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},
+        'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
+        'insarStackId': {'path': ['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
+        'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]},
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -45,10 +33,3 @@ class ALOSProduct(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L1_1
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFStackableProduct.get_property_paths(),
-            **ALOSProduct._base_properties,
-        }

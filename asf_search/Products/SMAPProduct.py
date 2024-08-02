@@ -9,6 +9,7 @@ class SMAPProduct(ASFProduct):
     """
 
     _base_properties = {
+<<<<<<< HEAD
         "groupID": {
             "path": ["AdditionalAttributes", ("Name", "GROUP_ID"), "Values", 0]
         },
@@ -16,11 +17,20 @@ class SMAPProduct(ASFProduct):
             "path": ["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0]
         },
         "md5sum": {"path": ["AdditionalAttributes", ("Name", "MD5SUM"), "Values", 0]},
+=======
+        **ASFProduct._base_properties,
+        'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
+        'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
+        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+>>>>>>> master
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
+<<<<<<< HEAD
 
     @staticmethod
     def get_property_paths() -> Dict:
         return {**ASFProduct.get_property_paths(), **SMAPProduct._base_properties}
+=======
+>>>>>>> master

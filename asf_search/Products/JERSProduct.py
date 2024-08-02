@@ -9,19 +9,12 @@ class JERSProduct(ASFStackableProduct):
     """
 
     _base_properties = {
-        "browse": {
-            "path": ["RelatedUrls", ("Type", [("GET RELATED VISUALIZATION", "URL")])]
-        },
-        "groupID": {
-            "path": ["AdditionalAttributes", ("Name", "GROUP_ID"), "Values", 0]
-        },
-        "md5sum": {"path": ["AdditionalAttributes", ("Name", "MD5SUM"), "Values", 0]},
-        "beamModeType": {
-            "path": ["AdditionalAttributes", ("Name", "BEAM_MODE_TYPE"), "Values", 0]
-        },
-        "insarStackId": {
-            "path": ["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0]
-        },
+        **ASFStackableProduct._base_properties,
+        'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
+        'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
+        'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+        'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]},
+        'insarStackId': {'path': ['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -33,10 +26,3 @@ class JERSProduct(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L0
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFStackableProduct.get_property_paths(),
-            **JERSProduct._base_properties,
-        }

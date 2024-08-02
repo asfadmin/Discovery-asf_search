@@ -1,9 +1,6 @@
 name: tests
 
-on:
-    pull_request:
-        types: [opened, edited, reopened]
-    push:
+on: [push]
 
 jobs:
   run-tests:

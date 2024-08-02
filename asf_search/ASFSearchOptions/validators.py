@@ -7,7 +7,7 @@ from typing import Dict, Union, Tuple, TypeVar, Callable, List, Type, Sequence
 import math
 from shapely import wkt, errors
 
-number = TypeVar('number', int, float)
+number = TypeVar("number", int, float)
 
 
 def parse_string(value: str) -> str:
@@ -24,7 +24,7 @@ def parse_string(value: str) -> str:
             f"Invalid string: Can't cast type '{type(value)}' to string."
         ) from exc
     if len(value) == 0:
-        raise ValueError('Invalid string: Empty.')
+        raise ValueError("Invalid string: Empty.")
     return value
 
 
@@ -38,7 +38,7 @@ def parse_float(value: float) -> float:
         value = float(value)
     except ValueError as exc:
         raise ValueError(f"Invalid float: {value}") from exc
-    if math.isinf(value):
+    if math.isinf(value) or math.isnan(value):
         raise ValueError(f"Float values must be finite: got {value}")
     return value
 
@@ -143,19 +143,19 @@ def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
     for idx, item in enumerate(value):
         if not isinstance(item, tuple) and not isinstance(item, Sequence):
             raise ValueError(
-                f'Expected item in cmr_keywords list index {idx} to be tuple pair, '
-                f'got value {item} of type {type(item)}'
+                f"Expected item in cmr_keywords list index {idx} to be tuple pair, "
+                f"got value {item} of type {type(item)}"
             )
         if len(item) != 2:
             raise ValueError(
-                f'Expected item in cmr_keywords list index {idx} to be of length 2, '
-                f'got value {item} of length {len(item)}'
+                f"Expected item in cmr_keywords list index {idx} to be of length 2, "
+                f"got value {item} of length {len(item)}"
             )
 
         search_key, search_value = item
         if not isinstance(search_key, str) or not isinstance(search_value, str):
             raise ValueError(
-                f'Expected tuple pair of types: '
+                f"Expected tuple pair of types: "
                 f'"{type(str)}, {type(str)}" in cmr_keywords at index {idx}, '
                 f'got value "{str(item)}" '
                 f'of types: "{type(search_key)}, {type(search_value)}"'
@@ -166,7 +166,7 @@ def parse_cmr_keywords_list(value: Sequence[Union[Dict, Sequence]]):
 
 # Parse and validate an iterable of strings: "foo,bar,baz"
 def parse_string_list(value: Sequence[str]) -> List[str]:
-    return parse_list(value, str)
+    return parse_list(value, parse_string)
 
 
 # Parse and validate an iterable of integers: "1,2,3"
@@ -263,12 +263,53 @@ def parse_wkt(value: str) -> str:
     return wkt.dumps(value)
 
 
+# Parse a CMR circle:
+#       [longitude, latitude, radius(meters)]
+def parse_circle(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) != 3:
+        raise ValueError(
+            f"Invalid circle, must be 3 values (lat, long, radius). Got: {value}"
+        )
+    return value
+
+
+# Parse a CMR linestring:
+#       [longitude, latitude, longitude, latitude, ...]
+def parse_linestring(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) % 2 != 0:
+        raise ValueError(
+            f"Invalid linestring, must be values of format (lat, long, lat, long, ...). Got: {value}"
+        )
+    return value
+
+
+def parse_point(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) != 2:
+        raise ValueError(
+            f"Invalid point, must be values of format (lat, long). Got: {value}"
+        )
+    return value
+
+
+# Parse and validate a coordinate string
+def parse_coord_string(value: List):
+    value = parse_float_list(value)
+    if len(value) % 2 != 0:
+        raise ValueError(
+            f"Invalid coordinate string, must be values of format (lat, long, lat, long, ...). Got: {value}"
+        )
+    return value
+
+
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):
     if issubclass(type(session), requests.Session):
         return session
     else:
         raise ValueError(
-            'Invalid Session: expected ASFSession or a requests.Session subclass. '
-            f'Got {type(session)}'
+            "Invalid Session: expected ASFSession or a requests.Session subclass. "
+            f"Got {type(session)}"
         )

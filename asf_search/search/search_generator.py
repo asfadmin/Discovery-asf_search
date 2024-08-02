@@ -1,3 +1,4 @@
+import time
 from typing import Dict, Generator, Union, Sequence, Tuple, List
 from copy import copy
 from requests.exceptions import HTTPError
@@ -238,30 +239,26 @@ def search_generator(
         page_number = 1
         while cmr_search_after_header is not None:
             try:
-                ASF_LOGGER.debug(
-                    f"SUBQUERY {subquery_idx + 1}: Fetching page {page_number}"
-                )
-                items, subquery_max_results, cmr_search_after_header = query_cmr(
-                    opts.session,
-                    url,
-                    translated_opts,
-                    subquery_count
-                )
-            except (ASFSearchError, CMRIncompleteError) as e:
-                message = str(e)
+                ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Fetching page {page_number}')
+                items, subquery_max_results, cmr_search_after_header = query_cmr(opts.session, url, translated_opts, subquery_count)
+            except (ASFSearchError, CMRIncompleteError) as exc:
+                message = str(exc)
                 ASF_LOGGER.error(message)
                 report_search_error(query, message)
-                opts.session.headers.pop("CMR-Search-After", None)
-                return
+                opts.session.headers.pop('CMR-Search-After', None)
+                # If it's a CMRIncompleteError, we can just stop here and return what we have
+                # It's up to the user to call .raise_if_incomplete() if they're using the
+                # generator directly.
+                if type(exc) == CMRIncompleteError:
+                    return
+                else:
+                    raise
 
-            ASF_LOGGER.debug(
-                f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched,'
-                f'returned {len(items)} items.'
-            )
-            opts.session.headers.update({"CMR-Search-After": cmr_search_after_header})
-            last_page = process_page(
-                items, maxResults, subquery_max_results, total, subquery_count, opts
-            )
+            ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items.')
+            opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
+            perf = time.time()
+            last_page = process_page(items, maxResults, subquery_max_results, total, subquery_count, opts)
+            ASF_LOGGER.warning(f"Page Processing Time {time.time() - perf}")
             subquery_count += len(last_page)
             total += len(last_page)
             last_page.searchComplete = (
@@ -305,9 +302,12 @@ def query_cmr(
         session=session, url=url, translated_opts=translated_opts
     )
 
-    items = [as_ASFProduct(f, session=session) for f in response.json()["items"]]
-    hits: int = response.json()["hits"]  # total count of products given search opts
-
+    perf = time.time()
+    items = [as_ASFProduct(f, session=session) for f in response.json()['items']]
+    ASF_LOGGER.warning(f"Product Subclassing Time {time.time() - perf}")
+    hits: int = response.json()['hits'] # total count of products given search opts
+    # 9-10 per process
+    # 3.9-5 per process
     # sometimes CMR returns results with the wrong page size
     if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + sub_query_count < hits:
         raise CMRIncompleteError(
@@ -338,21 +338,16 @@ def process_page(
     return last_page
 
 
-@retry(
-    reraise=True,
-    retry=retry_if_exception_type(ASFSearch5xxError),
-    wait=wait_exponential(
-        multiplier=1, min=3, max=10
-    ),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
-    stop=stop_after_attempt(3),
-)
-def get_page(
-    session: ASFSession, url: str, translated_opts: List
-) -> Response:
+@retry(reraise=True,
+       retry=retry_if_exception_type(ASFSearch5xxError),
+       wait=wait_exponential(multiplier=1, min=3, max=10),  # Wait 2^x * 1 starting with 3 seconds, max 10 seconds between retries
+       stop=stop_after_attempt(3),
+    )
+def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
+    from asf_search.constants.INTERNAL import CMR_TIMEOUT
+    perf = time.time()
     try:
-        response = session.post(
-            url=url, data=translated_opts, timeout=INTERNAL.CMR_TIMEOUT
-        )
+        response = session.post(url=url, data=translated_opts, timeout=CMR_TIMEOUT)
         response.raise_for_status()
     except HTTPError as exc:
         error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
@@ -361,11 +356,9 @@ def get_page(
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(error_message) from exc
     except ReadTimeout as exc:
-        raise ASFSearchError(
-            'Connection Error (Timeout): CMR took too long to respond.'
-            f'Set asf constant "CMR_TIMEOUT" to increase. ({url=}, timeout={INTERNAL.CMR_TIMEOUT})'
-        ) from exc
+        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "asf_search.constants.INTERNAL.CMR_TIMEOUT" to increase. ({url=}, timeout={CMR_TIMEOUT})') from exc
 
+    ASF_LOGGER.warning(f"Query Time Elapsed {time.time() - perf}")
     return response
 
 
@@ -449,6 +442,7 @@ def set_platform_alias(opts: ASFSearchOptions):
                 platform_list.append(plat)
 
         opts.platform = list(set(platform_list))
+_dataset_collection_items = dataset_collections.items()
 
 
 def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
@@ -466,15 +460,18 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
     product_type_key = _get_product_type_key(item)
 
     # if there's a direct entry in our dataset to product type dict
+    # perf = time.time()
     subclass = dataset_to_product_types.get(product_type_key)
     if subclass is not None:
+        # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
         return subclass(item, session=session)
 
     # if the key matches one of the shortnames in any of our datasets
-    for dataset, collections in dataset_collections.items():
+    for dataset, collections in _dataset_collection_items:
         if collections.get(product_type_key) is not None:
             subclass = dataset_to_product_types.get(dataset)
             if subclass is not None:
+                # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
                 return subclass(item, session=session)
             break  # dataset exists, but is not in dataset_to_product_types yet
 

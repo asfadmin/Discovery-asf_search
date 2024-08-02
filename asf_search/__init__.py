@@ -1,6 +1,12 @@
 # backport of importlib.metadata for python < 3.8
 from importlib_metadata import PackageNotFoundError, version
+
+## Setup logging now, so it's available if __version__ fails:
 import logging
+ASF_LOGGER = logging.getLogger(__name__)
+# Add null handle so we do nothing by default. It's up to whatever
+# imports us, if they want logging.
+ASF_LOGGER.addHandler(logging.NullHandler())
 
 try:
     __version__ = version(__name__)
@@ -18,6 +24,7 @@ except PackageNotFoundError as e:
         "Install with 'python3 -m pip install -e .' to use"
     ) from e
 
+<<<<<<< HEAD
 ASF_LOGGER = logging.getLogger(__name__)
 # Add null handle so we do nothing by default. It's up to whatever
 # imports us, if they want logging.
@@ -47,6 +54,24 @@ from .CMR import *  # noqa: F403 F401 E402
 from .baseline import *  # noqa: F403 F401 E402
 from .WKT import validate_wkt  # noqa: F401 E402
 from .export import *  # noqa: F403 F401 E402
+=======
+from .ASFSession import ASFSession
+from .ASFProduct import ASFProduct
+from .ASFStackableProduct import ASFStackableProduct
+from .ASFSearchResults import ASFSearchResults
+from .ASFSearchOptions import ASFSearchOptions, validators, validator_map
+from .Products import *
+from .exceptions import *
+from .constants import BEAMMODE, FLIGHT_DIRECTION, INSTRUMENT, PLATFORM, POLARIZATION, PRODUCT_TYPE, INTERNAL, DATASET
+from .exceptions import *
+from .health import *
+from .search import *
+from .download import *
+from .CMR import *
+from .baseline import *
+from .WKT import validate_wkt
+from .export import *
+>>>>>>> master
 
 REPORT_ERRORS = True
 """Enables automatic search error reporting to ASF, send any questions to uso@asf.alaska.edu"""

@@ -9,6 +9,7 @@ class SEASATProduct(ASFProduct):
     """
 
     _base_properties = {
+<<<<<<< HEAD
         "bytes": {
             "path": ["AdditionalAttributes", ("Name", "BYTES"), "Values", 0],
             "cast": try_round_float,
@@ -17,11 +18,20 @@ class SEASATProduct(ASFProduct):
             "path": ["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0]
         },
         "md5sum": {"path": ["AdditionalAttributes", ("Name", "MD5SUM"), "Values", 0]},
+=======
+        **ASFProduct._base_properties,
+        'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
+        'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
+        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+>>>>>>> master
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
+<<<<<<< HEAD
 
     @staticmethod
     def get_property_paths() -> Dict:
         return {**ASFProduct.get_property_paths(), **SEASATProduct._base_properties}
+=======
+>>>>>>> master

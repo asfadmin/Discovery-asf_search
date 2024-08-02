@@ -7,16 +7,11 @@ class ASFSearchError(ASFError):
 
 
 class ASFSearch4xxError(ASFSearchError):
-    """Raise when SearchAPI returns a 4xx error"""
+    """Raise when CMR returns a 4xx error"""
 
 
 class ASFSearch5xxError(ASFSearchError):
-    """Raise when SearchAPI returns a 5xx error"""
-
-
-class ASFServerError(ASFSearchError):
-    """Raise when SearchAPI returns an unknown error"""
-
+    """Raise when CMR returns a 5xx error"""
 
 class ASFBaselineError(ASFSearchError):
     """Raise when baseline related errors occur"""

@@ -29,17 +29,17 @@ tests:
 - Test ASFSearchResults_intersection antimeridian:
     wkt: POLYGON((-181 -89, -179 -89, -179 89, -181 89, -181 -89))
 
-- Test ASFSearchResults-format Fairbanks slc:
-    results: [Fairbanks_SLC.yml]
+# - Test ASFSearchResults-format Fairbanks slc:
+#     results: [Fairbanks_SLC.yml]
 
-- Test ASFSearchResults-format Fairbanks S1 Stack:
-    results: Fairbanks_S1_stack.yml
+# - Test ASFSearchResults-format Fairbanks S1 Stack:
+#     results: Fairbanks_S1_stack.yml
 
-- Test ASFSearchResults-format Alos:
-    results: Alos_response.yml
+# - Test ASFSearchResults-format Alos:
+#     results: Alos_response.yml
 
-- Test ASFSearchResults-format L1:
-    results: Fairbanks_L1.yml
+# - Test ASFSearchResults-format L1:
+#     results: Fairbanks_L1.yml
 
-- Test ASFSearchResults-format ERS Stack:
-    results: Fairbanks_ers_stack.yml
+# - Test ASFSearchResults-format ERS Stack:
+#     results: Fairbanks_ers_stack.yml

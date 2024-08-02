@@ -10,6 +10,7 @@ class OPERAS1Product(S1Product):
     """
 
     _base_properties = {
+<<<<<<< HEAD
         "centerLat": {"path": []},  # Opera products lacks these fields
         "centerLon": {"path": []},
         "frameNumber": {"path": []},
@@ -27,6 +28,17 @@ class OPERAS1Product(S1Product):
         "polarization": {
             "path": ["AdditionalAttributes", ("Name", "POLARIZATION"), "Values"]
         },  # dual polarization is in list rather than a 'VV+VH' style format
+=======
+        **S1Product._base_properties,
+        'centerLat': {'path': []}, # Opera products lacks these fields
+        'centerLon': {'path': []},
+        'frameNumber': {'path': []},
+        'operaBurstID': {'path': ['AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0]},
+        'validityStartDate': {'path': ['TemporalExtent', 'SingleDateTime'], 'cast': try_parse_date},
+        'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
+        'subswath': {'path': ['AdditionalAttributes', ('Name', 'SUBSWATH_NAME'), 'Values', 0]},
+        'polarization': {'path': ['AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values']} # dual polarization is in list rather than a 'VV+VH' style format
+>>>>>>> master
     }
 
     _subclass_concept_ids = {
@@ -101,10 +113,13 @@ class OPERAS1Product(S1Product):
                 )
 
     @staticmethod
+<<<<<<< HEAD
     def get_property_paths() -> Dict:
         return {**S1Product.get_property_paths(), **OPERAS1Product._base_properties}
 
     @staticmethod
+=======
+>>>>>>> master
     def get_default_baseline_product_type() -> None:
         """
         Returns the product type to search for when building a baseline stack.

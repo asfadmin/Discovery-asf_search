@@ -4,7 +4,6 @@ from copy import copy
 
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import CMR_PAGE_SIZE
-
 from asf_search.CMR.datasets import (
     collections_by_processing_level,
     collections_per_platform,
@@ -36,6 +35,9 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         "dataset",
         "cmr_keywords",
         "shortName",
+        "circle",
+        "linestring",
+        "point",
     ]  # these parameters will dodge the subquery system
     skip_param_names = [
         "maxResults",
@@ -144,7 +146,7 @@ def chunk_list(source: List, n: int) -> List:
 
     :return List[List, ...]:
     """
-    return [source[i * n: (i + 1) * n] for i in range((len(source) + n - 1) // n)]
+    return [source[i * n : (i + 1) * n] for i in range((len(source) + n - 1) // n)]
 
 
 def cartesian_product(params):

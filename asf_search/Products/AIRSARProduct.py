@@ -9,22 +9,12 @@ class AIRSARProduct(ASFProduct):
     """
 
     _base_properties = {
-        "frameNumber": {
-            "path": ["AdditionalAttributes", ("Name", "CENTER_ESA_FRAME"), "Values", 0],
-            "cast": try_parse_int,
-        },
-        "groupID": {
-            "path": ["AdditionalAttributes", ("Name", "GROUP_ID"), "Values", 0]
-        },
-        "insarStackId": {
-            "path": ["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0]
-        },
-        "md5sum": {"path": ["AdditionalAttributes", ("Name", "MD5SUM"), "Values", 0]},
+        **ASFProduct._base_properties,
+        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
+        'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
+        'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
+        'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {**ASFProduct.get_property_paths(), **AIRSARProduct._base_properties}
