@@ -185,10 +185,10 @@ def process_page(items: List[ASFProduct], max_results: int, subquery_max_results
        stop=stop_after_attempt(3),
     )
 def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
-    
+    from asf_search.constants.INTERNAL import CMR_TIMEOUT
     perf = time.time()
     try:
-        response = session.post(url=url, data=translated_opts, timeout=INTERNAL.CMR_TIMEOUT)
+        response = session.post(url=url, data=translated_opts, timeout=CMR_TIMEOUT)
         response.raise_for_status()
     except HTTPError as exc:
         error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
@@ -197,7 +197,7 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
         if 500 <= response.status_code <= 599:
             raise ASFSearch5xxError(error_message) from exc
     except ReadTimeout as exc:
-        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "CMR_TIMEOUT" to increase. ({url=}, timeout={INTERNAL.CMR_TIMEOUT})') from exc
+        raise ASFSearchError(f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "asf_search.constants.INTERNAL.CMR_TIMEOUT" to increase. ({url=}, timeout={CMR_TIMEOUT})') from exc
 
     ASF_LOGGER.warning(f"Query Time Elapsed {time.time() - perf}")
     return response
