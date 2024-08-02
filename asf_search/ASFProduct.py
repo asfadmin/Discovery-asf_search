@@ -265,7 +265,7 @@ class ASFProduct:
 
         properties = {
             prop:  self._read_umm_property(umm, umm_mapping)
-            for prop, umm_mapping in self._properties_paths.items()
+            for prop, umm_mapping in self._base_properties.items()
         }
 
         if properties.get('url') is not None:

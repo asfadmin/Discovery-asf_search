@@ -16,7 +16,7 @@ class S1Product(ASFStackableProduct):
     """
 
     _base_properties = {
-        **ASFStackableProduct._properties_paths,
+        **ASFStackableProduct._base_properties,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},

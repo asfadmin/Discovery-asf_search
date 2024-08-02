@@ -6,7 +6,7 @@ class SIRCProduct(ASFProduct):
     Dataset Documentation Page: https://eospso.nasa.gov/missions/spaceborne-imaging-radar-c
     """
     _base_properties = {
-        **ASFProduct._properties_paths,
+        **ASFProduct._base_properties,
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion'] },

@@ -9,7 +9,7 @@ class OPERAS1Product(S1Product):
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/opera/
     """
     _base_properties = {
-        **S1Product._properties_paths,
+        **S1Product._base_properties,
         'centerLat': {'path': []}, # Opera products lacks these fields
         'centerLon': {'path': []},
         'frameNumber': {'path': []},

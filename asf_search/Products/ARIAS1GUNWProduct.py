@@ -13,7 +13,7 @@ class ARIAS1GUNWProduct(S1Product):
     ASF Dataset Documentation Page: https://asf.alaska.edu/data-sets/derived-data-sets/sentinel-1-interferograms/
     """
     _base_properties = {
-        **S1Product._properties_paths,
+        **S1Product._base_properties,
         'perpendicularBaseline': {'path': ['AdditionalAttributes', ('Name', 'PERPENDICULAR_BASELINE'), 'Values', 0], 'cast': try_parse_float},
         'orbit': {'path': ['OrbitCalculatedSpatialDomains']},
         'inputGranules': {'path': ['InputGranules']},

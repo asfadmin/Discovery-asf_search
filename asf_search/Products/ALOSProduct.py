@@ -11,7 +11,7 @@ class ALOSProduct(ASFStackableProduct):
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/alos-palsar/
     """
     _base_properties = {
-        **ASFStackableProduct._properties_paths,
+        **ASFStackableProduct._base_properties,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int},
         'faradayRotation': {'path': ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0], 'cast': try_parse_float},
         'offNadirAngle': {'path': ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0], 'cast': try_parse_float},

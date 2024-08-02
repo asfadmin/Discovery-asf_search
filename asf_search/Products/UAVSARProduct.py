@@ -8,7 +8,7 @@ class UAVSARProduct(ASFProduct):
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/uavsar/
     """
     _base_properties = {
-        **ASFProduct._properties_paths,
+        **ASFProduct._base_properties,
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
         'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},

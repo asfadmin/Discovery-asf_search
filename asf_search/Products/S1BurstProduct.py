@@ -18,7 +18,7 @@ class S1BurstProduct(S1Product):
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/data-sets/derived-data-sets/sentinel-1-bursts/
     """
     _base_properties = {
-        **S1Product._properties_paths,
+        **S1Product._base_properties,
         'bytes': {'path': ['AdditionalAttributes', ('Name', 'BYTE_LENGTH'),  'Values', 0]},
         'absoluteBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_ABSOLUTE'), 'Values', 0], 'cast': try_parse_int},
         'relativeBurstID': {'path': ['AdditionalAttributes', ('Name', 'BURST_ID_RELATIVE'), 'Values', 0], 'cast': try_parse_int},

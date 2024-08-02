@@ -8,7 +8,7 @@ class AIRSARProduct(ASFProduct):
     ASF Dataset Overview Page: https://asf.alaska.edu/data-sets/sar-data-sets/airsar/
     """
     _base_properties = {
-        **ASFProduct._properties_paths,
+        **ASFProduct._base_properties,
         'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int},
         'groupID': {'path': [ 'AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': [ 'AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
