@@ -5,4 +5,4 @@ from .geo_search import geo_search  # noqa: F401
 from .baseline_search import stack_from_id  # noqa: F401
 from .campaigns import campaigns  # noqa: F401
 from .search_count import search_count  # noqa: F401
-from .search_generator import search_generator  # noqa: F401
+from .search_generator import search_generator, preprocess_opts  # noqa: F401

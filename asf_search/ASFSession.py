@@ -1,3 +1,4 @@
+from logging import warn
 import platform
 from typing import List, Union
 import requests
@@ -6,7 +7,7 @@ import http.cookiejar
 
 from asf_search import ASF_LOGGER, __name__ as asf_name, __version__ as asf_version
 from asf_search.exceptions import ASFAuthenticationError
-
+from warnings import warn
 
 
 class ASFSession(requests.Session):
@@ -88,7 +89,7 @@ class ASFSession(requests.Session):
         self.cmr_host = INTERNAL.CMR_HOST
 
         if cmr_host is not None:
-            ASF_LOGGER.warning(
+            warn(
                 'Use of `cmr_host` keyword with `ASFSession` is deprecated '
                 'for asf-search versions >= 7.0.9, '
                 'and may be removed in a future major release.'
@@ -140,7 +141,7 @@ class ASFSession(requests.Session):
         token = self.cookies.get_dict().get('urs-access-token')
 
         if token is None:
-            ASF_LOGGER.warning(
+            warn(
                 f'Provided asf_auth_host "{self.asf_auth_host}" returned no EDL token '
                 'during ASFSession validation. EDL Token expected in "urs-access-token" cookie, '
                 'required for hidden/restricted dataset access. '
