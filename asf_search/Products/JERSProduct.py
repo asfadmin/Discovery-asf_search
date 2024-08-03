@@ -1,5 +1,5 @@
 from typing import Dict, Union
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
+from asf_search import ASFSession, ASFStackableProduct
 from asf_search.constants import PRODUCT_TYPE
 
 
@@ -7,6 +7,7 @@ class JERSProduct(ASFStackableProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/jers-1/
     """
+
     _base_properties = {
         **ASFStackableProduct._base_properties,
         'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},

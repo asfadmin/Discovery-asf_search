@@ -17,7 +17,10 @@ class S1Product(ASFStackableProduct):
 
     _base_properties = {
         **ASFStackableProduct._base_properties,
-        'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0], 'cast': try_parse_int}, #Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
+        'frameNumber': {
+            'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0],
+            'cast': try_parse_int,
+        },  # Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
@@ -33,17 +36,14 @@ class S1Product(ASFStackableProduct):
         super().__init__(args, session)
 
         self.properties['s3Urls'] = self._get_s3_urls()
-        
+
         if self.has_baseline():
             self.baseline = self.get_baseline_calc_properties()
 
     def has_baseline(self) -> bool:
         baseline = self.get_baseline_calc_properties()
 
-        return (
-            baseline is not None and
-            None not in baseline['stateVectors']['positions'].values()
-        )
+        return baseline is not None and None not in baseline['stateVectors']['positions'].values()
 
     def get_baseline_calc_properties(self) -> Dict:
         """
@@ -51,12 +51,12 @@ class S1Product(ASFStackableProduct):
         """
         ascendingNodeTime = self.umm_cast(
             self._parse_timestamp,
-            self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0)
+            self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'ASC_NODE_TIME'), 'Values', 0),
         )
 
         return {
             'stateVectors': self.get_state_vectors(),
-            'ascendingNodeTime': ascendingNodeTime
+            'ascendingNodeTime': ascendingNodeTime,
         }
 
     def get_state_vectors(self) -> Dict:
@@ -67,20 +67,33 @@ class S1Product(ASFStackableProduct):
         positions = {}
         velocities = {}
 
-        sv_pre_position = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0)
-        sv_post_position = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0)
-        sv_pre_velocity = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0)
-        sv_post_velocity = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0)
+        sv_pre_position = self.umm_get(
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_PRE'), 'Values', 0
+        )
+        sv_post_position = self.umm_get(
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_POSITION_POST'), 'Values', 0
+        )
+        sv_pre_velocity = self.umm_get(
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_PRE'), 'Values', 0
+        )
+        sv_post_velocity = self.umm_get(
+            self.umm, 'AdditionalAttributes', ('Name', 'SV_VELOCITY_POST'), 'Values', 0
+        )
 
-        positions['prePosition'], positions['prePositionTime'] = self.umm_cast(self._parse_state_vector, sv_pre_position)
-        positions['postPosition'], positions['postPositionTime'] = self.umm_cast(self._parse_state_vector, sv_post_position)
-        velocities['preVelocity'], velocities['preVelocityTime'] = self.umm_cast(self._parse_state_vector, sv_pre_velocity)
-        velocities['postVelocity'], velocities['postVelocityTime'] = self.umm_cast(self._parse_state_vector, sv_post_velocity)
+        positions['prePosition'], positions['prePositionTime'] = self.umm_cast(
+            self._parse_state_vector, sv_pre_position
+        )
+        positions['postPosition'], positions['postPositionTime'] = self.umm_cast(
+            self._parse_state_vector, sv_post_position
+        )
+        velocities['preVelocity'], velocities['preVelocityTime'] = self.umm_cast(
+            self._parse_state_vector, sv_pre_velocity
+        )
+        velocities['postVelocity'], velocities['postVelocityTime'] = self.umm_cast(
+            self._parse_state_vector, sv_post_velocity
+        )
 
-        return {
-            'positions': positions,
-            'velocities': velocities
-        }
+        return {'positions': positions, 'velocities': velocities}
 
     def _parse_timestamp(self, timestamp: str) -> Optional[str]:
         if timestamp is None:
@@ -99,12 +112,13 @@ class S1Product(ASFStackableProduct):
 
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
-        Returns the search options asf-search will use internally to build an SLC baseline stack from
+        Returns the search options asf-search will use internally
+        to build an SLC baseline stack from
 
         :param opts: additional criteria for limiting
         :returns ASFSearchOptions used for build Sentinel-1 SLC Stack
         """
-        stack_opts = (ASFSearchOptions() if opts is None else copy(opts))
+        stack_opts = ASFSearchOptions() if opts is None else copy(opts)
 
         stack_opts.processingLevel = self.get_default_baseline_product_type()
         stack_opts.beamMode = [self.properties['beamModeType']]
@@ -129,7 +143,7 @@ class S1Product(ASFStackableProduct):
                 return False
 
         return True
-    
+
     @staticmethod
     def get_default_baseline_product_type() -> str:
         """

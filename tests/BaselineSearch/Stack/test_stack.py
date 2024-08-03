@@ -5,27 +5,34 @@ from asf_search import ASFProduct, ASFSearchResults, ASFSession, ASFStackablePro
 from asf_search.search.search_generator import as_ASFProduct
 
 import pytest
+
+
 def run_test_find_new_reference(stack: List, output_index: Number) -> None:
     """
     Test asf_search.baseline.stack.find_new_reference
     """
 
     if stack == []:
-        assert(find_new_reference(stack) == None)
+        assert find_new_reference(stack) is None
     else:
         products = [as_ASFProduct(product, ASFSession()) for product in stack]
         for idx, product in enumerate(products):
             product = clear_baseline(stack[idx], product)
-        assert find_new_reference(products).properties['sceneName'] == stack[output_index]['properties']['sceneName']
+        assert (
+            find_new_reference(products).properties['sceneName']
+            == stack[output_index]['properties']['sceneName']
+        )
+
 
 def run_test_get_default_product_type(product: ASFStackableProduct, product_type: str) -> None:
     assert product.get_default_baseline_product_type() == product_type
+
 
 def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
     reference = as_ASFProduct(reference, ASFSession())
     stack = ASFSearchResults([as_ASFProduct(product, ASFSession()) for product in stack])
 
-    if error == None:
+    if error is None:
         stack, warnings = get_baseline_from_stack(reference, stack)
 
         keys = ['sceneName', 'perpendicularBaseline', 'temporalBaseline']
@@ -48,16 +55,17 @@ def run_test_get_baseline_from_stack(reference, stack, output_stack, error):
 
 
 def run_test_valid_state_vectors(reference, output):
-    if reference != None:
+    if reference is not None:
         product = as_ASFProduct(reference, ASFSession())
         clear_baseline(reference, product)
         assert output == product.is_valid_reference()
         return
 
+
 def clear_baseline(resource, product: ASFProduct):
-# Baseline values can be restored from UMM in asfProduct constructor,
-# this erases them again if the resource omitted them from the product
-    if (stateVectors:=resource['baseline'].get('stateVectors')):
+    # Baseline values can be restored from UMM in asfProduct constructor,
+    # this erases them again if the resource omitted them from the product
+    if stateVectors := resource['baseline'].get('stateVectors'):
         if stateVectors.get('positions') == {}:
             product.baseline = {'stateVectors': {'positions': {}, 'velocities': {}}}
 

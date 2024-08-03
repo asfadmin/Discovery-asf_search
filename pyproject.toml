@@ -10,3 +10,11 @@ build-backend = "setuptools.build_meta"
 # "UserWarning: Unknown distribution option: 'use_scm_version'"
 # if setuptools_scm isn't installed when setup.py is called:
 [tool.setuptools_scm]
+
+[tool.ruff]
+line-length = 100
+fix = true
+
+[tool.ruff.format]
+# Prefer single quotes over double quotes.
+quote-style = "single"

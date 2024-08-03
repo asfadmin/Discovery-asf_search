@@ -72,7 +72,7 @@ METADATA = 'METADATA'
 L0 = 'L0'
 L1 = 'L1'
 
-#ERS
+# ERS
 # L0 provided by RADARSAT
 # L1 provided by RADARSAT
 
