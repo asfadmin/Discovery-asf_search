@@ -28,8 +28,10 @@ class ASFProduct:
         - geometry:
             - The geometry `{coordinates: [[lon, lat] ...], 'type': Polygon}`
         - baseline:
-            - used for spatio-temporal baseline stacking, stores state vectors/ascending node time/insar baseline values when available (Not set in base ASFProduct class)
-            - See `S1Product` or `ALOSProduct` `get_baseline_calc_properties()` methods for implementation examples
+            - used for spatio-temporal baseline stacking, stores state vectors/ascending
+                node time/insar baseline values when available (Not set in base ASFProduct class)
+            - See `S1Product` or `ALOSProduct` `get_baseline_calc_properties()`
+                methods for implementation examples
 
     Key methods:
         - `download()`
@@ -38,34 +40,79 @@ class ASFProduct:
 
 
     """
+
     @classmethod
     def get_classname(cls):
         return cls.__name__
 
     _base_properties = {
-            # min viable product
-            'centerLat': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0], 'cast': try_parse_float},
-            'centerLon': {'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0], 'cast': try_parse_float},
-            'stopTime': {'path': ['TemporalExtent', 'RangeDateTime', 'EndingDateTime'], 'cast': try_parse_date}, # primary search results sort key
-            'fileID': {'path': ['GranuleUR']}, # secondary search results sort key
-            'flightDirection': {'path': [ 'AdditionalAttributes', ('Name', 'ASCENDING_DESCENDING'), 'Values', 0]},
-            'pathNumber': {'path': ['AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0], 'cast': try_parse_int},
-            'processingLevel': {'path': [ 'AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0]},
-
-            # commonly used
-            'url': {'path': [ 'RelatedUrls', ('Type', 'GET DATA'), 'URL']},
-            'startTime': {'path': [ 'TemporalExtent', 'RangeDateTime', 'BeginningDateTime'], 'cast': try_parse_date},
-            'sceneName': {'path': [ 'DataGranule', 'Identifiers', ('IdentifierType', 'ProducerGranuleId'), 'Identifier']},
-            'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
-            'platform': {'path': [ 'AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
-            'bytes': {'path': [ 'AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0], 'cast': try_round_float},
-            'md5sum': {'path': [ 'AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
-            'frameNumber': {'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0], 'cast': try_parse_int}, # overloaded by S1, ALOS, and ERS
-            'granuleType': {'path': [ 'AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
-            'orbit': {'path': [ 'OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'], 'cast': try_parse_int},
-            'polarization': {'path': [ 'AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
-            'processingDate': {'path': [ 'DataGranule', 'ProductionDateTime'], 'cast': try_parse_date},
-            'sensor': {'path': [ 'Platforms', 0, 'Instruments', 0, 'ShortName'], },
+        # min viable product
+        'centerLat': {
+            'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0],
+            'cast': try_parse_float,
+        },
+        'centerLon': {
+            'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0],
+            'cast': try_parse_float,
+        },
+        'stopTime': {
+            'path': ['TemporalExtent', 'RangeDateTime', 'EndingDateTime'],
+            'cast': try_parse_date,
+        },  # primary search results sort key
+        'fileID': {'path': ['GranuleUR']},  # secondary search results sort key
+        'flightDirection': {
+            'path': [
+                'AdditionalAttributes',
+                ('Name', 'ASCENDING_DESCENDING'),
+                'Values',
+                0,
+            ]
+        },
+        'pathNumber': {
+            'path': ['AdditionalAttributes', ('Name', 'PATH_NUMBER'), 'Values', 0],
+            'cast': try_parse_int,
+        },
+        'processingLevel': {
+            'path': ['AdditionalAttributes', ('Name', 'PROCESSING_TYPE'), 'Values', 0]
+        },
+        # commonly used
+        'url': {'path': ['RelatedUrls', ('Type', 'GET DATA'), 'URL']},
+        'startTime': {
+            'path': ['TemporalExtent', 'RangeDateTime', 'BeginningDateTime'],
+            'cast': try_parse_date,
+        },
+        'sceneName': {
+            'path': [
+                'DataGranule',
+                'Identifiers',
+                ('IdentifierType', 'ProducerGranuleId'),
+                'Identifier',
+            ]
+        },
+        'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
+        'platform': {'path': ['AdditionalAttributes', ('Name', 'ASF_PLATFORM'), 'Values', 0]},
+        'bytes': {
+            'path': ['AdditionalAttributes', ('Name', 'BYTES'), 'Values', 0],
+            'cast': try_round_float,
+        },
+        'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+        'frameNumber': {
+            'path': ['AdditionalAttributes', ('Name', 'CENTER_ESA_FRAME'), 'Values', 0],
+            'cast': try_parse_int,
+        },  # overloaded by S1, ALOS, and ERS
+        'granuleType': {'path': ['AdditionalAttributes', ('Name', 'GRANULE_TYPE'), 'Values', 0]},
+        'orbit': {
+            'path': ['OrbitCalculatedSpatialDomains', 0, 'OrbitNumber'],
+            'cast': try_parse_int,
+        },
+        'polarization': {'path': ['AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values', 0]},
+        'processingDate': {
+            'path': ['DataGranule', 'ProductionDateTime'],
+            'cast': try_parse_date,
+        },
+        'sensor': {
+            'path': ['Platforms', 0, 'Instruments', 0, 'ShortName'],
+        },
     }
     """
     _base_properties dictionary, mapping readable property names to paths and optional type casting
@@ -75,7 +122,14 @@ class ASFProduct:
             - `path`: the expected path in the CMR UMM json granule response as a list
             - `cast`: (optional): the optional type casting method
 
+<<<<<<< HEAD
+    Defining `_base_properties` in subclasses allows for
+    defining custom properties or overiding existing ones.
+    See `S1Product.get_property_paths()` on how subclasses are expected to
+    combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
+=======
     Defining `_properties_paths` in subclasses allows for defining custom properties or overiding existing ones.
+>>>>>>> master
     """
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -93,14 +147,23 @@ class ASFProduct:
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
 
     def geojson(self) -> Dict:
-        """Returns ASFProduct object as a geojson formatted dictionary, with `type`, `geometry`, and `properties` keys"""
+        """
+        Returns ASFProduct object as a geojson formatted dictionary
+        with `type`, `geometry`, and `properties` keys
+        """
         return {
             'type': 'Feature',
             'geometry': self.geometry,
-            'properties': self.properties
+            'properties': self.properties,
         }
 
-    def download(self, path: str, filename: str = None, session: ASFSession = None, fileType = FileDownloadType.DEFAULT_FILE) -> None:
+    def download(
+        self,
+        path: str,
+        filename: str = None,
+        session: ASFSession = None,
+        fileType=FileDownloadType.DEFAULT_FILE,
+    ) -> None:
         """
         Downloads this product to the specified path and optional filename.
 
@@ -114,9 +177,15 @@ class ASFProduct:
         default_filename = self.properties['fileName']
 
         if filename is not None:
-            # Check if we should support the filename argument:
-            if self._has_multiple_files() and fileType in [FileDownloadType.ADDITIONAL_FILES, FileDownloadType.ALL_FILES]:
-                warnings.warn(f"Attempting to download multiple files for product, ignoring user provided filename argument '{filename}', using default.")
+            multiple_files = (
+                fileType == FileDownloadType.ADDITIONAL_FILES
+                and len(self.properties['additionalUrls']) > 1
+            ) or fileType == FileDownloadType.ALL_FILES
+            if multiple_files:
+                warnings.warn(
+                    'Attempting to download multiple files for product, '
+                    f'ignoring user provided filename argument "{filename}", using default.'
+                )
             else:
                 default_filename = filename
 
@@ -131,11 +200,11 @@ class ASFProduct:
             download_url(
                 url=url,
                 path=path,
-                filename=f"{base_filename}.{extension}",
-                session=session
+                filename=f'{base_filename}.{extension}',
+                session=session,
             )
 
-    def get_urls(self, fileType = FileDownloadType.DEFAULT_FILE) -> list:
+    def get_urls(self, fileType=FileDownloadType.DEFAULT_FILE) -> list:
         urls = []
 
         if fileType == FileDownloadType.DEFAULT_FILE:
@@ -146,14 +215,19 @@ class ASFProduct:
             urls.append(self.properties['url'])
             urls.extend(self.properties.get('additionalUrls', []))
         else:
-            raise ValueError("Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'")
+            raise ValueError(
+                "Invalid FileDownloadType provided, the valid types are 'DEFAULT_FILE', 'ADDITIONAL_FILES', and 'ALL_FILES'"
+            )
         return urls
 
     def _get_additional_filenames_and_urls(
-            self,
-            default_filename: str = None  # for subclasses without fileName in url (see S1BurstProduct implementation)
-     ) -> List[Tuple[str, str]]:
-        return [(self._parse_filename_from_url(url), url) for url in self.properties.get('additionalUrls', [])]
+        self,
+        default_filename: str = None,  # for subclasses without fileName in url (see S1BurstProduct implementation) # noqa F401
+    ) -> List[Tuple[str, str]]:
+        return [
+            (self._parse_filename_from_url(url), url)
+            for url in self.properties.get('additionalUrls', [])
+        ]
 
     def _parse_filename_from_url(self, url: str) -> str:
         file_path = os.path.split(parse.urlparse(url).path)
@@ -161,17 +235,22 @@ class ASFProduct:
         return filename
 
     def stack(
-            self,
-            opts: ASFSearchOptions = None,
-            useSubclass: Type['ASFProduct'] = None
+        self, opts: ASFSearchOptions = None, useSubclass: Type['ASFProduct'] = None
     ) -> ASFSearchResults:
         """
         Builds a baseline stack from this product.
+        Parameters
+        ----------
+        opts:
+        An ASFSearchOptions object describing the search parameters to be used.
+        Search parameters specified outside this object will override in event of a conflict.
+        ASFProductSubclass: An ASFProduct subclass constructor to cast results to
 
-        :param opts: An ASFSearchOptions object describing the search parameters to be used. Search parameters specified outside this object will override in event of a conflict.
-        :param ASFProductSubclass: An ASFProduct subclass constructor.
-
-        :return: ASFSearchResults containing the stack, with the addition of baseline values (temporal, perpendicular) attached to each ASFProduct.
+        Returns
+        ----------
+        asf_search.ASFSearchResults
+            containing the stack, with the addition of baseline values
+            (temporal, perpendicular) attached to each ASFProduct.
         """
         from .search.baseline_search import stack_from_product
 
@@ -184,11 +263,14 @@ class ASFProduct:
         """
         Build search options that can be used to find an insar stack for this product
 
-        :return: ASFSearchOptions describing appropriate options for building a stack from this product
+        :return: ASFSearchOptions describing appropriate options
+        for building a stack from this product
         """
         return None
 
-    def _get_access_urls(self, url_types: List[str] = ['GET DATA', 'EXTENDED METADATA']) -> List[str]:
+    def _get_access_urls(
+        self, url_types: List[str] = ['GET DATA', 'EXTENDED METADATA']
+    ) -> List[str]:
         accessUrls = []
 
         for url_type in url_types:
@@ -196,20 +278,18 @@ class ASFProduct:
                 accessUrls.extend(urls)
 
         return sorted(list(set(accessUrls)))
-    
+
     def _get_additional_urls(self) -> List[str]:
         accessUrls = self._get_access_urls(['GET DATA', 'EXTENDED METADATA'])
         return [
-            url for url in accessUrls if not url.endswith('.md5')
+            url
+            for url in accessUrls
+            if not url.endswith('.md5')
             and not url.startswith('s3://')
             and 's3credentials' not in url
             and not url.endswith('.png')
             and url != self.properties['url']
         ]
-    
-    def _get_s3_urls(self) -> List[str]:
-        s3_urls = self._get_access_urls(['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS'])
-        return [url for url in s3_urls if url.startswith('s3://')]
 
     def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
         """
@@ -233,6 +313,12 @@ class ASFProduct:
 
         return [url for url in search_list if regexp.search(url) is not None]
     
+    def _get_s3_urls(self) -> List[str]:
+        s3_urls = self._get_access_urls(
+            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS']
+        )
+        return [url for url in s3_urls if url.startswith('s3://')]
+
     def centroid(self) -> Point:
         """
         Finds the centroid of a product
@@ -246,12 +332,12 @@ class ASFProduct:
 
         return Polygon(unwrapped_coords).centroid
 
-    def remotezip(self, session: ASFSession) -> 'RemoteZip':
-        """Returns a RemoteZip object which can be used to download a part of an ASFProduct's zip archive.
-        (See example in examples/5-Download.ipynb)
-        
+    def remotezip(self, session: ASFSession) -> 'RemoteZip':  # type: ignore # noqa: F821
+        """Returns a RemoteZip object which can be used to download
+        a part of an ASFProduct's zip archive. (See example in examples/5-Download.ipynb)
+
         requires installing optional dependencies via pip or conda to use the `remotezip` package:
-        
+
         `python3 -m pip install asf-search[extras]`
 
         :param session: an authenticated ASFSession
@@ -260,9 +346,6 @@ class ASFProduct:
 
         return remotezip(self.properties['url'], session=session)
 
-    def _has_multiple_files(self):
-        return 'additionalUrls' in self.properties and len(self.properties['additionalUrls']) > 0
-    
     def _read_umm_property(self, umm: Dict, mapping: Dict) -> Any:
         value = self.umm_get(umm, *mapping['path'])
         if mapping.get('cast') is None:
@@ -275,7 +358,9 @@ class ASFProduct:
         Generates `properties` and `geometry` from the CMR UMM response
         """
         try:
-            coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']
+            coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry'][
+                'GPolygons'
+            ][0]['Boundary']['Points']
             coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
             geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
         except KeyError:
@@ -286,7 +371,7 @@ class ASFProduct:
         # additionalAttributes = {attr['Name']: attr['Values'] for attr in umm['AdditionalAttributes']}
 
         properties = {
-            prop:  self._read_umm_property(umm, umm_mapping)
+            prop: self._read_umm_property(umm, umm_mapping)
             for prop, umm_mapping in self._base_properties.items()
         }
 
@@ -297,7 +382,9 @@ class ASFProduct:
 
         # Fallbacks
         if properties.get('beamModeType') is None:
-            properties['beamModeType'] = self.umm_get(umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0)
+            properties['beamModeType'] = self.umm_get(
+                umm, 'AdditionalAttributes', ('Name', 'BEAM_MODE'), 'Values', 0
+            )
 
         if properties.get('platform') is None:
             properties['platform'] = self.umm_get(umm, 'Platforms', 0, 'ShortName')
@@ -313,23 +400,23 @@ class ASFProduct:
         # using self._read_property() to wrap standard `dict.get()` for possible `None` values
         primary_key = self._read_property(key='stopTime', default='')
         secondary_key = self._read_property(
-            key='fileID', 
-            default=self._read_property('sceneName', '')
+            key='fileID', default=self._read_property('sceneName', '')
         )
-        
+
         return (primary_key, secondary_key)
-    
+
     def _read_property(self, key: str, default: Any = None) -> Any:
         """
         Helper method wraps `properties.get()`.
-        Since a property can be `None`, if the key exists `dict.get('key', 'default')` will never return the default
+        Since a property can be `None`, if the key exists`dict.get('key', 'default')`
+        will never return the default
         """
         output = default
-        if (value:=self.properties.get(key)) is not None:
+        if (value := self.properties.get(key)) is not None:
             output = value
-        
+
         return output
-            
+
     @final
     @staticmethod
     def umm_get(item: Dict, *args):
@@ -360,9 +447,11 @@ class ASFProduct:
         result: 'VV'
         ```
 
-        - `'AdditionalAttributes'` acts like item['AdditionalAttributes'], which is a list of dictionaries
+        - `'AdditionalAttributes'` acts like item['AdditionalAttributes'],
+        which is a list of dictionaries
 
-        - Since `AdditionalAttributes` is a LIST of dictionaries, we search for a dict with the key value pair,
+        - Since `AdditionalAttributes` is a LIST of dictionaries,
+        we search for a dict with the key value pair,
         `('Name', 'POLARIZATION')`
 
         - If found, we try to access that dictionary's `Values` key
@@ -393,11 +482,14 @@ class ASFProduct:
         ---
 
         ADVANCED:
-        Sometimes there are multiple dictionaries in a list that have the same key value pair we're searching for
-        (See `OPERAS1Product` umm under `RelatedUrls`). This means we can miss values since we're only grabbing the first match
-        depending on how the umm is organized. There is a way to get ALL data that matches our key value criteria.
+        Sometimes there are multiple dictionaries in a list that have
+        the same key value pair we're searching for (See `OPERAS1Product` umm under `RelatedUrls`).
+        This means we can miss values since we're only grabbing the first match
+        depending on how the umm is organized.
+        There is a way to get ALL data that matches our key value criteria.
 
-        Example: "I need ALL `URL` values for dictionaries in `RelatedUrls` where `Type` is `GET DATA`" (See in use in `OPERAS1Product` class)
+        Example: "I need ALL `URL` values for dictionaries in `RelatedUrls`
+        where `Type` is `GET DATA`" (See in use in `OPERAS1Product` class)
         ```
         'RelatedUrls', ('Type', [('GET DATA', 'URL')]), 0
         ```
@@ -448,7 +540,8 @@ class ASFProduct:
     @staticmethod
     def _is_subclass(item: Dict) -> bool:
         """
-        Used to determine which subclass to use for specific edge-cases when parsing results in search methods
+        Used to determine which subclass to use for specific
+        edge-cases when parsing results in search methods
         (Currently implemented for ARIA and OPERA subclasses).
 
         params:

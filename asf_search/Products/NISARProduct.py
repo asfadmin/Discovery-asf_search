@@ -1,7 +1,5 @@
 from typing import Dict, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
-from asf_search.constants import PRODUCT_TYPE
 
 
 class NISARProduct(ASFStackableProduct):
@@ -10,9 +8,10 @@ class NISARProduct(ASFStackableProduct):
 
     ASF Dataset Documentation Page: https://asf.alaska.edu/nisar/
     """
+
     _base_properties = {
         **ASFStackableProduct._base_properties,
-        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']}
+        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -33,18 +32,19 @@ class NISARProduct(ASFStackableProduct):
 
     def is_valid_reference(self):
         return False
-    
+
     def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
 
-        :return: ASFSearchOptions describing appropriate options for building a stack from this product
+        :return: ASFSearchOptions describing appropriate options
+        for building a stack from this product
         """
         return None
 
     def get_sort_keys(self) -> Tuple[str, str]:
         keys = super().get_sort_keys()
-        
+
         if keys[0] == '':
             return (self._read_property('processingDate', ''), keys[1])
 
