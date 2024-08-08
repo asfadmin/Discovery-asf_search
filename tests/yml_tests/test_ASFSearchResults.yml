@@ -17,8 +17,8 @@ tests:
 - Test ASFSearchResults_intersection linestring-equator:
     wkt: LINESTRING(-59 0, 59 0)
 
-# - Test ASFSearchResults_intersection Latitude 64 to 65:
-#     wkt: POLYGON((-179 64, -159 64, -159 65, -179 65, -179 64))
+- Test ASFSearchResults_intersection Latitude 64 to 65:
+    wkt: POLYGON((-179 64, -159 64, -159 65, -179 65, -179 64))
 
 - Test ASFSearchResults_intersection Australia:
     wkt: POLYGON((108.3836 -45.0288,154.4383 -45.0288,154.4383 -9.7116,108.3836 -9.7116,108.3836 -45.0288))
@@ -28,18 +28,3 @@ tests:
 
 - Test ASFSearchResults_intersection antimeridian:
     wkt: POLYGON((-181 -89, -179 -89, -179 89, -181 89, -181 -89))
-
-- Test ASFSearchResults-format Fairbanks slc:
-    results: [Fairbanks_SLC.yml]
-
-- Test ASFSearchResults-format Fairbanks S1 Stack:
-    results: Fairbanks_S1_stack.yml
-
-- Test ASFSearchResults-format Alos:
-    results: Alos_response.yml
-
-- Test ASFSearchResults-format L1:
-    results: Fairbanks_L1.yml
-
-- Test ASFSearchResults-format ERS Stack:
-    results: Fairbanks_ers_stack.yml

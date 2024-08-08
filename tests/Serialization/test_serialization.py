@@ -1,11 +1,10 @@
-from asf_search import ASFProduct, ASFSearchResults, ASFSession
+from asf_search import ASFSearchResults, ASFSession
 from asf_search.ASFSearchOptions.ASFSearchOptions import ASFSearchOptions
 
 import os
 import json
 
 from asf_search.search.search_generator import as_ASFProduct
-
 
 
 def run_test_serialization(product=None, results=None, opts=ASFSearchOptions()):
@@ -15,7 +14,7 @@ def run_test_serialization(product=None, results=None, opts=ASFSearchOptions()):
         to_serialize = ASFSearchResults([json_to_product(product)])
 
     with open('serialized_product.json', 'w') as f:
-        f.write(json.dumps({"results": to_serialize.geojson(), "opts": dict(opts)}))
+        f.write(json.dumps({'results': to_serialize.geojson(), 'opts': dict(opts)}))
         f.close()
 
     with open('serialized_product.json', 'r') as f:
@@ -23,7 +22,7 @@ def run_test_serialization(product=None, results=None, opts=ASFSearchOptions()):
         f.close()
 
     os.remove('serialized_product.json')
-    
+
     deserialized_results = deserialized.get('results')
     deserialized_opts = deserialized.get('opts')
 
@@ -33,7 +32,7 @@ def run_test_serialization(product=None, results=None, opts=ASFSearchOptions()):
     for idx, original in enumerate(to_serialize):
         assert deserialized_results['features'][idx]['properties'] == original.properties
         assert deserialized_results['features'][idx]['geometry'] == original.geometry
-    
+
     assert deserialized_results['type'] == 'FeatureCollection'
 
 

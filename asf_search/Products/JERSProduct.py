@@ -1,5 +1,5 @@
 from typing import Dict, Union
-from asf_search import ASFSearchOptions, ASFSession, ASFProduct, ASFStackableProduct
+from asf_search import ASFSession, ASFStackableProduct
 from asf_search.constants import PRODUCT_TYPE
 
 
@@ -7,7 +7,9 @@ class JERSProduct(ASFStackableProduct):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/jers-1/
     """
+
     _base_properties = {
+        **ASFStackableProduct._base_properties,
         'browse': {'path': ['RelatedUrls', ('Type', [('GET RELATED VISUALIZATION', 'URL')])]},
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
@@ -24,10 +26,3 @@ class JERSProduct(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L0
-
-    @staticmethod
-    def get_property_paths() -> Dict:
-        return {
-            **ASFStackableProduct.get_property_paths(),
-            **JERSProduct._base_properties
-        }

@@ -638,6 +638,12 @@ tests:
         start: '2023-12-01T00:00:00Z'
         end: '2023-12-31T00:00:00Z'
 
+  - test-ASFSearch-search-error 400-Error circle radius too small:
+      parameters:
+          circle: [0, 0, 2]
+      status_code: 400
+      report: "Circle radius must be between 10 and 6000000, but was 2.0"
+
   - test-aliasing-search-against-api RTC-STATIC:
       params:
         processingLevel: RTC-STATIC
