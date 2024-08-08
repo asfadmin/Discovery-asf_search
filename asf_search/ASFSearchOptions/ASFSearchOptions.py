@@ -5,25 +5,28 @@ from .validator_map import validator_map, validate
 from .config import config
 from asf_search import ASF_LOGGER
 
+
 class ASFSearchOptions:
     def __init__(self, **kwargs):
         """
-        Initialize the object, creating the list of attributes based on the contents of validator_map, and assign them based on kwargs
+        Initialize the object, creating the list of attributes
+        based on the contents of validator_map, and assign them based on kwargs
 
         :param kwargs: any search options to be set immediately
         """
         # init the built in attrs:
         for key in validator_map:
             self.__setattr__(key, None)
-        
+
         # Apply any parameters passed in:
         for key, value in kwargs.items():
             self.__setattr__(key, value)
 
     def __setattr__(self, key, value):
         """
-        Set a search option, restricting to the keys in validator_map only, and applying validation to the value before setting
-        
+        Set a search option, restricting to the keys in validator_map only,
+        and applying validation to the value before setting
+
         :param key: the name of the option to be set
         :param value: the value to which to set the named option
         """
@@ -105,7 +108,8 @@ class ASFSearchOptions:
 
     def merge_args(self, **kwargs) -> None:
         """
-        Merges all keyword args into this ASFSearchOptions object. Emits a warning for any options that are over-written by the operation.
+        Merges all keyword args into this ASFSearchOptions object.
+        Emits a warning for any options that are over-written by the operation.
 
         :param kwargs: The search options to merge into the object
         :return: None
@@ -113,7 +117,11 @@ class ASFSearchOptions:
         for key in kwargs:
             # Spit out warning if the value is something other than the default:
             if not self._is_val_default(key):
-                msg = f'While merging search options, existing option {key}:{getattr(self, key, None)} overwritten by kwarg with value {kwargs[key]}'
+                msg = (
+                    'While merging search options, '
+                    f'existing option {key}:{getattr(self, key, None)} '
+                    f'overwritten by kwarg with value {kwargs[key]}'
+                )
                 ASF_LOGGER.warning(msg)
                 warnings.warn(msg)
             self.__setattr__(key, kwargs[key])
