@@ -202,7 +202,7 @@ def fix_date(fixed_params: Dict[str, Any]):
             fixed_params['start'] if 'start' in fixed_params else '1978-01-01T00:00:00Z'
         )
         fixed_params['end'] = (
-            fixed_params['end'] if 'end' in fixed_params else datetime.now(datetime.UTC).isoformat()
+            fixed_params['end'] if 'end' in fixed_params else datetime.now(timezone.utc).isoformat()
         )
         fixed_params['season'] = (
             ','.join(str(x) for x in fixed_params['season']) if 'season' in fixed_params else ''
