@@ -2,6 +2,12 @@ from typing import List
 
 
 dataset_collections = {
+    'ALOS-2': {
+        'ALOS2_L1_PSR2': [
+            'C1269180392-ASF',
+            'C1269180392-ASF',
+        ]
+    },
     'NISAR': {
         'NISAR_NEN_RRST_BETA_V1': [
             'C1261815181-ASFDEV',
