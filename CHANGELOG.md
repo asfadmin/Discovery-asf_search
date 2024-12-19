@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.1...v8.0.2)
+### Added
+- Adds ability to gather urls from results by extension and regex patterns
+
+------
 ## [v8.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.0...v8.0.1)
 ### Fixed
 - Fixed setting end date timezone when translating search opts to CMR opts
