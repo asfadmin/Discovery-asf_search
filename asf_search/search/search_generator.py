@@ -256,7 +256,7 @@ def search_generator(
             last_page = process_page(
                 items, maxResults, subquery_max_results, total, subquery_count, opts
             )
-            ASF_LOGGER.log(f'Page Processing Time {time.time() - perf}')
+            ASF_LOGGER.info(f'Page Processing Time {time.time() - perf}')
             subquery_count += len(last_page)
             total += len(last_page)
             last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
@@ -354,7 +354,7 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
             f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "asf_search.constants.INTERNAL.CMR_TIMEOUT" to increase. ({url=}, timeout={CMR_TIMEOUT})'
         ) from exc
 
-    ASF_LOGGER.log(f'Query Time Elapsed {time.time() - perf}')
+    ASF_LOGGER.info(f'Query Time Elapsed {time.time() - perf}')
     return response
 
 
