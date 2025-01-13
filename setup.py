@@ -19,7 +19,7 @@ test_requirements = [
     'pytest-cov',
     'pytest-xdist',
     'coverage',
-    'requests-mock',
+    'requests-mock==1.11.0',
     'nbformat',
     'nbconvert',
     'ipykernel',

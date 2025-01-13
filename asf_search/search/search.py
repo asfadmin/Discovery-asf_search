@@ -172,7 +172,7 @@ def search(
     # The last page will be marked as complete if results sucessful
     perf = time.time()
     for page in search_generator(opts=opts):
-        ASF_LOGGER.warning(f'Page Time Elapsed {time.time() - perf}')
+        ASF_LOGGER.debug(f'Page Time Elapsed {time.time() - perf}')
         results.extend(page)
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
