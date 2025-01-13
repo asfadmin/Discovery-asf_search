@@ -279,7 +279,7 @@ class ASFProduct:
     def _get_urls(self) -> List[str]:
         """Finds and returns all umm urls"""
         urls = self._get_access_urls(
-            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'VIEW RELATED INFORMATION']
+            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'GET RELATED VISUALIZATION', 'VIEW RELATED INFORMATION']
         )
         return [
             url for url in urls if not url.startswith('s3://')
@@ -288,7 +288,7 @@ class ASFProduct:
     def _get_s3_uris(self) -> List[str]:
         """Finds and returns all umm S3 direct access uris"""
         s3_urls = self._get_access_urls(
-            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS']
+            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'GET RELATED VISUALIZATION', 'VIEW RELATED INFORMATION']
         )
         return [url for url in s3_urls if url.startswith('s3://')]
 
@@ -323,7 +323,7 @@ class ASFProduct:
 
         regexp = re.compile(pattern=pattern)
 
-        return [url for url in search_list if regexp.search(url) is not None]
+        return sorted([url for url in search_list if regexp.search(url) is not None])
 
     def centroid(self) -> Point:
         """

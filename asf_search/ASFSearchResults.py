@@ -56,7 +56,7 @@ class ASFSearchResults(UserList):
         for product in self:
             urls.extend(product.find_urls(extension=extension, pattern=pattern, directAccess=directAccess))
         
-        return list(set(urls))
+        return sorted(list(set(urls)))
     
     def __str__(self):
         return json.dumps(self.geojson(), indent=2, sort_keys=True)
