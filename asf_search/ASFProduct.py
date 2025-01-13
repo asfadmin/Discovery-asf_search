@@ -265,7 +265,8 @@ class ASFProduct:
         return None
 
     def _get_access_urls(
-        self, url_types: List[str] = ['GET DATA', 'EXTENDED METADATA']
+        self, 
+        url_types: List[str] = ['GET DATA', 'EXTENDED METADATA']
     ) -> List[str]:
         accessUrls = []
 
@@ -275,16 +276,31 @@ class ASFProduct:
 
         return sorted(list(set(accessUrls)))
 
-    def _get_additional_urls(self) -> List[str]:
-        accessUrls = self._get_access_urls(['GET DATA', 'EXTENDED METADATA'])
+    def _get_urls(self) -> List[str]:
+        """Finds and returns all umm urls"""
+        urls = self._get_access_urls(
+            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'VIEW RELATED INFORMATION']
+        )
         return [
-            url
-            for url in accessUrls
+            url for url in urls if not url.startswith('s3://')
+        ]
+
+    def _get_s3_uris(self) -> List[str]:
+        """Finds and returns all umm S3 direct access uris"""
+        s3_urls = self._get_access_urls(
+            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS']
+        )
+        return [url for url in s3_urls if url.startswith('s3://')]
+
+    def _get_additional_urls(self) -> List[str]:
+        """Finds and returns all non-md5/image urls and filters out the existing `url` property"""
+        access_urls = self._get_urls()
+        return [
+            url for url in access_urls
             if not url.endswith('.md5')
-            and not url.startswith('s3://')
-            and 's3credentials' not in url
             and not url.endswith('.png')
             and url != self.properties['url']
+            and 's3credentials' not in url
         ]
 
     def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
@@ -296,7 +312,7 @@ class ASFProduct:
             - Example: `r'(QA_)+'` to find urls with 'QA_' at least once
         param directAccess: should search in s3 bucket urls (Defaults to `False`)
         """
-        search_list = self._get_s3_urls() if directAccess else self._get_additional_urls()
+        search_list = self._get_s3_uris() if directAccess else self._get_urls()
         
         def _get_extension(file_url: str):
             path = parse.urlparse(file_url).path
@@ -308,12 +324,6 @@ class ASFProduct:
         regexp = re.compile(pattern=pattern)
 
         return [url for url in search_list if regexp.search(url) is not None]
-    
-    def _get_s3_urls(self) -> List[str]:
-        s3_urls = self._get_access_urls(
-            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS']
-        )
-        return [url for url in s3_urls if url.startswith('s3://')]
 
     def centroid(self) -> Point:
         """
