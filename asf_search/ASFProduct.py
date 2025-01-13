@@ -122,14 +122,10 @@ class ASFProduct:
             - `path`: the expected path in the CMR UMM json granule response as a list
             - `cast`: (optional): the optional type casting method
 
-<<<<<<< HEAD
     Defining `_base_properties` in subclasses allows for
     defining custom properties or overiding existing ones.
     See `S1Product.get_property_paths()` on how subclasses are expected to
     combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
-=======
-    Defining `_properties_paths` in subclasses allows for defining custom properties or overiding existing ones.
->>>>>>> master
     """
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):

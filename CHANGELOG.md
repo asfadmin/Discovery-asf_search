@@ -26,9 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v8.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.1...v8.0.2)
+## [v8.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.1...v8.1.0)
 ### Added
 - Adds ability to gather urls from results by extension and regex patterns
+### Changed
+- Changed log level from warning to debug/info for search timing log messages
+- Raised minimum Python version to 3.9 from 3.8, which reached EOL last year (see the official [Status of Python versions](https://devguide.python.org/versions/) for the Python version release cycle)
 
 ------
 ## [v8.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.0...v8.0.1)
@@ -36,7 +39,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed setting end date timezone when translating search opts to CMR opts
 
 ------
-## [v8.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.2.0)
+## [v8.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v8.0.0)
 ### Added
 - Added `asf.ASFSearchOptions(circle=[lat, long, radius])` search param. Takes list of exactly 3 numbers.
 - Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.
