@@ -27,6 +27,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v8.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.1...v8.1.0)
+### Added
+- Adds `ASFSearchResults.find_urls()` and `ASFProduct.find_urls()` to gather urls/uris from results by extension and/or regex pattern
 ### Changed
 - Changed log level from warning to debug/info for search timing log messages
 - Raised minimum Python version to 3.9 from 3.8, which reached EOL last year (see the official [Status of Python versions](https://devguide.python.org/versions/) for the Python version release cycle)

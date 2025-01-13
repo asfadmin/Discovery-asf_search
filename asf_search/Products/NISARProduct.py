@@ -18,7 +18,7 @@ class NISARProduct(ASFStackableProduct):
         super().__init__(args, session)
 
         self.properties['additionalUrls'] = self._get_additional_urls()
-        self.properties['s3Urls'] = self._get_s3_urls()
+        self.properties['s3Urls'] = self._get_s3_uris()
 
         if self.properties.get('groupID') is None:
             self.properties['groupID'] = self.properties['sceneName']
