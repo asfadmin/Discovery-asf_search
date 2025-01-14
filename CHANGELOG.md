@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.0...v8.1.1)
+### Fixed
+- SLC Burst product urls are now searchable with `find_urls()`
+
+------
 ## [v8.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.1...v8.1.0)
 ### Added
 - Adds `ASFSearchResults.find_urls()` and `ASFProduct.find_urls()` to gather urls/uris from results by extension and/or regex pattern
