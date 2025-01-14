@@ -128,6 +128,8 @@ class ASFProduct:
     combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
     """
 
+    _url_types = ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'GET RELATED VISUALIZATION', 'VIEW RELATED INFORMATION', 'USE SERVICE API']
+    
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')
         self.umm = args.get('umm')
@@ -278,18 +280,14 @@ class ASFProduct:
 
     def _get_urls(self) -> List[str]:
         """Finds and returns all umm urls"""
-        urls = self._get_access_urls(
-            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'GET RELATED VISUALIZATION', 'VIEW RELATED INFORMATION']
-        )
+        urls = self._get_access_urls(self._url_types)
         return [
             url for url in urls if not url.startswith('s3://')
         ]
 
     def _get_s3_uris(self) -> List[str]:
         """Finds and returns all umm S3 direct access uris"""
-        s3_urls = self._get_access_urls(
-            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'GET RELATED VISUALIZATION', 'VIEW RELATED INFORMATION']
-        )
+        s3_urls = self._get_access_urls(self._url_types)
         return [url for url in s3_urls if url.startswith('s3://')]
 
     def _get_additional_urls(self) -> List[str]:
