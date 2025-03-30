@@ -1,9 +1,6 @@
 from typing import Dict, List
-from asf_search import (
-    ASFSearchOptions,
-    ASFSession,
-    FileDownloadType,
-)
+from asf_search import ASFSearchOptions, ASFSession, FileDownloadType, search
+
 from asf_search.exceptions import ASFAuthenticationError
 
 from ASFProduct.test_ASFProduct import (
@@ -481,8 +478,8 @@ def test_validator_map_validate(**args) -> None:
     run_test_validator_map_validate(key, value, output)
 
 
-def test_ASFSearchOptions_validator(**args) -> None:
-    test_info = args['test_info']
+def test_ASFSearchOptions_validator(**kargs) -> None:
+    test_info = kargs['test_info']
     validator_name = get_resource(test_info['validator'])
     param = safe_load_tuple(get_resource(test_info['input']))
     output = safe_load_tuple(get_resource(test_info['output']))
@@ -492,6 +489,63 @@ def test_ASFSearchOptions_validator(**args) -> None:
 
 def test_ASFSearchOptions(**kwargs) -> None:
     run_test_ASFSearchOptions(**kwargs)
+
+
+def test_ASFSearchResults_get_urls() -> None:
+    response = search(
+        granule_list=[
+            'OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0'
+        ]
+    )
+    actual_urls = response.find_urls()
+
+    expected_urls = [
+        'https://cumulus.asf.alaska.edu/s3credentials',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE.png.md5',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_low-res.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_low-res.png.md5',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_thumbnail.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_thumbnail.png.md5',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0.h5',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0.h5.md5',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0.iso.xml',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0.iso.xml.md5',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VH.tif',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VH.tif.md5',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VV.tif',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VV.tif.md5',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_mask.tif',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_mask.tif.md5',
+    ]
+    assert actual_urls == expected_urls
+    assert response.find_urls('.tif') == [
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VH.tif',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VV.tif',
+        'https://datapool.asf.alaska.edu/RTC/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_mask.tif',
+    ]
+    assert response.find_urls(pattern='.*s3credentials') == [
+        'https://cumulus.asf.alaska.edu/s3credentials'
+    ]
+    assert response.find_urls('.tif', directAccess=True) == [
+        's3://asf-cumulus-prod-opera-products/OPERA_L2_RTC-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VH.tif',
+        's3://asf-cumulus-prod-opera-products/OPERA_L2_RTC-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_VV.tif',
+        's3://asf-cumulus-prod-opera-products/OPERA_L2_RTC-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_mask.tif',
+    ]
+
+    assert response.find_urls(pattern=r'.*BROWSE.*') == [
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE.png.md5',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_low-res.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_low-res.png.md5',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_thumbnail.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_thumbnail.png.md5',
+    ]
+    assert response.find_urls('.png', pattern=r'.*BROWSE.*') == [
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_low-res.png',
+        'https://datapool.asf.alaska.edu/BROWSE/OPERA-S1/OPERA_L2_RTC-S1_T131-279916-IW1_20231202T162856Z_20231202T232622Z_S1A_30_v1.0_BROWSE_thumbnail.png',
+    ]
 
 
 def test_ASFSearchResults_intersection(**kwargs) -> None:

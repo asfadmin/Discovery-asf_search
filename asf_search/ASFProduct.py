@@ -3,6 +3,7 @@ from typing import Any, Dict, Tuple, Type, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
+import re
 
 from urllib import parse
 
@@ -121,16 +122,14 @@ class ASFProduct:
             - `path`: the expected path in the CMR UMM json granule response as a list
             - `cast`: (optional): the optional type casting method
 
-<<<<<<< HEAD
     Defining `_base_properties` in subclasses allows for
     defining custom properties or overiding existing ones.
     See `S1Product.get_property_paths()` on how subclasses are expected to
     combine `ASFProduct._base_properties` with their own separately defined `_base_properties`
-=======
-    Defining `_properties_paths` in subclasses allows for defining custom properties or overiding existing ones.
->>>>>>> master
     """
 
+    _url_types = ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS', 'GET RELATED VISUALIZATION', 'VIEW RELATED INFORMATION', 'USE SERVICE API']
+    
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get('meta')
         self.umm = args.get('umm')
@@ -268,7 +267,8 @@ class ASFProduct:
         return None
 
     def _get_access_urls(
-        self, url_types: List[str] = ['GET DATA', 'EXTENDED METADATA']
+        self, 
+        url_types: List[str] = ['GET DATA', 'EXTENDED METADATA']
     ) -> List[str]:
         accessUrls = []
 
@@ -278,23 +278,50 @@ class ASFProduct:
 
         return sorted(list(set(accessUrls)))
 
-    def _get_additional_urls(self) -> List[str]:
-        accessUrls = self._get_access_urls(['GET DATA', 'EXTENDED METADATA'])
+    def _get_urls(self) -> List[str]:
+        """Finds and returns all umm urls"""
+        urls = self._get_access_urls(self._url_types)
         return [
-            url
-            for url in accessUrls
-            if not url.endswith('.md5')
-            and not url.startswith('s3://')
-            and 's3credentials' not in url
-            and not url.endswith('.png')
-            and url != self.properties['url']
+            url for url in urls if not url.startswith('s3://')
         ]
 
-    def _get_s3_urls(self) -> List[str]:
-        s3_urls = self._get_access_urls(
-            ['GET DATA', 'EXTENDED METADATA', 'GET DATA VIA DIRECT ACCESS']
-        )
+    def _get_s3_uris(self) -> List[str]:
+        """Finds and returns all umm S3 direct access uris"""
+        s3_urls = self._get_access_urls(self._url_types)
         return [url for url in s3_urls if url.startswith('s3://')]
+
+    def _get_additional_urls(self) -> List[str]:
+        """Finds and returns all non-md5/image urls and filters out the existing `url` property"""
+        access_urls = self._get_urls()
+        return [
+            url for url in access_urls
+            if not url.endswith('.md5')
+            and not url.endswith('.png')
+            and url != self.properties['url']
+            and 's3credentials' not in url
+        ]
+
+    def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
+        """
+        Searches for all urls matching a given extension and/or pattern
+        param extension: the file extension to search for. (Defaults to `None`)
+            - Example: '.tiff'
+        param pattern: A regex pattern to search each url for.(Defaults to `False`)
+            - Example: `r'(QA_)+'` to find urls with 'QA_' at least once
+        param directAccess: should search in s3 bucket urls (Defaults to `False`)
+        """
+        search_list = self._get_s3_uris() if directAccess else self._get_urls()
+        
+        def _get_extension(file_url: str):
+            path = parse.urlparse(file_url).path
+            return os.path.splitext(path)[-1]
+        
+        if extension is not None:
+            search_list = [url for url in search_list if _get_extension(url) == extension] 
+
+        regexp = re.compile(pattern=pattern)
+
+        return sorted([url for url in search_list if regexp.search(url) is not None])
 
     def centroid(self) -> Point:
         """
