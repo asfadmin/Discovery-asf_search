@@ -24,6 +24,7 @@ class ASFProductGroup:
     """
 
     def __init__(self, products: List[asf_search.ASFProduct]):
+        self.validate_group(products)
         orbits = list(set([product.properties['orbit'] for product in products]))
         assert len(orbits) == 1, 'All products must be from the same absolute orbit'
         self.orbit = orbits[0]
@@ -38,7 +39,40 @@ class ASFProductGroup:
         self.products = sorted(
             products, key=lambda x: datetime.strptime(x.properties['stopTime'], DATE_FMT)
         )
-        # TODO: add group validation
+
+    @staticmethod
+    def validate_group(products: List[asf_search.ASFProduct]):
+        """Check if a list of products are from the same pass of a platform."""
+
+        platforms = list(set([product.properties['platform'] for product in products]))
+        assert len(platforms) == 1, 'All products must be from the same platform'
+
+        processing_level = list(
+            set([product.properties['processingLevel'] for product in products])
+        )
+        # TODO: In the future, allow product other than S1 Bursts
+        if not processing_level[0] == 'BURST' and platforms[0].startswith('SENTINEL'):
+            raise NotImplementedError('Only Sentinel-1 Burst products are currently supported')
+
+        beam_modes = list(set([product.properties['beamModeType'] for product in products]))
+        assert len(beam_modes) == 1, 'All products must have the same beam mode'
+
+        polarizations = list(set([product.properties['polarization'] for product in products]))
+        assert len(polarizations) == 1, 'All products must have the same polarization'
+
+        dates = [
+            datetime.strptime(product.properties['stopTime'], DATE_FMT) for product in products
+        ]
+        orbits = list(set([product.properties['orbit'] for product in products]))
+        pass_msg = 'All products must be from the same pass of a platform'
+        assert len(orbits) <= 2, pass_msg
+        if len(orbits) == 2:
+            assert max(orbits) - min(orbits) == 1, pass_msg
+            assert (max(dates) - min(dates)).minutes < 5, pass_msg
+
+        footprints = [geometry.shape(product.geometry) for product in products]
+        union = unary_union(footprints)
+        assert not union.is_empty, 'Products must overlap in space'
 
     def __repr__(self):
         return f'ASFProductGroup: orbit={self.orbit}, date={self.date}, n={self.length}'
@@ -55,14 +89,15 @@ class ASFStack:
 
     Parameters
     ----------
-    `search_result`:
-        A list of search results from asf_search.search_asf that meet the above criteria.
+    `products`:
+        A list of ASFProducts from the same relative orbit.
     """
 
-    def __init__(self, search_result: List[asf_search.ASFProduct]):
-        self.groups = self.group_search_results(search_result)
+    def __init__(self, products: List[asf_search.ASFProduct]):
+        self.groups = self.group_products(products)
         footprints = [group.footprint for group in self.groups]
         self.union_footprint = unary_union(footprints).simplify(0.001)
+        assert not self.union_footprint.is_empty, 'Groups must overlap in space'
         self.intersect_footprint = intersection_all(footprints).simplify(0.001)
         self.start_date = min([group.date for group in self.groups])
         self.end_date = max([group.date for group in self.groups])
@@ -70,13 +105,21 @@ class ASFStack:
         self.relative_orbit = self.groups[0].relative_orbit
         self.length = len(self.groups)
 
-    def group_search_results(self, search_result: List[asf_search.ASFProduct]):
-        """Group a set of search results into a valid InSAR group."""
-        abs_orbits = list(set([result.properties['orbit'] for result in search_result]))
-        # FIXME: Does not account for ascending pass orbit increment
-        product_groups = [
-            [r for r in search_result if r.properties['orbit'] == orbit] for orbit in abs_orbits
-        ]
+    @staticmethod
+    def filter_by_orbit(products: List[asf_search.ASFProduct], orbit: int):
+        return [product for product in products if product.properties['orbit'] == orbit]
+
+    def group_products(self, products: List[asf_search.ASFProduct]):
+        """Group a set of products into a valid InSAR group."""
+        rel_orbits = list(set([product.properties['pathNumber'] for product in products]))
+        assert len(rel_orbits) == 1, 'All products must be from the same relative orbit'
+        abs_orbits = sorted(list(set([product.properties['orbit'] for product in products])))
+        product_groups = []
+        for i, orbit in enumerate(abs_orbits):
+            if i != 0 and orbit - abs_orbits[i - 1] == 1:
+                product_groups[-1] += self.filter_by_orbit(products, orbit)
+            else:
+                product_groups.append(self.filter_by_orbit(products, orbit))
         product_groups = [ASFProductGroup(group) for group in product_groups]
         return sorted(product_groups, key=lambda x: x.date)
 
@@ -188,7 +231,7 @@ class ASFPairNetwork:
             import matplotlib.pyplot as plt
         except ImportError:
             raise ImportError('Matplotlib must be installed to plot ASFPairNetworks')
-        products = [deepcopy(group.products[0]) for group in self.stack]
+        products = [deepcopy(group.products[0]) for group in self.stack.groups]
         ref_loc = len(products) // 2
         reference = products[ref_loc]
 
