@@ -35,7 +35,6 @@ class ASFProductGroup:
             datetime.strptime(product.properties['stopTime'], DATE_FMT) for product in products
         ]
         self.date = min(dates)
-        self.length = len(products)
         self.products = sorted(
             products, key=lambda x: datetime.strptime(x.properties['stopTime'], DATE_FMT)
         )
@@ -74,8 +73,11 @@ class ASFProductGroup:
         union = unary_union(footprints)
         assert not union.is_empty, 'Products must overlap in space'
 
+    def __len__(self) -> int:
+        return len(self.products)
+
     def __repr__(self):
-        return f'ASFProductGroup: orbit={self.orbit}, date={self.date}, n={self.length}'
+        return f'ASFProductGroup: orbit={self.orbit}, date={self.date}, n={self.__len__()}'
 
 
 class ASFStack:
@@ -103,7 +105,6 @@ class ASFStack:
         self.end_date = max([group.date for group in self.groups])
         self.dates = [group.date for group in self.groups]
         self.relative_orbit = self.groups[0].relative_orbit
-        self.length = len(self.groups)
 
     @staticmethod
     def filter_by_orbit(products: List[asf_search.ASFProduct], orbit: int):
@@ -128,8 +129,11 @@ class ASFStack:
         overlap_pct = self.intersect_footprint.intersection(geometry).area / geometry.area
         return int(overlap_pct * 100)
 
+    def __len__(self) -> int:
+        return len(self.groups)
+
     def __repr__(self):
-        return f'ASFStack: relative_orbit={self.relative_orbit}, start_date={self.start_date}, end_date={self.end_date}, n={self.length}'
+        return f'ASFStack: relative_orbit={self.relative_orbit}, start_date={self.start_date}, end_date={self.end_date}, n={self.__len__()}'
 
 
 class ASFProductPair:
@@ -208,7 +212,6 @@ class ASFPairNetwork:
         footprints = [pair.footprint for pair in self.pairs]
         self.union_footprint = unary_union(footprints).simplify(0.001)
         self.intersect_footprint = intersection_all(footprints).simplify(0.001)
-        self.length = len(self.pairs)
 
     def construct_network(self):
         """Construct a network of ASFProductPairs using the baseline constraints."""
@@ -263,5 +266,8 @@ class ASFPairNetwork:
         plt.tight_layout()
         plt.show()
 
+    def __len__(self) -> int:
+        return len(self.pairs)
+
     def __repr__(self):
-        return f'ASFPairNetwork: relative_orbit={self.relative_orbit}, temporal_baseline={self.max_temporal_baseline}, perpendicular_baseline={self.max_perpendicular_baseline}, n={len(self.pairs)}'
+        return f'ASFPairNetwork: relative_orbit={self.relative_orbit}, temporal_baseline={self.max_temporal_baseline}, perpendicular_baseline={self.max_perpendicular_baseline}, n={self.__len__()}'
