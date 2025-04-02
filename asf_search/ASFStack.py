@@ -1,5 +1,6 @@
 from copy import deepcopy
 from datetime import datetime
+from typing import List
 
 import numpy as np
 from shapely import geometry, intersection_all, unary_union
@@ -8,9 +9,19 @@ import asf_search
 
 
 class ASFProductGroup:
-    """A set of ASFProducts from one pass of a platform."""
+    """A group of ASFProducts that forms a valid InSAR group. This means all products:
+    - Are from the same pass of a platform
+    - Have the same beam mode
+    - Contain at least one common polarization
+    - Are contiguous in space
 
-    def __init__(self, products):
+    Parameters
+    ----------
+    `products`:
+        A list of ASFProducts from the same pass of a platform.
+    """
+
+    def __init__(self, products: List[asf_search.ASFProduct]):
         orbits = list(set([product.properties['orbit'] for product in products]))
         assert len(orbits) == 1, 'All products must be from the same absolute orbit'
         self.orbit = orbits[0]
@@ -24,32 +35,40 @@ class ASFProductGroup:
         self.products = sorted(
             products, key=lambda x: datetime.strptime(x.properties['stopTime'], fmt)
         )
+        # TODO: add group validation
 
     def __repr__(self):
-        return f'ASFProductGroup(orbit={self.orbit}, date={self.date}, n={self.length})'
+        return f'ASFProductGroup: orbit={self.orbit}, date={self.date}, n={self.length}'
 
 
 class ASFStack:
-    """A nested group of products that form valid InSAR groupings."""
+    """A sef of ASFProduct groups that form a valid InSAR stack. This means all groups:
+    - Are from the same relative orbit
+    - Have the same beam mode
+    - Contain at least one common polarization
+    - Overlap in space
 
-    def __init__(self, search_result):
-        # check same product type, mission, and mode
-        self.stack = self.group_search_results(search_result)
-        footprints = [group.footprint for group in self.stack]
+    Groups are sorted from earliest to latest date.
+
+    Parameters
+    ----------
+    `search_result`:
+        A list of search results from asf_search.search_asf that meet the above criteria.
+    """
+
+    def __init__(self, search_result: List[asf_search.ASFProduct]):
+        self.groups = self.group_search_results(search_result)
+        footprints = [group.footprint for group in self.groups]
         self.union_footprint = unary_union(footprints).simplify(0.001)
         self.intersect_footprint = intersection_all(footprints).simplify(0.001)
-        self.start_date = min([group.date for group in self.stack])
-        self.end_date = max([group.date for group in self.stack])
-        self.dates = [group.date for group in self.stack]
-        self.relative_orbit = self.stack[0].relative_orbit
-        self.length = len(self.stack)
+        self.start_date = min([group.date for group in self.groups])
+        self.end_date = max([group.date for group in self.groups])
+        self.dates = [group.date for group in self.groups]
+        self.relative_orbit = self.groups[0].relative_orbit
+        self.length = len(self.groups)
 
-    def group_search_results(self, search_result):
-        """Group a set of search results into an interferometrically valid group.
-
-        Returns:
-            A date-sorted list of ASFProductGroups
-        """
+    def group_search_results(self, search_result: List[asf_search.ASFProduct]):
+        """Group a set of search results into a valid InSAR group."""
         abs_orbits = list(set([result.properties['orbit'] for result in search_result]))
         # FIXME: Does not account for ascending pass orbit increment
         product_groups = [
@@ -64,11 +83,25 @@ class ASFStack:
         return int(overlap_pct * 100)
 
     def __repr__(self):
-        return f'ASFStack(relative_orbit={self.relative_orbit}, start_date={self.start_date}, end_date={self.end_date}, n={self.length})'
+        return f'ASFStack: relative_orbit={self.relative_orbit}, start_date={self.start_date}, end_date={self.end_date}, n={self.length}'
 
 
 class ASFProductPair:
-    """A pair of ASFProductGroups from the same relative orbit."""
+    """A pair of ASFProductGroups from that form a valid InSAR pair. This means the groups:
+    - Are from the same relative orbit
+    - Have the same beam mode
+    - Contain at least one common polarization
+    - Overlap in space
+
+    Reference is the earlier group and secondary is the later group regardless of the order of the input groups.
+
+    Parameters
+    ----------
+    `group1`:
+        An ASFProductGroup
+    `group2`:
+        An ASFProductGroup
+    """
 
     def __init__(self, group1, group2):
         sorted_pair = sorted([group1, group2], key=lambda x: x.date)
@@ -88,13 +121,37 @@ class ASFProductPair:
         self.temporal_baseline = products[1].properties['temporalBaseline']
 
     def __repr__(self):
-        return f'ASFProductPair(relative_oribt={self.relative_orbit}, ref_date={self.reference_date}, sec_date={self.secondary_date}, perp_baseline={self.perpendicular_baseline})'
+        return f'ASFProductPair: relative_oribt={self.relative_orbit}, ref_date={self.reference_date}, sec_date={self.secondary_date}, perp_baseline={self.perpendicular_baseline}'
 
 
 class ASFPairNetwork:
-    """A network of ASFProductPairs from the same relative orbit."""
+    """A network of ASFProductPairs that form a valid InSAR network. This means all pairs:
+    - Are from the same relative orbit
+    - Have the same beam mode
+    - Contain at least one common polarization
+    - Overlap in space
 
-    def __init__(self, stack, max_temporal_baseline=30, max_perpendicular_baseline=300):
+    ASFPairs are formed using earlier products as the reference and later products as the secondary.
+
+    Parameters
+    ----------
+    `stack`:
+        An ASFStack
+    `max_temporal_baseline`:
+        The maximum number of days between a reference and secondary group (always positive).
+    `max_perpendicular_baseline`:
+        The maximum distance betwee the platform postion during the collection
+        of the reference and secondary groups (always positive).
+    """
+
+    def __init__(
+        self,
+        stack: ASFStack,
+        max_temporal_baseline: int = 30,
+        max_perpendicular_baseline: float = 300,
+    ):
+        assert self.max_temporal_baseline >= 0, 'Max temporal baseline must be positive'
+        assert self.max_perpendicular_baseline >= 0, 'Max perpendicular baseline must be positive'
         self.stack = stack
         self.max_temporal_baseline = max_temporal_baseline
         self.max_perpendicular_baseline = max_perpendicular_baseline
@@ -108,8 +165,7 @@ class ASFPairNetwork:
         self.length = len(self.pairs)
 
     def construct_network(self):
-        assert self.max_temporal_baseline >= 0, 'Max temporal baseline must be positive'
-        assert self.max_perpendicular_baseline >= 0, 'Max perpendicular baseline must be positive'
+        """Construct a network of ASFProductPairs using the baseline constraints."""
         pairs = []
         for i, ref in enumerate(self.stack):
             for sec in self.stack[i + 1 :]:
@@ -121,12 +177,8 @@ class ASFPairNetwork:
         pairs = sorted(pairs, key=lambda x: (x.reference_date, x.secondary_date))
         return pairs
 
-    def get_pair_line_for_plot(self, pair, points):
-        ref_loc = points.index(pair.reference_date)
-        sec_loc = points.index(pair.secondary_date)
-        return [(ref_loc, pair.perpendicular_baseline), (sec_loc, pair.perpendicular_baseline)]
-
     def plot(self):
+        """Construct an SBAS plot of the ASFPairNetwork."""
         try:
             import matplotlib.dates as mdates
             import matplotlib.pyplot as plt
@@ -164,4 +216,4 @@ class ASFPairNetwork:
         plt.show()
 
     def __repr__(self):
-        return f'ASFPairNetwork(relative_orbit={self.relative_orbit}, temporal_baseline={self.max_temporal_baseline}, perpendicular_baseline={self.max_perpendicular_baseline}, n={len(self.pairs)})'
+        return f'ASFPairNetwork: relative_orbit={self.relative_orbit}, temporal_baseline={self.max_temporal_baseline}, perpendicular_baseline={self.max_perpendicular_baseline}, n={len(self.pairs)})'
