@@ -7,6 +7,8 @@ from shapely import geometry, intersection_all, unary_union
 
 import asf_search
 
+DATE_FMT = '%Y-%m-%dT%H:%M:%SZ'
+
 
 class ASFProductGroup:
     """A group of ASFProducts that forms a valid InSAR group. This means all products:
@@ -28,12 +30,13 @@ class ASFProductGroup:
         self.relative_orbit = products[0].properties['pathNumber']
         footprints = [geometry.shape(product.geometry) for product in products]
         self.footprint = unary_union(footprints).simplify(0.001)
-        fmt = '%Y-%m-%dT%H:%M:%SZ'
-        dates = [datetime.strptime(product.properties['stopTime'], fmt) for product in products]
+        dates = [
+            datetime.strptime(product.properties['stopTime'], DATE_FMT) for product in products
+        ]
         self.date = min(dates)
         self.length = len(products)
         self.products = sorted(
-            products, key=lambda x: datetime.strptime(x.properties['stopTime'], fmt)
+            products, key=lambda x: datetime.strptime(x.properties['stopTime'], DATE_FMT)
         )
         # TODO: add group validation
 
@@ -150,13 +153,13 @@ class ASFPairNetwork:
         max_temporal_baseline: int = 30,
         max_perpendicular_baseline: float = 300,
     ):
-        assert self.max_temporal_baseline >= 0, 'Max temporal baseline must be positive'
-        assert self.max_perpendicular_baseline >= 0, 'Max perpendicular baseline must be positive'
+        assert max_temporal_baseline >= 0, 'Max temporal baseline must be positive'
+        assert max_perpendicular_baseline >= 0, 'Max perpendicular baseline must be positive'
         self.stack = stack
         self.max_temporal_baseline = max_temporal_baseline
         self.max_perpendicular_baseline = max_perpendicular_baseline
         self.pairs = self.construct_network()
-        self.relative_orbit = self.stack[0].relative_orbit
+        self.relative_orbit = self.stack.groups[0].relative_orbit
         self.start_date = self.pairs[0].reference_date
         self.end_date = self.pairs[-1].secondary_date
         footprints = [pair.footprint for pair in self.pairs]
@@ -166,9 +169,10 @@ class ASFPairNetwork:
 
     def construct_network(self):
         """Construct a network of ASFProductPairs using the baseline constraints."""
+        groups = self.stack.groups
         pairs = []
-        for i, ref in enumerate(self.stack):
-            for sec in self.stack[i + 1 :]:
+        for i, ref in enumerate(groups):
+            for sec in groups[i + 1 :]:
                 pair = ASFProductPair(ref, sec)
                 if pair.temporal_baseline > self.max_temporal_baseline:
                     break
@@ -184,16 +188,17 @@ class ASFPairNetwork:
             import matplotlib.pyplot as plt
         except ImportError:
             raise ImportError('Matplotlib must be installed to plot ASFPairNetworks')
-        fmt = '%Y-%m-%dT%H:%M:%SZ'
         products = [deepcopy(group.products[0]) for group in self.stack]
         ref_loc = len(products) // 2
         reference = products[ref_loc]
 
         reference_name = reference.properties['sceneName']
-        reference_date = datetime.strptime(reference.properties['stopTime'], fmt)
+        reference_date = datetime.strptime(reference.properties['stopTime'], DATE_FMT)
         products = asf_search.calculate_perpendicular_baselines(reference_name, products)
         perp_baselines = [product.properties['perpendicularBaseline'] for product in products]
-        dates = [datetime.strptime(product.properties['stopTime'], fmt) for product in products]
+        dates = [
+            datetime.strptime(product.properties['stopTime'], DATE_FMT) for product in products
+        ]
         points = {date: (date, perp) for date, perp in zip(dates, perp_baselines)}
         ref_point = points[reference_date]
 
@@ -216,4 +221,4 @@ class ASFPairNetwork:
         plt.show()
 
     def __repr__(self):
-        return f'ASFPairNetwork: relative_orbit={self.relative_orbit}, temporal_baseline={self.max_temporal_baseline}, perpendicular_baseline={self.max_perpendicular_baseline}, n={len(self.pairs)})'
+        return f'ASFPairNetwork: relative_orbit={self.relative_orbit}, temporal_baseline={self.max_temporal_baseline}, perpendicular_baseline={self.max_perpendicular_baseline}, n={len(self.pairs)}'
