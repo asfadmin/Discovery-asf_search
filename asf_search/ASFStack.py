@@ -8,6 +8,7 @@ from shapely import geometry, intersection_all, unary_union
 import asf_search
 
 DATE_FMT = '%Y-%m-%dT%H:%M:%SZ'
+SIMPLIFY_TOL = 0.001
 
 
 class ASFProductGroup:
@@ -30,7 +31,7 @@ class ASFProductGroup:
         self.orbit = orbits[0]
         self.relative_orbit = products[0].properties['pathNumber']
         footprints = [geometry.shape(product.geometry) for product in products]
-        self.footprint = unary_union(footprints).simplify(0.001)
+        self.footprint = unary_union(footprints).simplify(SIMPLIFY_TOL)
         dates = [
             datetime.strptime(product.properties['stopTime'], DATE_FMT) for product in products
         ]
@@ -98,9 +99,9 @@ class ASFStack:
     def __init__(self, products: List[asf_search.ASFProduct]):
         self.groups = self.group_products(products)
         footprints = [group.footprint for group in self.groups]
-        self.union_footprint = unary_union(footprints).simplify(0.001)
+        self.union_footprint = unary_union(footprints).simplify(SIMPLIFY_TOL)
         assert not self.union_footprint.is_empty, 'Groups must overlap in space'
-        self.intersect_footprint = intersection_all(footprints).simplify(0.001)
+        self.intersect_footprint = intersection_all(footprints).simplify(SIMPLIFY_TOL)
         self.start_date = min([group.date for group in self.groups])
         self.end_date = max([group.date for group in self.groups])
         self.dates = [group.date for group in self.groups]
@@ -161,7 +162,7 @@ class ASFProductPair:
         self.secondary = sorted_pair[1]
         self.secondary_date = self.secondary.date
         self.footprint = self.reference.footprint.intersection(self.secondary.footprint).simplify(
-            0.001
+            SIMPLIFY_TOL
         )
         reference_name = self.reference.products[0].properties['sceneName']
         products = [self.reference.products[0], self.secondary.products[0]]
@@ -210,8 +211,8 @@ class ASFPairNetwork:
         self.start_date = self.pairs[0].reference_date
         self.end_date = self.pairs[-1].secondary_date
         footprints = [pair.footprint for pair in self.pairs]
-        self.union_footprint = unary_union(footprints).simplify(0.001)
-        self.intersect_footprint = intersection_all(footprints).simplify(0.001)
+        self.union_footprint = unary_union(footprints).simplify(SIMPLIFY_TOL)
+        self.intersect_footprint = intersection_all(footprints).simplify(SIMPLIFY_TOL)
 
     def construct_network(self):
         """Construct a network of ASFProductPairs using the baseline constraints."""
