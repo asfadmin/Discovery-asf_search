@@ -50,7 +50,7 @@ class ASFProductGroup:
         processing_level = list(
             set([product.properties['processingLevel'] for product in products])
         )
-        # TODO: In the future, allow product other than S1 Bursts
+        # In the future, allow products other than S1 Bursts
         if not processing_level[0] == 'BURST' and platforms[0].startswith('SENTINEL'):
             raise NotImplementedError('Only Sentinel-1 Burst products are currently supported')
 
