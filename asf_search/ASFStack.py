@@ -44,6 +44,8 @@ class ASFProductGroup:
     def validate_group(products: List[asf_search.ASFProduct]):
         """Check if a list of products are from the same pass of a platform."""
 
+        assert len(products) > 0, 'At least one product is required'
+
         platforms = list(set([product.properties['platform'] for product in products]))
         assert len(platforms) == 1, 'All products must be from the same platform'
 
