@@ -82,7 +82,8 @@ class ASFProductGroup:
 
         footprints = [geometry.shape(product.geometry) for product in products]
         union = unary_union(footprints)
-        assert not union.is_empty, 'Products must overlap in space'
+        if union.is_empty:
+            raise asf_search.ASFGroupError('Products must overlap in space')
 
     def get_granule_ids(self) -> List[str]:
         """Return the granule IDs of the products in the group."""
@@ -114,7 +115,8 @@ class ASFStack:
         self.groups = self.group_products(products)
         footprints = [group.footprint for group in self.groups]
         self.union_footprint = unary_union(footprints).simplify(SIMPLIFY_TOL)
-        assert not self.union_footprint.is_empty, 'Groups must overlap in space'
+        if self.union_footprint.is_empty:
+            raise asf_search.ASFGroupError('Groups must overlap in space')
         self.intersect_footprint = intersection_all(footprints).simplify(SIMPLIFY_TOL)
         self.start_date = min([group.date for group in self.groups])
         self.end_date = max([group.date for group in self.groups])
@@ -128,7 +130,8 @@ class ASFStack:
     def group_products(self, products: List[asf_search.ASFProduct]):
         """Group a set of products into a valid InSAR group."""
         rel_orbits = list(set([product.properties['pathNumber'] for product in products]))
-        assert len(rel_orbits) == 1, 'All products must be from the same relative orbit'
+        if len(rel_orbits) > 1:
+            raise asf_search.ASFGroupError('All products must be from the same relative orbit')
         abs_orbits = sorted(list(set([product.properties['orbit'] for product in products])))
         product_groups = [self.filter_by_orbit(products, abs_orbits[0])]
         for i, orbit in enumerate(abs_orbits[1:]):
@@ -148,7 +151,9 @@ class ASFStack:
         """Return the granule IDs of the products in the stack."""
         return [group.get_granule_ids() for group in self.groups]
 
-    def construct_network(self, max_temporal_baseline: int = 30, max_perpendicular_baseline: float = 300):
+    def construct_network(
+        self, max_temporal_baseline: int = 30, max_perpendicular_baseline: float = 300
+    ):
         """Construct a network of ASFProductPairs using the baseline constraints.
 
         Parameters
@@ -236,8 +241,10 @@ class ASFPairNetwork:
         max_temporal_baseline: int = 30,
         max_perpendicular_baseline: float = 300,
     ):
-        assert max_temporal_baseline >= 0, 'Max temporal baseline must be positive'
-        assert max_perpendicular_baseline >= 0, 'Max perpendicular baseline must be positive'
+        if max_temporal_baseline < 0:
+            raise asf_search.ASFNetworkError('Max temporal baseline must be positive')
+        if max_perpendicular_baseline < 0:
+            raise asf_search.ASFNetworkError('Max perpendicular baseline must be positive')
         self.stack = stack
         self.max_temporal_baseline = max_temporal_baseline
         self.max_perpendicular_baseline = max_perpendicular_baseline
