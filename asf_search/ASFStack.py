@@ -131,7 +131,7 @@ class ASFStack:
         assert len(rel_orbits) == 1, 'All products must be from the same relative orbit'
         abs_orbits = sorted(list(set([product.properties['orbit'] for product in products])))
         product_groups = [self.filter_by_orbit(products, abs_orbits[0])]
-        for i, orbit in enumerate(abs_orbits)[1:]:
+        for i, orbit in enumerate(abs_orbits[1:]):
             if orbit - abs_orbits[i - 1] == 1:
                 product_groups[-1] += self.filter_by_orbit(products, orbit)
             else:
@@ -147,6 +147,19 @@ class ASFStack:
     def get_granule_ids(self) -> List[List[str]]:
         """Return the granule IDs of the products in the stack."""
         return [group.get_granule_ids() for group in self.groups]
+
+    def construct_network(self, max_temporal_baseline: int = 30, max_perpendicular_baseline: float = 300):
+        """Construct a network of ASFProductPairs using the baseline constraints.
+
+        Parameters
+        ----------
+        `max_temporal_baseline`:
+            The maximum number of days between a reference and secondary group (always positive).
+        `max_perpendicular_baseline`:
+            The maximum distance between the platform position during the collection
+            of the reference and secondary groups (always positive).
+        """
+        return ASFPairNetwork(self, max_temporal_baseline, max_perpendicular_baseline)
 
     def __len__(self) -> int:
         return len(self.groups)
