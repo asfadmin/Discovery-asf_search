@@ -11,6 +11,10 @@ DATE_FMT = '%Y-%m-%dT%H:%M:%SZ'
 SIMPLIFY_TOL = 0.001
 
 
+def get_unique_properties(products: List[asf_search.ASFProduct], key: str):
+    return list(set([product.properties[key] for product in products]))
+
+
 class ASFProductGroup:
     """A group of ASFProducts that forms a valid InSAR group. This means all products:
     - Are from the same pass of a platform
@@ -27,7 +31,6 @@ class ASFProductGroup:
     def __init__(self, products: List[asf_search.ASFProduct]):
         self.validate_group(products)
         orbits = list(set([product.properties['orbit'] for product in products]))
-        assert len(orbits) == 1, 'All products must be from the same absolute orbit'
         self.orbit = orbits[0]
         self.relative_orbit = products[0].properties['pathNumber']
         footprints = [geometry.shape(product.geometry) for product in products]
@@ -44,33 +47,38 @@ class ASFProductGroup:
     def validate_group(products: List[asf_search.ASFProduct]):
         """Check if a list of products are from the same pass of a platform."""
 
-        assert len(products) > 0, 'At least one product is required'
+        if len(products) == 0:
+            raise asf_search.ASFGroupError('At least one product is required')
+    
+        platforms = get_unique_properties(products, 'platform')
+        if len(platforms) != 1:
+            raise asf_search.ASFGroupError('All products must be from the same platform')
 
-        platforms = list(set([product.properties['platform'] for product in products]))
-        assert len(platforms) == 1, 'All products must be from the same platform'
-
-        processing_level = list(
-            set([product.properties['processingLevel'] for product in products])
-        )
+        processing_level = get_unique_properties(products, 'processingLevel')
         # In the future, allow products other than S1 Bursts
         if not processing_level[0] == 'BURST' and platforms[0].startswith('SENTINEL'):
             raise NotImplementedError('Only Sentinel-1 Burst products are currently supported')
 
-        beam_modes = list(set([product.properties['beamModeType'] for product in products]))
-        assert len(beam_modes) == 1, 'All products must have the same beam mode'
+        beam_modes = get_unique_properties(products, 'beamModeType')
+        if len(beam_modes) != 1:
+            raise asf_search.ASFGroupError('All products must have the same beam mode')
 
-        polarizations = list(set([product.properties['polarization'] for product in products]))
-        assert len(polarizations) == 1, 'All products must have the same polarization'
+        polarizations = get_unique_properties(products, 'polarization')
+        if len(polarizations) != 1:
+            raise asf_search.ASFGroupError('All products must have the same polarization')
 
         dates = [
             datetime.strptime(product.properties['stopTime'], DATE_FMT) for product in products
         ]
-        orbits = list(set([product.properties['orbit'] for product in products]))
+        orbits = get_unique_properties(products, 'orbit')
         pass_msg = 'All products must be from the same pass of a platform'
-        assert len(orbits) <= 2, pass_msg
+        if len(orbits) > 2:
+            raise asf_search.ASFGroupError(pass_msg)
         if len(orbits) == 2:
-            assert max(orbits) - min(orbits) == 1, pass_msg
-            assert (max(dates) - min(dates)).minutes < 5, pass_msg
+            if max(orbits) - min(orbits) != 1:
+                raise asf_search.ASFGroupError(pass_msg)
+            if (max(dates) - min(dates)).minutes > 5:
+                raise asf_search.ASFGroupError(pass_msg)
 
         footprints = [geometry.shape(product.geometry) for product in products]
         union = unary_union(footprints)
