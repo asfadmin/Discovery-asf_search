@@ -49,7 +49,7 @@ class ASFProductGroup:
 
         if len(products) == 0:
             raise asf_search.ASFGroupError('At least one product is required')
-    
+
         platforms = get_unique_properties(products, 'platform')
         if len(platforms) != 1:
             raise asf_search.ASFGroupError('All products must be from the same platform')
@@ -83,6 +83,10 @@ class ASFProductGroup:
         footprints = [geometry.shape(product.geometry) for product in products]
         union = unary_union(footprints)
         assert not union.is_empty, 'Products must overlap in space'
+
+    def get_granule_ids(self) -> List[str]:
+        """Return the granule IDs of the products in the group."""
+        return [product.properties['fileID'] for product in self.products]
 
     def __len__(self) -> int:
         return len(self.products)
@@ -140,6 +144,10 @@ class ASFStack:
         overlap_pct = self.intersect_footprint.intersection(geometry).area / geometry.area
         return int(overlap_pct * 100)
 
+    def get_granule_ids(self) -> List[List[str]]:
+        """Return the granule IDs of the products in the stack."""
+        return [group.get_granule_ids() for group in self.groups]
+
     def __len__(self) -> int:
         return len(self.groups)
 
@@ -180,6 +188,10 @@ class ASFProductPair:
         products = asf_search.calculate_temporal_baselines(products[0], products)
         self.perpendicular_baseline = products[1].properties['perpendicularBaseline']
         self.temporal_baseline = products[1].properties['temporalBaseline']
+
+    def get_granule_ids(self) -> List[List[str]]:
+        """Return the granule IDs of the products in the stack."""
+        return [group.get_granule_ids() for group in (self.reference, self.secondary)]
 
     def __repr__(self):
         return f'ASFProductPair: relative_oribt={self.relative_orbit}, ref_date={self.reference_date}, sec_date={self.secondary_date}, perp_baseline={self.perpendicular_baseline}'
@@ -276,6 +288,10 @@ class ASFPairNetwork:
         plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
         plt.show()
+
+    def get_granule_ids(self) -> List[List[List[str]]]:
+        """Return the granule IDs of the products in the stack."""
+        return [pair.get_granule_ids() for pair in self.pairs]
 
     def __len__(self) -> int:
         return len(self.pairs)
