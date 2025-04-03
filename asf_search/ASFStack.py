@@ -130,9 +130,9 @@ class ASFStack:
         rel_orbits = list(set([product.properties['pathNumber'] for product in products]))
         assert len(rel_orbits) == 1, 'All products must be from the same relative orbit'
         abs_orbits = sorted(list(set([product.properties['orbit'] for product in products])))
-        product_groups = []
-        for i, orbit in enumerate(abs_orbits):
-            if i != 0 and orbit - abs_orbits[i - 1] == 1:
+        product_groups = [self.filter_by_orbit(products, abs_orbits[0])]
+        for i, orbit in enumerate(abs_orbits)[1:]:
+            if orbit - abs_orbits[i - 1] == 1:
                 product_groups[-1] += self.filter_by_orbit(products, orbit)
             else:
                 product_groups.append(self.filter_by_orbit(products, orbit))
