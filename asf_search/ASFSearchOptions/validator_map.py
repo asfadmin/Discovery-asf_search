@@ -81,8 +81,8 @@ validator_map = {
     'relativeBurstID': parse_int_list,
     'fullBurstID': parse_string_list,
     # nisar paramaters
-    'frameCoverage': bool,
-    'jointObservation': parse_string,
+    'frameCoverage': parse_string,
+    'jointObservation': bool,
     'mainBandPolarization': parse_string_list,
     'sideBandPolarization': parse_string_list,
     'rangeBandwidth': parse_string_list,

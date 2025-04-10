@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.1...v8.1.2)
+### Added
+- Added NISAR search parameters `frameCoverage`, `jointObservation`, `mainBandPolarization`, `sideBandPolarization`, `rangeBandwidth`.
+
+------
 ## [v8.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.0...v8.1.1)
 ### Fixed
 - SLC Burst product urls are now searchable with `find_urls()`
