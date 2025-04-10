@@ -30,6 +30,16 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     dict_opts = fix_cmr_shapes(dict_opts)
 
+    # Additional Attribute FULL_FRAME stored as a TRUE/FALSE string
+    if 'frameCoverage' in dict_opts:
+        dict_opts['frameCoverage'] = {
+            'F': 'TRUE',
+            'P': 'FALSE',
+        }[dict_opts['frameCoverage'][0].upper()]
+
+    if 'jointObservation' in dict_opts:
+        dict_opts['jointObservation'] = str(dict_opts['jointObservation']).upper()
+
     # Special case to unravel WKT field a little for compatibility
     if 'intersectsWith' in dict_opts:
         shape = wkt.loads(dict_opts.pop('intersectsWith', None))
