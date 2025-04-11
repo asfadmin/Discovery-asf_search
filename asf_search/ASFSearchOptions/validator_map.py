@@ -3,6 +3,7 @@ from asf_search import ASF_LOGGER
 from .validators import (
     parse_string,
     parse_float,
+    parse_int,
     parse_wkt,
     parse_date,
     parse_string_list,
@@ -47,6 +48,10 @@ validator_map = {
     'point': parse_point,
     'maxDoppler': parse_float,
     'minDoppler': parse_float,
+    'maxBaselinePerp': parse_float,
+    'minBaselinePerp': parse_float,
+    'maxInsarStackSize': parse_int,
+    'minInsarStackSize': parse_int,
     'maxFaradayRotation': parse_float,
     'minFaradayRotation': parse_float,
     'flightDirection': parse_string,
