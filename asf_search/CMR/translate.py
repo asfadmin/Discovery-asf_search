@@ -186,6 +186,22 @@ def try_parse_float(value: str) -> Optional[float]:
 
     return float(value)
 
+def try_parse_bool(val: str) -> Optional[bool]:
+    """Boolean values are stored as strings in umm json"""
+    if val is None:
+        return None
+    
+    return val.lower() == 'true'
+
+def _try_parse_frame_coverage(val: str) -> Optional[str]:
+    """Frame Coverage is stored as a string boolean in FULL_FRAME, convert it to Partial/Full"""
+    if val is not None:
+        if val.lower() == 'true':
+            val = 'Full'
+        else:
+            val = 'Partial'
+    
+    return val
 
 def try_parse_date(value: str) -> Optional[str]:
     if value is None:
