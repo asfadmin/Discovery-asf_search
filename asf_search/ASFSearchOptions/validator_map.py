@@ -15,6 +15,7 @@ from .validators import (
     parse_circle,
     parse_linestring,
     parse_point,
+    parse_bbox,
 )
 
 
@@ -40,6 +41,7 @@ validator_map = {
     'maxResults': int,
     'absoluteOrbit': parse_int_or_range_list,
     'asfFrame': parse_int_or_range_list,
+    'bbox': parse_bbox,
     'beamMode': parse_string_list,
     'beamSwath': parse_string_list,
     'campaign': parse_string,

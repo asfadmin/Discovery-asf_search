@@ -107,7 +107,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
 def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
     """Fixes raw CMR lon lat coord shapes"""
-    for param in ['point', 'linestring', 'circle']:
+    for param in ['point', 'linestring', 'circle', 'bbox']:
         if param in fixed_params:
             fixed_params[param] = ','.join(map(str, fixed_params[param]))
 
