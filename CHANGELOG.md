@@ -29,7 +29,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v8.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.1...v8.1.2)
 ### Added
 - Added NISAR search parameters `frameCoverage`, `jointObservation`, `mainBandPolarization`, `sideBandPolarization`, `rangeBandwidth`.
-
+- Updated `NISARProduct` to include these new searchable fields in `properties` dictionary
+- Include new NISAR fields in jsonlite & jsonlite2 output
 ------
 ## [v8.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.0...v8.1.1)
 ### Fixed
