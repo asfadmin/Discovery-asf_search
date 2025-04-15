@@ -99,6 +99,24 @@ tests:
     output: null
     error: Invalid int list
 
+- test-validators parse_bbox_list:
+    validator: parse_bbox_list
+    input: [0.0, 0.0, 1.1, 2.5]
+    output: [0.0, 0.0, 1.1, 2.5]
+    error: null
+
+- test-validators parse_bbox_list error strings:
+    validator: parse_bbox_list
+    input: [0.0, 0.0, 1.1, 2.5, 5.5]
+    output: null
+    error: Invalid coordinate list
+
+- test-validators parse_bbox_list error strings:
+    validator: parse_bbox_list
+    input: [0.0, 0.0, 1.1, 2.5, 5.5, 0.0]
+    output: null
+    error: Invalid bbox
+
 - test-ASFSearchOptions - create blank object:
     exception: Null
     # At least once, make sure they all exist but are None:

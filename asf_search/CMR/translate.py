@@ -30,6 +30,16 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     dict_opts = fix_cmr_shapes(dict_opts)
 
+    # Additional Attribute FULL_FRAME stored as a TRUE/FALSE string
+    if 'frameCoverage' in dict_opts:
+        dict_opts['frameCoverage'] = {
+            'F': 'TRUE',
+            'P': 'FALSE',
+        }[dict_opts['frameCoverage'][0].upper()]
+
+    if 'jointObservation' in dict_opts:
+        dict_opts['jointObservation'] = str(dict_opts['jointObservation']).upper()
+
     # Special case to unravel WKT field a little for compatibility
     if 'intersectsWith' in dict_opts:
         shape = wkt.loads(dict_opts.pop('intersectsWith', None))
@@ -176,6 +186,22 @@ def try_parse_float(value: str) -> Optional[float]:
 
     return float(value)
 
+def try_parse_bool(val: str) -> Optional[bool]:
+    """Boolean values are stored as strings in umm json"""
+    if val is None:
+        return None
+    
+    return val.lower() == 'true'
+
+def try_parse_frame_coverage(val: str) -> Optional[str]:
+    """Frame Coverage is stored as a string boolean in FULL_FRAME, convert it to Partial/Full"""
+    if val is not None:
+        if val.lower() == 'true':
+            val = 'Full'
+        else:
+            val = 'Partial'
+    
+    return val
 
 def try_parse_date(value: str) -> Optional[str]:
     if value is None:

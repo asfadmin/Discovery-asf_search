@@ -77,13 +77,22 @@ validator_map = {
     'instrument': parse_string,
     'collections': parse_string_list,
     'shortName': parse_string_list,
+    'dataset': parse_string_list,
+    'cmr_keywords': parse_cmr_keywords_list,
+    # S1 Inteferrogram Filters
     'temporalBaselineDays': parse_string_list,
+    # Opera Burst Filters
     'operaBurstID': parse_string_list,
+    # SLC Burst Filters
     'absoluteBurstID': parse_int_list,
     'relativeBurstID': parse_int_list,
     'fullBurstID': parse_string_list,
-    'dataset': parse_string_list,
-    'cmr_keywords': parse_cmr_keywords_list,
+    # nisar paramaters
+    'frameCoverage': parse_string,
+    'jointObservation': bool,
+    'mainBandPolarization': parse_string_list,
+    'sideBandPolarization': parse_string_list,
+    'rangeBandwidth': parse_string_list,
     # Config parameters       Parser
     'session': parse_session,
     'host': parse_string,

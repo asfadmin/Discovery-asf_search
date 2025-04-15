@@ -1,4 +1,4 @@
-from typing import Tuple, Union, Sequence
+from typing import Literal, Tuple, Union, Sequence
 import datetime
 from copy import copy
 
@@ -47,10 +47,15 @@ def geo_search(
     absoluteBurstID: Union[int, Sequence[int]] = None,
     relativeBurstID: Union[int, Sequence[int]] = None,
     fullBurstID: Union[str, Sequence[str]] = None,
-    collections: Union[str, Sequence[str]] = None,
     temporalBaselineDays: Union[str, Sequence[str]] = None,
     operaBurstID: Union[str, Sequence[str]] = None,
+    frameCoverage: Literal["FULL", "PARTIAL"] = None,
+    mainBandPolarization: Union[str, Sequence[str]] = None,
+    sideBandPolarization: Union[str, Sequence[str]] = None,
+    rangeBandwidth: Union[str, Sequence[str]] = None,
+    jointObservation: bool = None,
     dataset: Union[str, Sequence[str]] = None,
+    collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
