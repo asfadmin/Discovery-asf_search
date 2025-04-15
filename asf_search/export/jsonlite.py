@@ -229,6 +229,16 @@ class JSONLiteStreamArray(list):
             if p.get('validityStartDate'):
                 result['opera']['validityStartDate'] = p.get('validityStartDate')
 
+        if p.get('platform') == 'NISAR':
+            result['nisar'] = {
+                'pgeVersion':  p.get('pgeVersion'),
+                'mainBandPolarization':  p.get('mainBandPolarization'),
+                'sideBandPolarization':  p.get('sideBandPolarization'),
+                'frameCoverage':  p.get('frameCoverage'),
+                'jointObservation':  p.get('jointObservation'),
+                'rangeBandwidth':  p.get('rangeBandwidth'),
+            }
+        
         return result
 
     def getOutputType(self) -> str:
