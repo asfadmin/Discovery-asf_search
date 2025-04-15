@@ -1,6 +1,6 @@
 from typing import Dict, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.CMR.translate import _try_parse_frame_coverage, try_parse_bool
+from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool
 
 class NISARProduct(ASFStackableProduct):
     """
@@ -13,7 +13,7 @@ class NISARProduct(ASFStackableProduct):
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
         'mainBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_A_POLARIZATION'), 'Values']},
         'sideBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_B_POLARIZATION'), 'Values']},
-        'frameCoverage': {'path': ['AdditionalAttributes', ('Name', 'FULL_FRAME'), 'Values', 0], 'cast': _try_parse_frame_coverage},
+        'frameCoverage': {'path': ['AdditionalAttributes', ('Name', 'FULL_FRAME'), 'Values', 0], 'cast': try_parse_frame_coverage},
         'jointObservation': {'path': ['AdditionalAttributes', ('Name', 'JOINT_OBSERVATION'), 'Values', 0], 'cast': try_parse_bool},
         'rangeBandwidth': {'path': ['AdditionalAttributes', ('Name', 'RANGE_BANDWIDTH_CONCAT'), 'Values']},
     }

@@ -193,7 +193,7 @@ def try_parse_bool(val: str) -> Optional[bool]:
     
     return val.lower() == 'true'
 
-def _try_parse_frame_coverage(val: str) -> Optional[str]:
+def try_parse_frame_coverage(val: str) -> Optional[str]:
     """Frame Coverage is stored as a string boolean in FULL_FRAME, convert it to Partial/Full"""
     if val is not None:
         if val.lower() == 'true':
