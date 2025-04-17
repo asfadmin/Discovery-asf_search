@@ -26,6 +26,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.2...v8.1.3)
+### Fixed
+- `instrument` now accepts a list of instrument names.
+### Added
+- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
+
+------
 ## [v8.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.1...v8.1.2)
 ### Added
 - Added NISAR search parameters `frameCoverage`, `jointObservation`, `mainBandPolarization`, `sideBandPolarization`, `rangeBandwidth`.
