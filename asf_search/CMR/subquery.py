@@ -33,6 +33,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         'season',
         'collections',
         'dataset',
+        'instrument',
         'cmr_keywords',
         'shortName',
         'circle',

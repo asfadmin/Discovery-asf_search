@@ -34,6 +34,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - `minBaselinePerp`
     - `maxInsarStackSize`
     - `minInsarStackSize`
+- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
+
+### Fixed
+- `instrument` now accepts a list of instrument names.
 
 ------
 ## [v8.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.1...v8.1.2)
