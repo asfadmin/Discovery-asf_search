@@ -27,10 +27,17 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v8.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.2...v8.1.3)
+### Added
+- `ASFSearchOptions` now accepts the following search keywords:
+    - `bbox`        
+    - `maxBaselinePerp`
+    - `minBaselinePerp`
+    - `maxInsarStackSize`
+    - `minInsarStackSize`
+- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
+
 ### Fixed
 - `instrument` now accepts a list of instrument names.
-### Added
-- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
 
 ------
 ## [v8.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.1...v8.1.2)
@@ -38,6 +45,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Added NISAR search parameters `frameCoverage`, `jointObservation`, `mainBandPolarization`, `sideBandPolarization`, `rangeBandwidth`.
 - Updated `NISARProduct` to include these new searchable fields in `properties` dictionary
 - Include new NISAR fields in jsonlite & jsonlite2 output
+
 ------
 ## [v8.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.0...v8.1.1)
 ### Fixed

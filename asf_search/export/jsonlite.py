@@ -214,8 +214,9 @@ class JSONLiteStreamArray(list):
             if result[key] in ["NA", "NULL"]:
                 result[key] = None
 
-        if "temporalBaseline" in p.keys() or "perpendicularBaseline" in p.keys():
+        if "temporalBaseline" in p.keys():
             result["temporalBaseline"] = p["temporalBaseline"]
+        if "perpendicularBaseline" in p.keys():
             result["perpendicularBaseline"] = p["perpendicularBaseline"]
 
         if p.get("processingLevel") == "BURST":  # is a burst product
