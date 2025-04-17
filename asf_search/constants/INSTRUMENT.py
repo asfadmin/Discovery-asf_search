@@ -1,3 +1,5 @@
 C_SAR = 'C-SAR'
 PALSAR = 'PALSAR'
 AVNIR_2 = 'AVNIR-2'
+L_SAR = 'L-SAR'
+S_SAR = 'S-SAR'

@@ -67,7 +67,7 @@ validator_map = {
     'season': parse_int_list,
     'groupID': parse_string_list,
     'insarStackId': parse_string,
-    'instrument': parse_string,
+    'instrument': parse_string_list,
     'collections': parse_string_list,
     'shortName': parse_string_list,
     'dataset': parse_string_list,
