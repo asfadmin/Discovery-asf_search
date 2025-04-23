@@ -1,6 +1,7 @@
 SENTINEL1 = 'SENTINEL-1'
 SENTINEL1A = 'Sentinel-1A'
 SENTINEL1B = 'Sentinel-1B'
+SENTINEL1C = 'Sentinel-1C'
 SIRC = 'SIR-C'
 ALOS = 'ALOS'
 ERS = 'ERS'

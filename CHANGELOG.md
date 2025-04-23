@@ -30,6 +30,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - `instrument` now accepts a list of instrument names.
 ### Added
+- Added `Sentinel-1C` support `S1Product`, baseline stacking support, and search constants
 - Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
 
 ------

@@ -23,6 +23,7 @@ def ASFSearchResults_to_properties_list(
             'SENTINEL-1',
             'SENTINEL-1B',
             'SENTINEL-1A',
+            'SENTINEL-1C',
         ]
         for key, data in product.items():
             if ('date' in key.lower() or 'time' in key.lower()) and data is not None:
