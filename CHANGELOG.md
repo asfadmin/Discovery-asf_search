@@ -28,7 +28,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v8.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.2...v8.1.3)
 ### Fixed
-- `instrument` now accepts a list of instrument names.
+- `instrument` now accepts a list of instrument names
+- `tenacity` version pin changed to require minimum of `v8.2.2`
 ### Added
 - Added `Sentinel-1C` support `S1Product`, baseline stacking support, and search constants
 - Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
