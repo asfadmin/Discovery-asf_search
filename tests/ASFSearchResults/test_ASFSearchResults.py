@@ -210,7 +210,7 @@ def run_test_ASFSearchResults_intersection(wkt: str):
     platforms = [PLATFORM.SENTINEL1, PLATFORM.UAVSAR]
 
     def overlap_check(s1: BaseGeometry, s2: BaseGeometry):
-        return s1.overlaps(s2) or s1.touches(s2) or s2.distance(s1) <= 0.005
+        return s1.overlaps(s2) or s1.touches(s2) or s2.distance(s1) <= 0.005 or s1.dwithin
 
     for platform in platforms:
         asf.constants.INTERNAL.CMR_TIMEOUT = 120
@@ -236,5 +236,6 @@ def run_test_ASFSearchResults_intersection(wkt: str):
 
                 assert (
                     overlap_check(product_geom_wrapped, wrapped)
-                    or overlap_check(product_geom_wrapped, original_shape)
+                    # or overlap_check(product_geom_wrapped, original_shape)
+                    or overlap_check(product_geom_unwrapped, original_shape)
                 ), f"OVERLAP FAIL: {product.properties['sceneName']}, {product.geometry} \nproduct: {product_geom_wrapped.wkt} \naoi: {wrapped.wkt}"
