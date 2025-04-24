@@ -10,7 +10,7 @@ requirements = [
     'numpy',
     'dateparser',
     'python-dateutil',
-    'tenacity == 8.2.2',
+    'tenacity>=8.2.2',
 ]
 
 test_requirements = [

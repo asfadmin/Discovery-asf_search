@@ -409,9 +409,9 @@ def set_platform_alias(opts: ASFSearchOptions):
     if opts.platform is not None:
         plat_aliases = {
             # Groups:
-            'S1': ['SENTINEL-1A', 'SENTINEL-1B'],
-            'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B'],
-            'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B'],
+            'S1': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C'],
+            'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C'],
+            'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C'],
             'ERS': ['ERS-1', 'ERS-2'],
             'SIR-C': ['STS-59', 'STS-68'],
             # Singles / Aliases:
@@ -426,6 +426,7 @@ def set_platform_alias(opts: ASFSearchOptions):
             'SEASAT': ['SEASAT 1'],
             'SA': ['SENTINEL-1A'],
             'SB': ['SENTINEL-1B'],
+            'SC': ['SENTINEL-1C'],
             'SP': ['SMAP'],
             'UA': ['G-III'],
             'UAVSAR': ['G-III'],

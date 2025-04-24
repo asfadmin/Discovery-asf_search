@@ -124,7 +124,7 @@ class S1Product(ASFStackableProduct):
         stack_opts.beamMode = [self.properties['beamModeType']]
         stack_opts.flightDirection = self.properties['flightDirection']
         stack_opts.relativeOrbit = [int(self.properties['pathNumber'])]  # path
-        stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B]
+        stack_opts.platform = [PLATFORM.SENTINEL1A, PLATFORM.SENTINEL1B, PLATFORM.SENTINEL1C]
 
         if self.properties['polarization'] in ['HH', 'HH+HV']:
             stack_opts.polarization = ['HH', 'HH+HV']
