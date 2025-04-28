@@ -5,6 +5,8 @@ class ASFError(Exception):
 class ASFSearchError(ASFError):
     """Base search-related Exception"""
 
+class ASFGroupError(ASFError):
+    """Base search-related Exception"""
 
 class ASFSearch4xxError(ASFSearchError):
     """Raise when CMR returns a 4xx error"""
