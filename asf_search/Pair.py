@@ -1,7 +1,6 @@
 import math
 
 from asf_search import ASFProduct
-from asf_search.baseline import calc
 from asf_search.baseline import calculate_perpendicular_baselines
 import pytz
 
@@ -11,40 +10,14 @@ except ImportError:
     from dateutil.parser import parse as parse_datetime
 
 
-# This function should be in baseline.calc and be called by calculate_perpendicular_baselines
-# calculate_perpendicular_baselines should handle refernce scenes without relative_sv_pre_time and
-# relative_sv_post_time already set. This function could be used for the ref scene and all products in stack
-def get_rel_sv_times(product: ASFProduct):
-    baselineProperties = product.baseline
-    positionProperties = baselineProperties["stateVectors"]["positions"]
-    product.baseline["granulePosition"] = calc.get_granule_position(
-        product.properties["centerLat"], product.properties["centerLon"]
-    )
-
-    asc_node_time = parse_datetime(
-        baselineProperties["ascendingNodeTime"]
-    ).timestamp()
-
-    start = parse_datetime(product.properties["startTime"]).timestamp()
-    end = parse_datetime(product.properties["stopTime"]).timestamp()
-    center = start + ((end - start) / 2)
-    baselineProperties["relative_start_time"] = start - asc_node_time
-    baselineProperties["relative_center_time"] = center - asc_node_time
-    baselineProperties["relative_end_time"] = end - asc_node_time
-
-    t_pre = parse_datetime(positionProperties["prePositionTime"]).timestamp()
-    t_post = parse_datetime(positionProperties["postPositionTime"]).timestamp()
-    product.baseline["relative_sv_pre_time"] = t_pre - asc_node_time
-    product.baseline["relative_sv_post_time"] = t_post - asc_node_time
-
-
 class Pair:
     def __init__(self, reference: ASFProduct, secondary: ASFProduct):
         self.reference = reference
         self.secondary = secondary
 
-        get_rel_sv_times(reference)
-        self.perpendicular = calculate_perpendicular_baselines(reference, [secondary])[0].properties['perpendicularBaseline']
+        self.perpendicular = calculate_perpendicular_baselines(
+            reference.properties['sceneName'], 
+            [secondary, reference])[0].properties['perpendicularBaseline']
 
         reference_time = parse_datetime(reference.properties["startTime"])
         if reference_time.tzinfo is None:
