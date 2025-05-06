@@ -41,12 +41,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v8.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.2...v8.1.3)
 ### Added
-- `ASFSearchOptions` now accepts the following search keywords:
-    - `bbox`        
-    - `maxBaselinePerp`
-    - `minBaselinePerp`
-    - `maxInsarStackSize`
-    - `minInsarStackSize`
 - Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
 
 ### Fixed
