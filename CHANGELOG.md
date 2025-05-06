@@ -26,6 +26,19 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.3...v8.1.4)
+### Added
+- `ASFSearchOptions` now accepts the following search keywords:
+    - `bbox`        
+    - `maxBaselinePerp`
+    - `minBaselinePerp`
+    - `maxInsarStackSize`
+    - `minInsarStackSize`
+
+### Fixed
+- `instrument` now accepts a list of instrument names.
+
+------
 ## [v8.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.2...v8.1.3)
 ### Added
 - `ASFSearchOptions` now accepts the following search keywords:
@@ -37,7 +50,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
 
 ### Fixed
-- `instrument` now accepts a list of instrument names.
+- `instrument` now accepts a list of instrument names
+- `tenacity` version pin changed to require minimum of `v8.2.2`
+### Added
+- Added `Sentinel-1C` support `S1Product`, baseline stacking support, and search constants
+- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
 
 ------
 ## [v8.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.1...v8.1.2)
