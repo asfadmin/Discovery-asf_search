@@ -1,5 +1,8 @@
-# backport of importlib.metadata for python < 3.8
-from importlib_metadata import PackageNotFoundError, version
+try:
+    from importlib.metadata import PackageNotFoundError, version
+except ImportError:
+    # backport of importlib.metadata for python < 3.8
+    from importlib_metadata import PackageNotFoundError, version
 
 ## Setup logging now, so it's available if __version__ fails:
 import logging
