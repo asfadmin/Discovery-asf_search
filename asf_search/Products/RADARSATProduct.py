@@ -28,3 +28,9 @@ class RADARSATProduct(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L0
+
+    def jsonlite(self) -> Dict:
+        results = super().jsonlite()
+
+        results['faradayRotation'] = self.properties['faradayRotation']
+        return results

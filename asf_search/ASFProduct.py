@@ -1,6 +1,7 @@
 import os
 from typing import Any, Dict, Tuple, Type, List, final
 import warnings
+from shapely.ops import transform
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
 import re
@@ -154,6 +155,94 @@ class ASFProduct:
             'geometry': self.geometry,
             'properties': self.properties,
         }
+    
+    def jsonlite(self) -> Dict:
+        p = self.properties.copy()
+        wrapped, unwrapped = self._get_wkts()
+        for i in p.keys():
+            if p[i] == "NA" or p[i] == "":
+                p[i] = None
+
+        try:
+            if p.get("patNumber"):
+                if float(p["pathNumber"]) < 0:
+                    p["pathNumber"] = None
+        except TypeError:
+            pass
+
+        try:
+            if p.get("groupID") is None:
+                p["groupID"] = p["sceneName"]
+        except TypeError:
+            pass
+
+        try:
+            p["sizeMB"] = try_parse_float(
+                self.umm_get(self.umm, *["DataGranule", "ArchiveAndDistributionInformation", 0, "Size"])
+            )
+        except TypeError:
+            pass
+
+        try:
+            p["pathNumber"] = int(p["pathNumber"])
+        except TypeError:
+            pass
+
+        try:
+            p['frameNumber'] = int(p.get('frameNumber'))
+        except TypeError:
+            pass
+
+        try:
+            p["orbit"] = int(p["orbit"])
+        except TypeError:
+            pass
+
+        result = {
+            "beamMode": p["beamModeType"],
+            "browse": [] if p.get("browse") is None else p.get("browse"),
+            "dataset": p.get("platform"),
+            "downloadUrl": p.get("url"),
+            "fileName": p.get("fileName"),
+            "flightDirection": p.get("flightDirection"),
+            "flightLine": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "FLIGHT_LINE"), "Values", 0]),
+            "frame": p.get("frameNumber"),
+            "granuleName": p.get("sceneName"),
+            "groupID": p.get("groupID"),
+            "instrument": p.get("sensor"),
+            "missionName": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0]),
+            "orbit": [str(p["orbit"])],
+            "path": p.get("pathNumber"),
+            "polarization": p.get("polarization"),
+            "pointingAngle": p.get("pointingAngle"), # TODO: See if this is missing
+            "productID": p.get("fileID"),
+            "productType": p.get("processingLevel"),
+            "productTypeDisplay": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "PROCESSING_TYPE_DISPLAY"), "Values", 0]), # TODO: See if this is missing
+            "sizeMB": p.get("sizeMB"),
+            "startTime": p.get("startTime"),
+            "stopTime": p.get("stopTime"),
+            "thumb": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "THUMBNAIL_URL"), "Values", 0]),
+            "wkt": wrapped,
+            "wkt_unwrapped": unwrapped,
+        }
+
+        return result
+    
+    def _get_wkts(self) -> Tuple[str, str]:
+        def _unwrap_shape(x, y, z=None):
+            x = x if x > 0 else x + 360
+            return tuple([x, y])
+
+        wrapped = shape(self.geometry)
+
+        min_lon, max_lon = (wrapped.bounds[0], wrapped.bounds[2])
+
+        if max_lon - min_lon > 180:
+            unwrapped = transform(_unwrap_shape, wrapped)
+        else:
+            unwrapped = wrapped
+
+        return wrapped.wkt, unwrapped.wkt
 
     def download(
         self,

@@ -127,3 +127,16 @@ class OPERAS1Product(S1Product):
         # but when it's available it's convenient for fast matching
         concept_id = item['meta'].get('collection-concept-id')
         return concept_id in OPERAS1Product._subclass_concept_ids
+
+    def jsonlite(self) -> Dict:
+        output = super().jsonlite()
+        output['opera'] = {
+            'operaBurstID': self.properties.get('operaBurstID'),
+            'additionalUrls': self.properties.get('additionalUrls'),   
+        }
+        
+        if self.properties.get('validityStartDate'):
+            output['opera']['validityStartDate'] = self.properties.get('validityStartDate')
+
+
+        return output

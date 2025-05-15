@@ -17,3 +17,9 @@ class SIRCProduct(ASFProduct):
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
+
+    def jsonlite(self) -> Dict:
+        results = super().jsonlite()
+
+        results['pgeVersion'] = self.properties.get('pgeVersion')
+        return results

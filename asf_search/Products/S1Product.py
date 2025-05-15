@@ -150,3 +150,9 @@ class S1Product(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.SLC
+
+    def jsonlite(self) -> Dict:
+        results = super().jsonlite()
+
+        results['pgeVersion'] = self.properties.get('pgeVersion')
+        return results

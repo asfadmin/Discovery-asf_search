@@ -52,3 +52,19 @@ class NISARProduct(ASFStackableProduct):
             return (self._read_property('processingDate', ''), keys[1])
 
         return keys
+
+    def jsonlite(self) -> Dict:
+        output = super().jsonlite()
+
+        output['nisar'] = {
+            'pgeVersion':  self.properties.get('pgeVersion'),
+            'mainBandPolarization':  self.properties.get('mainBandPolarization'),
+            'sideBandPolarization':  self.properties.get('sideBandPolarization'),
+            'frameCoverage':  self.properties.get('frameCoverage'),
+            'jointObservation':  self.properties.get('jointObservation'),
+            'rangeBandwidth':  self.properties.get('rangeBandwidth'),
+        }
+        
+        output['pgeVersion'] = self.properties.get('pgeVersion')
+        
+        return output

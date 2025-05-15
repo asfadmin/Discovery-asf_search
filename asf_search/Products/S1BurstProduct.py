@@ -91,3 +91,10 @@ class S1BurstProduct(S1Product):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.BURST
+
+
+    def jsonlite(self) -> Dict:
+        results = super().jsonlite()
+
+        results['burst'] = self.properties.get("burst")
+        return results

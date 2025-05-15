@@ -80,3 +80,35 @@ class ASFStackableProduct(ASFProduct):
         baseline = self.get_baseline_calc_properties()
 
         return baseline is not None
+
+    def jsonlite(self) -> Dict:
+        output = ASFProduct.jsonlite(self)
+        if self.baseline_type == self.BaselineCalcType.CALCULATED:
+            insarGrouping = self.umm_get(
+                self.umm,
+                *["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0],
+            )
+
+            if insarGrouping not in [None, 0, "0", "NA", "NULL"]:
+                output["canInsar"] = True
+                output["insarStackSize"] = self.umm_get(
+                    self.umm,
+                    *[
+                        "AdditionalAttributes",
+                        ("Name", "INSAR_STACK_SIZE"),
+                        "Values",
+                        0,
+                    ],
+                )
+            else:
+                output["canInsar"] = False
+        else:
+            output["canInsar"] = self.baseline is not None
+        
+
+        if self.properties.get("temporalBaseline") is not None:
+            output["temporalBaseline"] = self.properties.get("temporalBaseline")
+        if self.properties.get("perpendicularBaseline") is not None:
+            output["perpendicularBaseline"] = self.properties.get("perpendicularBaseline")
+
+        return output

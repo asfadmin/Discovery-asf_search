@@ -45,3 +45,10 @@ class ALOSProduct(ASFStackableProduct):
         Returns the product type to search for when building a baseline stack.
         """
         return PRODUCT_TYPE.L1_1
+
+    def jsonlite(self) -> Dict:
+        results = super().jsonlite()
+
+        results['faradayRotation'] = self.properties['faradayRotation']
+        results['offNadirAngle'] = self.properties['offNadirAngle']
+        return results
