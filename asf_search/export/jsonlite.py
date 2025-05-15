@@ -232,6 +232,8 @@ class JSONLiteStreamArray(list):
 
         if p.get('platform') == 'NISAR':
             result['nisar'] = {
+                'additionalUrls': p.get('additionalUrls', []),
+                's3Urls': p.get('s3Urls', []),
                 'pgeVersion':  p.get('pgeVersion'),
                 'mainBandPolarization':  p.get('mainBandPolarization'),
                 'sideBandPolarization':  p.get('sideBandPolarization'),
