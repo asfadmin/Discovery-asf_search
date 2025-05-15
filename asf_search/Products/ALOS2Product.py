@@ -2,7 +2,7 @@ from copy import copy
 from typing import Dict, Union
 
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.CMR.translate import try_parse_float, try_parse_int
+from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.constants import PRODUCT_TYPE
 
 class ALOS2Product(ASFStackableProduct):
@@ -18,9 +18,6 @@ class ALOS2Product(ASFStackableProduct):
             'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0],
             'cast': try_parse_int,
         },  # Sentinel and ALOS product alt for frameNumber (ESA_FRAME)
-        'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
-        'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
-        'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
         'center_lat': {
             'path': ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0],
             'cast': try_parse_float,
@@ -28,7 +25,22 @@ class ALOS2Product(ASFStackableProduct):
         'center_lon': {
             'path': ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0],
             'cast': try_parse_float,
+        },'faradayRotation': {
+            'path': ['AdditionalAttributes', ('Name', 'FARADAY_ROTATION'), 'Values', 0],
+            'cast': try_parse_float,
         },
+        'offNadirAngle': {
+            'path': ['AdditionalAttributes', ('Name', 'OFF_NADIR_ANGLE'), 'Values', 0],
+            'cast': try_parse_float,
+        },
+        'bytes': {
+            'path': ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'SizeInBytes'],
+            'cast': try_round_float,
+        },
+        'beamModeType': {'path': ['AdditionalAttributes', ('Name', 'BEAM_MODE_TYPE'), 'Values', 0]},
+        'polarization': {
+            'path': ['AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values']
+        },  # dual polarization is in list rather than a 'VV+VH' style format
     }
 
     baseline_type = ASFStackableProduct.BaselineCalcType.CALCULATED
@@ -37,6 +49,9 @@ class ALOS2Product(ASFStackableProduct):
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.properties.pop('processingLevel')
+        self.properties.pop('md5sum')
+        self.properties.pop('granuleType')
+
         self.baseline = self.get_baseline_calc_properties()
 
     def get_baseline_calc_properties(self) -> Dict:
@@ -60,8 +75,8 @@ class ALOS2Product(ASFStackableProduct):
         stack_opts.flightDirection = self.properties['flightDirection']
         stack_opts.relativeOrbit = [int(self.properties['pathNumber'])]  # path
         stack_opts.dataset = 'ALOS-2'
-
-        if self.properties['polarization'] in ['HH', 'HH+HV']:
+        
+        if any(e in ['HH', 'HH+HV'] for e in self.properties['polarization']):
             stack_opts.polarization = ['HH', 'HH+HV']
         else:
             stack_opts.polarization = ['VV', 'VV+VH']
