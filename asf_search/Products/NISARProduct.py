@@ -1,6 +1,6 @@
 from typing import Dict, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool
+from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
 
 class NISARProduct(ASFStackableProduct):
     """
@@ -10,6 +10,10 @@ class NISARProduct(ASFStackableProduct):
     """
     _base_properties = {
         **ASFStackableProduct._base_properties,
+        'frameNumber': {
+            'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0],
+            'cast': try_parse_int,
+        },  # Sentinel, ALOSm and NISAR product alt for frameNumber (ESA_FRAME)
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
         'mainBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_A_POLARIZATION'), 'Values']},
         'sideBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_B_POLARIZATION'), 'Values']},

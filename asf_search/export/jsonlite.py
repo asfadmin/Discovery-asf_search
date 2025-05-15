@@ -225,6 +225,7 @@ class JSONLiteStreamArray(list):
         if p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
             result['opera'] = {
                 'operaBurstID': p.get('operaBurstID'),
+                's3Urls': p.get('s3Urls', []),
                 'additionalUrls': p.get('additionalUrls'),
             }
             if p.get('validityStartDate'):
