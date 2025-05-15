@@ -32,10 +32,7 @@ class ALOS2Product(ASFStackableProduct):
     }
 
     baseline_type = ASFStackableProduct.BaselineCalcType.CALCULATED
-    perpendicularBaseline = None
-    position = None
-    velocity = None
-    scene_name = None
+
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)

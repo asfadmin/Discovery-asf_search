@@ -6,6 +6,7 @@ dataset_collections = {
         'ALOS2_L1_PSR2': [
             'C1269180392-ASF',
             'C1269180392-ASF',
+            'C3315903479-ASF',
         ]
     },
     'NISAR': {
@@ -820,6 +821,11 @@ collections_per_platform = {
         'C1239611505-ASFDEV',
         'C1238733834-ASFDEV',
         'C1234413224-ASFDEV',
+    ],
+    "ALOS-2": [
+        'C1269180392-ASF',
+        'C1269180392-ASF',
+        "C3315903479-ASF",
     ],
     'ERS-1': [
         'C1210197768-ASF',
