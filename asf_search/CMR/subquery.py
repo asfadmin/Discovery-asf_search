@@ -33,11 +33,13 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         'season',
         'collections',
         'dataset',
+        'instrument',
         'cmr_keywords',
         'shortName',
         'circle',
         'linestring',
         'point',
+        'bbox',
     ]  # these parameters will dodge the subquery system
     skip_param_names = [
         'maxResults',

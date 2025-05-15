@@ -1,5 +1,5 @@
 import time
-from typing import Dict, Generator, Union, Sequence, Tuple, List
+from typing import Dict, Generator, Literal, Union, Sequence, Tuple, List
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
@@ -74,10 +74,15 @@ def search_generator(
     absoluteBurstID: Union[int, Sequence[int]] = None,
     relativeBurstID: Union[int, Sequence[int]] = None,
     fullBurstID: Union[str, Sequence[str]] = None,
-    collections: Union[str, Sequence[str]] = None,
     temporalBaselineDays: Union[str, Sequence[str]] = None,
     operaBurstID: Union[str, Sequence[str]] = None,
+    frameCoverage: Literal["FULL", "PARTIAL"] = None,
+    mainBandPolarization: Union[str, Sequence[str]] = None,
+    sideBandPolarization: Union[str, Sequence[str]] = None,
+    rangeBandwidth: Union[str, Sequence[str]] = None,
+    jointObservation: bool = None,
     dataset: Union[str, Sequence[str]] = None,
+    collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
@@ -256,7 +261,7 @@ def search_generator(
             last_page = process_page(
                 items, maxResults, subquery_max_results, total, subquery_count, opts
             )
-            ASF_LOGGER.warning(f'Page Processing Time {time.time() - perf}')
+            ASF_LOGGER.info(f'Page Processing Time {time.time() - perf}')
             subquery_count += len(last_page)
             total += len(last_page)
             last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
@@ -296,7 +301,7 @@ def query_cmr(
 
     perf = time.time()
     items = [as_ASFProduct(f, session=session) for f in response.json()['items']]
-    ASF_LOGGER.warning(f'Product Subclassing Time {time.time() - perf}')
+    ASF_LOGGER.debug(f'Product Subclassing Time {time.time() - perf}')
     hits: int = response.json()['hits']  # total count of products given search opts
     # 9-10 per process
     # 3.9-5 per process
@@ -354,7 +359,7 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
             f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "asf_search.constants.INTERNAL.CMR_TIMEOUT" to increase. ({url=}, timeout={CMR_TIMEOUT})'
         ) from exc
 
-    ASF_LOGGER.warning(f'Query Time Elapsed {time.time() - perf}')
+    ASF_LOGGER.info(f'Query Time Elapsed {time.time() - perf}')
     return response
 
 
@@ -405,9 +410,9 @@ def set_platform_alias(opts: ASFSearchOptions):
     if opts.platform is not None:
         plat_aliases = {
             # Groups:
-            'S1': ['SENTINEL-1A', 'SENTINEL-1B'],
-            'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B'],
-            'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B'],
+            'S1': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C'],
+            'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C'],
+            'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C'],
             'ERS': ['ERS-1', 'ERS-2'],
             'SIR-C': ['STS-59', 'STS-68'],
             # Singles / Aliases:
@@ -422,6 +427,7 @@ def set_platform_alias(opts: ASFSearchOptions):
             'SEASAT': ['SEASAT 1'],
             'SA': ['SENTINEL-1A'],
             'SB': ['SENTINEL-1B'],
+            'SC': ['SENTINEL-1C'],
             'SP': ['SMAP'],
             'UA': ['G-III'],
             'UAVSAR': ['G-III'],

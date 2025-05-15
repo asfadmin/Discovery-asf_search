@@ -26,12 +26,57 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.3...v8.1.4)
+### Added
+- `ASFSearchOptions` now accepts the following search keywords:
+    - `bbox`        
+    - `maxBaselinePerp`
+    - `minBaselinePerp`
+    - `maxInsarStackSize`
+    - `minInsarStackSize`
+
+### Fixed
+- `instrument` now accepts a list of instrument names.
+
+------
+## [v8.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.2...v8.1.3)
+### Added
+- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
+
+### Fixed
+- `instrument` now accepts a list of instrument names
+- `tenacity` version pin changed to require minimum of `v8.2.2`
+### Added
+- Added `Sentinel-1C` support `S1Product`, baseline stacking support, and search constants
+- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
+
+------
+## [v8.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.1...v8.1.2)
+### Added
+- Added NISAR search parameters `frameCoverage`, `jointObservation`, `mainBandPolarization`, `sideBandPolarization`, `rangeBandwidth`.
+- Updated `NISARProduct` to include these new searchable fields in `properties` dictionary
+- Include new NISAR fields in jsonlite & jsonlite2 output
+
+------
+## [v8.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.0...v8.1.1)
+### Fixed
+- SLC Burst product urls are now searchable with `find_urls()`
+
+------
+## [v8.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.1...v8.1.0)
+### Added
+- Adds `ASFSearchResults.find_urls()` and `ASFProduct.find_urls()` to gather urls/uris from results by extension and/or regex pattern
+### Changed
+- Changed log level from warning to debug/info for search timing log messages
+- Raised minimum Python version to 3.9 from 3.8, which reached EOL last year (see the official [Status of Python versions](https://devguide.python.org/versions/) for the Python version release cycle)
+
+------
 ## [v8.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.0.0...v8.0.1)
 ### Fixed
 - Fixed setting end date timezone when translating search opts to CMR opts
 
 ------
-## [v8.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v7.2.0)
+## [v8.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v7.1.0...v8.0.0)
 ### Added
 - Added `asf.ASFSearchOptions(circle=[lat, long, radius])` search param. Takes list of exactly 3 numbers.
 - Exposed `asf.validator_map`, which given a ops search param, can be used to look up which method we're going to validate it against.

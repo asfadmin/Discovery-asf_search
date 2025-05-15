@@ -1,5 +1,5 @@
 import time
-from typing import Union, Sequence, Tuple
+from typing import Literal, Union, Sequence, Tuple
 from copy import copy
 import datetime
 
@@ -48,10 +48,15 @@ def search(
     absoluteBurstID: Union[int, Sequence[int]] = None,
     relativeBurstID: Union[int, Sequence[int]] = None,
     fullBurstID: Union[str, Sequence[str]] = None,
-    collections: Union[str, Sequence[str]] = None,
     temporalBaselineDays: Union[str, Sequence[str]] = None,
     operaBurstID: Union[str, Sequence[str]] = None,
+    frameCoverage: Literal['FULL', 'PARTIAL'] = None,
+    mainBandPolarization: Union[str, Sequence[str]] = None,
+    sideBandPolarization: Union[str, Sequence[str]] = None,
+    rangeBandwidth: Union[str, Sequence[str]] = None,
+    jointObservation: bool = None,
     dataset: Union[str, Sequence[str]] = None,
+    collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
@@ -172,7 +177,7 @@ def search(
     # The last page will be marked as complete if results sucessful
     perf = time.time()
     for page in search_generator(opts=opts):
-        ASF_LOGGER.warning(f'Page Time Elapsed {time.time() - perf}')
+        ASF_LOGGER.debug(f'Page Time Elapsed {time.time() - perf}')
         results.extend(page)
         results.searchComplete = page.searchComplete
         results.searchOptions = page.searchOptions
