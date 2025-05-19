@@ -26,6 +26,17 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.1.5](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.4...v8.1.5)
+### Added
+- `AdditionalUrls` included in jsonlite `NISARProduct` entries
+
+### Fixed
+- `NISARProduct` uses `FRAME_NUMBER` instead of `ESA_FRAME` for searches and parsed results
+
+### Changed
+- `jsonlite2` output `nisar` key changed to `nsr`
+
+------
 ## [v8.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.3...v8.1.4)
 ### Added
 - `ASFSearchOptions` now accepts the following search keywords:
