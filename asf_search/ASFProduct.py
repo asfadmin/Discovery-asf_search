@@ -197,37 +197,104 @@ class ASFProduct:
             p["orbit"] = int(p["orbit"])
         except TypeError:
             pass
-
-        result = {
-            "beamMode": p["beamModeType"],
-            "browse": [] if p.get("browse") is None else p.get("browse"),
-            "dataset": p.get("platform"),
-            "downloadUrl": p.get("url"),
-            "fileName": p.get("fileName"),
-            "flightDirection": p.get("flightDirection"),
-            "flightLine": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "FLIGHT_LINE"), "Values", 0]),
-            "frame": p.get("frameNumber"),
-            "granuleName": p.get("sceneName"),
-            "groupID": p.get("groupID"),
-            "instrument": p.get("sensor"),
-            "missionName": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0]),
-            "orbit": [str(p["orbit"])],
-            "path": p.get("pathNumber"),
-            "polarization": p.get("polarization"),
-            "pointingAngle": p.get("pointingAngle"), # TODO: See if this is missing
-            "productID": p.get("fileID"),
-            "productType": p.get("processingLevel"),
-            "productTypeDisplay": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "PROCESSING_TYPE_DISPLAY"), "Values", 0]), # TODO: See if this is missing
-            "sizeMB": p.get("sizeMB"),
-            "startTime": p.get("startTime"),
-            "stopTime": p.get("stopTime"),
-            "thumb": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "THUMBNAIL_URL"), "Values", 0]),
-            "wkt": wrapped,
-            "wkt_unwrapped": unwrapped,
-        }
+        
+        result = p
+        result["flightLine"] = self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "FLIGHT_LINE"), "Values", 0])
+        result["missionName"] = self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0])
+        result["productTypeDisplay"] = self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "PROCESSING_TYPE_DISPLAY"), "Values", 0]) # TODO: See if this is missing
+        result["thumb"] = self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "THUMBNAIL_URL"), "Values", 0])
+        result["wkt"] = wrapped
+        result["wkt_unwrapped"] = unwrapped
+        result["beamMode"] =  result.pop("beamModeType")
+        result["dataset"] = result.pop("platform")
+        result["frame"] = result.pop('frameNumber')
+        result["granuleName"]= result.pop("sceneName")
+        result["instrument"]=  result.pop("sensor")
+        result["downloadUrl"] = result.pop("url")
+        result["productID"] = result.pop("fileID")
+        result["productType"] = result.pop("processingLevel")
+        # result = {
+        #     "beamMode": p["beamModeType"],
+        #     "browse": [] if p.get("browse") is None else p.get("browse"),
+        #     "dataset": p.get("platform"),
+        #     "downloadUrl": p.get("url"),
+        #     "fileName": p.get("fileName"),
+        #     "flightDirection": p.get("flightDirection"),
+        #     "flightLine": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "FLIGHT_LINE"), "Values", 0]),
+        #     "frame": p.get("frameNumber"),
+        #     "granuleName": p.get("sceneName"),
+        #     "groupID": p.get("groupID"),
+        #     "instrument": p.get("sensor"),
+        #     "missionName": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0]),
+        #     "orbit": [str(p["orbit"])],
+        #     "path": p.get("pathNumber"),
+        #     "polarization": p.get("polarization"),
+        #     "pointingAngle": p.get("pointingAngle"), # TODO: See if this is missing
+        #     "productID": p.get("fileID"),
+        #     "productType": p.get("processingLevel"),
+        #     "productTypeDisplay": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "PROCESSING_TYPE_DISPLAY"), "Values", 0]), # TODO: See if this is missing
+        #     "sizeMB": p.get("sizeMB"),
+        #     "startTime": p.get("startTime"),
+        #     "stopTime": p.get("stopTime"),
+        #     "thumb": self.umm_get(self.umm, *["AdditionalAttributes", ("Name", "THUMBNAIL_URL"), "Values", 0]),
+        #     "wkt": wrapped,
+        #     "wkt_unwrapped": unwrapped,
+        # }
 
         return result
-    
+
+    def jsonlite2(self) -> Dict:
+        p = self.jsonlite()
+        result = {
+            "b": [a.replace(p["granuleName"], "{gn}") for a in p["browse"]]
+            if p["browse"] is not None
+            else p["browse"],
+            "bm": p.get("beamMode"),
+            "d": p.get("dataset"),
+            "du": p.get("downloadUrl").replace(p["granuleName"], "{gn}"),
+            "f": p.get("frame"),
+            "fd": p.get("flightDirection"),
+            "fl": p.get("flightLine"),
+            "fn": p.get("fileName").replace(p["granuleName"], "{gn}"),
+            "fr": p.get("faradayRotation"),  # ALOS
+            "gid": p.get("groupID").replace(p["granuleName"], "{gn}"),
+            "gn": p.get("granuleName"),
+            "i": p.get("instrument"),
+            "in": p.get("canInSAR"),
+            "mn": p.get("missionName"),
+            "o": p.get("orbit"),
+            "on": p.get("offNadirAngle"),  # ALOS
+            "p": p.get("path"),
+            "pid": p.get("productID").replace(p["granuleName"], "{gn}"),
+            "pa": p.get("pointingAngle"),
+            "po": p.get("polarization"),
+            "pt": p.get("productType"),
+            "ptd": p.get("productTypeDisplay"),
+            "s": p.get("sizeMB"),
+            "ss": p.get("stackSize"),  # Used for datasets with precalculated stacks
+            "st": p.get("startTime"),
+            "stp": p.get("stopTime"),
+            "t": p.get("thumb").replace(p["granuleName"], "{gn}")
+            if p["thumb"] is not None
+            else p["thumb"],
+            "w": p["wkt"],
+            "wu": p["wkt_unwrapped"],
+            "pge": p["pgeVersion"],
+        }
+        if 'temporalBaseline' in p.keys():
+            result['tb'] = p['temporalBaseline']
+        if 'perpendicularBaseline' in p.keys():
+            result['pb'] = p['perpendicularBaseline']
+
+        if p.get('burst') is not None: # is a burst product
+            result['s1b'] = p['burst']
+
+        if p.get('opera') is not None:
+            result['s1o'] = p['opera']
+        
+        if p.get('nisar') is not None:
+            result['nisar'] = p['nisar']
+        return result
     def _get_wkts(self) -> Tuple[str, str]:
         def _unwrap_shape(x, y, z=None):
             x = x if x > 0 else x + 360

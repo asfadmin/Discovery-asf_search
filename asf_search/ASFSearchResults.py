@@ -37,11 +37,17 @@ class ASFSearchResults(UserList):
     def metalink(self):
         return results_to_metalink(self)
 
-    def jsonlite(self):
-        return results_to_jsonlite(self)
+    def jsonlite(self, stream=True):
+        if stream:
+            return results_to_jsonlite(self)
 
-    def jsonlite2(self):
-        return results_to_jsonlite2(self)
+        return {"results": [product.jsonlite() for product in self]}
+
+    def jsonlite2(self, stream=True):
+        if stream:
+            return results_to_jsonlite2(self)
+        
+        return {"results": [product.jsonlite2() for product in self]}
 
     def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
         """Returns a flat list of all https or s3 urls from all results matching an extension and/or regex pattern
