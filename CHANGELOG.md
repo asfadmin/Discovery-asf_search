@@ -26,6 +26,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.0...v8.2.1)
+### Changed
+- `ARIAS1GUNWProduct` uses `fileID` for `sceneName` if unpopulated
+
 ## [v8.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.4...v8.2.0)
 ### Added
 - Add `ALOS2Product`, `DATASET.ALOS_2` constant, and dataset concept-id aliases for ALOS-2 products

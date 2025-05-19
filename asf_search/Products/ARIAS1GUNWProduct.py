@@ -33,6 +33,9 @@ class ARIAS1GUNWProduct(S1Product):
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.properties['orbit'] = [orbit['OrbitNumber'] for orbit in self.properties['orbit']]
+        
+        if self.properties.get("sceneName") is None:
+            self.properties["sceneName"] = self.properties["fileID"]
 
         urls = self.umm_get(self.umm, 'RelatedUrls', ('Type', [('USE SERVICE API', 'URL')]), 0)
 
