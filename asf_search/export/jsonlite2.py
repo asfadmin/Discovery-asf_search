@@ -77,7 +77,7 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             result['s1o'] = p['opera']
         
         if p.get('nisar') is not None:
-            result['nisar'] = p['nisar']
+            result['nsr'] = p['nisar']
         
         return result
 

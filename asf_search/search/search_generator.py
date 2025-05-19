@@ -398,6 +398,7 @@ def set_default_dates(opts: ASFSearchOptions):
             )
             opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
+    #TODO python 3.13 deprecation warning, ambiguous date when month specified but not year
     if opts.start is not None:
         opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
     if opts.end is not None:
@@ -543,4 +544,5 @@ dataset_to_product_types = {
     'SEASAT': ASFProductType.SEASATProduct,
     'SEASAT 1': ASFProductType.SEASATProduct,
     'NISAR': ASFProductType.NISARProduct,
+    'ALOS-2': ASFProductType.ALOS2Product,
 }
