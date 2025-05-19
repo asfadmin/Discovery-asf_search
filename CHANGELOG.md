@@ -30,6 +30,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Add `ALOS2Product`, `DATASET.ALOS_2` constant, and dataset concept-id aliases for ALOS-2 products
 - Initial stacking support for `ALOS2Product`
+- `AdditionalUrls` included in jsonlite `NISARProduct` entries
+
+### Fixed
+- `NISARProduct` uses `FRAME_NUMBER` instead of `ESA_FRAME` for searches and parsed results
+
+### Changed
+- `jsonlite2` output `nisar` key changed to `nsr`
 
 ------
 ## [v8.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.3...v8.1.4)

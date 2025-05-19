@@ -225,6 +225,7 @@ class JSONLiteStreamArray(list):
         if p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
             result['opera'] = {
                 'operaBurstID': p.get('operaBurstID'),
+                's3Urls': p.get('s3Urls', []),
                 'additionalUrls': p.get('additionalUrls'),
             }
             if p.get('validityStartDate'):
@@ -232,6 +233,8 @@ class JSONLiteStreamArray(list):
 
         if p.get('platform') == 'NISAR':
             result['nisar'] = {
+                'additionalUrls': p.get('additionalUrls', []),
+                's3Urls': p.get('s3Urls', []),
                 'pgeVersion':  p.get('pgeVersion'),
                 'mainBandPolarization':  p.get('mainBandPolarization'),
                 'sideBandPolarization':  p.get('sideBandPolarization'),
