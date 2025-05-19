@@ -222,6 +222,11 @@ tests:
         - SLC-BURST
         - OPERA-S1
         - FAKE-DATASET-V2
+  - test-search-dataset ALOS Datasets:
+      dataset:
+        - "ALOS PALSAR"
+        - "ALOS AVNIR-2"
+        - ALOS-2
   - test-search-build_subquery S1-Platform:
       params:
         platform:

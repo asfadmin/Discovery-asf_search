@@ -23,6 +23,10 @@ tests:
     product: SLC_BURST.yml
     stack: SLC_BURST_stack.yml
 
+- Test get test-temporal-baseline test-product-stack ALOS-2 Params:
+    product: ALOS_2.yml
+    stack: ALOS_2_stack.yml
+
 - Test get test-temporal-baseline test-product-stack JERS Params:
     product: JERS.yml
     stack: JERS_stack.yml
