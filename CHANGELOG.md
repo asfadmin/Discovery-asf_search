@@ -26,7 +26,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v8.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.0...v8.2.1)
+## [v8.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.1...v8.2.2)
 ### Added
 - Added `constants.PRODUCT_TYPE.DISP_S1` processing level constant, concept-ids added to `OPERA-S1` dataset constant
 - Added key OPERA-S1 Displacement fields to `OPERAS1Product` properties when available
