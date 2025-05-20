@@ -27,6 +27,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v8.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.0...v8.2.1)
+### Added
+- Added `constants.PRODUCT_TYPE.DISP_S1` processing level constant, concept-ids added to `OPERA-S1` dataset constant
+
+## [v8.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.0...v8.2.1)
 ### Changed
 - `ARIAS1GUNWProduct` uses `fileID` for `sceneName` if unpopulated
 
