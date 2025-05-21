@@ -48,7 +48,6 @@ class ALOS2Product(ASFStackableProduct):
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
-        self.properties.pop('processingLevel')
         self.properties.pop('md5sum')
         self.properties.pop('granuleType')
 

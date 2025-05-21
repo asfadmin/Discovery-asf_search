@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.2...v8.2.3)
+### Fixed
+- Fix csv output for `ALOS2Product` type
+
+------
 ## [v8.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.1...v8.2.2)
 ### Added
 - Added `constants.PRODUCT_TYPE.DISP_S1` processing level constant, concept-ids added to `OPERA-S1` dataset constant
