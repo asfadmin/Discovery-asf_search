@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.2...v8.3.0)
+### Changed
+- `search()` no longer raises error if results are incomplete
+- if `asf-search` receives an incomplete page from CMR, log as a warning and continue querying until results are exhausted
+
+------
 ## [v8.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.2...v8.2.3)
 ### Fixed
 - Fix csv output for `ALOS2Product` type
