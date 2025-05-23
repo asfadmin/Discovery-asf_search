@@ -31,6 +31,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `search()` no longer raises error if results are incomplete
 - if `asf-search` receives an incomplete page from CMR, log as a warning and continue querying until results are exhausted
 
+### Fixed
+- `S1BurstProduct` No longer include null frame value in jsonlite outputs
+- `S1BurstProduct` includes `SizeMB` in jsonlite outputs
+- `ARIAVersion` now populated in jsonlite outputs
+- `absoluteOrbit` field supports lists in jsonlite outputs
+
 ------
 ## [v8.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.2...v8.2.3)
 ### Fixed
