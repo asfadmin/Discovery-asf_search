@@ -72,6 +72,7 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
 
         if p.get('burst') is not None: # is a burst product
             result['s1b'] = p['burst']
+            result['f'] = None
 
         if p.get('opera') is not None:
             result['s1o'] = p['opera']
@@ -79,6 +80,9 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
         if p.get('nisar') is not None:
             result['nsr'] = p['nisar']
         
+        if p.get('ariaVersion') is not None:
+            result['ariav'] = p.get('ariaVersion')
+    
         return result
 
     def getOutputType(self) -> str:

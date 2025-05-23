@@ -37,7 +37,7 @@ class S1BurstProduct(S1Product):
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
         self.properties["sceneName"] = self.properties["fileID"]
-
+        self.properties.pop('frameNumber', None)
         # Gathers burst properties into `burst` specific dict
         # rather than properties dict to limit breaking changes
         self.properties["burst"] = {
