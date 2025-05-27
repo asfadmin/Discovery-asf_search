@@ -658,7 +658,7 @@ tests:
       params:
         processingLevel: CSLC-STATIC
 
-  - test-aliasing-search-against-api OERA-S1 RTC:
+  - test-aliasing-search-against-api OPERA-S1 RTC:
       params:
         dataset: OPERA-S1
         processingLevel: RTC
