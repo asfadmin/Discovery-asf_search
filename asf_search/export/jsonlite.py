@@ -1,5 +1,6 @@
 import inspect
 import json
+import re
 from types import GeneratorType
 from typing import Tuple
 from shapely.geometry import shape
@@ -191,7 +192,7 @@ class JSONLiteStreamArray(list):
             "offNadirAngle": str(p["offNadirAngle"])
             if p.get("offNadirAngle") is not None
             else None,  # ALOS
-            "orbit": [str(p["orbit"])],
+            "orbit": p.get("orbit") if isinstance(p.get("orbit"), list) else [str(p["orbit"])],
             "path": p.get("pathNumber"),
             "polarization": p.get("polarization"),
             "pointingAngle": p.get("pointingAngle"),
@@ -221,8 +222,9 @@ class JSONLiteStreamArray(list):
 
         if p.get("processingLevel") == "BURST":  # is a burst product
             result["burst"] = p["burst"]
+            result["sizeMB"] = float(p["bytes"]) / 1024000
 
-        if p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
+        elif p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
             result['opera'] = {
                 'operaBurstID': p.get('operaBurstID'),
                 's3Urls': p.get('s3Urls', []),
@@ -230,8 +232,7 @@ class JSONLiteStreamArray(list):
             }
             if p.get('validityStartDate'):
                 result['opera']['validityStartDate'] = p.get('validityStartDate')
-
-        if p.get('platform') == 'NISAR':
+        elif p.get('platform') == 'NISAR':
             result['nisar'] = {
                 'additionalUrls': p.get('additionalUrls', []),
                 's3Urls': p.get('s3Urls', []),
@@ -242,6 +243,13 @@ class JSONLiteStreamArray(list):
                 'jointObservation':  p.get('jointObservation'),
                 'rangeBandwidth':  p.get('rangeBandwidth'),
             }
+        elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
+            result.pop("perpendicularBaseline", None)
+            if p.get('ariaVersion') is None:
+                version_unformatted = result.get('productID').split('v')[-1]
+                result['ariaVersion'] = re.sub(r'[^0-9\.]', '', version_unformatted.replace("_", '.'))
+            else:
+                result['ariaVersion'] = p.get('ariaVersion')
         
         return result
 
