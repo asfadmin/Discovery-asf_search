@@ -10,7 +10,7 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
     from asf_search import REPORT_ERRORS
 
     if not REPORT_ERRORS:
-        ASF_LOGGER.error.warning(
+        ASF_LOGGER.warning(
             'Automatic search error reporting is turned off,'
             'search errors will NOT be reported to ASF.'
             '\nTo enable automatic error reporting, set asf_search.REPORT_ERRORS to True'
