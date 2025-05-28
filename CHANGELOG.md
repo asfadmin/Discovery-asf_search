@@ -33,6 +33,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 - Made output formats more resilient to potentially missing fields
+- Changed AOI base coordinate merge threshold from 0.004 to 0.0004
 
 ------
 ## [v8.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.0...v8.3.1)
