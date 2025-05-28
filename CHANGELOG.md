@@ -26,6 +26,16 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.1...v8.3.2)
+### Fixed
+- `ALOS2Product` baseline stacking no longer raises error
+- Fixed missing f-string AOI simplification report and typo
+
+### Changed
+- Made output formats more resilient to missing fields
+- No longer simplify Polygon/Point/Linestring if coordinates already under 300
+
+------
 ## [v8.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.0...v8.3.1)
 ### Fixed
 - Fixed typo in `error_reporting.py`

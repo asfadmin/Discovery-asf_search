@@ -347,6 +347,10 @@ def _simplify_aoi(
         )
         return simplified, [*repairs, repair]
 
+    # Skip the simplification step if the shape is already within our coordinate threshold
+    if _get_shape_coords_len(shape) <= 300 and (isinstance(shape, Polygon) or isinstance(shape, LineString) or isinstance(shape, Point)):
+        return shape, repairs
+    
     # Keep taking away points until it's under 300:
     for simplify_level in range(0, max_depth):
         simplifed = shape.simplify(tolerance=threshold * (1.5**simplify_level))
@@ -357,7 +361,7 @@ def _simplify_aoi(
                 RepairEntry(
                     "'type': 'GEOMETRY_SIMPLIFICATION'",
                     f"'report': 'Shape Simplified: shape of {_get_shape_coords_len(shape)} "
-                    "simplified to {coords_length} with proximity threshold of {threshold}'",
+                    f"simplified to {coords_length} with proximity threshold of {threshold}'",
                 )
             )
 
