@@ -33,7 +33,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 - Made output formats more resilient to missing fields
-- No longer simplify Polygon/Point/Linestring if coordinates already under 300
+- Decrease AOI shape simplification point merge threshold from 0.0004 to 0.000004.
 
 ------
 ## [v8.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.0...v8.3.1)

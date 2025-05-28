@@ -292,7 +292,7 @@ def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]
 
 def _simplify_aoi(
     shape: Union[Polygon, LineString, Point],
-    threshold: float = 0.004,
+    threshold: float = 0.000004,
     max_depth: int = 10,
 ) -> Tuple[Union[Polygon, LineString, Point], List[RepairEntry]]:
     """
@@ -346,10 +346,6 @@ def _simplify_aoi(
             f"to {_get_shape_coords_len(simplified)} with proximity threshold of {threshold}'",
         )
         return simplified, [*repairs, repair]
-
-    # Skip the simplification step if the shape is already within our coordinate threshold
-    if _get_shape_coords_len(shape) <= 300 and (isinstance(shape, Polygon) or isinstance(shape, LineString) or isinstance(shape, Point)):
-        return shape, repairs
     
     # Keep taking away points until it's under 300:
     for simplify_level in range(0, max_depth):
