@@ -84,7 +84,7 @@ class KMLStreamArray(MetalinkStreamArray):
     def getItem(self, p):
         placemark = ETree.Element("Placemark")
         name = ETree.Element("name")
-        name.text = p["sceneName"]
+        name.text = p.get("sceneName")
         placemark.append(name)
 
         description = ETree.Element("description")
@@ -93,7 +93,7 @@ class KMLStreamArray(MetalinkStreamArray):
 
         h1 = ETree.Element("h1")
         h1.text = (
-            f"{p['platform']} ({p['configurationName']}), acquired {p['sceneDate']}"
+            f"{p.get('platform')} ({p.get('configurationName')}), acquired {p.get('sceneDate')}"
         )
         h2 = ETree.Element("h2")
         h2.text = p.get("url", "")
