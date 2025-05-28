@@ -292,7 +292,7 @@ def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]
 
 def _simplify_aoi(
     shape: Union[Polygon, LineString, Point],
-    threshold: float = 0.000004,
+    threshold: float = 0.0004,
     max_depth: int = 10,
 ) -> Tuple[Union[Polygon, LineString, Point], List[RepairEntry]]:
     """

@@ -32,8 +32,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Fixed missing f-string AOI simplification report and typo
 
 ### Changed
-- Made output formats more resilient to missing fields
-- Decrease AOI shape simplification point merge threshold from 0.0004 to 0.000004.
+- Made output formats more resilient to potentially missing fields
 
 ------
 ## [v8.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.0...v8.3.1)
