@@ -29,7 +29,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v8.3.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.1...v8.3.3)
 ### Added
 - Added `productionConfiguration` keyword
-- Added `PRODUCTION`, `URGENT_RESPONSE`, `SCIENCE_ON_DEMAND` to `constants.PRODUCTION_CONFIGURATION`
+- Added `PRODUCTION` and `URGENT_RESPONSE` to `constants.PRODUCTION_CONFIGURATION`
 - Added `productionConfiguration` key to `NISARProduct` properties dictionary
 
 ------
