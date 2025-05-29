@@ -50,4 +50,5 @@ field_map = {
     'frameCoverage':                {'key': 'attribute[]',             'fmt': 'string,FULL_FRAME,{0}'},
     'jointObservation':             {'key': 'attribute[]',             'fmt': 'string,JOINT_OBSERVATION,{0}'},
     'rangeBandwidth':               {'key': 'attribute[]',             'fmt': 'string,RANGE_BANDWIDTH_CONCAT,{0}'},
+    'productionConfiguration':      {'key': 'attribute[]',             'fmt': 'string,PRODUCTION_PIPELINE,{0}'},
 }
