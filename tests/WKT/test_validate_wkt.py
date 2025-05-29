@@ -88,7 +88,7 @@ def run_test_search_wkt_prep(wkt: str):
 
     shape = loads(wkt)
     ls = _search_wkt_prep(shape)
-    assert ls.geometryType() == shape.geometryType()
+    assert ls.geom_type == shape.geom_type
     assert shape.wkt == wkt
 
 

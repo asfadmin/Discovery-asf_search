@@ -50,7 +50,8 @@ class ALOS2Product(ASFStackableProduct):
         super().__init__(args, session)
         self.properties.pop('md5sum')
         self.properties.pop('granuleType')
-
+        self.properties.pop('processingLevel')
+        
         self.baseline = self.get_baseline_calc_properties()
 
     def get_baseline_calc_properties(self) -> Dict:
@@ -69,7 +70,6 @@ class ALOS2Product(ASFStackableProduct):
         """
         stack_opts = ASFSearchOptions() if opts is None else copy(opts)
 
-        stack_opts.processingLevel = self.get_default_baseline_product_type()
         stack_opts.beamMode = [self.properties['beamModeType']]
         stack_opts.flightDirection = self.properties['flightDirection']
         stack_opts.relativeOrbit = [int(self.properties['pathNumber'])]  # path
@@ -104,13 +104,6 @@ class ALOS2Product(ASFStackableProduct):
         ]
 
         return dict(position=position, velocity=velocity)
-
-    @staticmethod
-    def get_default_baseline_product_type() -> Union[str, None]:
-        """
-        Returns the product type to search for when building a baseline stack.
-        """
-        return PRODUCT_TYPE.L1_1
 
     def is_valid_reference(self):
         return self.has_baseline()

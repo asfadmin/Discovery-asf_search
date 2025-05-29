@@ -383,7 +383,7 @@ def wrap_wkt(opts: ASFSearchOptions):
         opts.intersectsWith = wrapped.wkt
         if len(repairs):
             ASF_LOGGER.warning(
-                'WKT REPAIR/VALIDATION: The following repairs were performed'
+                'WKT REPAIR/VALIDATION: The following repairs were performed '
                 f'on the provided AOI:\n{[str(repair) for repair in repairs]}'
             )
 
