@@ -26,6 +26,23 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.3.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.2...v8.3.3)
+### Added
+- Added `productionConfiguration` keyword
+- Added `PRODUCTION` and `URGENT_RESPONSE` to `constants.PRODUCTION_CONFIGURATION`
+- Added `productionConfiguration` key to `NISARProduct` properties dictionary
+
+------
+## [v8.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.1...v8.3.2)
+### Fixed
+- `ALOS2Product` baseline stacking no longer raises error
+- Fixed missing f-string AOI simplification report and typo
+
+### Changed
+- Made output formats more resilient to potentially missing fields
+- Changed AOI base coordinate merge threshold from 0.004 to 0.0004
+
+------
 ## [v8.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.1...v8.3.2)
 ### Fixed
 - `ALOS2Product` baseline stacking no longer raises error

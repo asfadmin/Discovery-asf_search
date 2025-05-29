@@ -1,6 +1,12 @@
 name: tests
 
-on: [push]
+on:
+    push:
+      paths:
+        - 'asf_search/**.py'
+        - 'tests/**.py'
+        - 'examples/**.py'
+        - 'examples/**.ipynb'
 
 jobs:
   run-tests:
