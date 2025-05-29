@@ -20,6 +20,7 @@ class NISARProduct(ASFStackableProduct):
         'frameCoverage': {'path': ['AdditionalAttributes', ('Name', 'FULL_FRAME'), 'Values', 0], 'cast': try_parse_frame_coverage},
         'jointObservation': {'path': ['AdditionalAttributes', ('Name', 'JOINT_OBSERVATION'), 'Values', 0], 'cast': try_parse_bool},
         'rangeBandwidth': {'path': ['AdditionalAttributes', ('Name', 'RANGE_BANDWIDTH_CONCAT'), 'Values']},
+        'productionConfiguration': {'path': ['AdditionalAttributes', ('Name', 'PRODUCTION_PIPELINE'), 'Values', 0]},
     }
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)

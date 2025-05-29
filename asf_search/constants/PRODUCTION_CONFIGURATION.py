@@ -1,0 +1,4 @@
+# NISAR Production Configurations
+PRODUCTION = 'PR'
+URGENT_RESPONSE = 'UR'
+SCIENCE_ON_DEMAND = 'OD'
