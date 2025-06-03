@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v8.3.5](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.4...v8.3.5)
+### Removed 
+- Invalid `HH_HV_VV_VH` quad-polarization removed (`HH_HV_VH_VV` is the correct ordering)
+
+------
 ## [v8.3.4](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.3...v8.3.4)
 ### Added
 - Added `NISAR_UR_L0B_RRSD`, `NISAR_UR_L1`, `NISAR_UR_L2`, `NISAR_ANC_AUX`, `NISAR_OE`, `NISAR_RP`, `NISAR_LRCLK`, `NISAR_STUF`, `NISAR_OROST`, `NISAR_TEC`, `NISAR_DC_RADAR`, `NISAR_COP`, collections to `NISAR` dataset constant
