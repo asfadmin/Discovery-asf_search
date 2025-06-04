@@ -27,7 +27,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v8.3.5](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.4...v8.3.5)
-### Removed 
+### Added
+- Added NISAR product type constants `L0B`, `RSLC`, `RIFG`, `RUNW`, `ROFF`, `GSLC`, `GCOV`, `GUNW`, `GOFF`, `SME2` to `constants.PRODUCT_TYPE`, supported for use with `processingLevel`.
+    - Added concept-id aliases for above processing level constants, used when searching
+
+### Removed
 - Invalid `HH_HV_VV_VH` quad-polarization removed (`HH_HV_VH_VV` is the correct ordering)
 
 ------
