@@ -21,9 +21,12 @@ class NISARProduct(ASFStackableProduct):
         'jointObservation': {'path': ['AdditionalAttributes', ('Name', 'JOINT_OBSERVATION'), 'Values', 0], 'cast': try_parse_bool},
         'rangeBandwidth': {'path': ['AdditionalAttributes', ('Name', 'RANGE_BANDWIDTH_CONCAT'), 'Values']},
         'productionConfiguration': {'path': ['AdditionalAttributes', ('Name', 'PRODUCTION_PIPELINE'), 'Values', 0]},
+        'processingLevel': {'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0]},
     }
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
+        if self.properties.get('processingLevel') is None:
+            self.properties.pop('processingLevel', None)
 
         self.properties['additionalUrls'] = self._get_additional_urls()
         self.properties['s3Urls'] = self._get_s3_uris()

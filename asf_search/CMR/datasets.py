@@ -1572,6 +1572,103 @@ collections_by_processing_level = {
     'PAULI': ['C1214354031-ASF', 'C1207038647-ASF'],
     'SLOPE': ['C1214408428-ASF', 'C1210599503-ASF'],
     'STOKES': ['C1214419355-ASF', 'C1210599673-ASF'],
+    'L0B': [
+        'C1261815274-ASFDEV', # RRSD BETA
+        'C1261815289-ASF',
+        'C2850224301-ASF',
+        'C1261832497-ASFDEV', # Provisional
+        'C1261832659-ASF',
+        'C2853089814-ASF',
+        'C1256358262-ASFDEV', # Validated
+        'C1257349115-ASF',
+        'C2727901639-ASF',
+        'C1261815276-ASFDEV', # CRSD
+        'C1261815301-ASF',
+        'C2850225137-ASF',
+        'C1261832632-ASFDEV', # Provisional
+        'C1261832671-ASF',
+        'C2853091612-ASF',
+        'C1256358463-ASFDEV', # Validate
+        'C1257349114-ASF',
+        'C2727901523-ASF',
+    ],
+    'RSLC': [
+            'C1261813489-ASFDEV', # Beta
+            'C1261815148-ASF',
+            'C2850225585-ASF',
+            'C1261832868-ASFDEV', # Provisional
+            'C1261833052-ASF',
+            'C2853145197-ASF',
+            'C1256363301-ASFDEV', # Validated
+            'C1257349109-ASF',
+            'C2727900439-ASF',
+    ],
+    'RIFG': [
+            'C1261819086-ASFDEV', # Beta
+            'C1261819120-ASF',
+            'C2850234202-ASF',
+            'C1261832940-ASFDEV', # Provisional
+            'C1261833063-ASF',
+            'C2853147928-ASF',
+            'C1256381769-ASFDEV', # Validated
+            'C1257349108-ASF',
+            'C2723110181-ASF',
+        ],
+    'RUNW': [
+        'C1261819098-ASFDEV', # Beta
+        'C1261819121-ASF',
+        'C2850235455-ASF',
+        'C1261832990-ASFDEV', # Provisional
+        'C1261833064-ASF',
+        'C2853153429-ASF',
+        'C1256420738-ASFDEV', # Validated
+        'C1257349107-ASF',
+        'C2727900827-ASF',
+    ],
+    'ROFF': [
+        'C1261819110-ASFDEV', # Beta
+        'C1261819145-ASF',
+        'C2850237619-ASF',
+        'C1261832993-ASFDEV', # Provisional
+        'C1261833076-ASF',
+        'C2853156054-ASF',
+        'C1256411631-ASFDEV', # Validated
+        'C1257349103-ASF',
+        'C2727900080-ASF',
+    ],
+    'GCOV': [
+        'C1261819211-ASFDEV', # Beta
+        'C1261819275-ASF',
+        'C2850262927-ASF',
+        'C1261833026-ASFDEV', # Provisional
+        'C1261846880-ASF',
+        'C2854338529-ASF',
+        'C1256477304-ASFDEV', # Validated
+        'C1257349095-ASF',
+        'C2727896018-ASF',
+    ],
+    'GOFF': [
+        'C1261819233-ASFDEV', # Beta
+        'C1261819281-ASF',
+        'C2850263910-ASF',
+        'C1261833027-ASFDEV', # Provisional
+        'C1261846994-ASF',
+        'C2854341702-ASF',
+        'C1256479237-ASFDEV', # Validated
+        'C1257349094-ASF',
+        'C2727896460-ASF',
+    ],
+    'SME2': [
+        'C1261819245-ASFDEV', # Beta
+        'C1261819282-ASF',
+        'C2850265000-ASF',
+        'C1261833050-ASFDEV', # Provisional
+        'C1261847095-ASF',
+        'C2854344945-ASF',
+        'C1256568692-ASFDEV', # Validated
+        'C1257349093-ASF',
+        'C2727894546-ASF',
+    ],
 }
 
 # Helper Methods

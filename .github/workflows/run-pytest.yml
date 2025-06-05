@@ -1,13 +1,6 @@
 name: tests
 
-on:
-    push:
-      paths:
-        - 'asf_search/**.py'
-        - 'tests/**.py'
-        - 'examples/**.py'
-        - 'examples/**.ipynb'
-
+on: push
 jobs:
   run-tests:
     runs-on: ubuntu-latest
