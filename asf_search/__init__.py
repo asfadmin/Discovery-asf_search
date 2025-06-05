@@ -36,6 +36,8 @@ from .ASFSearchResults import ASFSearchResults  # noqa: F401 E402
 from .ASFSearchOptions import ASFSearchOptions, validators  # noqa: F401 E402
 from .ASFStack import *  # noqa: F403 F401 E402
 from .Pair import Pair  # noqa:  F401, E402
+from .Stack import Stack  # noqa: F401, E402
+from .Network import Network  # noqa: F401, E402
 from .Products import *  # noqa: F403 F401 E402
 from .exceptions import *  # noqa: F403 F401 E402
 from .constants import (  # noqa: F401 E402

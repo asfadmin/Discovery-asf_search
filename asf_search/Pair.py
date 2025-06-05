@@ -11,21 +11,33 @@ except ImportError:
 
 
 class Pair:
-    def __init__(self, reference: ASFProduct, secondary: ASFProduct):
-        self.reference = reference
-        self.secondary = secondary
+    def __init__(self, ref: ASFProduct, sec: ASFProduct):
+        self.ref = ref
+        self.sec = sec
 
         self.perpendicular = calculate_perpendicular_baselines(
-            reference.properties['sceneName'], 
-            [secondary, reference])[0].properties['perpendicularBaseline']
+            ref.properties['sceneName'], 
+            [sec, ref])[0].properties['perpendicularBaseline']
 
-        reference_time = parse_datetime(reference.properties["startTime"])
-        if reference_time.tzinfo is None:
-            reference_time = pytz.utc.localize(reference_time)
-        secondary_time = parse_datetime(secondary.properties["startTime"])
-        if secondary_time.tzinfo is None:
-            secondary_time = pytz.utc.localize(secondary_time)
-        self.temporal = secondary_time.date() - reference_time.date()
+        ref_time = parse_datetime(ref.properties["startTime"])
+        if ref_time.tzinfo is None:
+            ref_time = pytz.utc.localize(ref_time)
+        sec_time = parse_datetime(sec.properties["startTime"])
+        if sec_time.tzinfo is None:
+            sec_time = pytz.utc.localize(sec_time)
+
+        self.ref_date = ref_time.date()
+        self.sec_date = sec_time.date()
+        self.temporal = self.sec_date - self.ref_date
+
+    def __eq__(self, other):
+        if not isinstance(other, Pair):
+            return NotImplemented
+        return (self.ref_date == other.ref_date and
+                self.sec_date == other.sec_date)
+
+    def __hash__(self):
+        return hash((self.ref.date.date(), self.sec.date.date()))
 
     def estimate_mean_coherence(self) -> float:
         '''
@@ -41,7 +53,7 @@ class Pair:
         # TODO: make xarray an optional dependency
         import xarray as xr
 
-        month = parse_datetime(self.reference.properties["startTime"]).month
+        month = parse_datetime(self.ref.properties["startTime"]).month
         if month in [12, 1, 2]:
             season = 'winter'
         elif month in [3, 4, 5]:
@@ -58,7 +70,7 @@ class Pair:
             Temporal baseline: {self.temporal.days} days"""))
 
         uri = f"s3://asf-search-coh/global_coh_100ppd_11367x4367/Global_{season}_vv_COH{temporal}_100ppd.zarr"
-        coords = self.reference.geometry['coordinates'][0]
+        coords = self.ref.geometry['coordinates'][0]
         lons, lats = zip(*coords)
         minx, miny, maxx, maxy = min(lons), min(lats), max(lons), max(lats)
 
