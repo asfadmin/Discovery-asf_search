@@ -3,6 +3,7 @@ import platform
 from typing import List, Union
 import requests
 from requests.utils import get_netrc_auth
+from requests.auth import HTTPBasicAuth
 import http.cookiejar
 
 from asf_search import ASF_LOGGER, __name__ as asf_name, __version__ as asf_version
@@ -126,32 +127,26 @@ class ASFSession(requests.Session):
         ----------
         ASFSession
         """
-        login_url = f'https://{self.edl_host}/oauth/authorize?client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'  # noqa F401
+        from asf_search.constants import INTERNAL
 
-        self.auth = (username, password)
+        self.auth = HTTPBasicAuth(username, password)
 
-        ASF_LOGGER.info(f'Attempting to login via "{login_url}"')
-        self.get(login_url)
 
-        if not self._check_auth_cookies(self.cookies.get_dict()):
-            raise ASFAuthenticationError('Username or password is incorrect')
+        # need this to set the asf-urs cookie for certain dataset downloads to work
+        self._legacy_creds_auth()
 
-        ASF_LOGGER.info('Login successful')
-
-        token = self.cookies.get_dict().get('urs-access-token')
-
-        if token is None:
-            warn(
-                f'Provided asf_auth_host "{self.asf_auth_host}" returned no EDL token '
-                'during ASFSession validation. EDL Token expected in "urs-access-token" cookie, '
-                'required for hidden/restricted dataset access. '
-                'The current session will use basic authorization.'
-            )
+        login_url = f'https://{self.edl_host}/api/users/find_or_create_token'
+        ASF_LOGGER.info(f'Attempting to get account EDL Bearer token via "{login_url}"')
+        response = self.post(login_url)
+        
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            warnings.warn(f'Failed to get EDL Bearer token from {login_url}. Restricted datasets may be searchable, but downloading might fail.\nOriginal Exception: {str(e)}')
         else:
-            ASF_LOGGER.info(
-                'Found "urs-access-token" cookie in response from auth host, '
-                'using token for downloads and cmr queries.'
-            )
+            token = response.json().get('access_token')
+            
+            ASF_LOGGER.info('EDL Bearer Token retreived, using for future queries and downloads')
             self.auth = None
             self._update_edl_token(token=token)
 
@@ -186,7 +181,35 @@ class ASFSession(requests.Session):
 
         return self
 
-    def _try_legacy_token_auth(self, token: str) -> False:
+    def _legacy_creds_auth(self):
+        login_url = f'https://{self.edl_host}/oauth/authorize?client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'  # noqa F401
+
+        ASF_LOGGER.info(f'Attempting to get "asf-urs" cookie via "{login_url}"')
+        self.get(login_url)
+
+        if not self._check_auth_cookies(self.cookies.get_dict()):
+            raise ASFAuthenticationError('Username or password is incorrect')
+
+        ASF_LOGGER.info('Basic asf auth cookies set sucessfully')
+
+        token = self.cookies.get_dict().get('urs-access-token')
+
+        if token is None:
+            warnings.warn(
+                f'Provided asf_auth_host "{self.asf_auth_host}" returned no EDL access token '
+                'during ASFSession validation. EDL Token expected in "urs-access-token" cookie, '
+                'required for searching hidden/restricted dataset access. '
+                'The current session will use basic authorization.'
+            )
+        else:
+            ASF_LOGGER.info(
+                'Found "urs-access-token" cookie in response from auth host, '
+                'using token for searching for cmr queries.'
+            )
+            self._update_edl_token(token=token)
+        
+
+    def _try_legacy_token_auth(self, token: str) -> bool:
         """
         Checks `cmr_host` search endpoint directly with provided token
         using method used in previous versions of asf-search (<7.0.9).
