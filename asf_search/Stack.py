@@ -1,3 +1,5 @@
+from collections import defaultdict, deque
+
 from asf_search import ASFProduct, Pair
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from datetime import datetime, date
@@ -17,6 +19,7 @@ class Stack:
         self.opts = opts
         self.full_stack = self._build_full_stack()
         self._date_pair_remove_list = []
+        
 
     @property
     def date_pair_remove_list(self) -> list[tuple[datetime, datetime]]:
@@ -56,6 +59,50 @@ class Stack:
                     stack.append(pair)
     
         return stack
+
+    def find_connected_components(self):
+        """
+        BFS to find all connected components of self.subset_stack
+        """
+
+        graph = defaultdict(list)
+        for pair in self.subset_stack:
+            graph[pair.ref_date].append(pair.sec_date)
+            graph[pair.sec_date].append(pair.ref_date)
+
+        visited_nodes = set()
+        visited_pairs = set()
+        components = []
+
+        for node in graph:
+            if node not in visited_nodes:
+                component_nodes = set()
+                component_pairs = []
+
+                queue = deque([node])
+                visited_nodes.add(node)
+
+                while queue:
+                    current = queue.popleft()
+                    component_nodes.add(current)
+
+                    for neighbor in graph[current]:
+                        if (current, neighbor) not in visited_pairs and (neighbor, current) not in visited_pairs:
+                            for pair in self.subset_stack:
+                                if (pair.ref_date == current and pair.sec_date == neighbor) or \
+                                    (pair.sec_date == current and pair.ref_date == neighbor):
+                                    component_pairs.append(pair)
+                                    break
+                            visited_pairs.add((current, neighbor))
+                            visited_pairs.add((neighbor, current))
+
+                        if neighbor not in visited_nodes:
+                            visited_nodes.add(neighbor)
+                            queue.append(neighbor)
+
+                components.append(component_pairs)
+
+        return components
 
     def _get_subset_stack(self):
         self.subset_stack = []

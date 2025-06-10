@@ -30,6 +30,9 @@ class Pair:
         self.sec_date = sec_time.date()
         self.temporal = self.sec_date - self.ref_date
 
+    def __repr__(self):
+        return f"Pair({self.ref_date}, {self.sec_date})"
+
     def __eq__(self, other):
         if not isinstance(other, Pair):
             return NotImplemented
