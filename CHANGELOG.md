@@ -26,6 +26,16 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v9.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.5...v9.0.0)
+### Added
+- `ASFSession.auth_with_creds()` now also queries Earth Data Login's `/find_or_create_token`. If successful, will set `Authorization` to use the returned EDL bearer token, allowing authorized users to download restricted data they have access to from Earth Data Cloud like when authed with `auth_with_token()`. 
+- Added `EDL_HOST_UAT` and `CMR_HOST_UAT` to `constants.INTERNAL`
+
+### Fixed
+- `NISARProduct` now properly sets `browse` in `properties` dictionary when available
+- Updated various `NISAR` UAT collection concept-ids to latest
+
+------
 ## [v8.3.5](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.4...v8.3.5)
 ### Added
 - Added NISAR product type constants `L0B`, `RSLC`, `RIFG`, `RUNW`, `ROFF`, `GSLC`, `GCOV`, `GUNW`, `GOFF`, `SME2` to `constants.PRODUCT_TYPE`, supported for use with `processingLevel`.
