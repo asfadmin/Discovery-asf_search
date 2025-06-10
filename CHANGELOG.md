@@ -33,6 +33,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 - `NISARProduct` now properly sets `browse` in `properties` dictionary when available
+- Updated various `NISAR` UAT collection concept-ids to latest
 
 ------
 ## [v8.3.5](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.4...v8.3.5)
