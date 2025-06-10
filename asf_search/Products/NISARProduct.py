@@ -29,6 +29,7 @@ class NISARProduct(ASFStackableProduct):
             self.properties.pop('processingLevel', None)
 
         self.properties['additionalUrls'] = self._get_additional_urls()
+        self.properties['browse'] = [url for url in self._get_urls() if url.endswith('.png') or url.endswith('.jpg') or url.endswith('.jpeg')]
         self.properties['s3Urls'] = self._get_s3_uris()
 
         if self.properties.get('groupID') is None:
