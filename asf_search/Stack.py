@@ -29,7 +29,9 @@ class Stack:
 
     def remove_pairs(self, pairs: list[tuple[date_like, date_like]]):
         for pair in pairs:
-            self._date_pair_remove_list.append(self._normalize_pair(pair))
+            pair_dates = self._normalize_pair(pair)
+            if pair_dates not in self._date_pair_remove_list:
+                self._date_pair_remove_list.append(pair_dates)
         self._get_subset_stack()
 
     def _normalize_pair(self, pair: tuple[date_like, date_like]) -> tuple[datetime, datetime]:
@@ -43,11 +45,10 @@ class Stack:
             else:
                 return datetime.fromisoformat(val).date()
         return to_dt(pair[0]), to_dt(pair[1])
-        
-    def _build_full_stack(self) -> list[ASFProduct]:   
-        stack = []
-        geo_ref_stack = self.geo_reference.stack(opts=self.opts)
 
+    def _build_full_stack(self) -> list[ASFProduct]:
+        geo_ref_stack = self.geo_reference.stack(opts=self.opts)
+        stack = []
         for i, ref in enumerate(geo_ref_stack):
             for j, sec in enumerate(geo_ref_stack):
                 if i < j and not ref.baseline.get("noStateVectors") and not sec.baseline.get("noStateVectors"):
