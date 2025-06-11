@@ -30,13 +30,13 @@ class Network(Stack):
             365 - self.temporal_baseline <= pair.temporal.days <= 365 + self.temporal_baseline
 
     def _build_sbas_stack(self):
-        self._date_pair_remove_list = []
-        for pair in self.full_stack:
+        date_pair_remove_list = []
+        for pair in self.full_stack.values():
             if np.abs(pair.perpendicular) > self.perp_baseline or not \
                 self._passes_temporal_check(pair):
-                self._date_pair_remove_list.append((pair.ref_date, pair.sec_date))
-
-        self._get_subset_stack()
+                date_pair_remove_list.append((pair.ref_date, pair.sec_date))
+        self.date_pair_remove_list = date_pair_remove_list
+        self.subset_stack = self._get_subset_stack()
 
     def plot(self):
         """
@@ -57,7 +57,7 @@ class Network(Stack):
                     "temp_bs": pair.temporal.days
                 }
             )
-            for pair in self.subset_stack]
+            for pair in self.subset_stack.values()]
 
         G.add_edges_from(insar_node_pairs, data=True)
 
@@ -70,7 +70,7 @@ class Network(Stack):
 
         perp_bs_dict = {}
 
-        for pair in self.subset_stack:
+        for pair in self.subset_stack.values():
             for date_obj, product in [
                 (pair.ref_date, pair.ref),
                 (pair.sec_date, pair.sec)
@@ -137,8 +137,8 @@ class Network(Stack):
             hovertext=node_text,
         )
 
-        all_slcs = list(set([scene for pair in self.full_stack for scene in (pair.ref, pair.sec)]))
-        used_slcs = list(set([scene for pair in self.subset_stack for scene in (pair.ref, pair.sec)]))
+        all_slcs = list(set([scene for pair in self.full_stack.values() for scene in (pair.ref, pair.sec)]))
+        used_slcs = list(set([scene for pair in self.subset_stack.values() for scene in (pair.ref, pair.sec)]))
         unused_slcs = [i for i in all_slcs if i not in used_slcs]
         unused_slc_dates_str = [
             i.properties["processingDate"].split("T")[0]

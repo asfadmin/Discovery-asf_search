@@ -1,4 +1,5 @@
 from collections import defaultdict, deque
+import warnings
 
 from asf_search import ASFProduct, Pair
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -19,23 +20,36 @@ class Stack:
         self.opts = opts
         self.full_stack = self._build_full_stack()
         self._date_pair_remove_list = []
+        self.subset_stack = self._get_subset_stack()
+        self.connected_substacks = self._find_connected_substacks()
         
-
     @property
     def date_pair_remove_list(self) -> list[tuple[datetime, datetime]]:
         return self._date_pair_remove_list
 
     @date_pair_remove_list.setter
-    def date_pair_cull_list(self, pairs: list[tuple[date_like, date_like]]):
+    def date_pair_remove_list(self, pairs: list[tuple[date_like, date_like]]):
         self._date_pair_remove_list = [self._normalize_pair(pair) for pair in pairs]
-        self._get_subset_stack()
+        self._update_stack()
 
     def remove_pairs(self, pairs: list[tuple[date_like, date_like]]):
         for pair in pairs:
             pair_dates = self._normalize_pair(pair)
             if pair_dates not in self._date_pair_remove_list:
                 self._date_pair_remove_list.append(pair_dates)
-        self._get_subset_stack()
+        self._update_stack()
+
+    def add_pairs(self, pairs: list[tuple[date_like, date_like]]):
+        for pair in pairs:
+            pair_dates = self._normalize_pair(pair)
+            if pair_dates in self._date_pair_remove_list:
+                self._date_pair_remove_list.remove(pair_dates)
+            else:
+                raise warnings.warn(
+                    f"Warning: Cannot add {pair_dates} to subset_stack because it is not present in _date_pair_remove_list.", 
+                    UserWarning
+                    )
+        self._update_stack()
 
     def _normalize_pair(self, pair: tuple[date_like, date_like]) -> tuple[datetime, datetime]:
         def to_dt(val):
@@ -51,22 +65,32 @@ class Stack:
 
     def _build_full_stack(self) -> list[ASFProduct]:
         geo_ref_stack = self.geo_reference.stack(opts=self.opts)
-        stack = []
+        stack = {}
         for i, ref in enumerate(geo_ref_stack):
             for j, sec in enumerate(geo_ref_stack):
                 if i < j and not ref.baseline.get("noStateVectors") and not sec.baseline.get("noStateVectors"):
                     pair = Pair(ref, sec)
-                    stack.append(pair)
-    
+                    stack[(pair.ref_date, pair.sec_date)] = pair
         return stack
 
-    def find_connected_components(self):
+    def _get_subset_stack(self):
+        stack = {}
+        for _, pair in self.full_stack.items():
+            if (pair.ref_date, pair.sec_date) not in self.date_pair_remove_list:
+                stack[(pair.ref_date, pair.sec_date)] = pair
+        return stack
+
+    def _update_stack(self):
+        self.subset_stack = self._get_subset_stack()
+        self.connected_substacks = self._find_connected_substacks()
+
+    def _find_connected_substacks(self):
         """
         BFS to find all connected components of self.subset_stack
         """
 
         graph = defaultdict(list)
-        for pair in self.subset_stack:
+        for pair in self.subset_stack.values():
             graph[pair.ref_date].append(pair.sec_date)
             graph[pair.sec_date].append(pair.ref_date)
 
@@ -77,7 +101,7 @@ class Stack:
         for node in graph:
             if node not in visited_nodes:
                 component_nodes = set()
-                component_pairs = []
+                component_pairs = {}
 
                 queue = deque([node])
                 visited_nodes.add(node)
@@ -88,10 +112,10 @@ class Stack:
 
                     for neighbor in graph[current]:
                         if (current, neighbor) not in visited_pairs and (neighbor, current) not in visited_pairs:
-                            for pair in self.subset_stack:
+                            for pair in self.subset_stack.values():
                                 if (pair.ref_date == current and pair.sec_date == neighbor) or \
                                     (pair.sec_date == current and pair.ref_date == neighbor):
-                                    component_pairs.append(pair)
+                                    component_pairs[(pair.ref_date, pair.sec_date)] = pair
                                     break
                             visited_pairs.add((current, neighbor))
                             visited_pairs.add((neighbor, current))
@@ -103,10 +127,4 @@ class Stack:
                 components.append(component_pairs)
 
         return components
-
-    def _get_subset_stack(self):
-        self.subset_stack = []
-        for pair in self.full_stack:
-            if (pair.ref_date, pair.sec_date) not in self.date_pair_remove_list:
-                self.subset_stack.append(pair)
 
