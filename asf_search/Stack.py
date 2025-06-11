@@ -19,34 +19,34 @@ class Stack:
         self.geo_reference = geo_reference
         self.opts = opts
         self.full_stack = self._build_full_stack()
-        self._date_pair_remove_list = []
+        self._remove_list = []
         self.subset_stack = self._get_subset_stack()
         self.connected_substacks = self._find_connected_substacks()
         
     @property
-    def date_pair_remove_list(self) -> list[tuple[datetime, datetime]]:
-        return self._date_pair_remove_list
+    def remove_list(self) -> list[tuple[datetime, datetime]]:
+        return self._remove_list
 
-    @date_pair_remove_list.setter
-    def date_pair_remove_list(self, pairs: list[tuple[date_like, date_like]]):
-        self._date_pair_remove_list = [self._normalize_pair(pair) for pair in pairs]
+    @remove_list.setter
+    def remove_list(self, pairs: list[tuple[date_like, date_like]]):
+        self._remove_list = [self._normalize_pair(pair) for pair in pairs]
         self._update_stack()
 
     def remove_pairs(self, pairs: list[tuple[date_like, date_like]]):
         for pair in pairs:
             pair_dates = self._normalize_pair(pair)
-            if pair_dates not in self._date_pair_remove_list:
-                self._date_pair_remove_list.append(pair_dates)
+            if pair_dates not in self._remove_list:
+                self._remove_list.append(pair_dates)
         self._update_stack()
 
     def add_pairs(self, pairs: list[tuple[date_like, date_like]]):
         for pair in pairs:
             pair_dates = self._normalize_pair(pair)
-            if pair_dates in self._date_pair_remove_list:
-                self._date_pair_remove_list.remove(pair_dates)
+            if pair_dates in self._remove_list:
+                self._remove_list.remove(pair_dates)
             else:
                 raise warnings.warn(
-                    f"Warning: Cannot add {pair_dates} to subset_stack because it is not present in _date_pair_remove_list.", 
+                    f"Warning: Cannot add {pair_dates} to subset_stack because it is not present in _remove_list.", 
                     UserWarning
                     )
         self._update_stack()
@@ -76,7 +76,7 @@ class Stack:
     def _get_subset_stack(self):
         stack = {}
         for _, pair in self.full_stack.items():
-            if (pair.ref_date, pair.sec_date) not in self.date_pair_remove_list:
+            if (pair.ref_date, pair.sec_date) not in self.remove_list:
                 stack[(pair.ref_date, pair.sec_date)] = pair
         return stack
 

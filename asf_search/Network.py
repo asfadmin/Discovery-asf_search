@@ -30,21 +30,24 @@ class Network(Stack):
             365 - self.temporal_baseline <= pair.temporal.days <= 365 + self.temporal_baseline
 
     def _build_sbas_stack(self):
-        date_pair_remove_list = []
+        remove_list = []
         for pair in self.full_stack.values():
             if np.abs(pair.perpendicular) > self.perp_baseline or not \
                 self._passes_temporal_check(pair):
-                date_pair_remove_list.append((pair.ref_date, pair.sec_date))
-        self.date_pair_remove_list = date_pair_remove_list
+                remove_list.append((pair.ref_date, pair.sec_date))
+        self.remove_list = remove_list
         self.subset_stack = self._get_subset_stack()
 
-    def plot(self):
+    def plot(self, stack_dict=None):
         """
         Plot the SBAS stack
 
         """
         import plotly.graph_objects as go
         import networkx as nx
+
+        if not stack_dict:
+            stack_dict = self.subset_stack
 
         G = nx.DiGraph()
 
@@ -57,7 +60,7 @@ class Network(Stack):
                     "temp_bs": pair.temporal.days
                 }
             )
-            for pair in self.subset_stack.values()]
+            for pair in stack_dict.values()]
 
         G.add_edges_from(insar_node_pairs, data=True)
 
@@ -70,7 +73,7 @@ class Network(Stack):
 
         perp_bs_dict = {}
 
-        for pair in self.subset_stack.values():
+        for pair in stack_dict.values():
             for date_obj, product in [
                 (pair.ref_date, pair.ref),
                 (pair.sec_date, pair.sec)
@@ -138,7 +141,7 @@ class Network(Stack):
         )
 
         all_slcs = list(set([scene for pair in self.full_stack.values() for scene in (pair.ref, pair.sec)]))
-        used_slcs = list(set([scene for pair in self.subset_stack.values() for scene in (pair.ref, pair.sec)]))
+        used_slcs = list(set([scene for pair in stack_dict.values() for scene in (pair.ref, pair.sec)]))
         unused_slcs = [i for i in all_slcs if i not in used_slcs]
         unused_slc_dates_str = [
             i.properties["processingDate"].split("T")[0]
@@ -176,10 +179,13 @@ class Network(Stack):
         date_range_ts = [
             datetime.strptime(date, "%Y-%m").timestamp() for date in date_range
         ]
-        
+
+        # all_y_vals = [pair.perpendicular for ]
+        # y_min = min(all_y_vals)
+        # y_max = max(all_y_vals)
+                
         def f_date(dash_date_str):
             return dash_date_str.replace("-", "/")
-
         fig = go.Figure(
             data=[edge_trace, edge_hover_trace, node_trace, unused_slcs_trace],
             layout=go.Layout(
@@ -198,6 +204,7 @@ class Network(Stack):
                     title="Perpendicular Baseline (m)",
                     gridcolor="gray",
                     zerolinecolor="gray",
+                    # range=[y_min-50, y_max+50],
                 ),
                 title=dict(
                     text=(
