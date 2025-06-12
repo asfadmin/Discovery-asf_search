@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 
@@ -266,6 +266,16 @@ class Network(Stack):
         )
         date_range_ts = [datetime.strptime(date, "%Y-%m").timestamp() for date in date_range]
 
+        def julian_to_month_day(julian_tuple):
+            year = int(self.geo_reference.properties['processingDate'].split('-')[0])
+            month_day = []
+            for day in julian_tuple:
+                date = datetime(year, 1, 1) + timedelta(days=day - 1)
+                month_day.append(date.strftime("%m-%d"))
+            return tuple(month_day)
+
+        largest_stack_slc_count = len(set(scene for pair in largest_stack.values() for scene in (pair.ref, pair.sec)))
+
         fig = go.Figure(
             data=edge_traces + [node_trace, unused_slcs_trace],
             layout=go.Layout(
@@ -286,7 +296,13 @@ class Network(Stack):
                     zerolinecolor="gray",
                 ),
                 title=dict(
-                    text="<b>Sentinel-1 Seasonal SBAS Stack</b><br>",
+                    text=(
+                        "<b>SBAS Stack</b><br>"
+                        f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
+                        f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
+                        f"Max Temporal Baseline: {self.temporal_baseline} days, Max Perpendicular Baseline: {self.perp_baseline}m<br>"
+                        f"Bridge Target Date: {self.bridge_target_date}, Largest Stack Size: {len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
+                    ),
                     y=0.95,
                     x=0.5,
                     xanchor="center",
