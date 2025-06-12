@@ -245,7 +245,7 @@ class Network(Stack):
             used_slcs.update(scene for pair in sd.values() for scene in (pair.ref, pair.sec))
         unused_slcs = list(all_slcs - used_slcs)
 
-        unused_slc_dates_str = [i.properties["processingDate"].split("T")[0] for i in unused_slcs]
+        unused_slc_dates_str = [i.properties["stopTime"].split("T")[0] for i in unused_slcs]
         unused_slc_dates_x = [datetime.strptime(i, "%Y-%m-%d").timestamp() for i in unused_slc_dates_str]
         unused_slc_perp_y = [Pair(self.geo_reference, i).perpendicular for i in unused_slcs]
 
@@ -274,7 +274,7 @@ class Network(Stack):
         date_range_ts = [datetime.strptime(date, "%Y-%m").timestamp() for date in date_range]
 
         def julian_to_month_day(julian_tuple):
-            year = int(self.geo_reference.properties['processingDate'].split('-')[0])
+            year = int(self.geo_reference.properties['stopTime'].split('-')[0])
             month_day = []
             for day in julian_tuple:
                 date = datetime(year, 1, 1) + timedelta(days=day - 1)
