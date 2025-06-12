@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from typing import Optional, Dict, Tuple
 
-from asf_search import ASFProduct, Pair, Stack 
+from asf_search import ASFProduct, Pair, Stack
 from asf_search.ASFSearchOptions import ASFSearchOptions
 
 
@@ -283,6 +283,27 @@ class Network(Stack):
 
         largest_stack_slc_count = len(set(scene for pair in largest_stack.values() for scene in (pair.ref, pair.sec)))
 
+        if stack_dict is self.full_stack:
+            plot_header_text=(
+                "<b>SBAS Stack</b><br>"
+                f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
+                f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
+                f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
+                f"Full Stack Size: {len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
+            )
+        else:
+            plot_header_text=(
+                "<b>SBAS Stack</b><br>"
+                f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
+                f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
+                f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
+                f"Max Temporal Baseline: {self.temporal_baseline} days, "
+                f"Max Perpendicular Baseline: {self.perp_baseline}m<br>"
+                f"Bridge Target Date: {self.bridge_target_date}, Largest Stack Size: "
+                f"{len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
+            )
+
+
         fig = go.Figure(
             data=edge_traces + [node_trace, unused_slcs_trace],
             layout=go.Layout(
@@ -303,16 +324,7 @@ class Network(Stack):
                     zerolinecolor="gray",
                 ),
                 title=dict(
-                    text=(
-                        "<b>SBAS Stack</b><br>"
-                        f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
-                        f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
-                        f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
-                        f"Max Temporal Baseline: {self.temporal_baseline} days, "
-                        f"Max Perpendicular Baseline: {self.perp_baseline}m<br>"
-                        f"Bridge Target Date: {self.bridge_target_date}, Largest Stack Size: "
-                        f"{len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
-                    ),
+                    text=plot_header_text,
                     y=0.95,
                     x=0.5,
                     xanchor="center",

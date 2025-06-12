@@ -200,3 +200,21 @@ class Stack:
                 components.append(component_pairs)
 
         return components
+
+    def get_insar_pair_ids(self, stack_dict: Optional[Dict[Tuple[date, date], Pair]] = None) -> List[Tuple[str, str]]:
+        """
+        Useful when ordering an SBAS stack from ASF HyP3 On-Demand Processing.
+        Provides InSAR pair scene names in a list of tuples.
+
+        If no stack_dict is passed, defaults to the largest connected substack
+
+        Returns:
+            A list tuples containing the reference and secondary scene name for each inSAR pair in the SBAS stack
+        """
+        if not stack_dict:
+            stack_dict = max(self.connected_substacks, key=len)
+
+        return [
+            (pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])
+            for pair in stack_dict.values()
+            ]
