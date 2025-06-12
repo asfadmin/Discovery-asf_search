@@ -1,5 +1,6 @@
 from collections import defaultdict, deque
 from copy import copy
+from typing import Optional, List, Tuple, Dict
 import warnings
 
 from asf_search import ASFProduct, Pair
@@ -12,7 +13,7 @@ try:
 except ImportError:
     from dateutil.parser import parse as parse_datetime
 
-date_like = list[str | date | pd.Timestamp]
+date_like = str | date | datetime | pd.Timestamp
 
 
 class Stack:
@@ -30,7 +31,7 @@ class Stack:
 
     self._remove_list is a list of date pair tuples that is used for filtering a subset_stack from a full_stack
     """
-    def __init__(self, geo_reference: ASFProduct, opts: ASFSearchOptions = None):
+    def __init__(self, geo_reference: ASFProduct, opts: Optional[ASFSearchOptions] = None):
         self.geo_reference = geo_reference
         self.opts = opts
         self.full_stack = self._build_full_stack()
@@ -39,7 +40,7 @@ class Stack:
         self.connected_substacks = self._find_connected_substacks()
         
     @property
-    def remove_list(self) -> list[tuple[datetime, datetime]]:
+    def remove_list(self) -> List[Tuple[date, date]]:
         """
         Return a copy of self._remove_list so client changes 
         do not alter self._remove_list without a stack update
@@ -55,7 +56,7 @@ class Stack:
         return copy(self._remove_list)
 
     @remove_list.setter
-    def remove_list(self, pairs: list[tuple[date_like, date_like]]):
+    def remove_list(self, pairs: List[Tuple[date_like, date_like]]):
         """
         Accept date pair tuples as datetime.datetime, datetime.date, 
         pandas.Timestamp, or ISO datetime string.
@@ -67,7 +68,7 @@ class Stack:
         self._remove_list = list(set(normalized))
         self._update_stack()
 
-    def remove_pairs(self, pairs: list[tuple[date_like, date_like]]):
+    def remove_pairs(self, pairs: List[Tuple[date_like, date_like]]):
         """
         Remove pairs from self.subset_stack, 
         i.e., add them to self._remove_list
@@ -84,7 +85,7 @@ class Stack:
                         )
         self._update_stack()
 
-    def add_pairs(self, pairs: list[tuple[date_like, date_like]]):
+    def add_pairs(self, pairs: List[Tuple[date_like, date_like]]):
         """
         Add pairs to the subset_stack, 
         i.e., remove them from self._remove_list
@@ -105,7 +106,7 @@ class Stack:
                     )
         self._update_stack()
 
-    def _normalize_pair(self, pair: tuple[date_like, date_like]) -> tuple[date, date]:
+    def _normalize_pair(self, pair: Tuple[date_like, date_like]) -> Tuple[date, date]:
         """
         convert date tuples from pandas.Timestamp, datetime.datetime,
         or iso formatted date string to tuples of datetime.date
@@ -121,7 +122,7 @@ class Stack:
                 return datetime.fromisoformat(val).date()
         return to_dt(pair[0]), to_dt(pair[1])
 
-    def _build_full_stack(self) -> list[ASFProduct]:
+    def _build_full_stack(self) -> Dict[Tuple[date, date], Pair]:
         """
         Create self._full_stack, which involves performing a stack search
         of the georeference scene and adding every possible date pair
@@ -137,7 +138,7 @@ class Stack:
                     stack[(pair.ref_date, pair.sec_date)] = pair
         return stack
 
-    def _get_subset_stack(self):
+    def _get_subset_stack(self) -> Dict[Tuple[date, date], Pair]:
         """
         Create a subset_stack by removing every pair in
         self.remove_list from self.full_stack
@@ -156,7 +157,7 @@ class Stack:
         self.subset_stack = self._get_subset_stack()
         self.connected_substacks = self._find_connected_substacks()
 
-    def _find_connected_substacks(self):
+    def _find_connected_substacks(self) -> List[Dict[Tuple[date, date], Pair]]:
         """
         BFS to find all connected components of self.subset_stack
         """

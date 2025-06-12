@@ -37,7 +37,7 @@ class Pair:
         self.sec_date = sec_time.date()
         self.temporal = self.sec_date - self.ref_date
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Pair({self.ref_date}, {self.sec_date})"
 
     def __eq__(self, other):
@@ -46,7 +46,7 @@ class Pair:
         return (self.ref_date == other.ref_date and
                 self.sec_date == other.sec_date)
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.ref.date.date(), self.sec.date.date()))
 
     def estimate_s1_mean_coherence(self) -> float:

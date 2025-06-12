@@ -1,8 +1,9 @@
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 import numpy as np
 import pandas as pd
+from typing import Optional, Dict, Tuple
 
-from asf_search import Pair, Stack 
+from asf_search import ASFProduct, Pair, Stack 
 from asf_search.ASFSearchOptions import ASFSearchOptions
 
 
@@ -11,9 +12,15 @@ class Network(Stack):
     Network is a child class of Stack. It takes additional
     arguments of perpendicular baseline, temporal baselline, 
     and a seasonal bridge date to create multiannual SBAS stacks.
-    
     """
-    def __init__(self, geo_reference, perp_baseline=400, temporal_baseline=36, bridge_target_date=None, opts=ASFSearchOptions(**{})):
+    def __init__(
+        self,
+        geo_reference: ASFProduct,
+        perp_baseline: int = 400,
+        temporal_baseline: int = 36,
+        bridge_target_date: Optional[str] = None,
+        opts: ASFSearchOptions = ASFSearchOptions(**{})
+    ):
         super().__init__(geo_reference, opts)
         self._season = opts.season if opts.season is not None else (1, 365)
         self._start = getattr(opts, "start", None)
@@ -26,7 +33,7 @@ class Network(Stack):
         self.temporal_baseline = temporal_baseline
         self.network = self._build_sbas_stack()
 
-    def _passes_temporal_check(self, pair):
+    def _passes_temporal_check(self, pair: Pair):
         """
         Logic to determine if a pair should be included in subset_stack
         based on temporal baselines, taking into account possible 
@@ -63,10 +70,10 @@ class Network(Stack):
                 remove_list.append((pair.ref_date, pair.sec_date))
         self.remove_list = remove_list
 
-    def plot(self, stack_dict=None):
+    def plot(self, stack_dict: Dict[Tuple[date, date], Pair] = None):
         """
         Plot the SBAS stack(s). Accepts a stack_dict or a list of stack_dicts.
-        The largest stack is drawn in blue; others are drawn in distinct colors.
+        The largest stack is plotted in blue; others are plotted in distinct colors.
         Possible member stacks to pass as stack_dict are: 
             - `self.full_stack`: includes every possible pair in the stack, ignoring baselines
             - `self.subset_stack`: a possibly disconnected SBAS stack
@@ -299,9 +306,12 @@ class Network(Stack):
                     text=(
                         "<b>SBAS Stack</b><br>"
                         f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
-                        f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
-                        f"Max Temporal Baseline: {self.temporal_baseline} days, Max Perpendicular Baseline: {self.perp_baseline}m<br>"
-                        f"Bridge Target Date: {self.bridge_target_date}, Largest Stack Size: {len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
+                        f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
+                        f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
+                        f"Max Temporal Baseline: {self.temporal_baseline} days, "
+                        f"Max Perpendicular Baseline: {self.perp_baseline}m<br>"
+                        f"Bridge Target Date: {self.bridge_target_date}, Largest Stack Size: "
+                        f"{len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
                     ),
                     y=0.95,
                     x=0.5,
