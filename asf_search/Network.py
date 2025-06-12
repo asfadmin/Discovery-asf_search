@@ -2,6 +2,7 @@ from datetime import datetime, date, timedelta
 import numpy as np
 import pandas as pd
 from typing import Optional, Dict, Tuple
+import warnings
 
 from asf_search import ASFProduct, Pair, Stack
 from asf_search.ASFSearchOptions import ASFSearchOptions
@@ -32,6 +33,16 @@ class Network(Stack):
         self.perp_baseline = perp_baseline
         self.temporal_baseline = temporal_baseline
         self.network = self._build_sbas_stack()
+
+        try:
+            import plotly.graph_objects as go
+            import networkx as nx
+        except ImportError:
+            warning = (
+                "Warning: Network.plot() requires the dependencies plotly and networkx."
+                "However, your Network is still available without access to plotting"
+            )
+            warnings.warn(warning)
 
     def _passes_temporal_check(self, pair: Pair):
         """
