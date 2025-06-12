@@ -11,6 +11,13 @@ except ImportError:
 
 
 class Pair:
+    """
+    A Pair is comprised of a reference scene and a secondary scene. These scenes typically intersect geographically,
+    but that is not a requirement. When a pair is created, its perpendicular and temporal baselines are calculated
+    and stored in the self.perpendicular and self.temporal member variables.
+
+    Two pairs are equivalent if they have matching reference and secondary dates
+    """
     def __init__(self, ref: ASFProduct, sec: ASFProduct):
         self.ref = ref
         self.sec = sec
@@ -42,9 +49,9 @@ class Pair:
     def __hash__(self):
         return hash((self.ref.date.date(), self.sec.date.date()))
 
-    def estimate_mean_coherence(self) -> float:
+    def estimate_s1_mean_coherence(self) -> float:
         '''
-        Estimates mean coherence for a pair using the 11367x4367 overview of the 2019-2020 
+        Estimates mean coherence for a Pair of Sentinel-1 scenes or bursts using the 11367x4367 overview of the 2019-2020 
         VV COH data from the Global Seasonal Sentinel-1 Interferometric Coherence and Backscatter Dataset:
         https://asf.alaska.edu/datasets/daac/global-seasonal-sentinel-1-interferometric-coherence-and-backscatter-dataset/
 

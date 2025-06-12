@@ -7,50 +7,125 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 
 
 class Network(Stack):
+    """
+    Network is a child class of Stack. It takes additional
+    arguments of perpendicular baseline, temporal baselline, 
+    and a seasonal bridge date to create multiannual SBAS stacks.
+    
+    """
     def __init__(self, geo_reference, perp_baseline=400, temporal_baseline=36, bridge_target_date=None, opts=ASFSearchOptions(**{})):
         super().__init__(geo_reference, opts)
-        self._season = getattr(opts, "season", ("1-1", "12-31"))
+        self._season = opts.season if opts.season is not None else (1, 365)
         self._start = getattr(opts, "start", None)
         self._end = getattr(opts, "end", None)
-
-        self.bridge_target_date = bridge_target_date
+        if bridge_target_date:
+            self.bridge_target_date = bridge_target_date
+        else:
+            self.bridge_target_date = self._season[0]
         self.perp_baseline = perp_baseline
         self.temporal_baseline = temporal_baseline
-        # self.overlap_threshold = getattr(opts, "overlapThreshold", 0.8)
         self.network = self._build_sbas_stack()
 
     def _passes_temporal_check(self, pair):
+        """
+        Logic to determine if a pair should be included in subset_stack
+        based on temporal baselines, taking into account possible 
+        1-year bridge pairs to create connected mutliannual SBAS stacks
+        """
         if pair.temporal.days <= self.temporal_baseline:
             return True
 
-        days_from_bridge_date = np.abs(
-            (datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() - pair.ref_date).days
-            )
-        return days_from_bridge_date <= self.temporal_baseline and \
-            365 - self.temporal_baseline <= pair.temporal.days <= 365 + self.temporal_baseline
+        if self._season[0] < self._season[1]:
+            season_length = self._season[1] - self._season[0] + 1
+        else:
+            season_length = 366 - self._season[0] + self._season[1]
+
+        # Only create ~yearlong bridge pairs if the off-season is longer than the temporal baseline
+        if 365 - season_length > self.temporal_baseline:
+            days_from_bridge_date = np.abs(
+                (
+                    datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
+                    - pair.ref_date).days
+                )
+            return days_from_bridge_date <= self.temporal_baseline and \
+                365 - self.temporal_baseline <= pair.temporal.days <= 365 + self.temporal_baseline
+        else:
+            return False
 
     def _build_sbas_stack(self):
+        """
+        Create a self.remove list that will build the SBAS Network object
+        """
         remove_list = []
         for pair in self.full_stack.values():
             if np.abs(pair.perpendicular) > self.perp_baseline or not \
                 self._passes_temporal_check(pair):
                 remove_list.append((pair.ref_date, pair.sec_date))
         self.remove_list = remove_list
-        self.subset_stack = self._get_subset_stack()
 
     def plot(self, stack_dict=None):
         """
-        Plot the SBAS stack
+        Plot the SBAS stack(s). Accepts a stack_dict or a list of stack_dicts.
+        The largest stack is drawn in blue; others are drawn in distinct colors.
+        Possible member stacks to pass as stack_dict are: 
+            - `self.full_stack`: includes every possible pair in the stack, ignoring baselines
+            - `self.subset_stack`: a possibly disconnected SBAS stack
+            - `self.connected_substacks`: subset_stack, broken up into connected substacks
 
+        stack_dict (optional): One of the Network's stacks (options listed above).
+                               Default: `self.connected_substacks`.
         """
         import plotly.graph_objects as go
         import networkx as nx
+        from plotly.colors import sample_colorscale
+
+        def get_n_colors(n, colorscale="Rainbow", alpha=0.4):
+            base_colors = sample_colorscale(colorscale, [i / max(n - 1, 1) for i in range(n)])
+            rgba_colors = []
+            for color_str in base_colors:
+                if color_str.startswith("rgb"):
+                    nums = color_str.strip("rgb()").split(",")
+                    r, g, b = [int(x) for x in nums]
+                    rgba_colors.append(f"rgba({r}, {g}, {b}, {alpha})")
+                else:
+                    raise ValueError(f"Unexpected color format: {color_str}")
+            return rgba_colors
 
         if not stack_dict:
-            stack_dict = self.subset_stack
+            stack_dicts = self.connected_substacks
+        elif isinstance(stack_dict, list):
+            stack_dicts = stack_dict
+        else:
+            stack_dicts = [stack_dict]
+
+        # Identify the largest stack
+        largest_stack = max(stack_dicts, key=lambda s: len(s))
+        other_stacks = [s for s in stack_dicts if s is not largest_stack]
+
+        # Create a graph including all pairs from all stacks
+        node_products = {}
+        for stack in stack_dicts:
+            for pair in stack.values():
+                for date_obj, product in [(pair.ref_date, pair.ref), (pair.sec_date, pair.sec)]:
+                    date_str = datetime.strftime(date_obj, "%Y-%m-%d")
+                    if date_str not in node_products:
+                        node_products[date_str] = product
 
         G = nx.DiGraph()
+        for date_str, product in node_products.items():
+            G.add_node(date_str)
+            G.nodes[date_str]["date"] = date_str
+            G.nodes[date_str]["perp_bs"] = Pair(self.geo_reference, product).perpendicular
 
+        node_positions = {
+            node: datetime.strptime(data["date"], "%Y-%m-%d").timestamp()
+            for node, data in G.nodes(data=True)
+        }
+        node_y_positions = {
+            node: data["perp_bs"] for node, data in G.nodes(data=True)
+        }
+
+        # Add blue edges for the largest stack
         insar_node_pairs = [
             (
                 datetime.strftime(pair.ref_date, "%Y-%m-%d"),
@@ -60,39 +135,9 @@ class Network(Stack):
                     "temp_bs": pair.temporal.days
                 }
             )
-            for pair in stack_dict.values()]
-
+            for pair in largest_stack.values()
+        ]
         G.add_edges_from(insar_node_pairs, data=True)
-
-        scene_date_dict = {
-            node: node
-            for pair in insar_node_pairs
-            for node in (pair[0], pair[1])
-        }
-        nx.set_node_attributes(G, scene_date_dict, "date")
-
-        perp_bs_dict = {}
-
-        for pair in stack_dict.values():
-            for date_obj, product in [
-                (pair.ref_date, pair.ref),
-                (pair.sec_date, pair.sec)
-            ]:
-                date_str = datetime.strftime(date_obj, "%Y-%m-%d")
-                if date_str not in perp_bs_dict:
-                    perp_bs_dict[date_str] = Pair(self.geo_reference, product).perpendicular
-        nx.set_node_attributes(G, perp_bs_dict, "perp_bs")
-
-        node_positions = {
-            node: datetime.strptime(data["date"], "%Y-%m-%d").timestamp()
-            for node, data in G.nodes(data=True)
-        }
-
-        node_y_positions = {node: data["perp_bs"] for node, data in G.nodes(data=True)}
-
-        node_x = [node_positions[node] for node in G.nodes()]
-        node_y = [node_y_positions[node] for node in G.nodes()]
-        node_text = [G.nodes[node]["date"] for node in G.nodes()]
 
         edge_x = []
         edge_y = []
@@ -108,27 +153,73 @@ class Network(Stack):
                 f"{edge[0]} - {edge[1]}, perp baseline: {edge[2]['perp_bs']}, temp baseline: {edge[2]['temp_bs']}"
             )
 
-        edge_trace = go.Scatter(
-            x=edge_x,
-            y=edge_y,
-            line=dict(width=4, color="rgba(52, 114, 168, 0.7)"),
-            mode="lines",
-        )
+        edge_traces = [
+            go.Scatter(
+                x=edge_x,
+                y=edge_y,
+                line=dict(width=4, color="rgba(52, 114, 168, 0.7)"),  # blue
+                mode="lines",
+            ),
+            go.Scatter(
+                x=[
+                    (node_positions[edge[0]] + node_positions[edge[1]]) / 2
+                    for edge in G.edges()
+                ],
+                y=[
+                    (node_y_positions[edge[0]] + node_y_positions[edge[1]]) / 2
+                    for edge in G.edges()
+                ],
+                mode="markers",
+                marker=dict(size=20, color="rgba(255, 255, 255, 0)"),
+                hoverinfo="text",
+                text=edge_text,
+            )
+        ]
 
-        edge_hover_trace = go.Scatter(
-            x=[
-                (node_positions[edge[0]] + node_positions[edge[1]]) / 2
-                for edge in G.edges()
-            ],
-            y=[
-                (node_y_positions[edge[0]] + node_y_positions[edge[1]]) / 2
-                for edge in G.edges()
-            ],
-            mode="markers",
-            marker=dict(size=20, color="rgba(255, 255, 255, 0)"),
-            hoverinfo="text",
-            text=edge_text,
-        )
+        # Add additional substacks
+        colors = get_n_colors(len(other_stacks))
+        for color, other_stack in zip(colors, other_stacks):
+            edge_x = []
+            edge_y = []
+            for pair in other_stack.values():
+                ref = datetime.strftime(pair.ref_date, "%Y-%m-%d")
+                sec = datetime.strftime(pair.sec_date, "%Y-%m-%d")
+                if ref in node_positions and sec in node_positions:
+                    edge_x.extend([node_positions[ref], node_positions[sec], None])
+                    edge_y.extend([node_y_positions[ref], node_y_positions[sec], None])
+            edge_traces.append(go.Scatter(
+                x=edge_x,
+                y=edge_y,
+                line=dict(width=4, color=color),
+                mode="lines",
+            ))
+
+            edge_text = []
+            hover_x = []
+            hover_y = []
+            for pair in other_stack.values():
+                ref = datetime.strftime(pair.ref_date, "%Y-%m-%d")
+                sec = datetime.strftime(pair.sec_date, "%Y-%m-%d")
+                if ref in node_positions and sec in node_positions:
+                    edge_text.append(
+                        f"{ref} - {sec}, perp baseline: {pair.perpendicular}, temp baseline: {pair.temporal.days}"
+                    )
+                    hover_x.append((node_positions[ref] + node_positions[sec]) / 2)
+                    hover_y.append((node_y_positions[ref] + node_y_positions[sec]) / 2)
+
+            edge_traces.append(go.Scatter(
+                x=hover_x,
+                y=hover_y,
+                mode="markers",
+                marker=dict(size=20, color="rgba(255, 255, 255, 0)"),
+                hoverinfo="text",
+                text=edge_text,
+            ))
+
+        # Add used scene nodes
+        node_x = [node_positions[node] for node in G.nodes()]
+        node_y = [node_y_positions[node] for node in G.nodes()]
+        node_text = [G.nodes[node]["date"] for node in G.nodes()]
 
         node_trace = go.Scatter(
             x=node_x,
@@ -140,19 +231,16 @@ class Network(Stack):
             hovertext=node_text,
         )
 
-        all_slcs = list(set([scene for pair in self.full_stack.values() for scene in (pair.ref, pair.sec)]))
-        used_slcs = list(set([scene for pair in stack_dict.values() for scene in (pair.ref, pair.sec)]))
-        unused_slcs = [i for i in all_slcs if i not in used_slcs]
-        unused_slc_dates_str = [
-            i.properties["processingDate"].split("T")[0]
-            for i in unused_slcs
-            ]
-        unused_slc_dates_x = [
-            datetime.strptime(i, "%Y-%m-%d").timestamp()
-            for i in unused_slc_dates_str
-            ]
+        # Add unused scene nodes
+        all_slcs = set(scene for pair in self.full_stack.values() for scene in (pair.ref, pair.sec))
+        used_slcs = set()
+        for sd in stack_dicts:
+            used_slcs.update(scene for pair in sd.values() for scene in (pair.ref, pair.sec))
+        unused_slcs = list(all_slcs - used_slcs)
 
-        unused_slc_perp_y = [Pair(self.geo_reference, i).perpendicular for i in unused_slcs] #perp baseline to geo ref scene
+        unused_slc_dates_str = [i.properties["processingDate"].split("T")[0] for i in unused_slcs]
+        unused_slc_dates_x = [datetime.strptime(i, "%Y-%m-%d").timestamp() for i in unused_slc_dates_str]
+        unused_slc_perp_y = [Pair(self.geo_reference, i).perpendicular for i in unused_slcs]
 
         unused_slcs_trace = go.Scatter(
             x=unused_slc_dates_x, y=unused_slc_perp_y,
@@ -166,28 +254,20 @@ class Network(Stack):
             )
         )
 
+        # Define the date (x) axis
         date_range = (
             pd.date_range(
-                start="-".join(self.opts.start.split("-")[:2]), 
-                end="-".join(self.opts.end.split("-")[:2]), 
+                start="-".join(self.opts.start.split("-")[:2]),
+                end="-".join(self.opts.end.split("-")[:2]),
                 freq="MS"
             )
             .strftime("%Y-%m")
             .tolist()
         )
-        
-        date_range_ts = [
-            datetime.strptime(date, "%Y-%m").timestamp() for date in date_range
-        ]
+        date_range_ts = [datetime.strptime(date, "%Y-%m").timestamp() for date in date_range]
 
-        # all_y_vals = [pair.perpendicular for ]
-        # y_min = min(all_y_vals)
-        # y_max = max(all_y_vals)
-                
-        def f_date(dash_date_str):
-            return dash_date_str.replace("-", "/")
         fig = go.Figure(
-            data=[edge_trace, edge_hover_trace, node_trace, unused_slcs_trace],
+            data=edge_traces + [node_trace, unused_slcs_trace],
             layout=go.Layout(
                 showlegend=False,
                 hovermode="closest",
@@ -204,28 +284,19 @@ class Network(Stack):
                     title="Perpendicular Baseline (m)",
                     gridcolor="gray",
                     zerolinecolor="gray",
-                    # range=[y_min-50, y_max+50],
                 ),
                 title=dict(
-                    text=(
-                        "<b>Sentinel-1 Seasonal SBAS Stack</b><br>"),
-                    #     f"Reference: {self._geo_ref_scene_id}<br>"
-                    #     f"Temporal Bounds: {f_date(self._start)} - {f_date(self._end)}, Seasonal Bounds: {f_date(self._season[0])} - {f_date(self._season[1])}<br>"
-                    #     f"Max Temporal Baseline: {self.temporal_baseline} days, Max Perpendicular Baseline: {self.perp_baseline}m<br>"
-                    #     f"Stack Size: {len(insar_node_pairs)} pairs from {self.ref_stack_len()} scenes<br>"
-                    # ),
+                    text="<b>Sentinel-1 Seasonal SBAS Stack</b><br>",
                     y=0.95,
                     x=0.5,
                     xanchor="center",
                     yanchor="top",
-                    font=dict(
-                        family="Helvetica, monospace",
-                        size=22,
-                    ),
+                    font=dict(family="Helvetica, monospace", size=22),
                 ),
                 plot_bgcolor="white",
                 paper_bgcolor="lightgrey",
             ),
         )
         fig.show()
+
 
