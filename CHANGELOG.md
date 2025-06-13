@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v9.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.0...v9.0.1)
+### Changed
+- `productionConfiguration` now supports list of strings
+
+------
 ## [v9.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.5...v9.0.0)
 ### Added
 - `ASFSession.auth_with_creds()` now also queries Earth Data Login's `/find_or_create_token`. If successful, will set `Authorization` to use the returned EDL bearer token, allowing authorized users to download restricted data they have access to from Earth Data Cloud like when authed with `auth_with_token()`. 
