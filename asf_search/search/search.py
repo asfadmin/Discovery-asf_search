@@ -56,7 +56,7 @@ def search(
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
     jointObservation: bool = None,
-    productionConfiguration: Literal["PR", "UR"] = None,
+    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,

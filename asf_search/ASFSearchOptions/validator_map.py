@@ -93,7 +93,7 @@ validator_map = {
     'mainBandPolarization': parse_string_list,
     'sideBandPolarization': parse_string_list,
     'rangeBandwidth': parse_string_list,
-    'productionConfiguration': parse_string,
+    'productionConfiguration': parse_string_list,
     # Config parameters       Parser
     'session': parse_session,
     'host': parse_string,
