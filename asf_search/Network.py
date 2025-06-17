@@ -17,12 +17,18 @@ class Network(Stack):
     def __init__(
         self,
         geo_reference: ASFProduct,
-        perp_baseline: int = 400,
-        temporal_baseline: int = 36,
+        perp_baseline: Optional[int] = 400,
+        inseason_temporal_baseline: Optional[int] = 36,
+        bridge_year_threshold: Optional[int] = 1,
         bridge_target_date: Optional[str] = None,
-        opts: ASFSearchOptions = ASFSearchOptions(**{})
+        opts: Optional[ASFSearchOptions] = None
     ):
-        super().__init__(geo_reference, opts)
+        self.temporal_baseline = (bridge_year_threshold * 365) + inseason_temporal_baseline
+        super().__init__(
+            geo_reference=geo_reference, 
+            temporal_baseline=self.temporal_baseline, 
+            opts=opts
+            )
         self._season = opts.season if opts.season is not None else (1, 365)
         self._start = getattr(opts, "start", None)
         self._end = getattr(opts, "end", None)
@@ -31,12 +37,13 @@ class Network(Stack):
         else:
             self.bridge_target_date = self._season[0]
         self.perp_baseline = perp_baseline
-        self.temporal_baseline = temporal_baseline
+        self.inseason_temporal_baseline = inseason_temporal_baseline
+        self.bridge_year_threshold = bridge_year_threshold
         self.network = self._build_sbas_stack()
 
         try:
-            import plotly.graph_objects as go
-            import networkx as nx
+            import plotly
+            import networkx
         except ImportError:
             warning = (
                 "Warning: Network.plot() requires the dependencies plotly and networkx."
@@ -48,9 +55,9 @@ class Network(Stack):
         """
         Logic to determine if a pair should be included in subset_stack
         based on temporal baselines, taking into account possible 
-        1-year bridge pairs to create connected mutliannual SBAS stacks
+        multiannual bridge pairs to create connected seasonal, mutliannual SBAS stacks
         """
-        if pair.temporal.days <= self.temporal_baseline:
+        if pair.temporal.days <= self.inseason_temporal_baseline:
             return True
 
         if self._season[0] < self._season[1]:
@@ -58,15 +65,20 @@ class Network(Stack):
         else:
             season_length = 366 - self._season[0] + self._season[1]
 
-        # Only create ~yearlong bridge pairs if the off-season is longer than the temporal baseline
-        if 365 - season_length > self.temporal_baseline:
+        # Only create multiannual bridge pairs if the off-season is longer than inseason_temporal_baseline
+        if 365 - season_length > self.inseason_temporal_baseline:
+
             days_from_bridge_date = np.abs(
                 (
                     datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
                     - pair.ref_date).days
                 )
-            return days_from_bridge_date <= self.temporal_baseline and \
-                365 - self.temporal_baseline <= pair.temporal.days <= 365 + self.temporal_baseline
+            valid_ranges = []
+            for i in range(1, self.bridge_year_threshold+1):
+                valid_ranges.append((i * 365 - self.inseason_temporal_baseline, i * 365 + self.inseason_temporal_baseline))
+
+            return days_from_bridge_date <= self.inseason_temporal_baseline and \
+                any(start <= pair.temporal.days <= end for start, end in valid_ranges)
         else:
             return False
 
@@ -295,7 +307,7 @@ class Network(Stack):
         largest_stack_slc_count = len(set(scene for pair in largest_stack.values() for scene in (pair.ref, pair.sec)))
 
         if stack_dict is self.full_stack:
-            plot_header_text=(
+            plot_header_text = (
                 "<b>SBAS Stack</b><br>"
                 f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
@@ -303,17 +315,16 @@ class Network(Stack):
                 f"Full Stack Size: {len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
             )
         else:
-            plot_header_text=(
+            plot_header_text = (
                 "<b>SBAS Stack</b><br>"
                 f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
                 f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
-                f"Max Temporal Baseline: {self.temporal_baseline} days, "
-                f"Max Perpendicular Baseline: {self.perp_baseline}m<br>"
+                f"Temporal Baseline: {self.inseason_temporal_baseline} days, "
+                f"Perpendicular Baseline: {self.perp_baseline}m<br>"
                 f"Bridge Target Date: {self.bridge_target_date}, Largest Stack Size: "
                 f"{len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
             )
-
 
         fig = go.Figure(
             data=edge_traces + [node_trace, unused_slcs_trace],

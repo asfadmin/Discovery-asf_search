@@ -6,6 +6,7 @@ import warnings
 from asf_search import ASFProduct, Pair
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from datetime import datetime, date
+import numpy as np
 import pandas as pd
 
 try:
@@ -31,8 +32,16 @@ class Stack:
 
     self._remove_list is a list of date pair tuples that is used for filtering a subset_stack from a full_stack
     """
-    def __init__(self, geo_reference: ASFProduct, opts: Optional[ASFSearchOptions] = None):
+    def __init__(
+        self,
+        geo_reference: ASFProduct,
+        temporal_baseline: Optional[int] = None,
+        opts: Optional[ASFSearchOptions] = None
+    ):
         self.geo_reference = geo_reference
+        self.temporal_baseline = temporal_baseline
+        if opts is None:
+            opts = ASFSearchOptions()
         self.opts = opts
         self.full_stack = self._build_full_stack()
         self._remove_list = []
@@ -118,9 +127,22 @@ class Stack:
                 return val
             elif isinstance(val, datetime):
                 return val.date()
-            else:
+            elif isinstance(val, np.datetime64):
+                return val.astype(datetime)
+            elif isinstance(val, str):
                 return datetime.fromisoformat(val).date()
+            else:
+                raise Exception(f"Cannot handle date or timestamp of type: {type(val)}")
         return to_dt(pair[0]), to_dt(pair[1])
+
+    def generate_pairs_within_baseline(self, dates):
+        dates = sorted(dates)
+        return [
+            (dates[i], dates[j])
+            for i in range(len(dates))
+            for j in range(i + 1, len(dates))
+            if (dates[j] - dates[i]).days <= self.temporal_baseline
+        ]
 
     def _build_full_stack(self) -> Dict[Tuple[date, date], Pair]:
         """
@@ -130,12 +152,17 @@ class Stack:
         Pairs as values
         """
         geo_ref_stack = self.geo_reference.stack(opts=self.opts)
+        dates = {parse_datetime(p.properties['stopTime']).date(): p for p in geo_ref_stack}
+        date_pairs = {
+            (d1, d2): (dates[d1], dates[d2])
+            for i, d1 in enumerate(sorted(dates))
+            for d2 in list(sorted(dates))[i + 1:]
+            if self.temporal_baseline is None or (d2 - d1).days <= self.temporal_baseline
+        }
         stack = {}
-        for i, ref in enumerate(geo_ref_stack):
-            for j, sec in enumerate(geo_ref_stack):
-                if i < j and not ref.baseline.get("noStateVectors") and not sec.baseline.get("noStateVectors"):
-                    pair = Pair(ref, sec)
-                    stack[(pair.ref_date, pair.sec_date)] = pair
+        for pair_dates, pair in date_pairs.items():
+            if not pair[0].baseline.get("noStateVectors") and not pair[1].baseline.get("noStateVectors"):
+                stack[(pair_dates[0], pair_dates[1])] = Pair(pair[0], pair[1])              
         return stack
 
     def _get_subset_stack(self) -> Dict[Tuple[date, date], Pair]:
