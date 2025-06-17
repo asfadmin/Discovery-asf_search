@@ -29,8 +29,6 @@ class Network(Stack):
             temporal_baseline=self.temporal_baseline, 
             opts=opts
             )
-        if opts is None:
-            opts = ASFSearchOptions()
         self._season = opts.season if opts.season is not None else (1, 365)
         self._start = getattr(opts, "start", None)
         self._end = getattr(opts, "end", None)
@@ -53,12 +51,11 @@ class Network(Stack):
             )
             warnings.warn(warning)
 
-    # TODO: update logic to use self.bridge_year_threshold
     def _passes_temporal_check(self, pair: Pair):
         """
         Logic to determine if a pair should be included in subset_stack
         based on temporal baselines, taking into account possible 
-        1-year bridge pairs to create connected mutliannual SBAS stacks
+        multiannual bridge pairs to create connected seasonal, mutliannual SBAS stacks
         """
         if pair.temporal.days <= self.inseason_temporal_baseline:
             return True
@@ -68,15 +65,20 @@ class Network(Stack):
         else:
             season_length = 366 - self._season[0] + self._season[1]
 
-        # Only create ~yearlong bridge pairs if the off-season is longer than the temporal baseline
+        # Only create multiannual bridge pairs if the off-season is longer than inseason_temporal_baseline
         if 365 - season_length > self.inseason_temporal_baseline:
+
             days_from_bridge_date = np.abs(
                 (
                     datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
                     - pair.ref_date).days
                 )
+            valid_ranges = []
+            for i in range(1, self.bridge_year_threshold+1):
+                valid_ranges.append((i * 365 - self.inseason_temporal_baseline, i * 365 + self.inseason_temporal_baseline))
+
             return days_from_bridge_date <= self.inseason_temporal_baseline and \
-                365 - self.inseason_temporal_baseline <= pair.temporal.days <= 365 + self.inseason_temporal_baseline
+                any(start <= pair.temporal.days <= end for start, end in valid_ranges)
         else:
             return False
 
