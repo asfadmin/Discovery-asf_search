@@ -29,6 +29,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [v9.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.1...v9.0.2)
 ### Fixed
 - Fix OPERA Displacement product type output for jsonlite formats
+- `bbox` now wrapped between -180 and 180 when passed directly
 
 ------
 ## [v9.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.0...v9.0.1)
