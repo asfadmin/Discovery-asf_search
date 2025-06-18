@@ -308,6 +308,17 @@ def parse_bbox(value: List[float]) -> List[float]:
         raise ValueError(
             f'Invalid bbox string, must be values of format (min_lat, min_lon, max_lat, max_lon). Got: {value}'
         )
+
+    if value[0] > 180 or value[2] > 180:
+        value = [
+            (x + 180) % 360 - 180 if idx % 2 == 0 and abs(x) > 180 else x
+            for idx, x in enumerate(value)
+        ]
+
+        bottom_left = [coord for coord in value[:2]]
+        top_right = [coord for coord in value[2:]]
+
+        value = [*bottom_left, *top_right]
     return value
 
 # Take "requests.Session", or anything that subclasses it:
