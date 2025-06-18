@@ -79,7 +79,10 @@ class JSONLiteStreamArray(list):
         for key, path in extra_jsonlite_fields:
             additional_fields[key] = product.umm_get(product.umm, *path)
 
-        if product.properties["platform"].upper() in [
+        platform = product.properties.get("platform")
+        if platform is None:
+            platform = ""
+        if platform.upper() in [
             "ALOS",
             "RADARSAT-1",
             "JERS-1",

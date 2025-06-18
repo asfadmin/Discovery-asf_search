@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v9.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.1...v9.0.2)
+### Fixed
+- Fix OPERA Displacement product type output for jsonlite formats
+
+------
 ## [v9.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.0...v9.0.1)
 ### Changed
 - `productionConfiguration` now supports list of strings

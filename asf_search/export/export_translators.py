@@ -19,7 +19,10 @@ def ASFSearchResults_to_properties_list(
     # Format dates to match format used by SearchAPI output formats
     for product in property_list:
         # S1 date properties are formatted differently from other platforms
-        is_S1 = product['platform'].upper() in [
+        platform = product.get("platform")
+        if platform is None:
+            platform = ""
+        is_S1 = platform.upper() in [
             'SENTINEL-1',
             'SENTINEL-1B',
             'SENTINEL-1A',
