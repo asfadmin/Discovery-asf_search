@@ -34,6 +34,7 @@ from .ASFProduct import ASFProduct  # noqa: F401 E402
 from .ASFStackableProduct import ASFStackableProduct  # noqa: F401 E402
 from .ASFSearchResults import ASFSearchResults  # noqa: F401 E402
 from .ASFSearchOptions import ASFSearchOptions, validators  # noqa: F401 E402
+from .ASFStack import * # noqa: F403 F401 E402
 from .Products import *  # noqa: F403 F401 E402
 from .exceptions import *  # noqa: F403 F401 E402
 from .constants import (  # noqa: F401 E402
