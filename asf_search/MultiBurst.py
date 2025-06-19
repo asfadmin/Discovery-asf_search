@@ -33,7 +33,7 @@ class MultiBurst:
                 f"multiburst_dict contains burst with the following paths: {orbital_paths}"
             ))
 
-        component_count, hole_count = self.analyze_grid()
+        component_count, hole_count = self.count_components_and_holes()
         if component_count > 1 or hole_count > 0:
             raise Exception((
                 "Multiburst collections must be comprised of a single connected component and have no holes.\n"
@@ -55,7 +55,7 @@ class MultiBurst:
             grid.append(include_list)
         return grid
     
-    def analyze_grid(self):
+    def count_components_and_holes(self):
         """
         Performs BFS searches to count connected components and holes
         
