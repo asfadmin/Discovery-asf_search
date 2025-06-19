@@ -17,7 +17,8 @@ class MultiBurst:
 
         - Sets of bursts can contain 1-15 bursts
         - Burst collection must be contiguous
-        - Bursts crossing the antimeridian are not supported
+        - Bursts collections should not contain holes
+        - Bursts crossing the Antimeridian are not supported
         """
         if not 0 < len(self.multiburst_dict) <= 15:
             raise Exception((
@@ -32,7 +33,7 @@ class MultiBurst:
                 f"multiburst_dict contains burst with the following paths: {orbital_paths}"
             ))
 
-        component_count, hole_count = self.analyze_grid_single_pass()
+        component_count, hole_count = self.analyze_grid()
         if component_count > 1 or hole_count > 0:
             raise Exception((
                 "Multiburst collections must be comprised of a single connected component and have no holes.\n"
@@ -54,9 +55,9 @@ class MultiBurst:
             grid.append(include_list)
         return grid
     
-    def analyze_grid_single_pass(self):
+    def analyze_grid(self):
         """
-        Performs 
+        Performs BFS searches to count connected components and holes
         
         This could be simplified by using scipy or Networkxx for BFS,
         but doing it without avoids adding either as a required dependency
