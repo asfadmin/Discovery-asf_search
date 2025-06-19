@@ -10,19 +10,28 @@ from asf_search.ASFSearchOptions import ASFSearchOptions
 
 class Network(Stack):
     """
-    Network is a child class of Stack. It takes additional
+    Network is a child class of Stack. It takes a georeference scene or
+    a dictionary describing a multiburst stack, and
     arguments of perpendicular baseline, temporal baselline, 
-    and a seasonal bridge date to create multiannual SBAS stacks.
+    and a seasonal bridge date to create multiannual seasonal SBAS stacks.
+
+    multiburst_dict: key: string burst ID
+                     value: tuple of included string subswaths
+                     e.g. {"burst_ID_1": ("a"), "burst_ID_2": ("a", "b", "c")}
     """
     def __init__(
         self,
-        geo_reference: ASFProduct,
+        geo_reference: Optional[ASFProduct] = None,
+        multiburst_dict: Optional[Dict[str, Tuple[str]]] = None,
         perp_baseline: Optional[int] = 400,
         inseason_temporal_baseline: Optional[int] = 36,
         bridge_year_threshold: Optional[int] = 1,
         bridge_target_date: Optional[str] = None,
         opts: Optional[ASFSearchOptions] = None
     ):
+        xor_err_str = "geo_reference or multiburst_dict must be passed, but not both"
+        assert (geo_reference is None) ^ (multiburst_dict is None), xor_err_str
+
         self.temporal_baseline = (bridge_year_threshold * 365) + inseason_temporal_baseline
         super().__init__(
             geo_reference=geo_reference, 
