@@ -5,9 +5,13 @@ import pandas as pd
 from typing import Optional, Dict, Tuple, List
 import warnings
 
-from asf_search import ASFProduct, Pair, Stack, MultiBurst
-from asf_search.ASFSearchOptions import ASFSearchOptions
-import asf_search as asf
+from .ASFProduct import ASFProduct
+from .Pair import Pair
+from .Stack import Stack
+from .MultiBurst import MultiBurst
+from .search import geo_search
+from .ASFSearchOptions import ASFSearchOptions
+from .constants import PLATFORM
 
 
 class Network(Stack):
@@ -38,7 +42,7 @@ class Network(Stack):
             flight_direction = multiburst.burst_metadata[0]['items'][0]['umm']['AdditionalAttributes'][0]['Values'][0]
             next_year = pd.to_datetime(self._start) + pd.DateOffset(years=1)
             geo_search_opts = {
-                'platform': asf.PLATFORM.SENTINEL1,
+                'platform': PLATFORM.SENTINEL1,
                 'season': self._season,
                 'start': self._start,
                 'end': next_year,
@@ -53,7 +57,7 @@ class Network(Stack):
             # except asf.ASFSearchError:
             #     print("ASFSearchError")
             #     pass
-            results = asf.geo_search(**geo_search_opts)
+            results = geo_search(**geo_search_opts)
             if len(results) == 0:
                 raise Exception("Found no geo-reference scenes within one year of start date ({self._start})")
 
@@ -67,7 +71,7 @@ class Network(Stack):
                 if i == 0:
                     geo_reference = burst_stack[-1]
                 else:
-                    multiburst_network = asf.Network(
+                    multiburst_network = Network(
                         geo_reference=results[-1],
                         perp_baseline=perp_baseline, 
                         inseason_temporal_baseline=inseason_temporal_baseline,

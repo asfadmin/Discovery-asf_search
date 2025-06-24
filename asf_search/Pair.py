@@ -1,7 +1,8 @@
 import math
 
-from asf_search import ASFProduct
-from asf_search.baseline import calculate_perpendicular_baselines
+from .ASFProduct import ASFProduct
+from .baseline import calculate_perpendicular_baselines
+
 import pytz
 
 try:
