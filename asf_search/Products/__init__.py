@@ -12,3 +12,4 @@ from .S1BurstProduct import S1BurstProduct  # noqa: F401
 from .OPERAS1Product import OPERAS1Product  # noqa: F401
 from .ARIAS1GUNWProduct import ARIAS1GUNWProduct  # noqa: F401
 from .NISARProduct import NISARProduct  # noqa: F401
+from .ALOS2Product import ALOS2Product  # noqa: F401

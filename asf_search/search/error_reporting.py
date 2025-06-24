@@ -1,7 +1,7 @@
-from asf_search import ASFSearchOptions
+from asf_search import ASF_LOGGER, ASFSearchOptions
 from asf_search import INTERNAL
 import requests
-import logging
+
 
 
 def report_search_error(search_options: ASFSearchOptions, message: str):
@@ -10,7 +10,7 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
     from asf_search import REPORT_ERRORS
 
     if not REPORT_ERRORS:
-        logging.warning(
+        ASF_LOGGER.warning(
             'Automatic search error reporting is turned off,'
             'search errors will NOT be reported to ASF.'
             '\nTo enable automatic error reporting, set asf_search.REPORT_ERRORS to True'
@@ -33,14 +33,14 @@ def report_search_error(search_options: ASFSearchOptions, message: str):
     try:
         response.raise_for_status()
     except requests.exceptions.HTTPError:
-        logging.error(
+        ASF_LOGGER.error(
             'asf-search failed to automatically report an error,'
             'if you have any questions email uso@asf.alaska.edu'
             f"\nError Text: HTTP {response.status_code}: {response.json()['errors']}"
         )
         return
     if response.status_code == 200:
-        logging.error(
+        ASF_LOGGER.error(
             (
                 'The asf-search module ecountered an error with CMR,'
                 'and the following message was automatically reported to ASF:'

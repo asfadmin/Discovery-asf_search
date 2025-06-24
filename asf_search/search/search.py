@@ -5,6 +5,7 @@ import datetime
 
 from asf_search import ASF_LOGGER, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.exceptions import ASFSearchError
 from asf_search.search.search_generator import search_generator
 
 
@@ -55,6 +56,7 @@ def search(
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
     jointObservation: bool = None,
+    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
@@ -183,7 +185,15 @@ def search(
         results.searchOptions = page.searchOptions
         perf = time.time()
 
-    results.raise_if_incomplete()
+
+    if not results.searchComplete:
+        msg = (
+            'Results may be incomplete due to a search error. '
+            'See ASF_LOGGER logging for more details.'
+        )
+
+        ASF_LOGGER.error(msg)
+        
 
     try:
         results.sort(key=lambda p: p.get_sort_keys(), reverse=True)

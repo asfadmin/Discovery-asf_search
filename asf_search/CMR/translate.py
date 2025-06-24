@@ -117,7 +117,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
 def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
     """Fixes raw CMR lon lat coord shapes"""
-    for param in ['point', 'linestring', 'circle']:
+    for param in ['point', 'linestring', 'circle', 'bbox']:
         if param in fixed_params:
             fixed_params[param] = ','.join(map(str, fixed_params[param]))
 
@@ -125,7 +125,7 @@ def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def should_use_asf_frame(cmr_opts):
-    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS']
+    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS', 'ALOS-2', 'NISAR']
 
     asf_frame_collections = get_concept_id_alias(asf_frame_platforms, collections_per_platform)
 

@@ -1,6 +1,6 @@
 from typing import Dict, Tuple
 from asf_search import ASFSearchOptions, ASFSession
-from asf_search.CMR.translate import try_parse_date
+from asf_search.CMR.translate import try_parse_date, try_parse_int
 from asf_search.Products import S1Product
 
 
@@ -40,6 +40,8 @@ class OPERAS1Product(S1Product):
         'C1260721945-ASF',
         'C2803501097-ASF',
         'C2803501758-ASF',
+        'C3294057315-ASF',
+        'C1271830354-ASF',
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -52,6 +54,7 @@ class OPERAS1Product(S1Product):
         )
 
         self.properties['additionalUrls'] = self._get_additional_urls()
+        self.properties['s3Urls'] = self._get_s3_uris()
 
         self.properties['operaBurstID'] = self.umm_get(
             self.umm, 'AdditionalAttributes', ('Name', 'OPERA_BURST_ID'), 'Values', 0
@@ -67,7 +70,8 @@ class OPERAS1Product(S1Product):
 
         self.properties.pop('frameNumber')
 
-        if (processingLevel := self.properties['processingLevel']) in [
+        processingLevel = self.properties['processingLevel']
+        if processingLevel in [
             'RTC',
             'RTC-STATIC',
         ]:
@@ -93,6 +97,26 @@ class OPERAS1Product(S1Product):
                     'Values',
                     0,
                 )
+        elif processingLevel == 'DISP-S1':
+            self.properties['frameNumber'] = try_parse_int(
+                self.umm_get(
+                    self.umm,
+                    'AdditionalAttributes',
+                    ('Name', 'FRAME_NUMBER'),
+                    'Values', 
+                    0)
+                )
+            self.properties['OperaDispStackID'] = self.umm_get(
+                    self.umm,
+                    'AdditionalAttributes',
+                    ('Name', 'STACK_ID'),
+                    'Values', 
+                    0)
+            file_id = self.properties['fileID']
+            product_zarr = r'.*{0}.zarr.json.gz'.format(file_id)
+
+            self.properties['zarrUri'] = self.find_urls(extension='.gz', pattern=product_zarr, directAccess=True)[0]
+            self.properties['zarrStackUri'] = self.find_urls(extension='.gz', pattern=r'.*short_wavelength_displacement.zarr.json.gz', directAccess=True)[0]
 
     @staticmethod
     def get_default_baseline_product_type() -> None:

@@ -1,4 +1,4 @@
-from asf_search import ASFProduct
+from asf_search import ASFProduct, ALOS2Product
 from math import sqrt, cos, sin, radians
 from typing import List
 
@@ -17,37 +17,40 @@ f = pow((1.0 - 1 / 298.257224), 2)
 
 
 def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
-    for product in stack:
-        baselineProperties = product.baseline
-        positionProperties = baselineProperties["stateVectors"]["positions"]
+    isAlos2 = isinstance(stack[0], ALOS2Product)
 
-        if len(positionProperties.keys()) == 0:
-            baselineProperties["noStateVectors"] = True
-            continue
-        if None in [
-            positionProperties["prePositionTime"],
-            positionProperties["postPositionTime"],
-            positionProperties["prePosition"],
-            positionProperties["postPosition"],
-        ]:
-            baselineProperties["noStateVectors"] = True
-            continue
+    if not isAlos2:
+        for product in stack:
+            baselineProperties = product.baseline
+            positionProperties = baselineProperties["stateVectors"]["positions"]
 
-        asc_node_time = parse_datetime(
-            baselineProperties["ascendingNodeTime"]
-        ).timestamp()
+            if len(positionProperties.keys()) == 0:
+                baselineProperties["noStateVectors"] = True
+                continue
+            if None in [
+                positionProperties["prePositionTime"],
+                positionProperties["postPositionTime"],
+                positionProperties["prePosition"],
+                positionProperties["postPosition"],
+            ]:
+                baselineProperties["noStateVectors"] = True
+                continue
 
-        start = parse_datetime(product.properties["startTime"]).timestamp()
-        end = parse_datetime(product.properties["stopTime"]).timestamp()
-        center = start + ((end - start) / 2)
-        baselineProperties["relative_start_time"] = start - asc_node_time
-        baselineProperties["relative_center_time"] = center - asc_node_time
-        baselineProperties["relative_end_time"] = end - asc_node_time
+            asc_node_time = parse_datetime(
+                baselineProperties["ascendingNodeTime"]
+            ).timestamp()
 
-        t_pre = parse_datetime(positionProperties["prePositionTime"]).timestamp()
-        t_post = parse_datetime(positionProperties["postPositionTime"]).timestamp()
-        product.baseline["relative_sv_pre_time"] = t_pre - asc_node_time
-        product.baseline["relative_sv_post_time"] = t_post - asc_node_time
+            start = parse_datetime(product.properties["startTime"]).timestamp()
+            end = parse_datetime(product.properties["stopTime"]).timestamp()
+            center = start + ((end - start) / 2)
+            baselineProperties["relative_start_time"] = start - asc_node_time
+            baselineProperties["relative_center_time"] = center - asc_node_time
+            baselineProperties["relative_end_time"] = end - asc_node_time
+
+            t_pre = parse_datetime(positionProperties["prePositionTime"]).timestamp()
+            t_post = parse_datetime(positionProperties["postPositionTime"]).timestamp()
+            product.baseline["relative_sv_pre_time"] = t_pre - asc_node_time
+            product.baseline["relative_sv_post_time"] = t_post - asc_node_time
 
     for product in stack:
         if product.properties["sceneName"] == reference:
@@ -64,12 +67,15 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
             secondary.properties["perpendicularBaseline"] = None
             continue
 
-        shared_rel_time = get_shared_sv_time(reference, secondary)
-
-        reference_shared_pos = get_pos_at_rel_time(reference, shared_rel_time)
-        reference_shared_vel = get_vel_at_rel_time(reference, shared_rel_time)
-        secondary_shared_pos = get_pos_at_rel_time(secondary, shared_rel_time)
-        # secondary_shared_vel = get_vel_at_rel_time(secondary, shared_rel_time) # unused
+        if isAlos2:
+            reference_shared_pos = reference.baseline["granulePosition"] + reference.baseline["stateVectors"]['position']
+            reference_shared_vel = reference.baseline["stateVectors"]['velocity']
+            secondary_shared_pos = secondary.baseline["stateVectors"]['position'] + get_granule_position(secondary.properties['center_lat'], secondary.properties['center_lon'])
+        else:
+            shared_rel_time = get_shared_sv_time(reference, secondary)
+            reference_shared_pos = get_pos_at_rel_time(reference, shared_rel_time)
+            reference_shared_vel = get_vel_at_rel_time(reference, shared_rel_time)
+            secondary_shared_pos = get_pos_at_rel_time(secondary, shared_rel_time)
 
         # need to get sat pos and sat vel at center time
         reference.baseline["alongBeamVector"] = get_along_beam_vector(

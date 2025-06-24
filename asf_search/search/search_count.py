@@ -54,6 +54,7 @@ def search_count(
     mainBandPolarization: Union[str, Sequence[str]] = None,
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
+    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
     jointObservation: bool = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,

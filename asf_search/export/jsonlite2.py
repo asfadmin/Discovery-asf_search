@@ -29,40 +29,40 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
         # so use that and then rename/substitute fields
         p = super().getItem(p)
         result = {
-            "b": [a.replace(p["granuleName"], "{gn}") for a in p["browse"]]
+            "b": [a.replace(p.get("granuleName"), "{gn}") for a in p.get("browse")]
             if p["browse"] is not None
             else p["browse"],
-            "bm": p["beamMode"],
-            "d": p["dataset"],
-            "du": p["downloadUrl"].replace(p["granuleName"], "{gn}"),
-            "f": p["frame"],
-            "fd": p["flightDirection"],
-            "fl": p["flightLine"],
-            "fn": p["fileName"].replace(p["granuleName"], "{gn}"),
-            "fr": p["faradayRotation"],  # ALOS
-            "gid": p["groupID"].replace(p["granuleName"], "{gn}"),
-            "gn": p["granuleName"],
-            "i": p["instrument"],
-            "in": p["canInSAR"],
-            "mn": p["missionName"],
-            "o": p["orbit"],
-            "on": p["offNadirAngle"],  # ALOS
-            "p": p["path"],
-            "pid": p["productID"].replace(p["granuleName"], "{gn}"),
-            "pa": p["pointingAngle"],
-            "po": p["polarization"],
-            "pt": p["productType"],
-            "ptd": p["productTypeDisplay"],
-            "s": p["sizeMB"],
-            "ss": p["stackSize"],  # Used for datasets with precalculated stacks
-            "st": p["startTime"],
-            "stp": p["stopTime"],
-            "t": p["thumb"].replace(p["granuleName"], "{gn}")
-            if p["thumb"] is not None
-            else p["thumb"],
-            "w": p["wkt"],
-            "wu": p["wkt_unwrapped"],
-            "pge": p["pgeVersion"],
+            "bm": p.get("beamMode"),
+            "d": p.get("dataset"),
+            "du": p.get("downloadUrl").replace(p.get("granuleName"), "{gn}"),
+            "f": p.get("frame"),
+            "fd": p.get("flightDirection"),
+            "fl": p.get("flightLine"),
+            "fn": p.get("fileName").replace(p.get("granuleName"), "{gn}"),
+            "fr": p.get("faradayRotation"),  # ALOS
+            "gid": p.get("groupID").replace(p.get("granuleName"), "{gn}"),
+            "gn": p.get("granuleName"),
+            "i": p.get("instrument"),
+            "in": p.get("canInSAR"),
+            "mn": p.get("missionName"),
+            "o": p.get("orbit"),
+            "on": p.get("offNadirAngle"),  # ALOS
+            "p": p.get("path"),
+            "pid": p.get("productID").replace(p.get("granuleName"), "{gn}"),
+            "pa": p.get("pointingAngle"),
+            "po": p.get("polarization"),
+            "pt": p.get("productType"),
+            "ptd": p.get("productTypeDisplay"),
+            "s": p.get("sizeMB"),
+            "ss": p.get("stackSize"),  # Used for datasets with precalculated stacks
+            "st": p.get("startTime"),
+            "stp": p.get("stopTime"),
+            "t": p.get("thumb").replace(p.get("granuleName"), "{gn}")
+            if p.get("thumb") is not None
+            else p.get("thumb"),
+            "w": p.get("wkt"),
+            "wu": p.get("wkt_unwrapped"),
+            "pge": p.get("pgeVersion"),
         }
 
         if 'temporalBaseline' in p.keys():
@@ -72,13 +72,17 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
 
         if p.get('burst') is not None: # is a burst product
             result['s1b'] = p['burst']
+            result['f'] = None
 
         if p.get('opera') is not None:
             result['s1o'] = p['opera']
         
         if p.get('nisar') is not None:
-            result['nisar'] = p['nisar']
+            result['nsr'] = p['nisar']
         
+        if p.get('ariaVersion') is not None:
+            result['ariav'] = p.get('ariaVersion')
+    
         return result
 
     def getOutputType(self) -> str:

@@ -26,7 +26,133 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v9.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.1...v9.0.2)
+### Fixed
+- Fix OPERA Displacement product type output for jsonlite formats
+- `bbox` now wrapped between -180 and 180 when passed directly
+
+------
+## [v9.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.0...v9.0.1)
+### Changed
+- `productionConfiguration` now supports list of strings
+
+------
+## [v9.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.5...v9.0.0)
+### Added
+- `ASFSession.auth_with_creds()` now also queries Earth Data Login's `/find_or_create_token`. If successful, will set `Authorization` to use the returned EDL bearer token, allowing authorized users to download restricted data they have access to from Earth Data Cloud like when authed with `auth_with_token()`. 
+- Added `EDL_HOST_UAT` and `CMR_HOST_UAT` to `constants.INTERNAL`
+
+### Fixed
+- `NISARProduct` now properly sets `browse` in `properties` dictionary when available
+- Updated various `NISAR` UAT collection concept-ids to latest
+
+------
+## [v8.3.5](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.4...v8.3.5)
+### Added
+- Added NISAR product type constants `L0B`, `RSLC`, `RIFG`, `RUNW`, `ROFF`, `GSLC`, `GCOV`, `GUNW`, `GOFF`, `SME2` to `constants.PRODUCT_TYPE`, supported for use with `processingLevel`.
+    - Added concept-id aliases for above processing level constants, used when searching
+
+### Removed
+- Invalid `HH_HV_VV_VH` quad-polarization removed (`HH_HV_VH_VV` is the correct ordering)
+
+------
+## [v8.3.4](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.3...v8.3.4)
+### Added
+- Added `NISAR_UR_L0B_RRSD`, `NISAR_UR_L1`, `NISAR_UR_L2`, `NISAR_ANC_AUX`, `NISAR_OE`, `NISAR_RP`, `NISAR_LRCLK`, `NISAR_STUF`, `NISAR_OROST`, `NISAR_TEC`, `NISAR_DC_RADAR`, `NISAR_COP`, collections to `NISAR` dataset constant
+
+------
+## [v8.3.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.2...v8.3.3)
+### Added
+- Added `productionConfiguration` keyword
+- Added `PRODUCTION` and `URGENT_RESPONSE` to `constants.PRODUCTION_CONFIGURATION`
+- Added `productionConfiguration` key to `NISARProduct` properties dictionary
+
+------
+## [v8.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.1...v8.3.2)
+### Fixed
+- `ALOS2Product` baseline stacking no longer raises error
+- Fixed missing f-string AOI simplification report and typo
+
+### Changed
+- Made output formats more resilient to potentially missing fields
+- Changed AOI base coordinate merge threshold from 0.004 to 0.0004
+
+------
+## [v8.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.1...v8.3.2)
+### Fixed
+- `ALOS2Product` baseline stacking no longer raises error
+- Fixed missing f-string AOI simplification report and typo
+
+### Changed
+- Made output formats more resilient to potentially missing fields
+- Changed AOI base coordinate merge threshold from 0.004 to 0.0004
+
+------
+## [v8.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.3.0...v8.3.1)
+### Fixed
+- Fixed typo in `error_reporting.py`
+
+------
+## [v8.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.2...v8.3.0)
+### Changed
+- `search()` no longer raises error if results are incomplete
+- if `asf-search` receives an incomplete page from CMR, log as a warning and continue querying until results are exhausted
+
+### Fixed
+- `S1BurstProduct` No longer include null frame value in jsonlite outputs
+- `S1BurstProduct` includes `SizeMB` in jsonlite outputs
+- `ARIAVersion` now populated in jsonlite outputs
+- `absoluteOrbit` field supports lists in jsonlite outputs
+
+------
+## [v8.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.2...v8.2.3)
+### Fixed
+- Fix csv output for `ALOS2Product` type
+
+------
+## [v8.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.1...v8.2.2)
+### Added
+- Added `constants.PRODUCT_TYPE.DISP_S1` processing level constant, concept-ids added to `OPERA-S1` dataset constant
+- Added key OPERA-S1 Displacement fields to `OPERAS1Product` properties when available
+    - `frameNumber`
+    - `OperaDispStackID`
+    - `zarrUri` (S3 uri for gzipped kerchunked zarr store for source s3 netcdf4 data)
+    - `zarrStackUri` (S3 uri for gzipped kerchunked zarr store for temporal stack of each product's `short_wavelength_displacement` layer)
+
+## [v8.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.2.0...v8.2.1)
+### Changed
+- `ARIAS1GUNWProduct` uses `fileID` for `sceneName` if unpopulated
+
+## [v8.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.4...v8.2.0)
+### Added
+- Add `ALOS2Product`, `DATASET.ALOS_2` constant, and dataset concept-id aliases for ALOS-2 products
+- Initial stacking support for `ALOS2Product`
+- `AdditionalUrls` included in jsonlite `NISARProduct` entries
+
+### Fixed
+- `NISARProduct` uses `FRAME_NUMBER` instead of `ESA_FRAME` for searches and parsed results
+
+### Changed
+- `jsonlite2` output `nisar` key changed to `nsr`
+
+------
+## [v8.1.4](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.3...v8.1.4)
+### Added
+- `ASFSearchOptions` now accepts the following search keywords:
+    - `bbox`        
+    - `maxBaselinePerp`
+    - `minBaselinePerp`
+    - `maxInsarStackSize`
+    - `minInsarStackSize`
+
+### Fixed
+- `instrument` now accepts a list of instrument names.
+
+------
 ## [v8.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.2...v8.1.3)
+### Added
+- Added `INSTRUMENT.S_SAR` and `INSTRUMENT.L_SAR` constants for NISAR
+
 ### Fixed
 - `instrument` now accepts a list of instrument names
 - `tenacity` version pin changed to require minimum of `v8.2.2`
@@ -40,6 +166,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Added NISAR search parameters `frameCoverage`, `jointObservation`, `mainBandPolarization`, `sideBandPolarization`, `rangeBandwidth`.
 - Updated `NISARProduct` to include these new searchable fields in `properties` dictionary
 - Include new NISAR fields in jsonlite & jsonlite2 output
+
 ------
 ## [v8.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v8.1.0...v8.1.1)
 ### Fixed

@@ -19,7 +19,7 @@ def get_baseline_from_stack(
     stack = [
         product
         for product in stack
-        if not product.properties["processingLevel"].lower().startswith("metadata") and
+        if not product.properties.get("processingLevel", '').lower().startswith("metadata") and
         product.baseline is not None
     ]
     reference, stack, reference_warnings = check_reference(reference, stack)

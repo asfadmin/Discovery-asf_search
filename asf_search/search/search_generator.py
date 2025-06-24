@@ -81,6 +81,7 @@ def search_generator(
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
     jointObservation: bool = None,
+    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
@@ -240,22 +241,24 @@ def search_generator(
                 items, subquery_max_results, cmr_search_after_header = query_cmr(
                     opts.session, url, translated_opts, subquery_count
                 )
-            except (ASFSearchError, CMRIncompleteError) as exc:
+            except ASFSearchError as exc:
                 message = str(exc)
                 ASF_LOGGER.error(message)
                 report_search_error(query, message)
                 opts.session.headers.pop('CMR-Search-After', None)
-                # If it's a CMRIncompleteError, we can just stop here and return what we have
-                # It's up to the user to call .raise_if_incomplete() if they're using the
-                # generator directly.
-                if isinstance(exc, CMRIncompleteError):
-                    return
-                else:
-                    raise
+                raise
 
             ASF_LOGGER.debug(
                 f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items.'
             )
+
+            if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + subquery_count < subquery_max_results:
+                message = 'CMR returned page of incomplete results.' \
+                f'Expected {min(INTERNAL.CMR_PAGE_SIZE, subquery_max_results - subquery_count)} results,' \
+                f'got {len(items)}'
+                ASF_LOGGER.warning(message)
+                report_search_error(query, message)
+            
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             perf = time.time()
             last_page = process_page(
@@ -306,12 +309,12 @@ def query_cmr(
     # 9-10 per process
     # 3.9-5 per process
     # sometimes CMR returns results with the wrong page size
-    if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + sub_query_count < hits:
-        raise CMRIncompleteError(
-            'CMR returned page of incomplete results.'
-            f'Expected {min(INTERNAL.CMR_PAGE_SIZE, hits - sub_query_count)} results,'
-            f'got {len(items)}'
-        )
+    # if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + sub_query_count < hits:
+    #     raise CMRIncompleteError(
+    #         'CMR returned page of incomplete results.'
+    #         f'Expected {min(INTERNAL.CMR_PAGE_SIZE, hits - sub_query_count)} results,'
+    #         f'got {len(items)}'
+    #     )
 
     return items, hits, response.headers.get('CMR-Search-After', None)
 
@@ -380,7 +383,7 @@ def wrap_wkt(opts: ASFSearchOptions):
         opts.intersectsWith = wrapped.wkt
         if len(repairs):
             ASF_LOGGER.warning(
-                'WKT REPAIR/VALIDATION: The following repairs were performed'
+                'WKT REPAIR/VALIDATION: The following repairs were performed '
                 f'on the provided AOI:\n{[str(repair) for repair in repairs]}'
             )
 
@@ -398,6 +401,7 @@ def set_default_dates(opts: ASFSearchOptions):
             )
             opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
+    #TODO python 3.13 deprecation warning, ambiguous date when month specified but not year
     if opts.start is not None:
         opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
     if opts.end is not None:
@@ -543,4 +547,5 @@ dataset_to_product_types = {
     'SEASAT': ASFProductType.SEASATProduct,
     'SEASAT 1': ASFProductType.SEASATProduct,
     'NISAR': ASFProductType.NISARProduct,
+    'ALOS-2': ASFProductType.ALOS2Product,
 }

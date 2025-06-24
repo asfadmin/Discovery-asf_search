@@ -40,6 +40,17 @@ def parse_float(value: float) -> float:
         raise ValueError(f'Float values must be finite: got {value}')
     return value
 
+def parse_int(value: int) -> int:
+    """
+    Base int validator.
+    :param value: The int to validate
+    :return: The validated int
+    """
+    try:
+        value = int(value)
+    except ValueError as exc:
+        raise ValueError(f'Invalid int: {value}') from exc
+    return value
 
 def parse_date(value: Union[str, datetime]) -> Union[datetime, str]:
     """
@@ -291,6 +302,24 @@ def parse_coord_string(value: List):
         )
     return value
 
+def parse_bbox(value: List[float]) -> List[float]:
+    value = parse_float_list(value)
+    if len(value) != 4:
+        raise ValueError(
+            f'Invalid bbox string, must be values of format (min_lat, min_lon, max_lat, max_lon). Got: {value}'
+        )
+
+    if value[0] > 180 or value[2] > 180:
+        value = [
+            (x + 180) % 360 - 180 if idx % 2 == 0 and abs(x) > 180 else x
+            for idx, x in enumerate(value)
+        ]
+
+        bottom_left = [coord for coord in value[:2]]
+        top_right = [coord for coord in value[2:]]
+
+        value = [*bottom_left, *top_right]
+    return value
 
 # Take "requests.Session", or anything that subclasses it:
 def parse_session(session: Type[requests.Session]):

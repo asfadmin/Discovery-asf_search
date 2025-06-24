@@ -65,7 +65,7 @@ Programmatically searching for ASF data is made simple with asf_search. Several 
 - Additionally, numerous constants are provided to ease the search process
 
 Additionally, asf_search support downloading data, both from search results as provided by the above search functions, and directly on product URLs. An authenticated session is generally required. This is provided by the `ASFSession` class, and use of one of its three authentication methods:
-- `auth_with_creds('user', 'pass)`
+- `auth_with_creds('user', 'pass')`
 - `auth_with_token('EDL token')`
 - `auth_with_cookiejar(http.cookiejar)`
 

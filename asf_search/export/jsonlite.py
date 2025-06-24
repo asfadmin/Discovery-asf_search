@@ -1,5 +1,6 @@
 import inspect
 import json
+import re
 from types import GeneratorType
 from typing import Tuple
 from shapely.geometry import shape
@@ -78,7 +79,10 @@ class JSONLiteStreamArray(list):
         for key, path in extra_jsonlite_fields:
             additional_fields[key] = product.umm_get(product.umm, *path)
 
-        if product.properties["platform"].upper() in [
+        platform = product.properties.get("platform")
+        if platform is None:
+            platform = ""
+        if platform.upper() in [
             "ALOS",
             "RADARSAT-1",
             "JERS-1",
@@ -191,7 +195,7 @@ class JSONLiteStreamArray(list):
             "offNadirAngle": str(p["offNadirAngle"])
             if p.get("offNadirAngle") is not None
             else None,  # ALOS
-            "orbit": [str(p["orbit"])],
+            "orbit": p.get("orbit") if isinstance(p.get("orbit"), list) else [str(p["orbit"])],
             "path": p.get("pathNumber"),
             "polarization": p.get("polarization"),
             "pointingAngle": p.get("pointingAngle"),
@@ -214,23 +218,27 @@ class JSONLiteStreamArray(list):
             if result[key] in ["NA", "NULL"]:
                 result[key] = None
 
-        if "temporalBaseline" in p.keys() or "perpendicularBaseline" in p.keys():
+        if "temporalBaseline" in p.keys():
             result["temporalBaseline"] = p["temporalBaseline"]
+        if "perpendicularBaseline" in p.keys():
             result["perpendicularBaseline"] = p["perpendicularBaseline"]
 
         if p.get("processingLevel") == "BURST":  # is a burst product
             result["burst"] = p["burst"]
+            result["sizeMB"] = float(p["bytes"]) / 1024000
 
-        if p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
+        elif p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
             result['opera'] = {
                 'operaBurstID': p.get('operaBurstID'),
+                's3Urls': p.get('s3Urls', []),
                 'additionalUrls': p.get('additionalUrls'),
             }
             if p.get('validityStartDate'):
                 result['opera']['validityStartDate'] = p.get('validityStartDate')
-
-        if p.get('platform') == 'NISAR':
+        elif p.get('platform') == 'NISAR':
             result['nisar'] = {
+                'additionalUrls': p.get('additionalUrls', []),
+                's3Urls': p.get('s3Urls', []),
                 'pgeVersion':  p.get('pgeVersion'),
                 'mainBandPolarization':  p.get('mainBandPolarization'),
                 'sideBandPolarization':  p.get('sideBandPolarization'),
@@ -238,6 +246,13 @@ class JSONLiteStreamArray(list):
                 'jointObservation':  p.get('jointObservation'),
                 'rangeBandwidth':  p.get('rangeBandwidth'),
             }
+        elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
+            result.pop("perpendicularBaseline", None)
+            if p.get('ariaVersion') is None:
+                version_unformatted = result.get('productID').split('v')[-1]
+                result['ariaVersion'] = re.sub(r'[^0-9\.]', '', version_unformatted.replace("_", '.'))
+            else:
+                result['ariaVersion'] = p.get('ariaVersion')
         
         return result
 
