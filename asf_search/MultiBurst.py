@@ -1,12 +1,23 @@
 from collections import deque
 import requests
+from typing import Any, List, Dict
 
 import numpy as np
 
 
 class MultiBurst:
+    """
+    MultiBurst is a helper class that geographically validates collections of Sentinel-1 bursts in 
+    preparation of ordering multi-burst interferograms from HyP3
+    """
 
     def __init__(self, multiburst_dict):
+        """
+        multiburst_dict: 
+            keys: string burst ID
+            values: tuple of included string subswaths
+            e.g. {"burst_ID_1": ("IW1",), "burst_ID_2": ("IW1", "IW2", "IW3")}
+        """
         self.multiburst_dict = multiburst_dict
         self.burst_ids = [f"{burst}_{swath}" for 
                           burst, swaths in self.multiburst_dict.items()
@@ -17,17 +28,18 @@ class MultiBurst:
 
     def _validate_multi_burst_dict(self):
         """
+        Geographically validates a collection of bursts to ensure that
+        they will be suitable for processing with HyP3.
+
+        Raises an Exception upon encountering any issues.
+
         Based on these considerations for selecting multiple bursts:
         https://hyp3-docs.asf.alaska.edu/guides/burst_insar_product_guide/#considerations-for-selecting-input-bursts
 
-        - Sets of bursts can contain 1-15 bursts
+        - Sets of bursts must contain 1-15 bursts
         - Burst collection must be contiguous
-        - Bursts collections should not contain holes
+        - Bursts collections cannot contain holes
         - Bursts crossing the Antimeridian are not supported
-
-        multiburst_dict: key: string burst ID
-                         value: tuple of included string subswaths
-                         e.g. {"burst_ID_1": ("IW1",), "burst_ID_2": ("IW1", "IW2", "IW3")}
         """
         if not 0 < len(self.multiburst_dict) <= 15:
             raise Exception((
@@ -53,6 +65,9 @@ class MultiBurst:
             raise Exception("No bursts can intersect the Antimeridian")
 
     def _build_grid(self):
+        """
+        Builds a burst-swath mask indicating which are included in the collection of bursts
+        """
         grid = []
         for burst_id, swaths in sorted(self.multiburst_dict.items()):
             include_list = []
@@ -66,7 +81,7 @@ class MultiBurst:
     
     def count_components_and_holes(self):
         """
-        Performs BFS searches to count connected components and holes
+        Performs a BFS search to count connected components and holes
         
         This could be simplified by using scipy or Networkxx for BFS,
         but doing it without avoids adding either as a required dependency
@@ -130,12 +145,20 @@ class MultiBurst:
 
         return component_count, hole_count
     
-    def get_burst_ids(self):
+    def get_burst_ids(self) -> List[str]:
+        """
+        Returns a list of full burst IDs (burst+swath) for every included burst
+        """
         return [f"{burst}_{swath}" for burst, swaths in self.multiburst_dict.items() for swath in swaths]
 
-    def _get_burst_metadata(self):
+    def _get_burst_metadata(self) -> List[Dict[str, Any]]:
+        """
+        Collects BURSTMAP metadata from CMR for each included burst
+
+        Returns a list of metadata for each incuded burst
+        """
         s1_burst_map_collection_id = "C2450786986-ASF"
-        
+
         burst_metadata = []
         for burst_id in self.burst_ids:
             burstmap_id = f"S1_{burst_id}-BURSTMAP"
@@ -151,25 +174,45 @@ class MultiBurst:
             response.raise_for_status()
             burst_metadata.append(response.json())
         return burst_metadata
-    
-    def _intersects_antimeridan(self):
+
+    def _intersects_antimeridan(self) -> bool:
+        """
+        Examines all burst metadata and determines if any inersect the Antimeridian
+
+        Returns False if no bursts intersect Antimeridian else True
+        """
         for data in self.burst_metadata:
             if len(data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons']) == 2:
-                for point in data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']:
+                for point in (data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']
+                              ['Geometry']['GPolygons'][0]['Boundary']['Points']):
                     if point['Longitude'] == 180.0:
                         return True
-                for point in data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][1]['Boundary']['Points']:
+                for point in (data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']
+                              ['Geometry']['GPolygons'][1]['Boundary']['Points']):
                     if point['Longitude'] == -180.0:
                         return True
         return False
-    
-    def _get_extent_wkt(self):
-        burst_extents = [data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points'] for data in self.burst_metadata]
+
+    def _get_extent_wkt(self) -> str:
+        """
+        Returns a Well-Known-Text (WKT) string polygon of the
+        maximum extents (rectangular) for the collection of muti-bursts 
+        """
+        burst_extents = [
+            data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']
+                ['GPolygons'][0]['Boundary']['Points']
+            for data in self.burst_metadata
+            ]
 
         min_lat = min([p['Latitude'] for extent in burst_extents for p in extent])
         max_lat = max([p['Latitude'] for extent in burst_extents for p in extent])
         min_lon = min([p['Longitude'] for extent in burst_extents for p in extent])
         max_lon = max([p['Longitude'] for extent in burst_extents for p in extent])
-        
-        return f"POLYGON(({min_lon} {min_lat},{max_lon} {min_lat},{max_lon} {max_lat},{min_lon} {max_lat},{min_lon} {min_lat}))"
 
+        return (
+            f"POLYGON(({min_lon} {min_lat},"
+            f"{max_lon} {min_lat},"
+            f"{max_lon} {max_lat},"
+            f"{min_lon} {max_lat},"
+            f"{min_lon} {min_lat}))"
+        )
