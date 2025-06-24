@@ -38,6 +38,7 @@ from .ASFStack import *  # noqa: F403 F401 E402
 from .Pair import Pair  # noqa:  F401, E402
 from .Stack import Stack  # noqa: F401, E402
 from .Network import Network  # noqa: F401, E402
+from .MultiBurst import MultiBurst  # noqa:  F401, E402
 from .Products import *  # noqa: F403 F401 E402
 from .exceptions import *  # noqa: F403 F401 E402
 from .constants import (  # noqa: F401 E402
