@@ -8,7 +8,12 @@ class MultiBurst:
 
     def __init__(self, multiburst_dict):
         self.multiburst_dict = multiburst_dict
+        self.burst_ids = [f"{burst}_{swath}" for 
+                          burst, swaths in self.multiburst_dict.items()
+                          for swath in swaths]
+        self.burst_metadata = self._get_burst_metadata()
         self._validate_multi_burst_dict()
+        self.extent_wkt = self._get_extent_wkt()
 
     def _validate_multi_burst_dict(self):
         """
@@ -19,6 +24,10 @@ class MultiBurst:
         - Burst collection must be contiguous
         - Bursts collections should not contain holes
         - Bursts crossing the Antimeridian are not supported
+
+        multiburst_dict: key: string burst ID
+                         value: tuple of included string subswaths
+                         e.g. {"burst_ID_1": ("IW1",), "burst_ID_2": ("IW1", "IW2", "IW3")}
         """
         if not 0 < len(self.multiburst_dict) <= 15:
             raise Exception((
@@ -121,14 +130,14 @@ class MultiBurst:
 
         return component_count, hole_count
     
-    def _intersects_antimeridan(self):
-        s1_burst_map_collection_id = "C2450786986-ASF"
+    def get_burst_ids(self):
+        return [f"{burst}_{swath}" for burst, swaths in self.multiburst_dict.items() for swath in swaths]
 
-        burst_ids = [f"{burst}_{swath}" for
-                     burst, swaths in self.multiburst_dict.items()
-                     for swath in swaths]
+    def _get_burst_metadata(self):
+        s1_burst_map_collection_id = "C2450786986-ASF"
         
-        for burst_id in burst_ids:
+        burst_metadata = []
+        for burst_id in self.burst_ids:
             burstmap_id = f"S1_{burst_id}-BURSTMAP"
 
             response = requests.get(
@@ -140,8 +149,11 @@ class MultiBurst:
                 }
             )
             response.raise_for_status()
-            data = response.json()
-
+            burst_metadata.append(response.json())
+        return burst_metadata
+    
+    def _intersects_antimeridan(self):
+        for data in self.burst_metadata:
             if len(data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons']) == 2:
                 for point in data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points']:
                     if point['Longitude'] == 180.0:
@@ -150,3 +162,14 @@ class MultiBurst:
                     if point['Longitude'] == -180.0:
                         return True
         return False
+    
+    def _get_extent_wkt(self):
+        burst_extents = [data['items'][0]['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['GPolygons'][0]['Boundary']['Points'] for data in self.burst_metadata]
+
+        min_lat = min([p['Latitude'] for extent in burst_extents for p in extent])
+        max_lat = max([p['Latitude'] for extent in burst_extents for p in extent])
+        min_lon = min([p['Longitude'] for extent in burst_extents for p in extent])
+        max_lon = max([p['Longitude'] for extent in burst_extents for p in extent])
+        
+        return f"POLYGON(({min_lon} {min_lat},{max_lon} {min_lat},{max_lon} {max_lat},{min_lon} {max_lat},{min_lon} {min_lat}))"
+
