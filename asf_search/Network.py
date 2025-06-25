@@ -13,17 +13,8 @@ from .MultiBurst import MultiBurst
 from .search import geo_search
 from .ASFSearchOptions import ASFSearchOptions
 from .constants import PLATFORM
+from .warnings import OptionalDependencyWarning
 from asf_search import ASF_LOGGER
-
-
-class OptionalImportWarning(Warning):
-    def __init__(self, missing_optional_deps):
-        msg = (
-                "Warning: Network.plot() requires the dependencies plotly and networkx."
-                f"You are currently missing: {missing_optional_deps}."
-                "However, your Network is still available without access to plotting."
-            )
-        super().__init__(msg)
 
 
 class Network(Stack):
@@ -94,7 +85,12 @@ class Network(Stack):
         if importlib.util.find_spec("networkx") is None:
             missing_optional_deps.append("networkx")
         if missing_optional_deps:
-            warnings.warn(OptionalImportWarning(missing_optional_deps))
+            msg = (
+                "Warning: Network.plot() requires the dependencies plotly and networkx."
+                f"You are currently missing: {missing_optional_deps}."
+                "However, your Network is still available without access to plotting."
+            )
+            warnings.warn(OptionalDependencyWarning(msg))
 
     def _get_georef_and_multiburst_networks(self):
         """

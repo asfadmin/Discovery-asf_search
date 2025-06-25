@@ -1,8 +1,12 @@
+
+import importlib.util
 import math
+import warnings
 
 from .ASFProduct import ASFProduct
 from .baseline import calculate_perpendicular_baselines
-
+from .exceptions import CoherenceEstimationError
+from .warnings import OptionalDependencyWarning
 import pytz
 
 try:
@@ -38,6 +42,14 @@ class Pair:
         self.sec_date = sec_time.date()
         self.temporal = self.sec_date - self.ref_date
 
+        # warn user if they lack optional dependency needed for estimate_s1_mean_coherence
+        if importlib.util.find_spec("xarray") is None:
+            msg = (
+                "Warning: Pair.estimate_s1_mean_coherence() requires xarray as a dependency"
+                "However, your Pair is still available without access to coherence estimation."
+            )
+            warnings.warn(OptionalDependencyWarning(msg))
+
     def __repr__(self) -> str:
         return f"Pair({self.ref_date}, {self.sec_date})"
 
@@ -61,7 +73,6 @@ class Pair:
 
         Returns:
         '''
-        # TODO: make xarray an optional dependency
         import xarray as xr
 
         month = parse_datetime(self.ref.properties["startTime"]).month
@@ -76,9 +87,9 @@ class Pair:
 
         temporal = math.ceil(self.temporal.days / 6) * 6
         if temporal > 48:
-            raise Exception(
-                (f"""Coherence dataset includes temporal baselines up to 48 days.
-            Temporal baseline: {self.temporal.days} days"""))
+            msg = (f"""Coherence dataset includes temporal baselines up to 48 days.
+                   Temporal baseline: {self.temporal.days} days""")
+            raise CoherenceEstimationError(msg)
 
         uri = f"s3://asf-search-coh/global_coh_100ppd_11367x4367/Global_{season}_vv_COH{temporal}_100ppd.zarr"
         coords = self.ref.geometry['coordinates'][0]
@@ -92,5 +103,3 @@ class Pair:
         ds = ds.rio.write_crs("EPSG:4326", inplace=False)
         subset = ds.rio.clip_box(minx=minx, miny=miny, maxx=maxx, maxy=maxy)
         return subset.coherence.mean().compute().item()
-
-# TODO: add hyp3_safe()

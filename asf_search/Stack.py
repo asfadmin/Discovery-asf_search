@@ -1,11 +1,14 @@
 from collections import defaultdict, deque
 from copy import copy
+from datetime import datetime, date
 from typing import Optional, List, Tuple, Dict
 import warnings
 
-from asf_search import ASFProduct, Pair
-from asf_search.ASFSearchOptions import ASFSearchOptions
-from datetime import datetime, date
+from .ASFProduct import ASFProduct
+from .Pair import Pair
+from .ASFSearchOptions import ASFSearchOptions
+from .exceptions import DateTypeError
+from .warnings import PairNotInFullStackWarning
 import numpy as np
 import pandas as pd
 
@@ -15,24 +18,6 @@ except ImportError:
     from dateutil.parser import parse as parse_datetime
 
 date_like = str | date | datetime | pd.Timestamp
-
-
-class DateTypeError(Exception):
-    def __init__(self, data_type):
-        msg = (f"Cannot handle date or timestamp of type: {data_type}")
-        if data_type is str:
-            msg = (
-                f"{msg}\n"
-                "ISO date strings must be properly formatted."
-                "single-digit months and days should be preceded by a zero"
-            )
-        super().__init__(msg)
-
-
-class PairNotInFullStackWarning(Warning):
-    def __init__(self, date_pair):
-        msg = f"warning: {date_pair} is not in Stack.full_stack"
-        super().__init__(msg)
 
 
 class Stack:
@@ -106,7 +91,8 @@ class Stack:
                 if pair_dates in self.full_stack:
                     self._remove_list.append(pair_dates)
                 else:
-                    warnings.warn(PairNotInFullStackWarning(pair_dates))
+                    msg = f"warning: {pair_dates} is not in full_stack"
+                    warnings.warn(PairNotInFullStackWarning(msg))
         self._update_stack()
 
     def add_pairs(self, pairs: List[Tuple[date_like, date_like]]):
@@ -139,7 +125,14 @@ class Stack:
             elif isinstance(val, str):
                 return datetime.fromisoformat(val).date()
             else:
-                raise DateTypeError(type(val))
+                msg = (f"Cannot handle date or timestamp of type: {type(val)}")
+                if type(val) is str:
+                    msg = (
+                        f"{msg}\n"
+                        "ISO date strings must be properly formatted."
+                        "single-digit months and days should be preceded by a zero"
+                    )
+                raise DateTypeError(msg)
         return to_dt(pair[0]), to_dt(pair[1])
 
     def generate_pairs_within_baseline(self, dates):
