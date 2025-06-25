@@ -50,13 +50,7 @@ class Network(Stack):
                 'processingLevel': 'BURST',
                 'flightDirection': flight_direction,
                 'intersectsWith': multiburst.extent_wkt,
-                
             }
-            # try:
-            #     results = asf.geo_search(**geo_search_opts)
-            # except asf.ASFSearchError:
-            #     print("ASFSearchError")
-            #     pass
             results = geo_search(**geo_search_opts)
             if len(results) == 0:
                 raise Exception("Found no geo-reference scenes within one year of start date ({self._start})")
@@ -67,7 +61,7 @@ class Network(Stack):
             for i, burst_id in enumerate(multiburst.burst_ids):
                 burst_stack = [burst for burst in results if burst_id[4:] in burst.properties['sceneName']]
                 burst_stacks.append(burst_stack)
-           
+
                 if i == 0:
                     geo_reference = burst_stack[-1]
                 else:

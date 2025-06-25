@@ -17,6 +17,24 @@ except ImportError:
 date_like = str | date | datetime | pd.Timestamp
 
 
+class DateTypeError(Exception):
+    def __init__(self, data_type):
+        msg = (f"Cannot handle date or timestamp of type: {data_type}")
+        if data_type is str:
+            msg = (
+                f"{msg}\n"
+                "ISO date strings must be properly formatted."
+                "single-digit months and days should be preceded by a zero"
+            )
+        super().__init__(msg)
+
+
+class PairNotInFullStackWarning(Warning):
+    def __init__(self, date_pair):
+        msg = f"warning: {date_pair} is not in Stack.full_stack"
+        super().__init__(msg)
+
+
 class Stack:
     """
     A Stack contains collections of geographically overlapping Pairs
@@ -47,7 +65,7 @@ class Stack:
         self._remove_list = []
         self.subset_stack = self._get_subset_stack()
         self.connected_substacks = self._find_connected_substacks()
-        
+
     @property
     def remove_list(self) -> List[Tuple[date, date]]:
         """
@@ -88,10 +106,7 @@ class Stack:
                 if pair_dates in self.full_stack:
                     self._remove_list.append(pair_dates)
                 else:
-                    warnings.warn(
-                        f"warning: {pair_dates} is not in Stack.full_stack",
-                        UserWarning
-                        )
+                    warnings.warn(PairNotInFullStackWarning(pair_dates))
         self._update_stack()
 
     def add_pairs(self, pairs: List[Tuple[date_like, date_like]]):
@@ -102,17 +117,9 @@ class Stack:
         for pair in pairs:
             pair_dates = self._normalize_pair(pair)
             if pair_dates in self._remove_list:
-                if pair_dates in self.full_stack:
-                    msg = (f"{pair_dates} is not part of full stack and cannot be added.\n"
-                    f"Try creating a new Stack with search options that include it.\n"
-                    f"Stack.ASFSearchOptions = {self.opts}")
-                    warnings.warn(msg, UserWarning)
+                if pair_dates not in self.full_stack:
+                    warnings.warn(PairNotInFullStackWarning(pair_dates))
                 self._remove_list.remove(pair_dates)
-            else:
-                raise warnings.warn(
-                    f"warning: {pair_dates} is not present in Stack._remove_list", 
-                    UserWarning
-                    )
         self._update_stack()
 
     def _normalize_pair(self, pair: Tuple[date_like, date_like]) -> Tuple[date, date]:
@@ -132,7 +139,7 @@ class Stack:
             elif isinstance(val, str):
                 return datetime.fromisoformat(val).date()
             else:
-                raise Exception(f"Cannot handle date or timestamp of type: {type(val)}")
+                raise DateTypeError(type(val))
         return to_dt(pair[0]), to_dt(pair[1])
 
     def generate_pairs_within_baseline(self, dates):
