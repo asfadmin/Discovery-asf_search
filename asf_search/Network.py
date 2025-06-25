@@ -14,11 +14,19 @@ from .ASFSearchOptions import ASFSearchOptions
 from .constants import PLATFORM
 
 
+class OptionalImportWarning(Warning):
+    def __init__(self):
+        msg = (
+                "Warning: Network.plot() requires the dependencies plotly and networkx."
+                "However, your Network is still available without access to plotting"
+            )
+        super().__init__(msg)
+
+
 class Network(Stack):
     """
-    Network is a child class of Stack. It takes a georeference scene or
-    a multiburst object, and arguments of perpendicular baseline, temporal baselline, 
-    and a seasonal bridge date to create multiannual seasonal SBAS stacks.
+    Network is a child class of Stack used to create seasonal SBAS stacks. It can be used
+    to created multiannual stacks connected with multiannual bridge pairs.  
     """
     def __init__(
         self,
@@ -30,67 +38,108 @@ class Network(Stack):
         bridge_target_date: Optional[str] = None,
         opts: Optional[ASFSearchOptions] = None
     ):
+        """
+        geo_reference: an ASFProduct used as a georeference scene for the stack
+        multiburst: a MultiBurst object describing a collection of bursts for a multi-burst Network
+        
+        (pass geo_reference xor multiburst)
+
+        perp_baseline: the perpendicular baseline for the SBAS stack
+        inseason_temporal_baseline: the temporal baseline for the SBAS stack, not accounting for multiannual bridging
+        bridge_year_threshold: the number of year for which to allow multiannual bridging
+        bridge_target_date: %m-%d string of the inseason bridge date to target. 
+                            Reference scenes for bridge pairs are valid within an inseason_temporal_baseline of this date.
+        opts: ASFSearchOptions to limit the size of your Network and define seasons
+              Recommended to include: "start", "end", "season"
+        """
         xor_err_str = "geo_reference or multiburst must be passed, but not both"
         assert (geo_reference is None) ^ (multiburst is None), xor_err_str
 
         self._season = opts.season if opts.season is not None else (1, 365)
+        if bridge_target_date:
+            self.bridge_target_date = bridge_target_date
+        else:
+            self.bridge_target_date = self._season[0]
         self._start = getattr(opts, "start", None)
         self._end = getattr(opts, "end", None)
+        self.perp_baseline = perp_baseline
+        self.inseason_temporal_baseline = inseason_temporal_baseline
+        self.bridge_year_threshold = bridge_year_threshold
+        self.opts = opts
 
         self.additional_multiburst_networks = []
         if geo_reference is None:
-            flight_direction = multiburst.burst_metadata[0]['items'][0]['umm']['AdditionalAttributes'][0]['Values'][0]
-            next_year = pd.to_datetime(self._start) + pd.DateOffset(years=1)
-            geo_search_opts = {
-                'platform': PLATFORM.SENTINEL1,
-                'season': self._season,
-                'start': self._start,
-                'end': next_year,
-                'polarization': 'VV',
-                'processingLevel': 'BURST',
-                'flightDirection': flight_direction,
-                'intersectsWith': multiburst.extent_wkt,
-            }
-            results = geo_search(**geo_search_opts)
-            if len(results) == 0:
-                raise Exception("Found no geo-reference scenes within one year of start date ({self._start})")
-
-            self.additional_multiburst_networks = []
-            burst_stacks = []
-
-            for i, burst_id in enumerate(multiburst.burst_ids):
-                burst_stack = [burst for burst in results if burst_id[4:] in burst.properties['sceneName']]
-                burst_stacks.append(burst_stack)
-
-                if i == 0:
-                    geo_reference = burst_stack[-1]
-                else:
-                    multiburst_network = Network(
-                        geo_reference=results[-1],
-                        perp_baseline=perp_baseline, 
-                        inseason_temporal_baseline=inseason_temporal_baseline,
-                        bridge_target_date=bridge_target_date,
-                        bridge_year_threshold=bridge_year_threshold,
-                        opts=opts)
-                    self.additional_multiburst_networks.append(multiburst_network)
+            self.multiburst = multiburst
+            geo_reference, self.additional_multiburst_networks = self._get_georef_and_multiburst_networks()
 
         self.temporal_baseline = (bridge_year_threshold * 365) + inseason_temporal_baseline
 
         super().__init__(
             geo_reference=geo_reference, 
             temporal_baseline=self.temporal_baseline, 
-            opts=opts
+            opts=self.opts
             )
 
-        if bridge_target_date:
-            self.bridge_target_date = bridge_target_date
-        else:
-            self.bridge_target_date = self._season[0]
-        self.perp_baseline = perp_baseline
-        self.inseason_temporal_baseline = inseason_temporal_baseline
-        self.bridge_year_threshold = bridge_year_threshold
-        self.network = self._build_sbas_stack()
+        self._build_sbas_stack()
+        self._interesect_multiburst_stacks()
 
+        # warn user if they lack optional dependencies for plotting
+        try:
+            import plotly
+            import networkx
+        except ImportError:
+            warnings.warn(OptionalImportWarning)
+
+    def _get_georef_and_multiburst_networks(self):
+        """
+        Identify geo-reference bursts for all multi-burst stacks. Return the first burst stack's geo-reference burst ID and a list
+        of Networks created from each remaining geo-reference burst ID
+        """
+        flight_direction = self.multiburst.burst_metadata[0]['items'][0]['umm']['AdditionalAttributes'][0]['Values'][0]
+        next_year = pd.to_datetime(self._start) + pd.DateOffset(years=1)
+        geo_search_opts = {
+            'platform': PLATFORM.SENTINEL1,
+            'season': self._season,
+            'start': self._start,
+            'end': next_year,
+            'polarization': 'VV',
+            'processingLevel': 'BURST',
+            'flightDirection': flight_direction,
+            'intersectsWith': self.multiburst.extent_wkt,
+        }
+        results = geo_search(**geo_search_opts)
+        if len(results) == 0:
+            raise Exception("Found no geo-reference scenes within one year of start date ({self._start})")
+
+        additional_multiburst_networks = []
+        burst_stacks = []
+
+        for i, burst_id in enumerate(self.multiburst.burst_ids):
+            burst_stack = [burst for burst in results if burst_id[4:] in burst.properties['sceneName']]
+            burst_stacks.append(burst_stack)
+
+            if i == 0:
+                geo_reference = burst_stack[-1]
+            else:
+                multiburst_network = Network(
+                    geo_reference=results[-1],
+                    perp_baseline=self.perp_baseline, 
+                    inseason_temporal_baseline=self.inseason_temporal_baseline,
+                    bridge_target_date=self.bridge_target_date,
+                    bridge_year_threshold=self.bridge_year_threshold,
+                    opts=self.opts)
+                additional_multiburst_networks.append(multiburst_network)
+        return geo_reference, additional_multiburst_networks
+    
+    def _interesect_multiburst_stacks(self):
+        """
+        This function validates multiburst sbas stacks.
+        It is possible that not all burst stacks will contain the same set of date pairs. 
+        A valid multiburst SBAS stack should contain complete coverage over every burst, in
+        every date pair. 
+        
+        Any burst pair that is not present in every burst stack is removed from all stacks.
+        """
         if len(self.additional_multiburst_networks) > 0:
             all_full_stacks = [i.full_stack for i in self.additional_multiburst_networks]
             all_full_stacks.append(self.full_stack)
@@ -107,26 +156,19 @@ class Network(Stack):
                         print(f"Removing pair not present in all multiburst stacks: {pair}")
                         network.remove_pairs([pair])
 
-
-        try:
-            import plotly
-            import networkx
-        except ImportError:
-            warning = (
-                "Warning: Network.plot() requires the dependencies plotly and networkx."
-                "However, your Network is still available without access to plotting"
-            )
-            warnings.warn(warning)
-
     def _passes_temporal_check(self, pair: Pair):
         """
         Logic to determine if a pair should be included in subset_stack
-        based on temporal baselines, taking into account possible 
-        multiannual bridge pairs to create connected seasonal, mutliannual SBAS stacks
+        based on temporal baselines. It takes into account possible
+        multiannual bridge pairs to create seasonal, mutliannual SBAS stacks
+
+        pair: the Pair to check
         """
+        # return True right away if pair within inseason temp baseline
         if pair.temporal.days <= self.inseason_temporal_baseline:
             return True
 
+        # determine season length, accounting for seasons that span years (e.g. Nov-May)
         if self._season[0] < self._season[1]:
             season_length = self._season[1] - self._season[0] + 1
         else:
@@ -135,15 +177,20 @@ class Network(Stack):
         # Only create multiannual bridge pairs if the off-season is longer than inseason_temporal_baseline
         if 365 - season_length > self.inseason_temporal_baseline:
 
+            # determine how far ref scene date is from target multi-annual bridge date 
             days_from_bridge_date = np.abs(
                 (
                     datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
                     - pair.ref_date).days
                 )
+            # Create lists of valid secondary scene date ranges.
+            # The number of years bridged is determined by the bridge_year_threshold.
             valid_ranges = []
             for i in range(1, self.bridge_year_threshold+1):
                 valid_ranges.append((i * 365 - self.inseason_temporal_baseline, i * 365 + self.inseason_temporal_baseline))
 
+            # return True if the ref scene is within the inseason_temporal_baseline of
+            # the target bridge date and the secondary scene falls within a valid date range
             return days_from_bridge_date <= self.inseason_temporal_baseline and \
                 any(start <= pair.temporal.days <= end for start, end in valid_ranges)
         else:
@@ -151,7 +198,7 @@ class Network(Stack):
 
     def _build_sbas_stack(self):
         """
-        Create a self.remove list that will build the SBAS Network object
+        Create a self.remove_list that subset full_stack to the SBAS stack/s
         """
         remove_list = []
         for pair in self.full_stack.values():
@@ -431,7 +478,7 @@ class Network(Stack):
         Useful when ordering a multi-burst SBAS stack from ASF HyP3 On-Demand Processing.
         Provides InSAR pairs in cooresponding lists of reference and secondary scene IDs
 
-        If no stack_dict is passed, defaults to the largest connected substack
+        If no stack_dict is passed, defaults to using the largest connected substack
         Appends cooresponding stack_dicts from each additional multi-burst network
 
         Returns:
@@ -443,7 +490,7 @@ class Network(Stack):
             stack_dicts = [max(d.connected_substacks, key=len) for d in self.additional_multiburst_networks]
         else:
             stack_dict = getattr(self, stack_dict_name)
-            stack_dicts = [getattr(d, key=len) for d in self.additional_multiburst_networks]
+            stack_dicts = [getattr(d, stack_dict_name) for d in self.additional_multiburst_networks]
 
         stack_dicts.append(stack_dict)
         ref_scenes = [v.ref.properties['sceneName'] for d in stack_dicts for (k, v) in d.items()]
