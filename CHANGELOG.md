@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v9.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.2...v9.0.3)
+### Fixed
+- Add SENTINEL-1C UAT concept-ids
+
+------
 ## [v9.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.1...v9.0.2)
 ### Fixed
 - Fix OPERA Displacement product type output for jsonlite formats
