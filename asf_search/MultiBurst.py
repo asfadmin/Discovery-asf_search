@@ -5,6 +5,44 @@ from typing import Any, List, Dict
 import numpy as np
 
 
+class BaseMultiBurstException(Exception):
+    """Base Exception class for custom MultiBurst Exceptions"""
+    pass
+
+
+class InvalidMultiBurstCountError(BaseMultiBurstException):
+    def __init__(self, multiburst_dict_len):
+        msg = (
+            "HyP3 supports multiburst jobs of size 1-15.\n"
+            f"multiburst_dict contains {multiburst_dict_len} bursts"
+        )
+        super().__init__(msg)
+
+
+class MultipleOrbitError(BaseMultiBurstException):
+    def __init__(self, orbital_paths):
+        msg = (
+            "All bursts must belong to the same orbital path.\n"
+            f"multiburst_dict contains burst with the following paths: {orbital_paths}"
+            )
+        super().__init__(msg)
+
+
+class InvalidMultiBurstTopologyError(BaseMultiBurstException):
+    def __init__(self, component_count, hole_count):
+        msg = (
+            "Multiburst collections must be comprised of a single connected component and have no holes.\n"
+            f"Connected Components: {component_count}, Holes: {hole_count}"
+            )
+        super().__init__(msg)
+
+
+class AntimeridianError(BaseMultiBurstException):
+    def __init__(self):
+        msg = "No bursts can intersect the Antimeridian"
+        super().__init__(msg)
+
+
 class MultiBurst:
     """
     MultiBurst is a helper class that geographically validates collections of Sentinel-1 bursts in 
@@ -41,28 +79,19 @@ class MultiBurst:
         - Bursts collections cannot contain holes
         - Bursts crossing the Antimeridian are not supported
         """
-        if not 0 < len(self.multiburst_dict) <= 15:
-            raise Exception((
-                "HyP3 supports multiburst jobs of size 1-15.\n"
-                f"multiburst_dict contains {len(self.multiburst_dict)} bursts"
-                ))
+        if not 0 < len(self.burst_ids) <= 15:
+            raise InvalidMultiBurstCountError(len(self.burst_ids))
 
         orbital_paths = set([id.split("_")[0] for id in self.multiburst_dict.keys()])
         if len(orbital_paths) > 1:
-            raise Exception((
-                "All bursts must belong to the same orbital path.\n"
-                f"multiburst_dict contains burst with the following paths: {orbital_paths}"
-            ))
+            raise MultipleOrbitError(orbital_paths)
 
         component_count, hole_count = self.count_components_and_holes()
         if component_count > 1 or hole_count > 0:
-            raise Exception((
-                "Multiburst collections must be comprised of a single connected component and have no holes.\n"
-                f"Connected Components: {component_count}, Holes: {hole_count}"
-            ))
+            raise InvalidMultiBurstTopologyError(component_count, hole_count)
 
         if self._intersects_antimeridan():
-            raise Exception("No bursts can intersect the Antimeridian")
+            raise AntimeridianError()
 
     def _build_grid(self):
         """

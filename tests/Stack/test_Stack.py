@@ -27,7 +27,7 @@ def test_remove_pairs(stack):
         (np.datetime64("2022-01-22"), np.datetime64("2022-02-03")),
         (date(2022, 1, 22), "2022-02-15"),
     ]
-    
+
     stack.remove_pairs(date_pair_list)
 
     assert len(stack.full_stack) == 45

@@ -25,8 +25,8 @@ class OptionalImportWarning(Warning):
 
 class Network(Stack):
     """
-    Network is a child class of Stack used to create seasonal SBAS stacks. It can be used
-    to created multiannual stacks connected with multiannual bridge pairs.  
+    Network is a child class of Stack, used to create seasonal SBAS stacks. It can be used
+    to create multiannual stacks connected with multiannual bridge pairs.
     """
     def __init__(
         self,
