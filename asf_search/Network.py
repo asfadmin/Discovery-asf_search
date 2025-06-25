@@ -1,5 +1,6 @@
 from collections import Counter
 from datetime import datetime, date, timedelta
+import importlib.util
 import numpy as np
 import pandas as pd
 from typing import Optional, Dict, Tuple, List
@@ -12,13 +13,15 @@ from .MultiBurst import MultiBurst
 from .search import geo_search
 from .ASFSearchOptions import ASFSearchOptions
 from .constants import PLATFORM
+from asf_search import ASF_LOGGER
 
 
 class OptionalImportWarning(Warning):
-    def __init__(self):
+    def __init__(self, missing_optional_deps):
         msg = (
                 "Warning: Network.plot() requires the dependencies plotly and networkx."
-                "However, your Network is still available without access to plotting"
+                f"You are currently missing: {missing_optional_deps}."
+                "However, your Network is still available without access to plotting."
             )
         super().__init__(msg)
 
@@ -81,14 +84,17 @@ class Network(Stack):
             )
 
         self._build_sbas_stack()
-        self._interesect_multiburst_stacks()
+        if self.additional_multiburst_networks:
+            self._interesect_multiburst_stacks()
 
         # warn user if they lack optional dependencies for plotting
-        try:
-            import plotly
-            import networkx
-        except ImportError:
-            warnings.warn(OptionalImportWarning)
+        missing_optional_deps = []
+        if importlib.util.find_spec("plotly") is None:
+            missing_optional_deps.append("plotly")
+        if importlib.util.find_spec("networkx") is None:
+            missing_optional_deps.append("networkx")
+        if missing_optional_deps:
+            warnings.warn(OptionalImportWarning(missing_optional_deps))
 
     def _get_georef_and_multiburst_networks(self):
         """
@@ -130,7 +136,7 @@ class Network(Stack):
                     opts=self.opts)
                 additional_multiburst_networks.append(multiburst_network)
         return geo_reference, additional_multiburst_networks
-    
+
     def _interesect_multiburst_stacks(self):
         """
         This function validates multiburst sbas stacks.
@@ -140,21 +146,20 @@ class Network(Stack):
         
         Any burst pair that is not present in every burst stack is removed from all stacks.
         """
-        if len(self.additional_multiburst_networks) > 0:
-            all_full_stacks = [i.full_stack for i in self.additional_multiburst_networks]
-            all_full_stacks.append(self.full_stack)
-            all_pairs = [kv[0] for full_stack in all_full_stacks for kv in full_stack.items()]
-            all_pairs_count = Counter(all_pairs)
-            underrepresented_pairs = [pair for pair in all_pairs_count 
-                                      if all_pairs_count[pair] < len(self.additional_multiburst_networks) + 1]
+        all_subset_stacks = [i.subset_stack for i in self.additional_multiburst_networks]
+        all_subset_stacks.append(self.subset_stack)
+        all_subset_pairs = [kv[0] for subset_stack in all_subset_stacks for kv in subset_stack.items()]
+        all_subset_pairs_count = Counter(all_subset_pairs)
+        underrepresented_pairs = [pair for pair in all_subset_pairs_count
+                                  if all_subset_pairs_count[pair] < len(self.additional_multiburst_networks) + 1]
 
-            all_networks = [network for network in self.additional_multiburst_networks]
-            all_networks.append(self)
-            for pair in underrepresented_pairs:
-                for network in all_networks:
-                    if pair in network.subset_stack:
-                        print(f"Removing pair not present in all multiburst stacks: {pair}")
-                        network.remove_pairs([pair])
+        all_networks = [network for network in self.additional_multiburst_networks]
+        all_networks.append(self)
+        for pair in underrepresented_pairs:
+            for network in all_networks:
+                if pair in network.subset_stack:
+                    ASF_LOGGER.info(f"Removing pair not present in all multiburst stacks: {pair}")
+                    network.remove_pairs([pair])
 
     def _passes_temporal_check(self, pair: Pair):
         """
