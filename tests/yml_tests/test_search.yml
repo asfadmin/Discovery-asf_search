@@ -265,6 +265,7 @@ tests:
             - C1216244348-ASF
             - C1234413263-ASFDEV
             - C3470873558-ASF
+            - C1273088271-ASF
   - test-search-build_subquery INTERFEROMETRY:
       params:
         processingLevel:
