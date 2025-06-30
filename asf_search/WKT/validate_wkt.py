@@ -293,14 +293,13 @@ def _get_convex_hull(geometry: BaseGeometry) -> Tuple[BaseGeometry, RepairEntry]
 def _simplify_aoi(
     shape: Union[Polygon, LineString, Point],
     threshold: float = 0.0004,
-    max_depth: int = 10,
+    max_depth: int = 20,
 ) -> Tuple[Union[Polygon, LineString, Point], List[RepairEntry]]:
     """
     param shape: Shapely geometry to simplify
     param threshold: point proximity threshold to merge nearby points of geometry with
-    param max_depth: the current depth of the recursive call, defaults to 10
-    Recursively simplifies geometry with increasing threshold, and
-    until there are no more than 300 points
+    param max_depth: the max amount of iterations to simplify, defaults to 20
+    Simplifies geometry with increasing threshold, until there are no more than 300 points
     output: simplified geometry
     """
     repairs = []
