@@ -319,7 +319,7 @@ class JsonStreamArray(list):
                 result['ariaVersion'] = p.get('ariaVersion')
 
         if p.get('browse') is not None and len(p['browse']) == 1:
-            p['browse'] = p.get['browse'][0]
+            p['browse'] = p['browse'][0]
 
         return result
 
