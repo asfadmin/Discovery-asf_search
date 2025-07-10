@@ -72,7 +72,7 @@ extra_json_fields = [
 def results_to_json(results):
     ASF_LOGGER.info('started translating results to json format')
     if len(results) == 0:
-        yield from json.JSONEncoder(indent=2, sort_keys=True).iterencode([])
+        yield from json.JSONEncoder(indent=2, sort_keys=True).iterencode([[]])
         return
 
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
@@ -216,42 +216,7 @@ class JsonStreamArray(list):
             pass
 
         wrapped, unwrapped = get_wkts(p['geometry'])
-        # result = {
-        #     "beamMode": p["beamModeType"],
-        #     "browse": [] if p.get("browse") is None else p.get("browse"),
-        #     "canInSAR": p.get("canInsar"),
-        #     "dataset": p.get("platform"),
-        #     "downloadUrl": p.get("url"),
-        #     "faradayRotation": p.get("faradayRotation"),  # ALOS
-        #     "fileName": p.get("fileName"),
-        #     "flightDirection": p.get("flightDirection"),
-        #     "flightLine": p.get("flightLine"),
-        #     "frame": p.get("frameNumber"),
-        #     "granuleName": p.get("sceneName"),
-        #     "groupID": p.get("groupID"),
-        #     "instrument": p.get("sensor"),
-        #     "missionName": p.get("missionName"),
-        #     "offNadirAngle": str(p["offNadirAngle"])
-        #     if p.get("offNadirAngle") is not None
-        #     else None,  # ALOS
-        #     "orbit": p.get("orbit") if isinstance(p.get("orbit"), list) else [str(p["orbit"])],
-        #     "path": p.get("pathNumber"),
-        #     "polarization": p.get("polarization"),
-        #     "pointingAngle": p.get("pointingAngle"),
-        #     "productID": p.get("fileID"),
-        #     "productType": p.get("processingLevel"),
-        #     "productTypeDisplay": p.get("processingTypeDisplay"),
-        #     "sizeMB": p.get("sizeMB"),
-        #     "stackSize": p.get(
-        #         "insarStackSize"
-        #     ),  # Used for datasets with precalculated stacks
-        #     "startTime": p.get("startTime"),
-        #     "stopTime": p.get("stopTime"),
-        #     "thumb": p.get("thumb"),
-        #     "wkt": wrapped,
-        #     "wkt_unwrapped": unwrapped,
-        #     "pgeVersion": p.get("pgeVersion"),
-        # }
+
         result = {
             'absoluteOrbit': p.get('orbit'),  #
             'beamMode': p.get('beamMode'),
@@ -352,6 +317,9 @@ class JsonStreamArray(list):
                 )
             else:
                 result['ariaVersion'] = p.get('ariaVersion')
+
+        if p.get('browse') is not None and len(p['browse']) == 1:
+            result['browse'] = p['browse'][0]
 
         return result
 
