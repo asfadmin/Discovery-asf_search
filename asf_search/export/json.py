@@ -9,7 +9,7 @@ from shapely.ops import transform
 from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
-extra_jsonlite_fields = [
+extra_json_fields = [
     (
         'processingTypeDisplay',
         ['AdditionalAttributes', ('Name', 'PROCESSING_TYPE_DISPLAY'), 'Values', 0],
@@ -115,7 +115,7 @@ class JsonStreamArray(list):
         # umm = product.umm
 
         additional_fields = {}
-        for key, path in extra_jsonlite_fields:
+        for key, path in extra_json_fields:
             additional_fields[key] = product.umm_get(product.umm, *path)
 
         platform = product.properties.get('platform')
