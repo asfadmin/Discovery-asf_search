@@ -5,3 +5,4 @@ from .kml import results_to_kml  # noqa: F401
 from .jsonlite import results_to_jsonlite  # noqa: F401
 from .jsonlite2 import results_to_jsonlite2  # noqa: F401
 from .geojson import results_to_geojson  # noqa: F401
+from .json import results_to_json   # noqa: F401

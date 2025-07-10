@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v9.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.4...v9.0.5)
+### Added
+- Added `ASFSearchResults.json()` json string stream output
+
+------
 ## [v9.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.3...v9.0.4)
 ### Changed
 - Doubled max iterations for geometry simplification, allowing simplification of polygons with more points
