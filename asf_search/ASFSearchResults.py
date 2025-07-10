@@ -10,6 +10,7 @@ from asf_search import ASF_LOGGER
 from asf_search.export.csv import results_to_csv
 from asf_search.export.jsonlite import results_to_jsonlite
 from asf_search.export.jsonlite2 import results_to_jsonlite2
+from asf_search.export.json import results_to_json
 from asf_search.export.kml import results_to_kml
 from asf_search.export.metalink import results_to_metalink
 
@@ -36,6 +37,9 @@ class ASFSearchResults(UserList):
 
     def metalink(self):
         return results_to_metalink(self)
+
+    def json(self):
+        return results_to_json(self)
 
     def jsonlite(self):
         return results_to_jsonlite(self)
