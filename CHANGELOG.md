@@ -33,7 +33,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v9.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.3...v9.0.4)
 ### Changed
-- Doubled max depth for geometry simplification, allowing simplification of polygons with more points
+- Doubled max iterations for geometry simplification, allowing simplification of polygons with more points
 
 ------
 ## [v9.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.2...v9.0.3)
