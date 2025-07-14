@@ -15,7 +15,7 @@ from asf_search.export.kml import results_to_kml
 from asf_search.export.metalink import results_to_metalink
 
 
-class ASFSearchResults(UserList):
+class ASFSearchResults(UserList[ASFProduct]):
     def __init__(self, *args, opts: Optional[ASFSearchOptions] = None):
         super().__init__(*args)
         # Store it JUST so the user can access it (There might be zero products)
