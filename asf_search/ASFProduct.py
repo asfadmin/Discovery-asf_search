@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Tuple, Type, List, final
+from typing import Any, Dict, Optional, Tuple, Type, List, final
 import warnings
 from shapely.geometry import shape, Point, Polygon, mapping
 import json
@@ -158,8 +158,8 @@ class ASFProduct:
     def download(
         self,
         path: str,
-        filename: str = None,
-        session: ASFSession = None,
+        filename: Optional[str] = None,
+        session: Optional[ASFSession] = None,
         fileType=FileDownloadType.DEFAULT_FILE,
     ) -> None:
         """
@@ -220,7 +220,7 @@ class ASFProduct:
 
     def _get_additional_filenames_and_urls(
         self,
-        default_filename: str = None,  # for subclasses without fileName in url (see S1BurstProduct implementation) # noqa F401
+        default_filename: Optional[str] = None,  # for subclasses without fileName in url (see S1BurstProduct implementation) # noqa F401
     ) -> List[Tuple[str, str]]:
         return [
             (self._parse_filename_from_url(url), url)
@@ -233,7 +233,7 @@ class ASFProduct:
         return filename
 
     def stack(
-        self, opts: ASFSearchOptions = None, useSubclass: Type['ASFProduct'] = None
+        self, opts: Optional[ASFSearchOptions] = None, useSubclass: Optional[Type['ASFProduct']] = None
     ) -> ASFSearchResults:
         """
         Builds a baseline stack from this product.
@@ -257,7 +257,7 @@ class ASFProduct:
 
         return stack_from_product(self, opts=opts, ASFProductSubclass=useSubclass)
 
-    def get_stack_opts(self, opts: ASFSearchOptions = None) -> ASFSearchOptions:
+    def get_stack_opts(self, opts: Optional[ASFSearchOptions] = None) -> ASFSearchOptions:
         """
         Build search options that can be used to find an insar stack for this product
 
@@ -301,7 +301,7 @@ class ASFProduct:
             and 's3credentials' not in url
         ]
 
-    def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
+    def find_urls(self, extension: Optional[str] = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
         """
         Searches for all urls matching a given extension and/or pattern
         param extension: the file extension to search for. (Defaults to `None`)
@@ -423,7 +423,7 @@ class ASFProduct:
 
     @final
     @staticmethod
-    def umm_get(item: Dict, *args):
+    def umm_get(item: Optional[Dict], *args):
         """
         Used to search for values in CMR UMM
 

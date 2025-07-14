@@ -1,6 +1,6 @@
 from enum import Enum
 import copy
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 from asf_search import ASFSession, ASFProduct
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.exceptions import ASFBaselineError
@@ -31,7 +31,7 @@ class ASFStackableProduct(ASFProduct):
         super().__init__(args, session)
         self.baseline = self.get_baseline_calc_properties()
 
-    def get_baseline_calc_properties(self) -> Dict:
+    def get_baseline_calc_properties(self) -> Optional[Dict]:
         insarBaseline = self.umm_cast(
             float,
             self.umm_get(
@@ -48,8 +48,8 @@ class ASFStackableProduct(ASFProduct):
 
         return {'insarBaseline': insarBaseline}
 
-    def get_stack_opts(self, opts: ASFSearchOptions = None):
-        stack_opts = ASFSearchOptions() if opts is None else copy(opts)
+    def get_stack_opts(self, opts: Optional[ASFSearchOptions] = None):
+        stack_opts = ASFSearchOptions() if opts is None else copy.copy(opts)
         stack_opts.processingLevel = self.get_default_baseline_product_type()
 
         if self.properties.get('insarStackId') in [None, 'NA', 0, '0']:

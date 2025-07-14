@@ -1,7 +1,8 @@
 from logging import warn
 import platform
-from typing import List, Union
+from typing import List, Optional, Union
 import requests
+import requests.cookies
 from requests.utils import get_netrc_auth
 from requests.auth import HTTPBasicAuth
 import http.cookiejar
@@ -14,13 +15,13 @@ import warnings
 class ASFSession(requests.Session):
     def __init__(
         self,
-        edl_host: str = None,
-        edl_client_id: str = None,
-        asf_auth_host: str = None,
-        cmr_host: str = None,
-        cmr_collections: str = None,
-        auth_domains: List[str] = None,
-        auth_cookie_names: List[str] = None,
+        edl_host: Optional[str] = None,
+        edl_client_id: Optional[str] = None,
+        asf_auth_host: Optional[str] = None,
+        cmr_host: Optional[str] = None,
+        cmr_collections: Optional[str] = None,
+        auth_domains: Optional[List[str]] = None,
+        auth_cookie_names: Optional[List[str]] = None,
     ):
         """
         ASFSession is a subclass of `requests.Session`, and is meant to ease
@@ -301,7 +302,7 @@ class ASFSession(requests.Session):
         if new_auth is not None:
             prepared_request.prepare_auth(new_auth)
 
-    def _get_domain(self, url: str):
+    def _get_domain(self, url: Optional[str]):
         return requests.utils.urlparse(url).hostname
 
     # multi-processing does an implicit copy of ASFSession objects,

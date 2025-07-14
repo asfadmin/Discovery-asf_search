@@ -1,12 +1,12 @@
 from collections import UserList
 from multiprocessing import Pool
 import json
-from typing import List
+from typing import List, Optional
 from asf_search import ASFSession, ASFSearchOptions
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.exceptions import ASFSearchError
 
-from asf_search import ASF_LOGGER
+from asf_search import ASF_LOGGER, ASFProduct
 from asf_search.export.csv import results_to_csv
 from asf_search.export.jsonlite import results_to_jsonlite
 from asf_search.export.jsonlite2 import results_to_jsonlite2
@@ -16,7 +16,7 @@ from asf_search.export.metalink import results_to_metalink
 
 
 class ASFSearchResults(UserList):
-    def __init__(self, *args, opts: ASFSearchOptions = None):
+    def __init__(self, *args, opts: Optional[ASFSearchOptions] = None):
         super().__init__(*args)
         # Store it JUST so the user can access it (There might be zero products)
         # Each product will use their own reference to opts (but points to the same obj)
@@ -47,7 +47,7 @@ class ASFSearchResults(UserList):
     def jsonlite2(self):
         return results_to_jsonlite2(self)
 
-    def find_urls(self, extension: str = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
+    def find_urls(self, extension: Optional[str] = None, pattern: str = r'.*', directAccess: bool = False) -> List[str]:
         """Returns a flat list of all https or s3 urls from all results matching an extension and/or regex pattern
         param extension: the file extension to search for. (Defaults to `None`)
             - Example: '.tiff'
@@ -68,7 +68,7 @@ class ASFSearchResults(UserList):
     def download(
         self,
         path: str,
-        session: ASFSession = None,
+        session: Optional[ASFSession] = None,
         processes: int = 1,
         fileType=FileDownloadType.DEFAULT_FILE,
     ) -> None:
