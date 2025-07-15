@@ -1,5 +1,5 @@
 import time
-from typing import Dict, Generator, Literal, Union, Sequence, Tuple, List
+from typing import Dict, Generator, Literal, Optional, Union, Sequence, Tuple, List
 from copy import copy
 from requests.exceptions import HTTPError
 from requests import ReadTimeout, Response
@@ -35,59 +35,59 @@ import asf_search.Products as ASFProductType
 
 
 def search_generator(
-    absoluteOrbit: Union[
+    absoluteOrbit: Optional[Union[
         int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]
-    ] = None,
-    asfFrame: Union[
+    ]] = None,
+    asfFrame: Optional[Union[
         int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]
-    ] = None,
-    beamMode: Union[str, Sequence[str]] = None,
-    beamSwath: Union[str, Sequence[str]] = None,
-    campaign: Union[str, Sequence[str]] = None,
-    maxDoppler: float = None,
-    minDoppler: float = None,
-    end: Union[datetime.datetime, str] = None,
-    maxFaradayRotation: float = None,
-    minFaradayRotation: float = None,
-    flightDirection: str = None,
-    flightLine: str = None,
-    frame: Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]] = None,
-    granule_list: Union[str, Sequence[str]] = None,
-    groupID: Union[str, Sequence[str]] = None,
-    insarStackId: str = None,
-    instrument: Union[str, Sequence[str]] = None,
-    intersectsWith: str = None,
-    lookDirection: Union[str, Sequence[str]] = None,
-    offNadirAngle: Union[
+    ]] = None,
+    beamMode: Optional[Union[str, Sequence[str]]] = None,
+    beamSwath: Optional[Union[str, Sequence[str]]] = None,
+    campaign: Optional[Union[str, Sequence[str]]] = None,
+    maxDoppler: Optional[float] = None,
+    minDoppler: Optional[float] = None,
+    end: Optional[Union[datetime.datetime, str]] = None,
+    maxFaradayRotation: Optional[float] = None,
+    minFaradayRotation: Optional[float] = None,
+    flightDirection: Optional[str] = None,
+    flightLine: Optional[str] = None,
+    frame: Optional[Union[int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]]] = None,
+    granule_list: Optional[Union[str, Sequence[str]]] = None,
+    groupID: Optional[Union[str, Sequence[str]]] = None,
+    insarStackId: Optional[str] = None,
+    instrument: Optional[Union[str, Sequence[str]]] = None,
+    intersectsWith: Optional[str] = None,
+    lookDirection: Optional[Union[str, Sequence[str]]] = None,
+    offNadirAngle: Optional[Union[
         float, Tuple[float, float], Sequence[Union[float, Tuple[float, float]]]
-    ] = None,
-    platform: Union[str, Sequence[str]] = None,
-    polarization: Union[str, Sequence[str]] = None,
-    processingDate: Union[datetime.datetime, str] = None,
-    processingLevel: Union[str, Sequence[str]] = None,
-    product_list: Union[str, Sequence[str]] = None,
-    relativeOrbit: Union[
+    ]] = None,
+    platform: Optional[Union[str, Sequence[str]]] = None,
+    polarization: Optional[Union[str, Sequence[str]]] = None,
+    processingDate: Optional[Union[datetime.datetime, str]] = None,
+    processingLevel: Optional[Union[str, Sequence[str]]] = None,
+    product_list: Optional[Union[str, Sequence[str]]] = None,
+    relativeOrbit: Optional[Union[
         int, Tuple[int, int], range, Sequence[Union[int, Tuple[int, int], range]]
-    ] = None,
-    season: Tuple[int, int] = None,
-    start: Union[datetime.datetime, str] = None,
-    absoluteBurstID: Union[int, Sequence[int]] = None,
-    relativeBurstID: Union[int, Sequence[int]] = None,
-    fullBurstID: Union[str, Sequence[str]] = None,
-    temporalBaselineDays: Union[str, Sequence[str]] = None,
-    operaBurstID: Union[str, Sequence[str]] = None,
-    frameCoverage: Literal["FULL", "PARTIAL"] = None,
-    mainBandPolarization: Union[str, Sequence[str]] = None,
-    sideBandPolarization: Union[str, Sequence[str]] = None,
-    rangeBandwidth: Union[str, Sequence[str]] = None,
-    jointObservation: bool = None,
-    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
-    dataset: Union[str, Sequence[str]] = None,
-    collections: Union[str, Sequence[str]] = None,
-    shortName: Union[str, Sequence[str]] = None,
-    cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
-    maxResults: int = None,
-    opts: ASFSearchOptions = None,
+    ]] = None,
+    season: Optional[Tuple[int, int]] = None,
+    start: Optional[Union[datetime.datetime, str]] = None,
+    absoluteBurstID: Optional[Union[int, Sequence[int]]] = None,
+    relativeBurstID: Optional[Union[int, Sequence[int]]] = None,
+    fullBurstID: Optional[Union[str, Sequence[str]]] = None,
+    temporalBaselineDays: Optional[Union[str, Sequence[str]]] = None,
+    operaBurstID: Optional[Union[str, Sequence[str]]] = None,
+    frameCoverage: Optional[Literal["FULL", "PARTIAL"]] = None,
+    mainBandPolarization: Optional[Union[str, Sequence[str]]] = None,
+    sideBandPolarization: Optional[Union[str, Sequence[str]]] = None,
+    rangeBandwidth: Optional[Union[str, Sequence[str]]] = None,
+    jointObservation: Optional[bool] = None,
+    productionConfiguration: Optional[Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]]] = None,
+    dataset: Optional[Union[str, Sequence[str]]] = None,
+    collections: Optional[Union[str, Sequence[str]]] = None,
+    shortName: Optional[Union[str, Sequence[str]]] = None,
+    cmr_keywords: Optional[Union[Tuple[str, str], Sequence[Tuple[str, str]]]] = None,
+    maxResults: Optional[int] = None,
+    opts: Optional[ASFSearchOptions] = None,
 ) -> Generator[ASFSearchResults, None, None]:
     """
     Performs a generic search against the Central Metadata Repository (CMR),

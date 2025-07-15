@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Optional, Type
 from asf_search.baseline.stack import get_baseline_from_stack
 from asf_search import ASF_LOGGER
 from copy import copy
@@ -22,8 +22,8 @@ precalc_platforms = [
 
 def stack_from_product(
     reference: ASFProduct,
-    opts: ASFSearchOptions = None,
-    ASFProductSubclass: Type[ASFProduct] = None,
+    opts: Optional[ASFSearchOptions] = None,
+    ASFProductSubclass: Optional[Type[ASFProduct]] = None,
 ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference ASFProduct
@@ -69,8 +69,8 @@ def stack_from_product(
 
 def stack_from_id(
     reference_id: str,
-    opts: ASFSearchOptions = None,
-    useSubclass: Type[ASFProduct] = None,
+    opts: Optional[ASFSearchOptions] = None,
+    useSubclass: Optional[Type[ASFProduct]] = None,
 ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
