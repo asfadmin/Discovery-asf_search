@@ -28,6 +28,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v9.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.5...v9.0.6)
 ### Fixed
+- `json` output populates `relativeOrbit` field properly
+
+------
+## [v9.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.5...v9.0.6)
+### Fixed
 - Minor `json` output fixes
 
 ------

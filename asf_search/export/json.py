@@ -262,7 +262,7 @@ class JsonStreamArray(list):
             'processingTypeDisplay': p.get('processingTypeDisplay'),  #
             'productName': p.get('sceneName'),
             'product_file_id': p.get('fileID'),
-            'relativeOrbit': p.get('relativeOrbit'),
+            'relativeOrbit': p.get('pathNumber'),
             'sceneDate': p.get('sceneDate'),  #
             'sceneId': p.get('sceneName'),  #
             'sensor': p.get('sensor'),
