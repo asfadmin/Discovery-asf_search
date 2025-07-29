@@ -6,8 +6,8 @@ from copy import copy
 from asf_search.search import search, product_search
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search import ASFProduct
-from asf_search.constants import PLATFORM
+from asf_search import ASFProduct, ARIAS1GUNWProduct
+from asf_search.constants import PLATFORM, DATASET
 from asf_search.exceptions import ASFSearchError
 
 
@@ -94,9 +94,22 @@ def stack_from_id(
 
     opts = ASFSearchOptions() if opts is None else copy(opts)
 
-    reference_results = product_search(product_list=reference_id, opts=opts)
+    if opts.dataset is not None and (
+        (isinstance(opts.dataset, list) and DATASET.ARIA_S1_GUNW in opts.dataset) 
+        or opts.dataset == DATASET.ARIA_S1_GUNW
+    ):
+        aria_groups = ARIAS1GUNWProduct.get_aria_groups_for_frame(reference_id)
 
-    reference_results.raise_if_incomplete()
+        if len(aria_groups) == 0:
+            reference = None
+        else:
+            reference = aria_groups[0].products[0]
+
+        reference_results = ASFSearchResults([group.products[0] for group in aria_groups])
+        return get_baseline_from_stack(reference=reference, stack=reference_results)[0]
+    else:
+        reference_results = product_search(product_list=reference_id, opts=opts)
+        reference_results.raise_if_incomplete()
 
     if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')

@@ -11,6 +11,7 @@ requirements = [
     'dateparser',
     'python-dateutil',
     'tenacity>=8.2.2',
+    'asf-enumeration',
 ]
 
 test_requirements = [
