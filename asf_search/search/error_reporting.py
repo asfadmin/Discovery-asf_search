@@ -1,5 +1,6 @@
-from asf_search import ASF_LOGGER, ASFSearchOptions
-from asf_search import INTERNAL
+from .. import ASF_LOGGER
+from ..ASFSearchOptions import ASFSearchOptions
+from ..constants import INTERNAL
 import requests
 
 
