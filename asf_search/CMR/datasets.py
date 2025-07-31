@@ -1692,6 +1692,34 @@ collections_by_processing_level = {
         'C1257349094-ASF',
         'C3622250865-ASF',
     ],
+    'GSLC': [
+        # 'NISAR_L2_GSLC_BETA_V1'
+        'C1261819167-ASFDEV',
+        'C1273831198-ASF',
+        'C2850259510-ASF',
+        # 'NISAR_L2_GSLC_PROVISIONAL_V1'
+        'C1261833024-ASFDEV',
+        'C1261833127-ASF',
+        'C2854332392-ASF',
+        # 'NISAR_L2_GSLC_V1'
+        'C1256413628-ASFDEV',
+        'C1257349102-ASF',
+        'C3622244601-ASF',
+    ],
+    'GUNW': [
+        # 'NISAR_L2_GUNW_BETA_V1':
+        'C1261819168-ASFDEV',
+        'C1261819270-ASF',
+        'C2850261892-ASF',
+        # 'NISAR_L2_GUNW_PROVISIONAL_V1'
+        'C1261833025-ASFDEV',
+        'C1261846741-ASF',
+        'C2854335566-ASF',
+        # 'NISAR_L2_GUNW_V1'
+        'C1256432264-ASFDEV',
+        'C1257349096-ASF',
+        'C3622247503-ASF',
+    ],
     'SME2': [
         'C1261819245-ASFDEV', # Beta
         'C1261819282-ASF',
