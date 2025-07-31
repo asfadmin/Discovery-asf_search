@@ -26,9 +26,20 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v9.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.7...v9.0.8)
+## [v9.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.9...v9.1.0)
 ### Added
 - SLC Stacking based on ARIA S1 GUNW Frame
+
+------
+## [v9.0.9](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.8...v9.0.9)
+### Added
+- Added NISAR L-SAR `RANGED_BANDWIDTH` constants `BW_20` and `BW_40`
+- Added NISAR `GSLC` and `GUNW` `processingLevel` collection aliases
+
+------
+## [v9.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.7...v9.0.8)
+### Changed
+- Changed certain NISAR collection aliases to reference latest concept-ids
 
 ------
 ## [v9.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.6...v9.0.7)
