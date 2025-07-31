@@ -26,7 +26,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v9.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.9...v9.1.0)
+## [v10.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.9...v10.0.0)
 ### Added
 - SLC Stacking based on ARIA S1 GUNW Frame
 
