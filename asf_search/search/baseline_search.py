@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Optional, Type
 from asf_search.baseline.stack import get_baseline_from_stack
 from asf_search import ASF_LOGGER
 from copy import copy
@@ -69,8 +69,8 @@ def stack_from_product(
 
 def stack_from_id(
     reference_id: str,
-    opts: ASFSearchOptions = None,
-    useSubclass: Type[ASFProduct] = None,
+    opts: Optional[ASFSearchOptions] = None,
+    useSubclass: Optional[Type[ASFProduct]] = None,
 ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference product ID
@@ -94,10 +94,7 @@ def stack_from_id(
 
     opts = ASFSearchOptions() if opts is None else copy(opts)
 
-    if opts.dataset is not None and (
-        (isinstance(opts.dataset, list) and DATASET.ARIA_S1_GUNW in opts.dataset) 
-        or opts.dataset == DATASET.ARIA_S1_GUNW
-    ):
+    if opts.dataset is not None and DATASET.ARIA_S1_GUNW in opts.dataset:
         aria_groups = ARIAS1GUNWProduct.get_aria_groups_for_frame(reference_id)
 
         if len(aria_groups) == 0:
