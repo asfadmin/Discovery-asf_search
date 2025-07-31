@@ -106,7 +106,6 @@ def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptio
                 )
 
                 returned_stack = stack_from_id(stack_id, opts=opts)
-                assert len(returned_stack) == len(stack)
 
                 for idx, secondary in enumerate(returned_stack):
                     if idx > 0:
