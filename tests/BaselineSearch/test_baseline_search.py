@@ -1,8 +1,9 @@
 from copy import deepcopy
 from unittest.mock import patch
+from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
-from asf_search import ASFSession
+from asf_search import ASFSession, DATASET, BEAMMODE, POLARIZATION, PRODUCT_TYPE
 from asf_search.search.baseline_search import stack_from_id, stack_from_product
 from asf_search.baseline.stack import calculate_temporal_baselines
 import pytest
@@ -31,6 +32,14 @@ def run_test_get_unprocessed_stack_params(product):
     if reference.properties['processingLevel'] == 'BURST':
         assert [reference.properties['polarization']] == params.polarization
         assert [reference.properties['burst']['fullBurstID']] == params.fullBurstID
+    elif reference.properties['sceneName'].startswith('S1-GUNW'):
+        assert params.platform == ['SA', 'SB']
+        assert DATASET.SENTINEL1 in params.dataset
+        assert params.processingLevel == [PRODUCT_TYPE.SLC]
+        assert params.beamMode == [BEAMMODE.IW]
+        assert params.polarization == [POLARIZATION.VV, POLARIZATION.VV_VH]
+        assert params.flightDirection.upper() == reference.properties['flightDirection'].upper()
+        assert params.relativeOrbit == [reference.properties['pathNumber']]
     else:
         assert (
             ['VV', 'VV+VH'] == params.polarization
@@ -79,7 +88,7 @@ def run_test_stack_from_product(reference, stack):
                 )
 
 
-def run_test_stack_from_id(stack_id: str, reference, stack):
+def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptions):
     temp = deepcopy(stack)
 
     with patch('asf_search.baseline_search.product_search') as mock_product_search:
@@ -96,7 +105,7 @@ def run_test_stack_from_id(stack_id: str, reference, stack):
                     [as_ASFProduct(product, ASFSession()) for product in temp]
                 )
 
-                returned_stack = stack_from_id(stack_id)
+                returned_stack = stack_from_id(stack_id, opts=opts)
                 assert len(returned_stack) == len(stack)
 
                 for idx, secondary in enumerate(returned_stack):
