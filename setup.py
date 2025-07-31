@@ -6,7 +6,6 @@ requirements = [
     'requests',
     'shapely',
     'pytz',
-    'importlib_metadata',
     'numpy',
     'dateparser',
     'python-dateutil',
