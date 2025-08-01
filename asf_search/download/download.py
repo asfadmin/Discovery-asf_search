@@ -83,10 +83,10 @@ def remotezip(url: str, session: ASFSession) -> 'RemoteZip':  # type: ignore # n
     """
     if RemoteZip is None:
         raise ImportError(
-            'Could not find remotezip package in current python environment.'
-            '"remotezip" is an optional dependency of asf-search required'
-            'for the `remotezip()` method.'
-            'Enable by including the appropriate pip or conda install.'
+            'Could not find remotezip package in current python environment. '
+            '"remotezip" is an optional dependency of asf-search required '
+            'for the `remotezip()` method. '
+            'Enable by including the appropriate pip or conda install. '
             'Ex: `python3 -m pip install asf-search[extras]`'
         )
 

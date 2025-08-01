@@ -249,6 +249,7 @@ def test_stack_from_id(**args) -> None:
     stack_id = test_info['stack_id']
     stack_reference_data = test_info['stack_reference']
     stack_data = test_info['stack']
+    dataset = test_info.get('dataset', None)
 
     stack_reference = get_resource(stack_reference_data)
     stack = []
@@ -256,7 +257,8 @@ def test_stack_from_id(**args) -> None:
     if stack_data != []:
         stack = get_resource(stack_data)
 
-    run_test_stack_from_id(stack_id, stack_reference, stack)
+    opts = ASFSearchOptions(dataset=dataset)
+    run_test_stack_from_id(stack_id, stack_reference, stack, opts=opts)
 
 
 # asf_search.ASFSearchResults Tests

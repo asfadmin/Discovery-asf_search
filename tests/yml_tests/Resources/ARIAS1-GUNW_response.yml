@@ -1,0 +1,249 @@
+{
+  "type": "Feature",
+  "geometry":
+    {
+      "coordinates":
+        [
+          [
+            [-123.7455988640273, 37.312559137129604],
+            [-123.24674249490164, 37.38540304500819],
+            [-122.81351599478936, 37.446633796542315],
+            [-122.7524061928739, 37.18204643253099],
+            [-122.23399349751173, 37.25391276468947],
+            [-121.77340355988638, 37.31557811165414],
+            [-121.74947278966674, 37.20598434358597],
+            [-120.85699685528009, 37.31964787377452],
+            [-121.12854725939007, 38.64540613333827],
+            [-121.12607794499007, 38.64601009425462],
+            [-121.16834264224556, 38.85093093094182],
+            [-122.04789137325513, 38.73317565805227],
+            [-122.07137073306129, 38.83932157034284],
+            [-122.57091426951379, 38.7698381289482],
+            [-123.06844149716993, 38.69842776306693],
+            [-123.13506133310153, 38.98233363496391],
+            [-123.60743379341399, 38.912415615739484],
+            [-124.11600939437591, 38.834994904490884],
+            [-123.99283493128097, 38.33758069698376],
+            [-123.9970566852067, 38.33662743887689],
+            [-123.7455988640273, 37.312559137129604],
+          ],
+        ],
+      "type": "Polygon",
+    },
+  "properties":
+    {
+      "centerLat": None,
+      "centerLon": None,
+      "stopTime": "2024-08-16T02:08:41Z",
+      "fileID": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1",
+      "flightDirection": "ascending",
+      "pathNumber": 35,
+      "processingLevel": None,
+      "url": "https://grfn.asf.alaska.edu/door/download/S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.nc",
+      "startTime": "2024-08-16T02:07:49Z",
+      "sceneName": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1",
+      "browse":
+        [
+          "https://grfn-public-prod.asf.alaska.edu/S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.png",
+        ],
+      "platform": "Sentinel-1A",
+      "bytes": None,
+      "md5sum": None,
+      "frameNumber": 5289,
+      "granuleType": None,
+      "orbit": [55232, 49457],
+      "polarization": "VV",
+      "processingDate": "2024-09-16T04:33:10Z",
+      "sensor": None,
+      "groupID": None,
+      "pgeVersion": None,
+      "perpendicularBaseline": 124.5283,
+      "inputGranules":
+        [
+          "S1A_IW_SLC__1SDV_20240816T020749_20240816T020816_055232_06BB8A_0FCC",
+          "S1A_IW_SLC__1SDV_20240816T020814_20240816T020841_055232_06BB8A_E560",
+          "S1A_IW_SLC__1SDV_20230717T020751_20230717T020818_049457_05F274_5F77",
+          "S1A_IW_SLC__1SDV_20230717T020816_20230717T020843_049457_05F274_FA81",
+        ],
+      "ariaVersion": "3.0.1",
+      "fileName": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.nc",
+      "beamModeType": "IW",
+      "s3Urls": [],
+      "additionalUrls": [],
+    },
+  "umm":
+    {
+      "TemporalExtent":
+        {
+          "RangeDateTime":
+            {
+              "BeginningDateTime": "2024-08-16T02:07:49.000000Z",
+              "EndingDateTime": "2024-08-16T02:08:41.000000Z",
+            },
+        },
+      "OrbitCalculatedSpatialDomains":
+        [{ "OrbitNumber": 55232 }, { "OrbitNumber": 49457 }],
+      "GranuleUR": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1",
+      "AdditionalAttributes":
+        [
+          { "Name": "ASCENDING_DESCENDING", "Values": ["ascending"] },
+          { "Name": "BEAM_MODE", "Values": ["IW"] },
+          { "Name": "POLARIZATION", "Values": ["VV"] },
+          { "Name": "PERPENDICULAR_BASELINE", "Values": ["124.5283"] },
+          { "Name": "VERSION", "Values": ["3.0.1"] },
+          { "Name": "FRAME_NUMBER", "Values": ["5289"] },
+          { "Name": "PATH_NUMBER", "Values": ["35"] },
+          { "Name": "TEMPORAL_BASELINE_DAYS", "Values": ["396"] },
+          { "Name": "WEATHER_MODEL", "Values": ["HRRR"] },
+        ],
+      "SpatialExtent":
+        {
+          "HorizontalSpatialDomain":
+            {
+              "Geometry":
+                {
+                  "GPolygons":
+                    [
+                      {
+                        "Boundary":
+                          {
+                            "Points":
+                              [
+                                {
+                                  "Latitude": 37.312559137129604,
+                                  "Longitude": -123.7455988640273,
+                                },
+                                {
+                                  "Latitude": 37.38540304500819,
+                                  "Longitude": -123.24674249490164,
+                                },
+                                {
+                                  "Latitude": 37.446633796542315,
+                                  "Longitude": -122.81351599478936,
+                                },
+                                {
+                                  "Latitude": 37.18204643253099,
+                                  "Longitude": -122.7524061928739,
+                                },
+                                {
+                                  "Latitude": 37.25391276468947,
+                                  "Longitude": -122.23399349751173,
+                                },
+                                {
+                                  "Latitude": 37.31557811165414,
+                                  "Longitude": -121.77340355988638,
+                                },
+                                {
+                                  "Latitude": 37.20598434358597,
+                                  "Longitude": -121.74947278966674,
+                                },
+                                {
+                                  "Latitude": 37.31964787377452,
+                                  "Longitude": -120.85699685528009,
+                                },
+                                {
+                                  "Latitude": 38.64540613333827,
+                                  "Longitude": -121.12854725939007,
+                                },
+                                {
+                                  "Latitude": 38.64601009425462,
+                                  "Longitude": -121.12607794499007,
+                                },
+                                {
+                                  "Latitude": 38.85093093094182,
+                                  "Longitude": -121.16834264224556,
+                                },
+                                {
+                                  "Latitude": 38.73317565805227,
+                                  "Longitude": -122.04789137325513,
+                                },
+                                {
+                                  "Latitude": 38.83932157034284,
+                                  "Longitude": -122.07137073306129,
+                                },
+                                {
+                                  "Latitude": 38.7698381289482,
+                                  "Longitude": -122.57091426951379,
+                                },
+                                {
+                                  "Latitude": 38.69842776306693,
+                                  "Longitude": -123.06844149716993,
+                                },
+                                {
+                                  "Latitude": 38.98233363496391,
+                                  "Longitude": -123.13506133310153,
+                                },
+                                {
+                                  "Latitude": 38.912415615739484,
+                                  "Longitude": -123.60743379341399,
+                                },
+                                {
+                                  "Latitude": 38.834994904490884,
+                                  "Longitude": -124.11600939437591,
+                                },
+                                {
+                                  "Latitude": 38.33758069698376,
+                                  "Longitude": -123.99283493128097,
+                                },
+                                {
+                                  "Latitude": 38.33662743887689,
+                                  "Longitude": -123.9970566852067,
+                                },
+                                {
+                                  "Latitude": 37.312559137129604,
+                                  "Longitude": -123.7455988640273,
+                                },
+                              ],
+                          },
+                      },
+                    ],
+                },
+            },
+        },
+      "ProviderDates":
+        [
+          { "Date": "2024-09-16T22:41:26Z", "Type": "Insert" },
+          { "Date": "2024-09-16T22:41:26Z", "Type": "Update" },
+        ],
+      "CollectionReference": { "ShortName": "ARIA_S1_GUNW", "Version": "1" },
+      "RelatedUrls":
+        [
+          {
+            "Type": "GET DATA",
+            "URL": "https://grfn.asf.alaska.edu/door/download/S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.nc",
+          },
+          {
+            "Type": "GET RELATED VISUALIZATION",
+            "URL": "https://grfn-public-prod.asf.alaska.edu/S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.png",
+          },
+        ],
+      "InputGranules":
+        [
+          "S1A_IW_SLC__1SDV_20240816T020749_20240816T020816_055232_06BB8A_0FCC",
+          "S1A_IW_SLC__1SDV_20240816T020814_20240816T020841_055232_06BB8A_E560",
+          "S1A_IW_SLC__1SDV_20230717T020751_20230717T020818_049457_05F274_5F77",
+          "S1A_IW_SLC__1SDV_20230717T020816_20230717T020843_049457_05F274_FA81",
+        ],
+      "DataGranule":
+        {
+          "ArchiveAndDistributionInformation":
+            [
+              {
+                "Name": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.nc",
+                "SizeInBytes": 136887876,
+              },
+            ],
+          "DayNightFlag": "Unspecified",
+          "ProductionDateTime": "2024-09-16T04:33:10.342168Z",
+        },
+      "Platforms": [{ "ShortName": "Sentinel-1A" }],
+      "MetadataSpecification":
+        {
+          "URL": "https://cdn.earthdata.nasa.gov/umm/granule/v1.6.6",
+          "Name": "UMM-G",
+          "Version": "1.6.6",
+        },
+    },
+    'meta':{'concept-type': 'granule', 'concept-id': 'G3240626260-ASF', 'revision-id': 1, 'native-id': 'S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1', 'collection-concept-id': 'C2859376221-ASF', 'provider-id': 'ASF', 'format': 'application/vnd.nasa.cmr.umm+json', 'revision-date': '2024-09-16T22:41:27.238Z'},
+    'baseline': {'stateVectors': {'positions': {'prePosition': None, 'prePositionTime': None, 'postPosition': None, 'postPositionTime': None}, 'velocities': {'preVelocity': None, 'preVelocityTime': None, 'postVelocity': None, 'postVelocityTime': None}}, 'ascendingNodeTime': None}
+}
