@@ -10,7 +10,6 @@ requirements = [
     'dateparser',
     'python-dateutil',
     'tenacity>=8.2.2',
-    'asf-enumeration',
 ]
 
 test_requirements = [
@@ -28,6 +27,11 @@ test_requirements = [
 extra_requirements = [
     'remotezip>=0.10.0',
     'ciso8601',
+]
+
+# Required for ARIA-S1 GUNW Stacking
+asf_enumeration = [
+    'asf-enumeration'
 ]
 
 
@@ -49,7 +53,7 @@ setup(
     include_package_data=True,
     python_requires='>=3.10',
     install_requires=requirements,
-    extras_require={'test': test_requirements, 'extras': extra_requirements},
+    extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration},
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[

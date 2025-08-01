@@ -1,6 +1,7 @@
 
 from copy import copy
 from typing import Dict, Optional, Type
+import warnings
 
 from asf_search import ASFSession
 from asf_search.ASFProduct import ASFProduct
@@ -9,7 +10,11 @@ from asf_search.Products import S1Product
 from asf_search.CMR.translate import try_parse_float
 from asf_search.constants import PRODUCT_TYPE, DATASET, POLARIZATION, BEAMMODE
 from asf_search import ASFSearchResults
-from asf_enumeration import aria_s1_gunw
+
+try:
+    from asf_enumeration import aria_s1_gunw
+except ImportError:
+    aria_s1_gunw = None
 
 
 class ARIAS1GUNWProduct(S1Product):
@@ -51,13 +56,17 @@ class ARIAS1GUNWProduct(S1Product):
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
             self.properties['additionalUrls'] = urls[1:]
 
-    def get_stack_opts(self, opts: Optional[ASFSearchOptions] = None) -> ASFSearchOptions:
+    def get_stack_opts(self, opts: Optional[ASFSearchOptions] = None) -> ASFSearchOptions | None:
         """
         Build search options that can be used to find an insar stack for this product
 
         :return: ASFSearchOptions describing appropriate options
         for building a stack from this product
         """
+        if aria_s1_gunw is None:
+            warnings.warn("Failed to import asf-enumeration package. \
+                          Make sure it's installed in your current environment to perform stacking with the ARIAS1GUNWProduct type")
+            return None
         stack_opts = ASFSearchOptions() if opts is None else copy(opts)
         aria_frame = aria_s1_gunw.get_frame(self.properties['frameNumber'])
         
@@ -115,6 +124,14 @@ class ARIAS1GUNWProduct(S1Product):
         return False
 
     @staticmethod
-    def get_aria_groups_for_frame(frame: str) -> list[aria_s1_gunw.Sentinel1Acquisition]:
+    def get_aria_groups_for_frame(frame: str) -> list['aria_s1_gunw.Sentinel1Acquisition']:
+        if aria_s1_gunw is None:
+            raise ImportError(
+            'Could not find asf-enumeration package in current python environment. '
+            '"asf-enumeration" is an optional dependency of asf-search required '
+            'for stacking with the ARIAS1GUNWProduct type. '
+            'Enable by including the appropriate pip or conda install. '
+            'Ex: `python3 -m pip install asf-search[asf-enumeration]`'
+        )
         aria_frame = aria_s1_gunw.get_frame(frame_id=int(frame))
         return aria_s1_gunw.get_acquisitions(aria_frame)
