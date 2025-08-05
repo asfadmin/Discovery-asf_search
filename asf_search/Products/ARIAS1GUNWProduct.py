@@ -96,15 +96,14 @@ class ARIAS1GUNWProduct(S1Product):
         self, opts: Optional[ASFSearchOptions] = None, useSubclass: Type['ASFProduct'] = None
     ) -> ASFSearchResults:
         from asf_search.baseline import get_baseline_from_stack
-        aria_groups = self.get_aria_groups_for_frame(self.properties['frameNumber'])
+        s1_products = self.get_aria_groups_for_frame(self.properties['frameNumber'])
         
-        if len(aria_groups) == 0:
+        if len(s1_products) == 0:
             reference = None
         else:
-            reference = aria_groups[0].products[0]
+            reference = s1_products[0]
 
-        stack = ASFSearchResults([group.products[0] for group in aria_groups])
-        target_stack, warnings = get_baseline_from_stack(reference, stack)
+        target_stack, warnings = get_baseline_from_stack(reference, s1_products)
 
         return target_stack
 
@@ -124,7 +123,9 @@ class ARIAS1GUNWProduct(S1Product):
         return False
 
     @staticmethod
-    def get_aria_groups_for_frame(frame: str) -> list['aria_s1_gunw.Sentinel1Acquisition']:
+    def get_aria_groups_for_frame(frame: str) -> ASFSearchResults:
+        """Returns the sentinel1 acquisitions over a given frame that overlap the aria frame with the given aria frame ID,
+        filter products from groups that overlap the frame by < 90%"""
         if aria_s1_gunw is None:
             raise ImportError(
             'Could not find asf-enumeration package in current python environment. '
@@ -134,4 +135,11 @@ class ARIAS1GUNWProduct(S1Product):
             'Ex: `python3 -m pip install asf-search[asf-enumeration]`'
         )
         aria_frame = aria_s1_gunw.get_frame(frame_id=int(frame))
-        return aria_s1_gunw.get_acquisitions(aria_frame)
+        groups = aria_s1_gunw.get_acquisitions(aria_frame)
+        polygon = aria_s1_gunw.FRAMES_BY_ID[int(frame)].polygon
+        output = []
+        for group in groups:
+            valid = next((product for product in group.products if product.get_geometry_overlap(polygon) >= 0.9), None)
+            if valid is not None:
+                output.append(valid)
+        return ASFSearchResults(output)
