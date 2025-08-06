@@ -1,6 +1,7 @@
 from copy import deepcopy
 from unittest.mock import patch
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.Products import ARIAS1GUNWProduct
 from asf_search.exceptions import ASFBaselineError, ASFSearchError
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search import ASFSession, DATASET, BEAMMODE, POLARIZATION, PRODUCT_TYPE
@@ -9,7 +10,7 @@ from asf_search.baseline.stack import calculate_temporal_baselines
 import pytest
 
 from asf_search.search.search_generator import as_ASFProduct
-
+from asf_enumeration import aria_s1_gunw
 
 def run_test_get_preprocessed_stack_params(product):
     reference = as_ASFProduct(product, ASFSession())
@@ -86,6 +87,10 @@ def run_test_stack_from_product(reference, stack):
                     secondary.properties['temporalBaseline']
                     >= stack[idx - 1].properties['temporalBaseline']
                 )
+            if opts.dataset is not None:
+                if opts.dataset == 'ARIA S1 GUNW':
+                    aria_frame = aria_s1_gunw.get_frame(frame_id=int(reference.properties['frameNumber']))
+                    assert secondary.get_geometry_overlap(aria_frame.polygon) >= .9
 
 
 def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptions):
@@ -113,3 +118,7 @@ def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptio
                             secondary.properties['temporalBaseline']
                             >= stack[idx - 1]['properties']['temporalBaseline']
                         )
+                    if opts.dataset is not None:
+                        if opts.dataset == 'ARIA S1 GUNW':
+                            aria_frame = aria_s1_gunw.get_frame(frame_id=int(stack_id))
+                            assert secondary.get_geometry_overlap(aria_frame.polygon) >= .9

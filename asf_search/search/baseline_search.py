@@ -95,14 +95,13 @@ def stack_from_id(
     opts = ASFSearchOptions() if opts is None else copy(opts)
 
     if opts.dataset is not None and DATASET.ARIA_S1_GUNW in opts.dataset:
-        aria_groups = ARIAS1GUNWProduct.get_aria_groups_for_frame(reference_id)
+        reference_results = ARIAS1GUNWProduct.get_aria_groups_for_frame(reference_id)
 
-        if len(aria_groups) == 0:
+        if len(reference_results) == 0:
             reference = None
         else:
-            reference = aria_groups[0].products[0]
-
-        reference_results = ASFSearchResults([group.products[0] for group in aria_groups])
+            reference = reference_results[0]
+        
         return get_baseline_from_stack(reference=reference, stack=reference_results)[0]
     else:
         reference_results = product_search(product_list=reference_id, opts=opts)
