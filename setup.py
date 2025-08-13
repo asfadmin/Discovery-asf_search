@@ -6,7 +6,6 @@ requirements = [
     'requests',
     'shapely',
     'pytz',
-    'importlib_metadata',
     'numpy',
     'dateparser',
     'python-dateutil',
@@ -30,6 +29,11 @@ extra_requirements = [
     'ciso8601',
 ]
 
+# Required for ARIA-S1 GUNW Stacking
+asf_enumeration = [
+    'asf-enumeration>=0.3.0'
+]
+
 
 with open('README.md', 'r') as readme_file:
     readme = readme_file.read()
@@ -47,9 +51,9 @@ setup(
     packages=find_packages(exclude=['tests.*', 'tests', 'examples.*', 'examples']),
     package_dir={'asf_search': 'asf_search'},
     include_package_data=True,
-    python_requires='>=3.9',
+    python_requires='>=3.10',
     install_requires=requirements,
-    extras_require={'test': test_requirements, 'extras': extra_requirements},
+    extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration},
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[
@@ -60,7 +64,6 @@ setup(
         'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
