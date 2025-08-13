@@ -136,10 +136,14 @@ class ARIAS1GUNWProduct(S1Product):
         )
         aria_frame = aria_s1_gunw.get_frame(frame_id=int(frame))
         groups = aria_s1_gunw.get_acquisitions(aria_frame)
-        polygon = aria_s1_gunw.FRAMES_BY_ID[int(frame)].polygon
         output = []
+
+        # ignore acquisition groups with 0 products
+        # take the first product that has a baseline value, otherwise just take the first product in the group
         for group in groups:
-            valid = next((product for product in group.products if product.get_geometry_overlap(polygon) >= 0.9), None)
-            if valid is not None:
-                output.append(valid)
+            if len(group.products) == 0:
+                continue
+            valid = next((product for product in group.products if product.has_baseline()), group.products[0])
+            output.append(valid)
+
         return ASFSearchResults(output)
