@@ -26,6 +26,20 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.9...v10.0.0)
+### Added
+- adds `asf-enumeration` package as optional dependency (installable via `pip install asf-search[asf-enumeration]`)
+    - Enables SLC baseline stacking based on `ARIA S1 GUNW` frame
+       - `ARIAS1GUNWProduct.stack()` returns stack of SLCs over ARIA Frame
+       - to use with `stack_from_id()`, pass `ASFSearchOptions` object to `opts` with `dataset` set to `constants.DATASET.ARIA_S1_GUNW`
+
+### Changed
+- Dropped legacy backport package `importlib_metadata` as dependency, using `importlib` instead
+
+### Breaking
+- Dropped support for python versions < 3.10 (See Python official release timeline for more information https://devguide.python.org/versions/ )
+
+------
 ## [v9.0.9](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.8...v9.0.9)
 ### Added
 - Added NISAR L-SAR `RANGED_BANDWIDTH` constants `BW_20` and `BW_40`

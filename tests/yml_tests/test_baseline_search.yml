@@ -5,6 +5,9 @@ tests:
 - Test Get test-unprocessed-product S1 Stack Params:
     product: S1_response.yml
 
+- Test Get test-unprocessed-product ARIA Stack Params:
+    product: ARIAS1-GUNW_response.yml
+
 - Test Get test-unprocessed-product Burst Stack Params:
     product: SLC_BURST.yml
 
@@ -35,7 +38,17 @@ tests:
     product: RADARSAT.yml
     stack: RADARSAT_stack.yml
 
+- Test get test-temporal-baseline test-product-stack ARIA-S1 GUNW Params:
+    product: ARIAS1-GUNW_response.yml
+    stack: ARIAS1GUNW_stack.yml
+
 - test-stack-id empty ID:
     stack_id: ''
     stack_reference: Alos_response.yml
     stack: []
+
+- test-stack-id ARIA S1 GUNW ID:
+    stack_id: 5289
+    stack_reference: null
+    stack: ARIAS1GUNW_stack.yml
+    dataset: 'ARIA S1 GUNW'
