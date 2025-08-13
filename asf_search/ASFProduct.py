@@ -409,9 +409,6 @@ class ASFProduct:
 
         return (primary_key, secondary_key)
 
-    def get_geometry_overlap(self, polygon: Polygon) -> float:
-        return polygon.intersection(shape(self.geometry)).area / polygon.area
-
     def _read_property(self, key: str, default: Any = None) -> Any:
         """
         Helper method wraps `properties.get()`.

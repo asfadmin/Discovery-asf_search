@@ -87,10 +87,6 @@ def run_test_stack_from_product(reference, stack):
                     secondary.properties['temporalBaseline']
                     >= stack[idx - 1].properties['temporalBaseline']
                 )
-            if opts.dataset is not None:
-                if opts.dataset == 'ARIA S1 GUNW':
-                    aria_frame = aria_s1_gunw.get_frame(frame_id=int(reference.properties['frameNumber']))
-                    assert secondary.get_geometry_overlap(aria_frame.polygon) >= .9
 
 
 def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptions):
@@ -118,7 +114,3 @@ def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptio
                             secondary.properties['temporalBaseline']
                             >= stack[idx - 1]['properties']['temporalBaseline']
                         )
-                    if opts.dataset is not None:
-                        if opts.dataset == 'ARIA S1 GUNW':
-                            aria_frame = aria_s1_gunw.get_frame(frame_id=int(stack_id))
-                            assert secondary.get_geometry_overlap(aria_frame.polygon) >= .9
