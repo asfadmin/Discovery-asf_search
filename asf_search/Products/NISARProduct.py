@@ -1,5 +1,5 @@
 from copy import copy
-from datetime import datetime
+from dateutil.parser import parse as parse_datetime
 from typing import Dict, Optional, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
@@ -75,10 +75,10 @@ class NISARProduct(ASFStackableProduct):
 
         from asf_search import search
         response = search(opts=static_opts)
-        response = sorted(response, key=lambda x: datetime.fromisoformat(x.properties.get('validityStartDate')), reverse=True)
+        response = sorted(response, key=lambda x: parse_datetime(x.properties.get('validityStartDate')), reverse=True)
         
         for product in response:
             if (validityStartDate := product.properties.get('validityStartDate')) is not None:
-                d = datetime.fromisoformat(validityStartDate)
-                if d <= datetime.fromisoformat(self.properties.get('stopTime')):
+                d = parse_datetime(validityStartDate)
+                if d <= parse_datetime(self.properties.get('stopTime')):
                     return product
