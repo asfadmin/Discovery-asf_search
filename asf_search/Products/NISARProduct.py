@@ -1,4 +1,6 @@
-from typing import Dict, Tuple, Union
+from copy import copy
+from datetime import datetime
+from typing import Dict, Optional, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
 
@@ -62,16 +64,21 @@ class NISARProduct(ASFStackableProduct):
 
         return keys
 
-    def get_static_layer(self, opts: ASFSearchOptions = None):
+    def get_static_layer(self, opts: ASFSearchOptions = None) -> Optional['NISARProduct']:
         static_opts = ASFSearchOptions() if opts is None else copy(opts)
         
         static_opts.relativeOrbit = self.properties['pathNumber']
         static_opts.frame = self.properties['frameNumber']
         static_opts.end = self.properties['stopTime']
-        static_opts.shortName='NISAR_L2_STATIC_LAYERS'
+        if static_opts.shortName is None:
+            static_opts.shortName='NISAR_L2_STATIC_LAYERS'
 
         from asf_search import search
         response = search(opts=static_opts)
-
-        return response
-        # NISAR_L2_STATIC_LAYERS	Static Layers for the NASA-ISRO Synthetic Aperture Radar (NISAR) Mission	1		C1274178363	C1274178365
+        response = sorted(response, key=lambda x: datetime.fromisoformat(x.properties.get('validityStartDate')), reverse=True)
+        
+        for product in response:
+            if (validityStartDate := product.properties.get('validityStartDate')) is not None:
+                d = datetime.fromisoformat(validityStartDate)
+                if d <= datetime.fromisoformat(self.properties.get('stopTime')):
+                    return product
