@@ -1,4 +1,6 @@
-from typing import Dict, Tuple, Union
+from copy import copy
+from dateutil.parser import parse as parse_datetime
+from typing import Dict, Optional, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
 
@@ -61,3 +63,22 @@ class NISARProduct(ASFStackableProduct):
             return (self._read_property('processingDate', ''), keys[1])
 
         return keys
+
+    def get_static_layer(self, opts: ASFSearchOptions = None) -> Optional['NISARProduct']:
+        static_opts = ASFSearchOptions() if opts is None else copy(opts)
+        
+        static_opts.relativeOrbit = self.properties['pathNumber']
+        static_opts.frame = self.properties['frameNumber']
+        static_opts.end = self.properties['stopTime']
+        if static_opts.shortName is None:
+            static_opts.shortName='NISAR_L2_STATIC_LAYERS'
+
+        from asf_search import search
+        response = search(opts=static_opts)
+        response = sorted(response, key=lambda x: parse_datetime(x.properties.get('validityStartDate')), reverse=True)
+        
+        for product in response:
+            if (validityStartDate := product.properties.get('validityStartDate')) is not None:
+                d = parse_datetime(validityStartDate)
+                if d <= parse_datetime(self.properties.get('stopTime')):
+                    return product
