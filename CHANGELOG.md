@@ -26,6 +26,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.0...v10.0.1)
+### Added
+- adds NISAR file sizes to the `nisar` attribute of exports
+------
 ## [v10.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.9...v10.0.0)
 ### Added
 - adds `asf-enumeration` package as optional dependency (installable via `pip install asf-search[asf-enumeration]`)
