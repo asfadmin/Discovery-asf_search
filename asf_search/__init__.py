@@ -44,7 +44,8 @@ from .constants import (  # noqa: F401 E402
     PRODUCT_TYPE,  # noqa: F401 E402
     INTERNAL,  # noqa: F401 E402
     DATASET,  # noqa: F401 E402
-    RANGE_BANDWIDTH,  # noqa: F401 E402
+    RANGE_BANDWIDTH,  # noqa: F401 E402,
+    PRODUCTION_CONFIGURATION,  # noqa: F401 E402
 )
 from .health import *  # noqa: F403 F401 E402
 from .search import *  # noqa: F403 F401 E402
