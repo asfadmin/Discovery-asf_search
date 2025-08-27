@@ -22,6 +22,19 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
 
+    # if dict_opts.get('productionConfiguration') is not None:
+    nisar_product_types = [
+        'SME2', # L3
+        'GSLC', 'GCOV', 'GUNW', 'GOFF', # L2
+        'RSLC', 'RIFG', 'RUNW', 'ROFF'  # L1
+        'L0B', #44
+        ]
+    if dict_opts.get('processingLevel') is not None: # this means we don't have collection aliasing, indicating we're also searching for urgent response products
+        processingType = dict_opts.get('processingLevel', [])[0]
+        if processingType in nisar_product_types:
+            # Use new PRODUCT_TYPE keyword later
+            dict_opts['productType'] = dict_opts.pop('processingLevel')[0]
+
     # Escape commas for each key in the list.
     # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
     for escape_commas in ['campaign']:
@@ -79,6 +92,9 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     for key, val in dict_opts.items():
         # If it's "session" or something else CMR doesn't accept, don't send it:
         if key not in field_map:
+            if key == 'productType':
+                custom_cmr_keywords.append(('attribute[]', f'string,PRODUCT_TYPE,{val}'))
+            
             continue
         if isinstance(val, list):
             for x in val:
