@@ -22,7 +22,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
 
-    if dict_opts.get('processingLevel') is not None: # this means we don't have collection aliasing, indicating we're also searching for urgent response products
+    if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
         processingType = dict_opts.get('processingLevel', [])[0]
         if processingType in NISAR_PRODUCT_TYPES:
             # Use new PRODUCT_TYPE keyword later, remove processingLevel so we don't try the value with PROCESSING_LEVEL
