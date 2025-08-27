@@ -8,7 +8,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import collections_per_platform
+from .datasets import collections_per_platform, NISAR_PRODUCT_TYPES
 import logging
 
 try:
@@ -23,15 +23,10 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     dict_opts = dict(opts)
 
     # if dict_opts.get('productionConfiguration') is not None:
-    nisar_product_types = [
-        'SME2', # L3
-        'GSLC', 'GCOV', 'GUNW', 'GOFF', # L2
-        'RSLC', 'RIFG', 'RUNW', 'ROFF'  # L1
-        'L0B', #44
-        ]
+    
     if dict_opts.get('processingLevel') is not None: # this means we don't have collection aliasing, indicating we're also searching for urgent response products
         processingType = dict_opts.get('processingLevel', [])[0]
-        if processingType in nisar_product_types:
+        if processingType in NISAR_PRODUCT_TYPES:
             # Use new PRODUCT_TYPE keyword later
             dict_opts['productType'] = dict_opts.pop('processingLevel')[0]
 

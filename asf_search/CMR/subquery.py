@@ -3,22 +3,15 @@ import itertools
 from copy import copy
 
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.constants import CMR_PAGE_SIZE, PRODUCT_TYPE
+from asf_search.constants import CMR_PAGE_SIZE
 from asf_search.CMR.datasets import (
+    NISAR_PRODUCT_TYPES,
     collections_by_processing_level,
     collections_per_platform,
     get_concept_id_alias,
     get_dataset_concept_ids,
-    dataset_collections,
 )
 from numpy import intersect1d, union1d
-
-NISAR_PRODUCT_TYPES = [
-    PRODUCT_TYPE.L0B, #L4
-    PRODUCT_TYPE.SME2, # L3
-    PRODUCT_TYPE.GSLC, PRODUCT_TYPE.GCOV, PRODUCT_TYPE.GUNW, PRODUCT_TYPE.GOFF, # L2
-    PRODUCT_TYPE.RSLC, PRODUCT_TYPE.RIFG, PRODUCT_TYPE.RUNW, PRODUCT_TYPE.ROFF,  # L1
-    ]
 
 def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     """
