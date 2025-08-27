@@ -40,15 +40,11 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         'linestring',
         'point',
         'bbox',
-        # 'productionConfiguration',
     ]  # these parameters will dodge the subquery system
     skip_param_names = [
         'maxResults',
     ]  # these params exist in opts, but shouldn't be passed on to subqueries at ALL
 
-
-    # if (productionConfiguration := params.get('productionConfiguration')) is not None:
-    #     if 'UR' in productionConfiguration:
     includes_nisar_products = False
     if params.get('processingLevel') is not None:
         for product in params.get('processingLevel', []):
@@ -118,7 +114,7 @@ def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True, inc
             )
             if len(collections):
                 aliased_keywords.append('processingLevel')
-            
+
         if 'platform' in params.keys():
             platform_concept_ids = get_concept_id_alias(
                 [platform.upper() for platform in params.get('platform')],
