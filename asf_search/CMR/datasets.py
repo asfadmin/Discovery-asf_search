@@ -1,5 +1,13 @@
 from typing import List
 
+from asf_search.constants import PRODUCT_TYPE
+
+NISAR_PRODUCT_TYPES = [
+    PRODUCT_TYPE.L0B, #L4
+    PRODUCT_TYPE.SME2, # L3
+    PRODUCT_TYPE.GSLC, PRODUCT_TYPE.GCOV, PRODUCT_TYPE.GUNW, PRODUCT_TYPE.GOFF, # L2
+    PRODUCT_TYPE.RSLC, PRODUCT_TYPE.RIFG, PRODUCT_TYPE.RUNW, PRODUCT_TYPE.ROFF,  # L1
+]
 
 dataset_collections = {
     'ALOS-2': {

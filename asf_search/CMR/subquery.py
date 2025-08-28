@@ -5,13 +5,13 @@ from copy import copy
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import CMR_PAGE_SIZE
 from asf_search.CMR.datasets import (
+    NISAR_PRODUCT_TYPES,
     collections_by_processing_level,
     collections_per_platform,
     get_concept_id_alias,
     get_dataset_concept_ids,
 )
 from numpy import intersect1d, union1d
-
 
 def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     """
@@ -45,7 +45,13 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         'maxResults',
     ]  # these params exist in opts, but shouldn't be passed on to subqueries at ALL
 
-    collections, aliased_keywords = get_keyword_concept_ids(params, opts.collectionAlias)
+    includes_nisar_products = False
+    if params.get('processingLevel') is not None:
+        for product in params.get('processingLevel', []):
+            if product in NISAR_PRODUCT_TYPES:
+                includes_nisar_products = True
+                break
+    collections, aliased_keywords = get_keyword_concept_ids(params, opts.collectionAlias, includes_nisar_products)
     params['collections'] = list(union1d(collections, params.get('collections', [])))
 
     for keyword in [*skip_param_names, *aliased_keywords]:
@@ -83,7 +89,7 @@ def _build_subquery(
     return ASFSearchOptions(**q, **list_params)
 
 
-def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True) -> dict:
+def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True, includes_nisar_products: bool = False) -> dict:
     """
     Gets concept-ids for dataset, platform, processingLevel keywords
     processingLevel is scoped by dataset or platform concept-ids when available
@@ -92,6 +98,8 @@ def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True) -> 
         search parameter dictionary pre-CMR translation
     : param use_collection_alias:
         whether or not to alias platform and processingLevel with concept-ids
+    : includes_nisar_products:
+        Flag to skip the processing level aliasing (urgent response products are grouped by product level and not product type)
     : returns two lists:
         - list of concept-ids for dataset, platform, and processingLevel
         - list of aliased keywords to remove from final parameters
@@ -100,7 +108,7 @@ def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True) -> 
     aliased_keywords = []
 
     if use_collection_alias:
-        if 'processingLevel' in params.keys():
+        if 'processingLevel' in params.keys() and not includes_nisar_products:
             collections = get_concept_id_alias(
                 params.get('processingLevel'), collections_by_processing_level
             )

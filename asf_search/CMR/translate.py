@@ -8,7 +8,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import collections_per_platform
+from .datasets import collections_per_platform, NISAR_PRODUCT_TYPES
 import logging
 
 try:
@@ -21,6 +21,12 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
+
+    if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
+        processingType = dict_opts.get('processingLevel', [])[0]
+        if processingType in NISAR_PRODUCT_TYPES:
+            # Use new PRODUCT_TYPE keyword later, remove processingLevel so we don't try the value with PROCESSING_LEVEL
+            dict_opts['productType'] = dict_opts.pop('processingLevel')[0]
 
     # Escape commas for each key in the list.
     # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
@@ -79,6 +85,9 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     for key, val in dict_opts.items():
         # If it's "session" or something else CMR doesn't accept, don't send it:
         if key not in field_map:
+            if key == 'productType':
+                custom_cmr_keywords.append(('attribute[]', f'string,PRODUCT_TYPE,{val}'))
+            
             continue
         if isinstance(val, list):
             for x in val:
