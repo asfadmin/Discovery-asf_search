@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.2...v10.0.3)
+### Added
+- constant `CUSTOM` now available in `PRODUCTION_CONFIGURATION` module
+
+------
 ## [v10.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.1...v10.0.2)
 ### Fixed
 - `PRODUCTION_CONFIGURATION` constants module now accessible as top level import
