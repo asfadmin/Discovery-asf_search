@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.3...v10.0.4)
+### Fixed
+- Removes erroneous deprecation warning when setting `cmr_host` in `ASFSession` constructor.
+
+------
 ## [v10.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.2...v10.0.3)
 ### Added
 - constant `CUSTOM` now available in `PRODUCTION_CONFIGURATION` module
