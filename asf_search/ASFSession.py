@@ -1,4 +1,3 @@
-from logging import warn
 import platform
 from typing import List, Union
 import requests
@@ -44,7 +43,7 @@ class ASFSession(requests.Session):
         `asf_auth_host`:
             the ASF auth endpoint.
             Defaults to `asf_search.constants.INTERNAL.ASF_AUTH_HOST`
-        `cmr_host (DEPRECATED V7.0.9)`:
+        `cmr_host`:
             the base CMR endpoint to test EDL login tokens against.
             Defaults to `asf_search.constants.INTERNAL.CMR_HOST`
         `cmr_collections`:
@@ -87,21 +86,7 @@ class ASFSession(requests.Session):
             INTERNAL.AUTH_COOKIES if auth_cookie_names is None else auth_cookie_names
         )
 
-        self.cmr_host = INTERNAL.CMR_HOST
-
-        if cmr_host is not None:
-            warnings.warn(
-                'Use of `cmr_host` keyword with `ASFSession` is deprecated '
-                'for asf-search versions >= 7.0.9, '
-                'and may be removed in a future major release.'
-                '\nTo authenticate an EDL token for a non-prod deployment of CMR, '
-                'set the `edl_host` keyword instead. '
-                '\n(ex: session arugments for authenticating against uat: '
-                '`ASFSession(edl_host="uat.urs.earthdata.nasa.gov")`)',
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-            self.cmr_host = cmr_host
+        self.cmr_host = INTERNAL.CMR_HOST if cmr_host is None else cmr_host
 
     def __eq__(self, other):
         return (
