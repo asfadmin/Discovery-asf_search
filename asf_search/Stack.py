@@ -100,8 +100,13 @@ class Stack:
         Add pairs to the subset_stack, 
         i.e., remove them from self._remove_list
         """
+        geo_ref_stack = self.geo_reference.stack(opts=self.opts)
+        dates = {parse_datetime(p.properties['stopTime']).date(): p for p in geo_ref_stack}
         for pair in pairs:
             pair_dates = self._normalize_pair(pair)
+            #This is only used when a full connected stack is needed
+            if pair_dates not in self.full_stack:
+                self.full_stack[(pair_dates[0], pair_dates[1])] = Pair(dates[pair_dates[0]], dates[pair_dates[1]])
             if pair_dates in self._remove_list:
                 if pair_dates not in self.full_stack:
                     warnings.warn(PairNotInFullStackWarning(pair_dates))
