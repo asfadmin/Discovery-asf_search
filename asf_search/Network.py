@@ -77,7 +77,6 @@ class Network(Stack):
         self._build_sbas_stack()
         if self.additional_multiburst_networks:
             self._interesect_multiburst_stacks()
-
         # warn user if they lack optional dependencies for plotting
         missing_optional_deps = []
         if importlib.util.find_spec("plotly") is None:
@@ -124,7 +123,7 @@ class Network(Stack):
                 geo_reference = burst_stack[-1]
             else:
                 multiburst_network = Network(
-                    geo_reference=results[-1],
+                    geo_reference=burst_stack[-1],
                     perp_baseline=self.perp_baseline, 
                     inseason_temporal_baseline=self.inseason_temporal_baseline,
                     bridge_target_date=self.bridge_target_date,
@@ -176,7 +175,8 @@ class Network(Stack):
             season_length = 366 - self._season[0] + self._season[1]
 
         # Only create multiannual bridge pairs if the off-season is longer than inseason_temporal_baseline
-        if 365 - season_length > self.inseason_temporal_baseline:
+        #if 365 - season_length > self.inseason_temporal_baseline:
+        if True:
 
             # determine how far ref scene date is from target multi-annual bridge date 
             days_from_bridge_date = np.abs(
@@ -207,6 +207,94 @@ class Network(Stack):
                 self._passes_temporal_check(pair):
                 remove_list.append((pair.ref_date, pair.sec_date))
         self.remove_list = remove_list
+    
+    def get_target_dates(self, sub1, target_date):
+        """
+        Gets the dates that are within the inseason_temporal_baseline from the target_date
+        """
+        dates=[date for date in sub1 if abs((date-target_date).days)<self.inseason_temporal_baseline]
+        return dates
+        
+    def connect_components(self):
+        """
+        Connects multiple networks using three options:
+            - Search for the last year in first network and the first year in the last network and connects the target dates
+            - If one of the networks does not have candidates pairs, it changes the target date to the median date in the smallest network
+            - If the largest network does not have the target date it connects the dates surrounding the median date on each network
+        """
+        #If there's only one network or no network there's nothing to do
+        if len(self.connected_substacks)<2:
+            raise Exception('There are not unconnected stacks')
+
+        #Stores the dates for each network
+        dates_components=[]
+        for component in self.connected_substacks:
+            dates=sorted(list(set([date for key in component.keys() for date in key])))
+            dates_components.append(dates)
+        
+        # Get the median date on each network
+        lens = [len(subset) for subset in self.connected_substacks]
+        mids = [dates_component[len(dates_component)//2] for dates_component in dates_components]
+
+        #Finds the network pairs to be connected (not insar pairs!)
+        cons = []
+        for i,mid in enumerate(mids[0:-1]):
+            difs=[abs((mid-midt).days) for j, midt in enumerate(mids[i+1::])]
+            cons.append((i,int(np.argmin(difs)+i+1)))
+
+        #Loop over the network pairs and find the insar pairs
+        pairs=[]
+        for con in cons:
+            maxes = (max(dates_components[con[0]]), max(dates_components[con[1]]))
+            mines = (min(dates_components[con[0]]), min(dates_components[con[1]]))
+
+            #This checks if the there's no overlap between the networks
+            if maxes[0] < mines[1]:
+                year1 = maxes[0].year
+                year2 = mines[1].year
+            elif maxes[1] < mines[0]:
+                con=(con[1],con[0])
+                year1 = maxes[1].year
+                year2 = mines[0].year
+            else:
+                #If there's overlap the connection is made around the median year of the smallest network
+                minlen = min([len(dates_components[con[0]]), len(dates_components[con[1]])])
+                if minlen==len(dates_components[con[0]]):
+                    year1=mids[con[0]].year
+                else:
+                    year1=mids[con[1]].year
+                year2 = year1
+
+            #Ideally the connection would be made using the bridge_target_date given by the user
+            target_mid1 = datetime.strptime(f"{year1}-{self.bridge_target_date}",'%Y-%m-%d').date()
+            target_mid2 = datetime.strptime(f"{year2}-{self.bridge_target_date}",'%Y-%m-%d').date()
+            target_dates1 = self.get_target_dates(dates_components[con[0]], target_mid1)
+            target_dates2 = self.get_target_dates(dates_components[con[1]], target_mid2)
+
+            #If this is not the case it will try to connect the median date of the oldest network
+            if len(target_dates1)==0 or len(target_dates2)==0:
+                target_mid1 = mids[con[0]]
+                target_mid2 = datetime.strptime(f"{mids[con[1]].year}-{target_mid1.month}-{target_mid1.day}",'%Y-%m-%d').date()
+                target_dates2 = self.get_target_dates(dates_components[con[1]], target_mid2)
+                if len(target_dates2)==0:
+                    target_mid2 = mids[con[1]]
+                    target_mid1 = datetime.strptime(f"{mids[con[0]].year}-{target_mid2.month}-{target_mid2.day}",'%Y-%m-%d').date()
+                target_dates1 = self.get_target_dates(dates_components[con[0]], target_mid1)
+            if len(target_dates1)==0:
+                target_mid1 = mids[con[0]]
+                target_mid2 = mids[con[1]]
+                target_dates1 = self.get_target_dates(dates_components[con[0]], target_mid1)
+            target_dates2 = self.get_target_dates(dates_components[con[1]], target_mid2)
+            
+            for i, date1 in enumerate(target_dates1):
+                for date2 in target_dates2[i::]:
+                    if date1<date2:
+                        pairs.append((date1,date2))
+                    else:
+                        pairs.append((date2,date1))
+        self.add_pairs(pairs)
+        for d in self.additional_multiburst_networks:
+            d.add_pairs(pairs)
 
     def plot(self, stack_dict: Dict[Tuple[date, date], Pair] = None):
         """
@@ -424,7 +512,7 @@ class Network(Stack):
         if stack_dict is self.full_stack:
             plot_header_text = (
                 "<b>SBAS Stack</b><br>"
-                f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
+                f"Geographic Reference: {self.geo_reference.properties['sceneName']}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
                 f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
                 f"Full Stack Size: {len(largest_stack)} pairs from {largest_stack_slc_count} scenes<br>"
@@ -432,7 +520,7 @@ class Network(Stack):
         else:
             plot_header_text = (
                 "<b>SBAS Stack</b><br>"
-                f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
+                f"Geographic Reference: {self.geo_reference.properties['sceneName']}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
                 f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
                 f"Temporal Baseline: {self.inseason_temporal_baseline} days, "
