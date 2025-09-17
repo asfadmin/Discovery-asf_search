@@ -174,28 +174,22 @@ class Network(Stack):
         else:
             season_length = 366 - self._season[0] + self._season[1]
 
-        # Only create multiannual bridge pairs if the off-season is longer than inseason_temporal_baseline
-        #if 365 - season_length > self.inseason_temporal_baseline:
-        if True:
+        # determine how far ref scene date is from target multi-annual bridge date 
+        days_from_bridge_date = np.abs(
+            (
+                datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
+                - pair.ref_date).days
+            )
+        # Create lists of valid secondary scene date ranges.
+        # The number of years bridged is determined by the bridge_year_threshold.
+        valid_ranges = []
+        for i in range(1, self.bridge_year_threshold+1):
+            valid_ranges.append((i * 365 - self.inseason_temporal_baseline, i * 365 + self.inseason_temporal_baseline))
 
-            # determine how far ref scene date is from target multi-annual bridge date 
-            days_from_bridge_date = np.abs(
-                (
-                    datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
-                    - pair.ref_date).days
-                )
-            # Create lists of valid secondary scene date ranges.
-            # The number of years bridged is determined by the bridge_year_threshold.
-            valid_ranges = []
-            for i in range(1, self.bridge_year_threshold+1):
-                valid_ranges.append((i * 365 - self.inseason_temporal_baseline, i * 365 + self.inseason_temporal_baseline))
-
-            # return True if the ref scene is within the inseason_temporal_baseline of
-            # the target bridge date and the secondary scene falls within a valid date range
-            return days_from_bridge_date <= self.inseason_temporal_baseline and \
-                any(start <= pair.temporal.days <= end for start, end in valid_ranges)
-        else:
-            return False
+        # return True if the ref scene is within the inseason_temporal_baseline of
+        # the target bridge date and the secondary scene falls within a valid date range
+        return days_from_bridge_date <= self.inseason_temporal_baseline and \
+            any(start <= pair.temporal.days <= end for start, end in valid_ranges)
 
     def _build_sbas_stack(self):
         """
@@ -233,7 +227,6 @@ class Network(Stack):
             dates_components.append(dates)
         
         # Get the median date on each network
-        lens = [len(subset) for subset in self.connected_substacks]
         mids = [dates_component[len(dates_component)//2] for dates_component in dates_components]
 
         #Finds the network pairs to be connected (not insar pairs!)
