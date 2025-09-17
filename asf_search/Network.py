@@ -174,22 +174,26 @@ class Network(Stack):
         else:
             season_length = 366 - self._season[0] + self._season[1]
 
-        # determine how far ref scene date is from target multi-annual bridge date 
-        days_from_bridge_date = np.abs(
-            (
-                datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
-                - pair.ref_date).days
-            )
-        # Create lists of valid secondary scene date ranges.
-        # The number of years bridged is determined by the bridge_year_threshold.
-        valid_ranges = []
-        for i in range(1, self.bridge_year_threshold+1):
-            valid_ranges.append((i * 365 - self.inseason_temporal_baseline, i * 365 + self.inseason_temporal_baseline))
+        # Only create multiannual bridge pairs if the off-season is longer than inseason_temporal_baseline
+        if 365 - season_length > self.inseason_temporal_baseline:
+            # determine how far ref scene date is from target multi-annual bridge date 
+            days_from_bridge_date = np.abs(
+                (
+                    datetime.strptime(f"{self.bridge_target_date}-{pair.ref_date.year}", "%m-%d-%Y").date() 
+                    - pair.ref_date).days
+                )
+            # Create lists of valid secondary scene date ranges.
+            # The number of years bridged is determined by the bridge_year_threshold.
+            valid_ranges = []
+            for i in range(1, self.bridge_year_threshold+1):
+                valid_ranges.append((i * 365 - self.inseason_temporal_baseline, i * 365 + self.inseason_temporal_baseline))
 
-        # return True if the ref scene is within the inseason_temporal_baseline of
-        # the target bridge date and the secondary scene falls within a valid date range
-        return days_from_bridge_date <= self.inseason_temporal_baseline and \
-            any(start <= pair.temporal.days <= end for start, end in valid_ranges)
+            # return True if the ref scene is within the inseason_temporal_baseline of
+            # the target bridge date and the secondary scene falls within a valid date range
+            return days_from_bridge_date <= self.inseason_temporal_baseline and \
+                any(start <= pair.temporal.days <= end for start, end in valid_ranges)
+        else:
+            return False
 
     def _build_sbas_stack(self):
         """
@@ -201,14 +205,43 @@ class Network(Stack):
                 self._passes_temporal_check(pair):
                 remove_list.append((pair.ref_date, pair.sec_date))
         self.remove_list = remove_list
-    
-    def get_target_dates(self, sub1, target_date):
+
+    def get_target_dates(self, sub, bridge_target = None):
         """
-        Gets the dates that are within the inseason_temporal_baseline from the target_date
-        """
-        dates=[date for date in sub1 if abs((date-target_date).days)<self.inseason_temporal_baseline]
-        return dates
+        Finds the dates around a bridge_target for given stack
         
+        sub: Set of dates for the stack.
+        bridge_target: target month and day to find the dates.
+        """
+        if bridge_target is None:
+            bridge_target = self.bridge_target_date
+        years = list(set([date.strftime('%Y') for date in sub]))
+        dates_target = []
+        for year in years:
+            target = datetime.strptime(f"{year}-{self.bridge_target_date}",'%Y-%m-%d').date()
+            s = [date for date in sub if abs((date-target).days) <= self.inseason_temporal_baseline]
+            if len(s) > 0:
+                dates_target.append(s)
+        return dates_target
+
+    def closest_sets(self, sub1, sub2):
+        """
+        Finds the pair of sets that are closest to each other
+        
+        sub1: Sets of dates around the bridge_date for the first stack
+        sub2: Sets of dates around the bridge_date for the second stack
+        """
+        medians1 = [s[len(s)//2] for s in sub1]
+        medians2 = [s[len(s)//2] for s in sub2]
+        minimum = 10000
+        for i, median1 in enumerate(medians1):
+            for j, median2 in enumerate(medians2):
+                if abs((median1-median2).days) < minimum:
+                   minimum = abs((median1-median2).days)
+                   index1 = i
+                   index2 = j
+        return index1, index2
+
     def connect_components(self):
         """
         Connects multiple networks using three options:
@@ -225,7 +258,7 @@ class Network(Stack):
         for component in self.connected_substacks:
             dates=sorted(list(set([date for key in component.keys() for date in key])))
             dates_components.append(dates)
-        
+
         # Get the median date on each network
         mids = [dates_component[len(dates_component)//2] for dates_component in dates_components]
 
@@ -238,47 +271,33 @@ class Network(Stack):
         #Loop over the network pairs and find the insar pairs
         pairs=[]
         for con in cons:
-            maxes = (max(dates_components[con[0]]), max(dates_components[con[1]]))
-            mines = (min(dates_components[con[0]]), min(dates_components[con[1]]))
+            sub1 = dates_components[con[0]]
+            sub2 = dates_components[con[1]]
 
-            #This checks if the there's no overlap between the networks
-            if maxes[0] < mines[1]:
-                year1 = maxes[0].year
-                year2 = mines[1].year
-            elif maxes[1] < mines[0]:
-                con=(con[1],con[0])
-                year1 = maxes[1].year
-                year2 = mines[0].year
-            else:
-                #If there's overlap the connection is made around the median year of the smallest network
-                minlen = min([len(dates_components[con[0]]), len(dates_components[con[1]])])
-                if minlen==len(dates_components[con[0]]):
-                    year1=mids[con[0]].year
-                else:
-                    year1=mids[con[1]].year
-                year2 = year1
+            #Ideally the connection is made with the bridge_target
+            target_dates1 = self.get_target_dates(sub1)
 
-            #Ideally the connection would be made using the bridge_target_date given by the user
-            target_mid1 = datetime.strptime(f"{year1}-{self.bridge_target_date}",'%Y-%m-%d').date()
-            target_mid2 = datetime.strptime(f"{year2}-{self.bridge_target_date}",'%Y-%m-%d').date()
-            target_dates1 = self.get_target_dates(dates_components[con[0]], target_mid1)
-            target_dates2 = self.get_target_dates(dates_components[con[1]], target_mid2)
-
-            #If this is not the case it will try to connect the median date of the oldest network
-            if len(target_dates1)==0 or len(target_dates2)==0:
-                target_mid1 = mids[con[0]]
-                target_mid2 = datetime.strptime(f"{mids[con[1]].year}-{target_mid1.month}-{target_mid1.day}",'%Y-%m-%d').date()
-                target_dates2 = self.get_target_dates(dates_components[con[1]], target_mid2)
-                if len(target_dates2)==0:
-                    target_mid2 = mids[con[1]]
-                    target_mid1 = datetime.strptime(f"{mids[con[0]].year}-{target_mid2.month}-{target_mid2.day}",'%Y-%m-%d').date()
-                target_dates1 = self.get_target_dates(dates_components[con[0]], target_mid1)
+            #In case the first stack does not have dates around it, change the bridge_date
             if len(target_dates1)==0:
-                target_mid1 = mids[con[0]]
-                target_mid2 = mids[con[1]]
-                target_dates1 = self.get_target_dates(dates_components[con[0]], target_mid1)
-            target_dates2 = self.get_target_dates(dates_components[con[1]], target_mid2)
-            
+                bridge_target = mids[con[0]].strftime('%m-%d')
+                target_dates1 = self.get_target_dates(sub1, bridge_target = bridge_target)
+                target_dates2 = self.get_target_dates(sub2, bridge_target = bridge_target)
+            else:
+                target_dates2 = self.get_target_dates(sub2)
+
+            #In case the second stack does not have dates around it, change the bridge_date
+            if len(target_dates2) == 0:
+                bridge_target = mids[con[1]].strftime('%m-%d')
+                target_dates2 = self.get_target_dates(sub2, bridge_target = bridge_target)
+                temp = self.get_target_dates(sub1, bridge_target = bridge_target)
+
+                #In case the first stack has dates around it, change the bridge_date
+                if len(temp) > 0:
+                    target_dates1 = temp
+
+            index1, index2 = self.closest_sets(target_dates1, target_dates2)
+            target_dates1 = target_dates1[index1]
+            target_dates2 = target_dates2[index2]
             for i, date1 in enumerate(target_dates1):
                 for date2 in target_dates2[i::]:
                     if date1<date2:
