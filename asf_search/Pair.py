@@ -1,6 +1,7 @@
 
 import importlib.util
 import math
+import s3fs
 import warnings
 
 from .ASFProduct import ASFProduct
@@ -8,6 +9,7 @@ from .baseline import calculate_perpendicular_baselines
 from .exceptions import CoherenceEstimationError
 from .warnings import OptionalDependencyWarning
 import pytz
+
 
 try:
     from ciso8601 import parse_datetime
@@ -92,12 +94,14 @@ class Pair:
             raise CoherenceEstimationError(msg)
 
         uri = f"s3://asf-search-coh/global_coh_100ppd_11367x4367/Global_{season}_vv_COH{temporal}_100ppd.zarr"
+        s3 = s3fs.S3FileSystem(anon=True)
+        store = s3fs.S3Map(root=uri, s3=s3, check=False)
         coords = self.ref.geometry['coordinates'][0]
         lons, lats = zip(*coords)
         minx, miny, maxx, maxy = min(lons), min(lats), max(lons), max(lats)
 
         ds = xr.open_zarr(
-            uri,
+            store=store,
             consolidated=True
             )
         ds = ds.rio.write_crs("EPSG:4326", inplace=False)
