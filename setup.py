@@ -6,10 +6,15 @@ requirements = [
     'requests',
     'shapely',
     'pytz',
+    'importlib_metadata',
     'numpy',
     'dateparser',
     'python-dateutil',
     'tenacity>=8.2.2',
+    'pandas',
+    'zarr',
+    's3fs',
+    'rioxarray'
 ]
 
 test_requirements = [
@@ -27,6 +32,8 @@ test_requirements = [
 extra_requirements = [
     'remotezip>=0.10.0',
     'ciso8601',
+    'plotly',
+    'networkx',
 ]
 
 # Required for ARIA-S1 GUNW Stacking
