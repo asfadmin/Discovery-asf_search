@@ -101,7 +101,7 @@ class Pair:
 
         ds = xr.open_zarr(
             fsspec.get_mapper(uri, s3={'anon': True}),
-            consolidated=True
+            consolidated=False
             )
         ds = ds.rio.write_crs("EPSG:4326", inplace=False)
         subset = ds.rio.clip_box(minx=minx, miny=miny, maxx=maxx, maxy=maxy)
