@@ -1,12 +1,16 @@
-Purpose:
+# Merge Requirements:
+The following requirements must be met for your pull request to be considered for review & merging. Until these requirements are met please mark the pull request as a draft.
+
+## Purpose
 Why is this pull request necessary? Provide a reference to a related issue in this repository that your pull request addresses (if applicable).
 
-Description:
-A description of the changes proposed in the pull request.
+## Description
+A brief description of the changes proposed in the pull request. If there are any changes to packaging requirements please list them.
 
-Snippet:
+## Snippet
 If the pull request provides a new feature, provide an example demonstrating the use-case(s) for this pull request (If applicable).
 
+Example:
 ``` python
 import asf_search as asf
 
@@ -15,7 +19,23 @@ response = asf.search(dataset=asf.DATASET.SENTINEL1, maxResults=250)
 useful_data = response.new_feature()
 ```
 
-Test Cases:
-Please provide test cases for any new lines of code added via our testing suite
+## Error/Warning/Regression Free
+Your code runs without any unhandled errors, warnings, or regressions
 
-(Please target the `master` branch when opening a pull request)
+## Unit Tests
+You have added unit tests to the test suite
+
+
+## Target Merge Branch
+Your pull request targets the `master` branch when opening a pull request
+
+
+***
+
+### Checklist
+- [ ] Purpose
+- [ ] Description
+- [ ] Snippet
+- [ ] Error/Warning/Regression Free
+- [ ] Unit Tests
+- [ ] Target Merge Branch
