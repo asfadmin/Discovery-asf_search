@@ -23,11 +23,10 @@ useful_data = response.new_feature()
 Your code runs without any unhandled errors, warnings, or regressions
 
 ## Unit Tests
-You have added unit tests to the test suite
-
+You have added unit tests to the test suite see the [README Testing section](https://github.com/asfadmin/Discovery-asf_search?tab=readme-ov-file#testing) for an overview on adding tests to the test suite.
 
 ## Target Merge Branch
-Your pull request targets the `master` branch when opening a pull request
+Your pull request targets the `master` branch
 
 
 ***
