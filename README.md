@@ -154,3 +154,56 @@ ASF_LOGGER.error("This is only a drill. Please do not panic.")
 ```
 
 For more configure options on `logging`, please visit [their howto page](https://docs.python.org/3/howto/logging.html).
+
+### Testing
+
+After installing asf-search's test requirement (see `INSTALL` section above) you can run the test suite locally. Run the following command from your terminal in the root project directory:
+
+```bash
+python3 -m pytest -n auto .
+```
+
+Tests should be written to relevant subfolder & files in `/tests`
+
+The test suite uses the `pytest-automation` pytest plugin which allows us to define and re-use input for test cases in the yaml format. Test cases are written to files in `tests/yml_tests/`, and reusable resources for those tests `tests/yml_tests/Resources/`.
+
+```yaml
+
+tests:
+- Test Nisar Product L1 RSLC: # this is a test case
+    product: NISAR_L1_PR_RSLC_087_039_D_114_2005_DHDH_A_20251102T222008_20251102T222017_T00407_N_P_J_001.yml # this file should be in `tests/yml_tests/Resources/`. See other yml files in the folder to see how you might structure the yml object
+    product_level: L1
+
+- Test Nisar Product L2 GSLC: # this is another test case
+    product: NISAR_L2_PR_GSLC_087_039_D_112_2005_DHDH_A_20251102T221859_20251102T221935_T00407_N_F_J_001.yml
+    product_level: L2
+```
+
+We can create the mapping from our yaml test cases in `tests/pytest-config.yml`, which will be used to call the desired python function in `tests/pytest-managers.py`
+
+In `tests/pytest-config.yml`:
+```yaml
+- For running ASFProduct tests:
+    required_keys: ['product', 'product_level'] # the keys the test case requires
+    method: test_NISARProduct # the python function in pytest-managers.py that will be called
+    required_in_title: Test Nisar Product # (OPTIONAL) will only run test cases defined with `Test Nisar Product` in the name, so the above two test cases would be run with our tests.
+```
+
+
+In `tests/pytest-managers.py`:
+```python
+def test_NISARProduct(**args) -> None: # Must match the name in pytest-config.yml like above for `method`
+    """
+    Test asf_search.search.baseline_search.stack_from_product, asserting stack returned is ordered
+    by temporalBaseline value in ascending order
+    """
+    test_info = args['test_info'] # these are the args defined in our test case (in this case [`product`, `product_level`])
+    product_level = test_info['product_level']
+
+    product_yml_file = test_info['product']
+    product = get_resource(product_yml_file) # `get_resources()` is a helper function that can read yml files from `tests/yml_tests/Resources/`
+    
+
+    # `run_[test_name]` should contain your actual test logic
+    run_test_NISARProduct(product, product_level)
+```
