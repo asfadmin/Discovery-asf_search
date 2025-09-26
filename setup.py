@@ -6,10 +6,15 @@ requirements = [
     'requests',
     'shapely',
     'pytz',
+    'importlib_metadata',
     'numpy',
     'dateparser',
     'python-dateutil',
     'tenacity>=8.2.2',
+    'pandas',
+    'zarr',
+    's3fs',
+    'rioxarray'
 ]
 
 test_requirements = [
@@ -27,6 +32,8 @@ test_requirements = [
 extra_requirements = [
     'remotezip>=0.10.0',
     'ciso8601',
+    'plotly',
+    'networkx',
 ]
 
 # Required for ARIA-S1 GUNW Stacking
@@ -51,7 +58,7 @@ setup(
     packages=find_packages(exclude=['tests.*', 'tests', 'examples.*', 'examples']),
     package_dir={'asf_search': 'asf_search'},
     include_package_data=True,
-    python_requires='>=3.10',
+    python_requires='>=3.12',
     install_requires=requirements,
     extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration},
     license='BSD',
@@ -64,8 +71,6 @@ setup(
         'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
         'Topic :: Software Development',
         'Topic :: Scientific/Engineering :: Atmospheric Science',
