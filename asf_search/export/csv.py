@@ -1,5 +1,7 @@
 import csv
+import os
 from types import GeneratorType
+from urllib import parse
 from asf_search import ASF_LOGGER
 
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
@@ -129,6 +131,15 @@ class CSVStreamArray(list):
         ASF_LOGGER.info('Finished streaming csv results')
 
     def getItem(self, p):
+        if p.get('sizeMB') is None and p.get('platform') == 'NISAR':
+            if isinstance(p.get('bytes'), dict):
+                a = parse.urlparse(p['url'])
+                file_name = os.path.basename(a.path)
+                bytes_entry = p['bytes'].get(file_name)
+                if bytes_entry is not None:          
+                    size_mb = bytes_entry['bytes'] / 1000000 
+                p['sizeMB'] = str(size_mb) if size_mb < 0.01 else "{:10.2f}".format(size_mb)
+
         return {
             'Granule Name': p.get('sceneName'),
             'Platform': p.get('platform'),
