@@ -94,7 +94,7 @@ class Pair:
                    Temporal baseline: {self.temporal.days} days""")
             raise CoherenceEstimationError(msg)
 
-        uri = f"s3://asf-search-coh/global_coh_100ppd_11367x4367/Global_{season}_vv_COH{temporal}_100ppd.zarr"
+        uri = f"s3://asf-search-coh/global_coh_100ppd_11367x4367_Zarrv2/Global_{season}_vv_COH{temporal}_100ppd.zarr"
         coords = self.ref.geometry['coordinates'][0]
         lons, lats = zip(*coords)
         minx, miny, maxx, maxy = min(lons), min(lats), max(lons), max(lats)
