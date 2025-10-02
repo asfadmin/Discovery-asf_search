@@ -28,6 +28,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v10.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.4...v10.0.5)
 ### Fixed
+- Updates `ASFSession.auth_with_creds` to check for `asf-urs` in cookies
 - Cleans up NISAR size display for csv/kml/metalink formats
 
 ------
