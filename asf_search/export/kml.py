@@ -117,13 +117,23 @@ class KMLStreamArray(MetalinkStreamArray):
             li.text = text + str(value)
             ul.append(li)
 
+        if p.get('platform') == 'NISAR':
+            h3.text = "Files"
+            div.append(h3)
+            ul_files = ETree.Element("ul")
+            div.append(ul_files)
+            for url in p.get('additionalUrls'):
+                li = ETree.Element("li")
+                li.text = url
+                ul_files.append(li)
+
         d = ETree.Element(
             "div", attrib={"style": "position:absolute;left:300px;top:250px"}
         )
         description.append(d)
 
         a = ETree.Element("a")
-        if p.get("browse") is not None:
+        if p.get("browse") is not None and len(p.get("browse")):
             a.set("href", p.get("browse")[0])
         else:
             a.set("href", "")
