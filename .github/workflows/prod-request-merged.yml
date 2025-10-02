@@ -31,7 +31,7 @@ jobs:
         (${{ contains(github.event.pull_request.labels.*.name, 'minor') }} && echo "version_type=minor" >> $GITHUB_ENV) || true
         (${{ contains(github.event.pull_request.labels.*.name, 'major') }} && echo "version_type=major" >> $GITHUB_ENV) || true
     - name: Create a Release
-      uses: zendesk/action-create-release@v1
+      uses: zendesk/action-create-release@v3
       env:
         # NOT built in token, so this can trigger other actions:
         GITHUB_TOKEN: ${{ secrets.DISCO_GITHUB_MACHINE_USER }}
