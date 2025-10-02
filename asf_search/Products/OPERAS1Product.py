@@ -70,7 +70,7 @@ class OPERAS1Product(S1Product):
         #     west,north,east, south = self.umm['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['BoundingRectangles'][0].values()
 
         #     self.geometry = {'coordinates': [[[west, north], [east,north], [east, south], [west, south], [west, north]]], 'type': 'Polygon'}
-        else:
+        if self.properties['processingLevel'] != 'TROPO-ZENITH':
             center = self.centroid()
             self.properties['centerLat'] = center.y
             self.properties['centerLon'] = center.x
