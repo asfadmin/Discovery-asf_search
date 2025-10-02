@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.4...v10.0.5)
+### Fixed
+- Cleans up NISAR size display for csv/kml/metalink formats
+
+------
 ## [v10.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.3...v10.0.4)
 ### Fixed
 - Removes erroneous deprecation warning when setting `cmr_host` in `ASFSession` constructor.
