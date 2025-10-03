@@ -1,8 +1,6 @@
 
-import fsspec
 import importlib.util
 import math
-import s3fs
 import warnings
 
 from .ASFProduct import ASFProduct
@@ -11,6 +9,18 @@ from .exceptions import CoherenceEstimationError
 from .warnings import OptionalDependencyWarning
 import pytz
 
+_COHERENCE_OPT_DEPS = ['zarr', 's3fs', 'rioxarray', 'xarray']
+try:
+    for spec in _COHERENCE_OPT_DEPS:
+        if importlib.util.find_spec(spec) is None:
+            raise ImportError
+
+    import fsspec
+    import xarray as xr
+
+except ImportError:
+    fsspec = None
+    xr = None
 
 try:
     from ciso8601 import parse_datetime
@@ -45,14 +55,6 @@ class Pair:
         self.sec_date = sec_time.date()
         self.temporal = self.sec_date - self.ref_date
 
-        # warn user if they lack optional dependency needed for estimate_s1_mean_coherence
-        if importlib.util.find_spec("xarray") is None:
-            msg = (
-                "Warning: Pair.estimate_s1_mean_coherence() requires xarray as a dependency"
-                "However, your Pair is still available without access to coherence estimation."
-            )
-            warnings.warn(OptionalDependencyWarning(msg))
-
     def __repr__(self) -> str:
         return f"Pair({self.ref_date}, {self.sec_date})"
 
@@ -76,7 +78,14 @@ class Pair:
 
         Returns:
         '''
-        import xarray as xr
+        if xr is None or fsspec is None:
+            raise ImportError(
+                'The `estimate_s1_mean_coherence()` method requires the optional asf-search '
+                f'dependencies {_COHERENCE_OPT_DEPS}, '
+                'but they could not be found  in current python environment. '
+                'Enable this method by including the appropriate pip or conda install. '
+                'Ex: `python -m pip install asf-search[sbas]`'
+            )
 
         month = parse_datetime(self.ref.properties["startTime"]).month
         if month in [12, 1, 2]:
