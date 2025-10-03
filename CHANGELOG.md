@@ -26,11 +26,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v10.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.4...v10.0.5)
-### Added
-- Added a Pair class that groups ASFProducts as reference and secondary scenes, and provides temporal and perpendicular baselines as member variables. Pair will be used for creating InSAR SBAS stacks, though its utility extends beyond that use case.
-
-------
 ## [v10.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.3...v10.0.4)
 ### Fixed
 - Removes erroneous deprecation warning when setting `cmr_host` in `ASFSession` constructor.
