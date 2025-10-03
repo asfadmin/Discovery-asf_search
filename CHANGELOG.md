@@ -26,6 +26,20 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.5...v10.1.0)
+### Changed
+- Updated publish `action-create-release` github action to v3
+
+### Fixed
+- Updated ARIA test case
+
+------
+## [v10.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.4...v10.0.5)
+### Fixed
+- Updates `ASFSession.auth_with_creds` to check for `asf-urs` in cookies
+- Cleans up NISAR size display for csv/kml/metalink formats
+
+------
 ## [v10.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.3...v10.0.4)
 ### Fixed
 - Removes erroneous deprecation warning when setting `cmr_host` in `ASFSession` constructor.
