@@ -6,7 +6,7 @@ def run_test_ASFSubproduct(scene_names: list[str], expected_subclass: str):
     assert sorted([scene.properties['fileID'] for scene in scenes]) == sorted(scene_names)
 
     for scene in scenes:
-        assert expected_subclass.upper() == scene.__class__.__name__ .upper(), f'Expected scene "{scene.properties['fileID']}" to be of ASFProduct subclass {expected_subclass}. Got {scene.__class__.__name__}'
+        assert expected_subclass.upper() == scene.__class__.__name__ .upper(), f'Expected scene "{scene.properties["fileID"]}" to be of ASFProduct subclass {expected_subclass}. Got {scene.__class__.__name__}'
         if isinstance(scene, Products.OPERAS1Product):
             _test_OPERAS1Product(scene)
         if isinstance(scene, Products.S1BurstProduct):
