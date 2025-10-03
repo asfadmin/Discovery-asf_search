@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.0...v10.1.1)
+### Added
+- Added a Pair class that groups ASFProducts as reference and secondary scenes, and provides temporal and perpendicular baselines as member variables. Pair will be used for creating InSAR SBAS stacks, though its utility extends beyond that use case. A new dependency group `sbas` is included in the `setup.py`.
+
+------
 ## [v10.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.5...v10.1.0)
 ### Changed
 - Updated publish `action-create-release` github action to v3
