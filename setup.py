@@ -6,15 +6,10 @@ requirements = [
     'requests',
     'shapely',
     'pytz',
-    'importlib_metadata',
     'numpy',
     'dateparser',
     'python-dateutil',
     'tenacity>=8.2.2',
-    'pandas',
-    'zarr',
-    's3fs',
-    'rioxarray'
 ]
 
 test_requirements = [
@@ -32,8 +27,6 @@ test_requirements = [
 extra_requirements = [
     'remotezip>=0.10.0',
     'ciso8601',
-    'plotly',
-    'networkx',
 ]
 
 # Required for ARIA-S1 GUNW Stacking
@@ -41,6 +34,13 @@ asf_enumeration = [
     'asf-enumeration>=0.3.0'
 ]
 
+#Required for seasonal SBAS
+sbas = [
+    'pandas',
+    'zarr',
+    's3fs',
+    'rioxarray',
+]
 
 with open('README.md', 'r') as readme_file:
     readme = readme_file.read()
@@ -60,7 +60,7 @@ setup(
     include_package_data=True,
     python_requires='>=3.10',
     install_requires=requirements,
-    extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration},
+    extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration, 'sbas': sbas},
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[
