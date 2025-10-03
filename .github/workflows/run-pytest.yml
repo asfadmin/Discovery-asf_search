@@ -5,8 +5,8 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
             python-version: '3.10'
       - name: Install Dependencies
@@ -18,8 +18,9 @@ jobs:
         run: python3 -m pytest -n auto --cov=asf_search --cov-report=xml --dont-run-file test_known_bugs .
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
           files: ./coverage.xml
           flags: unittests

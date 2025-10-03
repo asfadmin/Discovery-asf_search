@@ -461,6 +461,7 @@ dataset_collections = {
         'OPERA_L2_RTC-S1-STATIC_V1': ['C1259981910-ASF', 'C2795135174-ASF'],
         'OPERA_L2_RTC-S1_PROVISIONAL_V0': ['C1257995186-ASF'],
         'OPERA_L3_DISP-S1_V1': ['C3294057315-ASF', 'C1271830354-ASF'],
+        'OPERA_L4_TROPO-ZENITH_V1': ['C3717139408-ASF'],
     },
     'OPERA-S1-CALVAL': {
         'OPERA_L2_CSLC-S1_CALVAL_V1': ['C1260721945-ASF', 'C2803501758-ASF'],
@@ -1401,6 +1402,9 @@ collections_by_processing_level = {
     'DISP-S1': [
         'C3294057315-ASF',
         'C1271830354-ASF'
+    ],
+    'TROPO-ZENITH': [
+        'C3717139408-ASF',
     ],
     'GRD_FD': [
         'C1214471197-ASF',

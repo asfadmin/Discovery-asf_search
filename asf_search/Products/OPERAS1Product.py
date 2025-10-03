@@ -3,7 +3,6 @@ from asf_search import ASFSearchOptions, ASFSession
 from asf_search.CMR.translate import try_parse_date, try_parse_int
 from asf_search.Products import S1Product
 
-
 class OPERAS1Product(S1Product):
     """
     ASF Dataset Documentation Page: https://asf.alaska.edu/datasets/daac/opera/
@@ -64,9 +63,20 @@ class OPERAS1Product(S1Product):
             for entry in self.properties['bytes']
         }
 
-        center = self.centroid()
-        self.properties['centerLat'] = center.y
-        self.properties['centerLon'] = center.x
+        if self.properties['processingLevel'] is None:
+            self.properties['processingLevel'] = self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0)
+        
+        # if self.properties['processingLevel'] == 'TROPO-ZENITH':
+        #     west,north,east, south = self.umm['SpatialExtent']['HorizontalSpatialDomain']['Geometry']['BoundingRectangles'][0].values()
+
+        #     self.geometry = {'coordinates': [[[west, north], [east,north], [east, south], [west, south], [west, north]]], 'type': 'Polygon'}
+        if self.properties['processingLevel'] == 'TROPO-ZENITH':
+            self.properties['centerLat'] = None
+            self.properties['centerLon'] = None
+        else:
+            center = self.centroid()
+            self.properties['centerLat'] = center.y
+            self.properties['centerLon'] = center.x
 
         self.properties.pop('frameNumber')
 

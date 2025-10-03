@@ -80,6 +80,8 @@ from Serialization.test_serialization import run_test_serialization
 import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
+from ASFProduct.test_ASFSubproduct import run_test_ASFSubproduct
+
 
 # asf_search.ASFProduct Tests
 def test_ASFProduct(**args) -> None:
@@ -90,7 +92,16 @@ def test_ASFProduct(**args) -> None:
     geographic_response = get_resource(test_info['products'])
     run_test_ASFProduct(geographic_response)
 
+def test_ASFSubproduct(**args) -> None:
+    """
+    Tests ASFProduct subclasses for properties and basic functionality
+    """
+    test_info = args['test_info']
+    scene_names = test_info['scenes']
+    expected_subclass = test_info['expected_subclass']
 
+    run_test_ASFSubproduct(scene_names=scene_names, expected_subclass=expected_subclass)
+    
 def test_ASFProduct_Stack(**args) -> None:
     """
     Tests ASFProduct.stack() with reference and corresponding stack
