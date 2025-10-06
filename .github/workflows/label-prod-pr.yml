@@ -17,7 +17,7 @@ jobs:
     if: github.event.pull_request.state == 'open'
     steps:
       - name: Require Version Label
-        uses: mheap/github-action-required-labels@v1
+        uses: mheap/github-action-required-labels@v5.5.0
         with:
           mode: exactly
           count: 1
