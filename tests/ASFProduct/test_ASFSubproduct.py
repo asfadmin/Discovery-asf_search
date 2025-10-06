@@ -16,13 +16,13 @@ def _test_OPERAS1Product(scene: Products.OPERAS1Product):
     processing_level = scene.properties['processingLevel']
 
     if processing_level in ['RTC', 'RTC-STATIC']:
-        _check_properties_set(scene, ['bistaticDelayCorrection'])
+        _check_properties_set(scene.properties, ['bistaticDelayCorrection'])
 
         if processing_level == 'RTC':
-            _check_properties_set(scene,['noiseCorrection', 'postProcessingFilter'])
+            _check_properties_set(scene.properties,['noiseCorrection', 'postProcessingFilter'])
 
     elif processing_level == 'DISP-S1':
-        _check_properties_set(scene, [
+        _check_properties_set(scene.properties, [
             'frameNumber', 'OperaDispStackID', 'zarrUri', 'zarrStackUri',
         ])
     
@@ -42,10 +42,9 @@ def _test_S1BurstProduct(scene: Products.S1BurstProduct):
         "azimuthAnxTime",
     ]
 
-    for prop in burst_properties:
-        assert scene.properties['burst'][prop] is not None
+    _check_properties_set(scene.properties['burst'], burst_properties)
 
 
-def _check_properties_set(scene: ASFProduct, properties: list[str]):
-    for prop in properties:
-        assert scene.properties[prop] is not None
+def _check_properties_set(properties: dict, properties_list: list[str]):
+    for prop in properties_list:
+        assert properties[prop] is not None
