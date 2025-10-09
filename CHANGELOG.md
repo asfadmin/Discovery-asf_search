@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.0...v10.1.1)
+### Added
+- Adds `TROPO_ZENITH` OPERA-S1 product type constant to `PRODUCT_TYPE.py` and concept-id to dataset
+
+------
 ## [v10.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.5...v10.1.0)
 ### Changed
 - Updated publish `action-create-release` github action to v3
