@@ -10,6 +10,7 @@ requirements = [
     'dateparser',
     'python-dateutil',
     'tenacity>=8.2.2',
+    'pandas'
 ]
 
 test_requirements = [
@@ -27,6 +28,8 @@ test_requirements = [
 extra_requirements = [
     'remotezip>=0.10.0',
     'ciso8601',
+    'plotly',
+    'networkx',
 ]
 
 # Required for ARIA-S1 GUNW Stacking
