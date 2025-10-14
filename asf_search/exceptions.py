@@ -30,6 +30,10 @@ class ASFWKTError(ASFError):
     """Raise when wkt related errors occur"""
 
 
+class CoherenceEstimationError(ASFError):
+    """Raise if coherence estimation is requested for a Pair with a temporal baseline > 48 days"""
+
+
 class CMRError(Exception):
     """Base CMR Exception"""
 
