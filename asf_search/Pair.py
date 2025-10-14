@@ -6,7 +6,6 @@ import warnings
 from .ASFProduct import ASFProduct
 from .baseline import calculate_perpendicular_baselines
 from .exceptions import CoherenceEstimationError
-from .warnings import OptionalDependencyWarning
 import pytz
 
 _COHERENCE_OPT_DEPS = ['zarr', 's3fs', 'rioxarray', 'xarray']
