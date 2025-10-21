@@ -1628,6 +1628,10 @@ collections_by_processing_level = {
         'C1256358262-ASFDEV', # Validated
         'C1257349115-ASF',
         'C3622265756-ASF',
+        'C1258125097-ASFDEV',
+        'C1258836794-ASF',
+        'C2887469134-ASF',
+
         'C1261815276-ASFDEV', # CRSD
         'C1273831262-ASF',
         'C2850225137-ASF',
