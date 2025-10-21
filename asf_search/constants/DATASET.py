@@ -15,4 +15,6 @@ JERS_1 = 'JERS-1'
 AIRSAR = 'AIRSAR'
 SEASAT = 'SEASAT'
 NISAR = 'NISAR'
-""" NISAR provides L- and S-band SAR data to measure Earth's changing ecosystems, dynamic surfaces, and ice masses with 12-day regularity on ascending and descending passes. """
+"""NISAR provides L and S-band SAR data to measure Earth's changing ecosystems,
+ dynamic surfaces, and ice masses with 12-day regularity
+ on ascending and descending passes."""
