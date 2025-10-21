@@ -376,6 +376,8 @@ def preprocess_opts(opts: ASFSearchOptions):
     # Platform Alias logic:
     set_platform_alias(opts=opts)
 
+    set_science_product_alias(opts=opts)
+
 
 def wrap_wkt(opts: ASFSearchOptions):
     if opts.intersectsWith is not None:
@@ -447,6 +449,22 @@ def set_platform_alias(opts: ASFSearchOptions):
 
 
 _dataset_collection_items = dataset_collections.items()
+
+def set_science_product_alias(opts: ASFSearchOptions):
+    if opts.processingLevel is not None:
+        processingLevelAliases = {
+            'L0B': ['CRSD', 'RRSD']
+        }
+
+        processing_level_list = []
+        for plat in opts.processingLevel:
+            # If it's a key, *replace* it with all the values. Else just add the key:
+            if plat.upper() in processingLevelAliases:
+                processing_level_list.extend(processingLevelAliases[plat.upper()])
+            else:
+                processing_level_list.append(plat)
+
+        opts.processingLevel = list(set(processing_level_list))
 
 
 def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
