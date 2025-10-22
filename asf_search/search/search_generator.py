@@ -451,20 +451,21 @@ def set_platform_alias(opts: ASFSearchOptions):
 _dataset_collection_items = dataset_collections.items()
 
 def set_science_product_alias(opts: ASFSearchOptions):
+    """Alias certain product types (primarily NISAR L0B)"""
     if opts.processingLevel is not None:
         processingLevelAliases = {
             'L0B': ['CRSD', 'RRSD']
         }
 
-        processing_level_list = []
-        for plat in opts.processingLevel:
+        processing_levels = []
+        for processing_level in opts.processingLevel:
             # If it's a key, *replace* it with all the values. Else just add the key:
-            if plat.upper() in processingLevelAliases:
-                processing_level_list.extend(processingLevelAliases[plat.upper()])
+            if processing_level.upper() in processingLevelAliases:
+                processing_levels.extend(processingLevelAliases[processing_level.upper()])
             else:
-                processing_level_list.append(plat)
+                processing_levels.append(processing_level)
 
-        opts.processingLevel = list(set(processing_level_list))
+        opts.processingLevel = processing_levels
 
 
 def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
