@@ -3,7 +3,7 @@ from typing import List
 from asf_search.constants import PRODUCT_TYPE
 
 NISAR_PRODUCT_TYPES = [
-    PRODUCT_TYPE.L0B, #L4
+    PRODUCT_TYPE.CRSD, PRODUCT_TYPE.RRSD, #L0
     PRODUCT_TYPE.SME2, # L3
     PRODUCT_TYPE.GSLC, PRODUCT_TYPE.GCOV, PRODUCT_TYPE.GUNW, PRODUCT_TYPE.GOFF, # L2
     PRODUCT_TYPE.RSLC, PRODUCT_TYPE.RIFG, PRODUCT_TYPE.RUNW, PRODUCT_TYPE.ROFF,  # L1
@@ -1628,6 +1628,36 @@ collections_by_processing_level = {
         'C1256358262-ASFDEV', # Validated
         'C1257349115-ASF',
         'C3622265756-ASF',
+        'C1258125097-ASFDEV',
+        'C1258836794-ASF',
+        'C2887469134-ASF',
+
+        'C1261815276-ASFDEV', # CRSD
+        'C1273831262-ASF',
+        'C2850225137-ASF',
+        'C1261832632-ASFDEV', # Provisional
+        'C1261832671-ASF',
+        'C2853091612-ASF',
+        'C1256358463-ASFDEV', # Validate
+        'C1257349114-ASF',
+        'C3622254588-ASF',
+    ],
+    'RRSD': [
+        'C1261815274-ASFDEV', # RRSD BETA
+        'C1273831320-ASF',
+        'C3622228339-ASF',
+        'C1261832497-ASFDEV', # Provisional
+        'C1261832659-ASF',
+        'C2853089814-ASF',
+        'C1256358262-ASFDEV', # Validated
+        'C1257349115-ASF',
+        'C3622265756-ASF',
+        
+        'C1258125097-ASFDEV',
+        'C1258836794-ASF',
+        'C2887469134-ASF',
+    ],
+    'CRSD': [
         'C1261815276-ASFDEV', # CRSD
         'C1273831262-ASF',
         'C2850225137-ASF',
