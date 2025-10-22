@@ -72,7 +72,7 @@ class ARIAS1GUNWProduct(S1Product):
         
         # pulled from asf-enumeration package implementation
         stack_opts.dataset = DATASET.SENTINEL1
-        stack_opts.platform = ['SA', 'SB']
+        stack_opts.platform = ['SA', 'SB', 'SC']
         stack_opts.processingLevel = PRODUCT_TYPE.SLC
         stack_opts.beamMode = BEAMMODE.IW
         stack_opts.polarization = [POLARIZATION.VV, POLARIZATION.VV_VH]

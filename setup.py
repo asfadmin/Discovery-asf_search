@@ -31,7 +31,7 @@ extra_requirements = [
 
 # Required for ARIA-S1 GUNW Stacking
 asf_enumeration = [
-    'asf-enumeration>=0.3.0'
+    'asf-enumeration>=0.4.0'
 ]
 
 

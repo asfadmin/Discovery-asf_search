@@ -34,6 +34,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 - No longer query CMR with `L0B` directly, now properly aliased to `CRSD` and `RRSD` product types
 
+### Changed
+- Bump asf-enumeration version minimum version to 0.4.0 for Sentinel-1C support
+
 ------
 ## [v10.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.0...v10.1.1)
 ### Added
