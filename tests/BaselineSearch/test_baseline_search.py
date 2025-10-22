@@ -34,7 +34,7 @@ def run_test_get_unprocessed_stack_params(product):
         assert [reference.properties['polarization']] == params.polarization
         assert [reference.properties['burst']['fullBurstID']] == params.fullBurstID
     elif reference.properties['sceneName'].startswith('S1-GUNW'):
-        assert params.platform == ['SA', 'SB']
+        assert params.platform == ['SA', 'SB', 'SC']
         assert DATASET.SENTINEL1 in params.dataset
         assert params.processingLevel == [PRODUCT_TYPE.SLC]
         assert params.beamMode == [BEAMMODE.IW]
