@@ -406,11 +406,11 @@ tests:
           - NISAR
       expected: [
         {
-        processingLevel: ['RRSD'],
+        processingLevel: ['CRSD'],
         collections: *nisar_collections
         },
         {
-        processingLevel: ['CRSD'],
+        processingLevel: ['RRSD'],
         collections: *nisar_collections
         }
       ]
