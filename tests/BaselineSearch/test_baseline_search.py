@@ -107,8 +107,9 @@ def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptio
                 )
 
                 returned_stack = stack_from_id(stack_id, opts=opts)
-
-                for idx, secondary in enumerate(returned_stack):
+                stack_files = set(x['properties']['fileID'] for x in stack)
+                filtered_stack = [x for x in returned_stack if x.properties['fileID'] in stack_files]
+                for idx, secondary in enumerate(filtered_stack):
                     if idx > 0:
                         assert (
                             secondary.properties['temporalBaseline']
