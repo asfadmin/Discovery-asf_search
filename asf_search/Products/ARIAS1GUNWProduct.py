@@ -56,19 +56,24 @@ class ARIAS1GUNWProduct(S1Product):
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
             self.properties['additionalUrls'] = urls[1:]
 
-    def get_stack_opts(self, opts: Optional[ASFSearchOptions] = None) -> ASFSearchOptions | None:
+    def get_stack_opts(self, opts: Optional[ASFSearchOptions] = None) -> Optional[ASFSearchOptions]:
         """
         Build search options that can be used to find an insar stack for this product
 
         :return: ASFSearchOptions describing appropriate options
         for building a stack from this product
         """
+        return ARIAS1GUNWProduct.get_stack_opts_for_frame(self.properties['frameNumber'], opts)
+
+
+    @staticmethod
+    def get_stack_opts_for_frame(frame_id: int, opts: Optional[ASFSearchOptions] = None) -> Optional[ASFSearchOptions]:
         if aria_s1_gunw is None:
             warnings.warn("Failed to import asf-enumeration package. \
                           Make sure it's installed in your current environment to perform stacking with the ARIAS1GUNWProduct type")
             return None
         stack_opts = ASFSearchOptions() if opts is None else copy(opts)
-        aria_frame = aria_s1_gunw.get_frame(self.properties['frameNumber'])
+        aria_frame = aria_s1_gunw.get_frame(frame_id)
         
         # pulled from asf-enumeration package implementation
         stack_opts.dataset = DATASET.SENTINEL1
