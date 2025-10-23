@@ -247,6 +247,9 @@ class JSONLiteStreamArray(list):
                 'rangeBandwidth':  p.get('rangeBandwidth'),
                 'sizeMB': p.get('bytes'),
             }
+        elif p.get('platform') == 'SEASAT 1':
+            result['additionalUrls'] = p.get('additionalUrls', [])
+
         elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
             result.pop("perpendicularBaseline", None)
             if p.get('ariaVersion') is None:

@@ -63,6 +63,7 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
             "w": p.get("wkt"),
             "wu": p.get("wkt_unwrapped"),
             "pge": p.get("pgeVersion"),
+            "adu": p.get("additionalUrls"),
         }
 
         if 'temporalBaseline' in p.keys():
