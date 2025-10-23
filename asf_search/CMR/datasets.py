@@ -622,8 +622,7 @@ dataset_collections = {
         'AIRSAR_INT': ['C1208652494-ASF'],
     },
     'SEASAT': {
-        'SEASAT_SAR_L1_TIFF': ['C1206500826-ASF', 'C1206752770-ASF'],
-        'SEASAT_SAR_L1_HDF5': ['C1206500991-ASF', 'C1206144699-ASF'],
+        'SEASAT_L1_SAR': ['C3576379529-ASF', 'C1271768606-ASF'],
     },
 }
 
@@ -966,10 +965,8 @@ collections_per_platform = {
         'C1208703384-ASF',
     ],
     'SEASAT 1': [
-        'C1206500826-ASF',
-        'C1206500991-ASF',
-        'C1206752770-ASF',
-        'C1206144699-ASF',
+        'C3576379529-ASF', # prod
+        'C1271768606-ASF', # uat
     ],
     'SMAP': [
         'C1243122884-ASF',
@@ -1491,8 +1488,6 @@ collections_by_processing_level = {
         'C1207177736-ASF',
         'C1206936391-ASF',
         'C1205181982-ASF',
-        'C1206500991-ASF',
-        'C1206144699-ASF',
     ],
     '3FP': ['C1213921661-ASF', 'C1213928843-ASF', 'C1205256880-ASF', 'C1208713702-ASF'],
     'JPG': ['C1213921626-ASF', 'C1000000306-ASF'],
@@ -1504,7 +1499,6 @@ collections_by_processing_level = {
     'LSTOKES': ['C1213927939-ASF'],
     'PSTOKES': ['C1213928209-ASF'],
     'ATI': ['C1208652494-ASF'],
-    'GEOTIFF': ['C1206500826-ASF', 'C1206752770-ASF'],
     'L1A_Radar_RO_ISO_XML': [
         'C1243122884-ASF',
         'C1243141638-ASF',
