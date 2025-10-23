@@ -34,7 +34,7 @@ def run_test_get_unprocessed_stack_params(product):
         assert [reference.properties['polarization']] == params.polarization
         assert [reference.properties['burst']['fullBurstID']] == params.fullBurstID
     elif reference.properties['sceneName'].startswith('S1-GUNW'):
-        assert params.platform == ['SA', 'SB']
+        assert params.platform == ['SA', 'SB', 'SC']
         assert DATASET.SENTINEL1 in params.dataset
         assert params.processingLevel == [PRODUCT_TYPE.SLC]
         assert params.beamMode == [BEAMMODE.IW]
@@ -107,8 +107,9 @@ def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptio
                 )
 
                 returned_stack = stack_from_id(stack_id, opts=opts)
-
-                for idx, secondary in enumerate(returned_stack):
+                stack_files = set(x['properties']['fileID'] for x in stack)
+                filtered_stack = [x for x in returned_stack if x.properties['fileID'] in stack_files]
+                for idx, secondary in enumerate(filtered_stack):
                     if idx > 0:
                         assert (
                             secondary.properties['temporalBaseline']
