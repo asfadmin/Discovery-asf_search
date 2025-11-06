@@ -1,7 +1,6 @@
 
 import importlib.util
 import math
-import warnings
 
 from .ASFProduct import ASFProduct
 from .baseline import calculate_perpendicular_baselines
