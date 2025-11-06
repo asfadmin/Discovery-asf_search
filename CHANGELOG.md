@@ -26,9 +26,22 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+
+## [v10.1.3](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.2...v10.1.3)
+### Added
+- Add a Pair class that groups ASFProducts as reference and secondary scenes, and provides temporal and perpendicular baselines as member variables. Pair will be used for creating InSAR SBAS stacks, though its utility extends beyond that use case. A new dependency group `sbas` is included in the `setup.py`.
+
 ## [v10.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.1...v10.1.2)
 ### Added
-- Adds a Pair class that groups ASFProducts as reference and secondary scenes, and provides temporal and perpendicular baselines as member variables. Pair will be used for creating InSAR SBAS stacks, though its utility extends beyond that use case. A new dependency group `sbas` is included in the `setup.py`.
+- Add `CRSD` and `RRSD` constants to `PRODUCT_TYPE`
+- Add docstrings for `DATASET.NISAR` and the various related `PRODUCT_TYPE` constants
+- Add static method `get_stack_opts_for_frame()` to `ARIAS1GUNWProduct` class, returns ARIA frame stack opts for given frame ID
+
+### Fixed
+- No longer query CMR with `L0B` directly, now properly aliased to `CRSD` and `RRSD` product types
+
+### Changed
+- Bump asf-enumeration version minimum version to 0.4.0 for Sentinel-1C support
 
 ------
 ## [v10.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.0...v10.1.1)

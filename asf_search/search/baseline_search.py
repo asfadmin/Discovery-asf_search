@@ -57,12 +57,9 @@ def stack_from_product(
         _cast_results_to_subclass(stack, ASFProductSubclass)
 
     stack, warnings = get_baseline_from_stack(reference=reference, stack=stack)
-    stack.searchComplete = is_complete  # preserve final outcome of earlier search()
 
-    stack.sort(key=lambda product: product.properties['temporalBaseline'])
+    _post_process_stack(stack, warnings, is_complete)
 
-    for warning in warnings:
-        ASF_LOGGER.warning(f'{warning}')
 
     return stack
 
@@ -102,10 +99,12 @@ def stack_from_id(
         else:
             reference = reference_results[0]
         
-        return get_baseline_from_stack(reference=reference, stack=reference_results)[0]
+        stack, warnings = get_baseline_from_stack(reference=reference, stack=reference_results)
+        _post_process_stack(stack, warnings, reference_results.searchComplete)
+
+        return stack
     else:
         reference_results = product_search(product_list=reference_id, opts=opts)
-        reference_results.raise_if_incomplete()
 
     if len(reference_results) <= 0:
         raise ASFSearchError(f'Reference product not found: {reference_id}')
@@ -155,3 +154,10 @@ def _cast_to_subclass(product: ASFProduct, subclass: Type[ASFProduct]) -> ASFPro
         raise ValueError(f'Unable to use provided subclass {type(subclass)}, \nError Message: {e}')
 
     raise ValueError(f'Expected ASFProduct subclass constructor, got {type(subclass)}')
+
+def _post_process_stack(stack: ASFSearchResults, warnings: list, is_complete: bool):
+    """Marks whether the search completed gathering results, logs any warnings, and sorts stack by temporal baseline"""
+    stack.searchComplete = is_complete  # preserve final outcome of earlier search()
+    for warning in warnings:
+        ASF_LOGGER.warning(f'{warning}')
+    stack.sort(key=lambda product: product.properties['temporalBaseline'])
