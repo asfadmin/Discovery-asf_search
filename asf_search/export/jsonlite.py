@@ -247,8 +247,8 @@ class JSONLiteStreamArray(list):
                 'rangeBandwidth':  p.get('rangeBandwidth'),
                 'sizeMB': p.get('bytes'),
             }
-            result["collectionName"] =  p.get("collectionName")
-            result["conceptId"] =  p.get("conceptId")
+            result["collectionName"] = p.get("collectionName")
+            result["conceptId"] = p.get("conceptId")
         elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
             result.pop("perpendicularBaseline", None)
             if p.get('ariaVersion') is None:
