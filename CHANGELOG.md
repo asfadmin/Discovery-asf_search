@@ -26,6 +26,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.2...v10.2.0)
+### Changed
+- NISAR products have collection id and collection name in products and jsonlite export
+------
 ## [v10.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.1...v10.1.2)
 ### Added
 - Add `CRSD` and `RRSD` constants to `PRODUCT_TYPE`
