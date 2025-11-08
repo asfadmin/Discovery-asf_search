@@ -1,4 +1,6 @@
 name: authenticated tests
+permissions:
+  contents: read
 # For tests that require authenticated searches
 
 on:
