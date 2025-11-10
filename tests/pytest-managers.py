@@ -96,11 +96,14 @@ def test_ASFSubproduct(**args) -> None:
     """
     Tests ASFProduct subclasses for properties and basic functionality
     """
+    session = args["config"].getoption("authenticated_session")
+
     test_info = args['test_info']
     scene_names = test_info['scenes']
     expected_subclass = test_info['expected_subclass']
+    opts = ASFSearchOptions(**test_info.get('opts', {}), session=session)
 
-    run_test_ASFSubproduct(scene_names=scene_names, expected_subclass=expected_subclass)
+    run_test_ASFSubproduct(scene_names=scene_names, expected_subclass=expected_subclass, opts=opts)
     
 def test_ASFProduct_Stack(**args) -> None:
     """
