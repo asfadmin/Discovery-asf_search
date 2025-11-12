@@ -40,7 +40,7 @@ class NISARProduct(ASFStackableProduct):
             entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']}
             for entry in self.properties['bytes']
         }
-        self.properties["conceptId"] = self.umm_get(self.meta, "collection-concept-id")
+        self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
