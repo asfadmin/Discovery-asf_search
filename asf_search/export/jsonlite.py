@@ -247,6 +247,8 @@ class JSONLiteStreamArray(list):
                 'rangeBandwidth':  p.get('rangeBandwidth'),
                 'sizeMB': p.get('bytes'),
             }
+            result["collectionName"] = p.get("collectionName")
+            result["conceptID"] = p.get("conceptID")
         elif p.get('platform') == 'SEASAT 1':
             result['additionalUrls'] = p.get('additionalUrls', [])
             result['s3Urls'] = p.get('s3Urls', [])

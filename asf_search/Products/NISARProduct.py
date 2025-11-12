@@ -23,6 +23,7 @@ class NISARProduct(ASFStackableProduct):
         'productionConfiguration': {'path': ['AdditionalAttributes', ('Name', 'PRODUCTION_PIPELINE'), 'Values', 0]},
         'processingLevel': {'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0]},
         'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
+        'collectionName': {'path': ["CollectionReference", "ShortName"]},
     }
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
@@ -39,6 +40,7 @@ class NISARProduct(ASFStackableProduct):
             entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']}
             for entry in self.properties['bytes']
         }
+        self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
