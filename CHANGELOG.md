@@ -34,6 +34,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Added authentication test case support for main `master` branch, `--auth_with_creds` and `--auth-with-token` for local test session authentication
 
+### Fixed
+- Removed `CRSD` from NISAR dataset and relevant constants, no longer part of `L0B` science product type
+
 ------
 ## [v10.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.1...v10.1.2)
 ### Added

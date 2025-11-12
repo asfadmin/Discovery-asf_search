@@ -101,9 +101,8 @@ TROPO_ZENITH = 'TROPO-ZENITH'
 
 # NISAR
 L0B = 'L0B'
-"""Convenient alias for CRSD and RRSD Level Zero B product types"""
+"""alias for RRSD Level Zero B product types"""
 
-CRSD = 'CRSD'
 RRSD = 'RRSD'
 
 RSLC = 'RSLC'
