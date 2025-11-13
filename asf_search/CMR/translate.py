@@ -134,7 +134,7 @@ def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def should_use_asf_frame(cmr_opts):
-    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS', 'ALOS-2', 'NISAR']
+    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS', 'ALOS-2', 'NISAR', 'SEASAT 1']
 
     asf_frame_collections = get_concept_id_alias(asf_frame_platforms, collections_per_platform)
 

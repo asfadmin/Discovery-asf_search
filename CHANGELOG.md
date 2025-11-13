@@ -26,6 +26,18 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.2...v10.2.0)
+### Changed
+- `SEATSAT 1` collections in CMR have been merged into a new single collection. Filtering by processing level for same scene no longer necessary. Different file urls, s3 uris, sizes, and md5sums of each scene now accessible via `additionalUrls`, `s3Urls`, `bytes`, and `md5sum` keys in each scene's `properties` dict.
+- NISAR products have collection id and collection name in products and jsonlite export
+
+### Added
+- Added authentication test case support for main `master` branch, `--auth_with_creds` and `--auth-with-token` for local test session authentication
+
+### Fixed
+- Removed `CRSD` from NISAR dataset and relevant constants, no longer part of `L0B` science product type
+
+------
 ## [v10.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.1...v10.1.2)
 ### Added
 - Add `CRSD` and `RRSD` constants to `PRODUCT_TYPE`

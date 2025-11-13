@@ -454,7 +454,7 @@ def set_science_product_alias(opts: ASFSearchOptions):
     """Alias certain product types (primarily NISAR L0B)"""
     if opts.processingLevel is not None:
         processingLevelAliases = {
-            'L0B': ['CRSD', 'RRSD']
+            'L0B': ['RRSD']
         }
 
         processing_levels = []

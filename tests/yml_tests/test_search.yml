@@ -187,9 +187,6 @@ nisar_collections: &nisar_collections
     'C1261815274-ASFDEV',
     'C1261832497-ASFDEV',
     'C1256358262-ASFDEV',
-    'C1261815276-ASFDEV',
-    'C1261832632-ASFDEV',
-    'C1256358463-ASFDEV',
     'C1261813489-ASFDEV',
     'C1261832868-ASFDEV',
     'C1273095154-ASFDEV',
@@ -240,9 +237,6 @@ nisar_collections: &nisar_collections
     'C1273831320-ASF',
     'C1261832659-ASF',
     'C1257349115-ASF',
-    'C1273831262-ASF',
-    'C1261832671-ASF',
-    'C1257349114-ASF',
     'C1273831203-ASF',
     'C1261833052-ASF',
     'C1273831205-ASF',
@@ -293,9 +287,6 @@ nisar_collections: &nisar_collections
     'C3622228339-ASF',
     'C2853089814-ASF',
     'C3622265756-ASF',
-    'C2850225137-ASF',
-    'C2853091612-ASF',
-    'C3622254588-ASF',
     'C2850225585-ASF',
     'C2853145197-ASF',
     'C3622236985-ASF',
@@ -405,10 +396,6 @@ tests:
         dataset:
           - NISAR
       expected: [
-        {
-        processingLevel: ['CRSD'],
-        collections: *nisar_collections
-        },
         {
         processingLevel: ['RRSD'],
         collections: *nisar_collections

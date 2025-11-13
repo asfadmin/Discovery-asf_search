@@ -71,9 +71,18 @@ class MetalinkStreamArray(list):
 
         if p.get('md5sum') and p.get('md5sum') != 'NA':
             verification = ETree.Element('verification')
-            h = ETree.Element('hash', {'type': 'md5'})
-            h.text = p['md5sum']
-            verification.append(h)
+            if isinstance(p.get('md5sum'), dict):
+                a = parse.urlparse(p['url'])
+                file_name = os.path.basename(a.path)
+                md5_entry = p['md5sum'].get(file_name)
+                h = ETree.Element('hash', {'type': 'md5'})
+                if md5_entry is not None:
+                    h.text=md5_entry
+                    verification.append(h)
+            else:
+                h = ETree.Element('hash', {'type': 'md5'})
+                h.text = p['md5sum']
+                verification.append(h)
             file.append(verification)
 
         if p['bytes'] and p['bytes'] != 'NA':
