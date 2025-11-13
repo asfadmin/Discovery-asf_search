@@ -3,7 +3,7 @@ from typing import List
 from asf_search.constants import PRODUCT_TYPE
 
 NISAR_PRODUCT_TYPES = [
-    PRODUCT_TYPE.CRSD, PRODUCT_TYPE.RRSD, #L0
+    PRODUCT_TYPE.RRSD, #L0
     PRODUCT_TYPE.SME2, # L3
     PRODUCT_TYPE.GSLC, PRODUCT_TYPE.GCOV, PRODUCT_TYPE.GUNW, PRODUCT_TYPE.GOFF, # L2
     PRODUCT_TYPE.RSLC, PRODUCT_TYPE.RIFG, PRODUCT_TYPE.RUNW, PRODUCT_TYPE.ROFF,  # L1
@@ -62,21 +62,6 @@ dataset_collections = {
             'C1256358262-ASFDEV',
             'C1257349115-ASF',
             'C3622265756-ASF',
-        ],
-        'NISAR_L0B_CRSD_BETA_V1': [
-            'C1261815276-ASFDEV',
-            'C1273831262-ASF',
-            'C2850225137-ASF',
-        ],
-        'NISAR_L0B_CRSD_PROVISIONAL_V1': [
-            'C1261832632-ASFDEV',
-            'C1261832671-ASF',
-            'C2853091612-ASF',
-        ],
-        'NISAR_L0B_CRSD_V1': [
-            'C1256358463-ASFDEV',
-            'C1257349114-ASF',
-            'C3622254588-ASF',
         ],
         'NISAR_L1_RSLC_BETA_V1': [
             'C1261813489-ASFDEV',
@@ -622,8 +607,7 @@ dataset_collections = {
         'AIRSAR_INT': ['C1208652494-ASF'],
     },
     'SEASAT': {
-        'SEASAT_SAR_L1_TIFF': ['C1206500826-ASF', 'C1206752770-ASF'],
-        'SEASAT_SAR_L1_HDF5': ['C1206500991-ASF', 'C1206144699-ASF'],
+        'SEASAT_L1_SAR': ['C3576379529-ASF', 'C1271768606-ASF'],
     },
 }
 
@@ -966,10 +950,8 @@ collections_per_platform = {
         'C1208703384-ASF',
     ],
     'SEASAT 1': [
-        'C1206500826-ASF',
-        'C1206500991-ASF',
-        'C1206752770-ASF',
-        'C1206144699-ASF',
+        'C3576379529-ASF', # prod
+        'C1271768606-ASF', # uat
     ],
     'SMAP': [
         'C1243122884-ASF',
@@ -1090,9 +1072,6 @@ collections_per_platform = {
         'C1261815274-ASFDEV',
         'C1261832497-ASFDEV',
         'C1256358262-ASFDEV',
-        'C1261815276-ASFDEV',
-        'C1261832632-ASFDEV',
-        'C1256358463-ASFDEV',
         'C1261813489-ASFDEV',
         'C1261832868-ASFDEV',
         'C1273095154-ASFDEV',
@@ -1143,9 +1122,6 @@ collections_per_platform = {
         'C1273831320-ASF',
         'C1261832659-ASF',
         'C1257349115-ASF',
-        'C1273831262-ASF',
-        'C1261832671-ASF',
-        'C1257349114-ASF',
         'C1273831203-ASF',
         'C1261833052-ASF',
         'C1273831205-ASF',
@@ -1196,9 +1172,6 @@ collections_per_platform = {
         'C3622228339-ASF',
         'C2853089814-ASF',
         'C3622265756-ASF',
-        'C2850225137-ASF',
-        'C2853091612-ASF',
-        'C3622254588-ASF',
         'C2850225585-ASF',
         'C2853145197-ASF',
         'C3622236985-ASF',
@@ -1491,8 +1464,6 @@ collections_by_processing_level = {
         'C1207177736-ASF',
         'C1206936391-ASF',
         'C1205181982-ASF',
-        'C1206500991-ASF',
-        'C1206144699-ASF',
     ],
     '3FP': ['C1213921661-ASF', 'C1213928843-ASF', 'C1205256880-ASF', 'C1208713702-ASF'],
     'JPG': ['C1213921626-ASF', 'C1000000306-ASF'],
@@ -1504,7 +1475,6 @@ collections_by_processing_level = {
     'LSTOKES': ['C1213927939-ASF'],
     'PSTOKES': ['C1213928209-ASF'],
     'ATI': ['C1208652494-ASF'],
-    'GEOTIFF': ['C1206500826-ASF', 'C1206752770-ASF'],
     'L1A_Radar_RO_ISO_XML': [
         'C1243122884-ASF',
         'C1243141638-ASF',
@@ -1631,16 +1601,6 @@ collections_by_processing_level = {
         'C1258125097-ASFDEV',
         'C1258836794-ASF',
         'C2887469134-ASF',
-
-        'C1261815276-ASFDEV', # CRSD
-        'C1273831262-ASF',
-        'C2850225137-ASF',
-        'C1261832632-ASFDEV', # Provisional
-        'C1261832671-ASF',
-        'C2853091612-ASF',
-        'C1256358463-ASFDEV', # Validate
-        'C1257349114-ASF',
-        'C3622254588-ASF',
     ],
     'RRSD': [
         'C1261815274-ASFDEV', # RRSD BETA
@@ -1656,17 +1616,6 @@ collections_by_processing_level = {
         'C1258125097-ASFDEV',
         'C1258836794-ASF',
         'C2887469134-ASF',
-    ],
-    'CRSD': [
-        'C1261815276-ASFDEV', # CRSD
-        'C1273831262-ASF',
-        'C2850225137-ASF',
-        'C1261832632-ASFDEV', # Provisional
-        'C1261832671-ASF',
-        'C2853091612-ASF',
-        'C1256358463-ASFDEV', # Validate
-        'C1257349114-ASF',
-        'C3622254588-ASF',
     ],
     'RSLC': [
             'C1261813489-ASFDEV', # Beta

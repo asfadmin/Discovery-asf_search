@@ -91,10 +91,6 @@ CSTOKES = 'CSTOKES'
 DEM = 'DEM'
 THREEFP = '3FP'
 
-# SEASAT
-GEOTIFF = 'GEOTIFF'
-# L1 provided by RADARSAT
-
 # OPERA-S1
 RTC = 'RTC'
 CSLC = 'CSLC'
@@ -105,9 +101,8 @@ TROPO_ZENITH = 'TROPO-ZENITH'
 
 # NISAR
 L0B = 'L0B'
-"""Convenient alias for CRSD and RRSD Level Zero B product types"""
+"""alias for RRSD Level Zero B product types"""
 
-CRSD = 'CRSD'
 RRSD = 'RRSD'
 
 RSLC = 'RSLC'

@@ -1,0 +1,40 @@
+name: authenticated tests
+permissions:
+  contents: read
+# For tests that require authenticated searches
+
+on:
+  push:
+    branches:
+      - master
+
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    environment: pre-release
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        
+        with:
+            python-version: '3.10'
+      - name: Install Dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install .[extras,test,asf-enumeration]
+
+      - name: Run Tests
+        env:
+            EDL_TOKEN: ${{ secrets.EDL_TOKEN }}
+        run: python3 -m pytest --should_auth_session TRUE
+
+    #   - name: Upload coverage to Codecov
+    #     uses: codecov/codecov-action@v5
+    #     with:
+    #       token: ${{ secrets.CODECOV_TOKEN }}
+    #       fail_ci_if_error: false
+    #       files: ./coverage.xml
+    #       flags: unittests
+    #       name: asf_admin pytest
+    #       verbose: true
