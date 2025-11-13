@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v10.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.2.0...v10.2.1)
+### Added
+- Add a Pair class that groups ASFProducts as reference and secondary scenes, and provides temporal and perpendicular baselines as member variables. Pair will be used for creating InSAR SBAS stacks, though its utility extends beyond that use case. A new dependency group `sbas` is included in the `setup.py`.
+
+------
 ## [v10.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.2...v10.2.0)
 ### Changed
 - `SEATSAT 1` collections in CMR have been merged into a new single collection. Filtering by processing level for same scene no longer necessary. Different file urls, s3 uris, sizes, and md5sums of each scene now accessible via `additionalUrls`, `s3Urls`, `bytes`, and `md5sum` keys in each scene's `properties` dict.
