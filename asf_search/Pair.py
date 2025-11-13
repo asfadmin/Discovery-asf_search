@@ -80,7 +80,7 @@ class Pair:
             raise ImportError(
                 'The `estimate_s1_mean_coherence()` method requires the optional asf-search '
                 f'dependencies {_COHERENCE_OPT_DEPS}, '
-                'but they could not be found  in current python environment. '
+                'but they could not be found in the current python environment. '
                 'Enable this method by including the appropriate pip or conda install. '
                 'Ex: `python -m pip install asf-search[sbas]`'
             )
