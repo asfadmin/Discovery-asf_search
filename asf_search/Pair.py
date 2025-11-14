@@ -36,6 +36,7 @@ class Pair:
     def __init__(self, ref: ASFProduct, sec: ASFProduct):
         self.ref = ref
         self.sec = sec
+        self.id = (ref.properties['sceneName'], sec.properties['sceneName'])
 
         self.perpendicular_baseline = calculate_perpendicular_baselines(
             ref.properties['sceneName'], 
