@@ -51,16 +51,15 @@ class Pair:
         self.temporal_baseline = self.sec_time.date() - self.ref_time.date()
 
     def __repr__(self) -> str:
-        return f"Pair({self.ref.properties['sceneName']}, {self.sec.properties['sceneName']})"
+        return f"Pair({self.id[0]}, {self.id[1]})"
 
     def __eq__(self, other):
         if not isinstance(other, Pair):
             return NotImplemented
-        return (self.ref.properties['sceneName'] == other.ref.properties['sceneName'] and
-                self.sec.properties['sceneName'] == other.sec.properties['sceneName'])
+        return self.id == other.id
 
     def __hash__(self) -> int:
-        return hash((self.ref.properties['sceneName'], self.sec.properties['sceneName']))
+        return hash(self.id)
 
     def estimate_s1_mean_coherence(self) -> float:
         '''
