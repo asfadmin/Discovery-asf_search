@@ -1,4 +1,3 @@
-
 import importlib.util
 import math
 
@@ -30,7 +29,7 @@ class Pair:
     """
     A Pair is comprised of a reference scene and a secondary scene. These scenes typically intersect geographically,
     but that is not a requirement. When a pair is created, its perpendicular and temporal baselines are calculated
-    and stored in the self.perpendicular and self.temporal member variables.
+    and stored in the self.perpendicular_baseline and self.temporal_baseline member variables.
 
     Two pairs are equivalent if they have matching reference and secondary dates
     """
@@ -38,32 +37,30 @@ class Pair:
         self.ref = ref
         self.sec = sec
 
-        self.perpendicular = calculate_perpendicular_baselines(
+        self.perpendicular_baseline = calculate_perpendicular_baselines(
             ref.properties['sceneName'], 
             [sec, ref])[0].properties['perpendicularBaseline']
 
-        ref_time = parse_datetime(ref.properties["startTime"])
-        if ref_time.tzinfo is None:
-            ref_time = pytz.utc.localize(ref_time)
-        sec_time = parse_datetime(sec.properties["startTime"])
-        if sec_time.tzinfo is None:
-            sec_time = pytz.utc.localize(sec_time)
+        self.ref_time = parse_datetime(ref.properties["startTime"])
+        if self.ref_time.tzinfo is None:
+            self.ref_time = pytz.utc.localize(self.ref_time)
+        self.sec_time = parse_datetime(sec.properties["startTime"])
+        if self.sec_time.tzinfo is None:
+            self.sec_time = pytz.utc.localize(self.sec_time)
 
-        self.ref_date = ref_time.date()
-        self.sec_date = sec_time.date()
-        self.temporal = self.sec_date - self.ref_date
+        self.temporal_baseline = self.sec_time.date() - self.ref_time.date()
 
     def __repr__(self) -> str:
-        return f"Pair({self.ref_date}, {self.sec_date})"
+        return f"Pair({self.ref_time}, {self.sec_time})"
 
     def __eq__(self, other):
         if not isinstance(other, Pair):
             return NotImplemented
-        return (self.ref_date == other.ref_date and
-                self.sec_date == other.sec_date)
+        return (self.ref_time == other.ref_time and
+                self.sec_time == other.sec_time)
 
     def __hash__(self) -> int:
-        return hash((self.ref.date.date(), self.sec.date.date()))
+        return hash((self.ref_time, self.sec_time))
 
     def estimate_s1_mean_coherence(self) -> float:
         '''
@@ -95,10 +92,10 @@ class Pair:
         elif month in [9, 10, 11]:
             season = 'fall'
 
-        temporal = math.ceil(self.temporal.days / 6) * 6
+        temporal = math.ceil(self.temporal_baseline.days / 6) * 6
         if temporal > 48:
             msg = (f"""Coherence dataset includes temporal baselines up to 48 days.
-                   Temporal baseline: {self.temporal.days} days""")
+                   Temporal baseline: {self.temporal_baseline.days} days""")
             raise CoherenceEstimationError(msg)
 
         uri = f"s3://asf-search-coh/global_coh_100ppd_11367x4367_Zarrv2/Global_{season}_vv_COH{temporal}_100ppd.zarr"
