@@ -1,0 +1,6 @@
+tests:
+  - Test SEASAT ASFSubproduct:
+      scenes: ["SS_01502_STD_F2536"]
+      opts:
+        dataset: SEASAT
+      expected_subclass: SEASATProduct
