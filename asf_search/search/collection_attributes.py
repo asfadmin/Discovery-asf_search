@@ -3,7 +3,7 @@ from typing import Optional
 from asf_search.CMR.datasets import collections_by_processing_level
 from asf_search.ASFSession import ASFSession
 
-from asf_search.exceptions import ASFSearchError
+from asf_search.exceptions import ASFSearchError, CMRError
 
 
 @dataclass(frozen=True)
@@ -52,6 +52,8 @@ def get_searchable_attributes(
 
     cmr_response = _query_cmr(session=session, query_data=query_data, method=method)
 
+    if 'errors' in cmr_response:
+        raise ValueError(f"CMR responded with an error. Original error(s): {' '.join(cmr_response['errors'])}")
     if len(cmr_response['items']) == 0:
         raise ValueError(
             f'Error: no collections found in CMR for given parameter `{method["type"]}`: "{method["value"]}" '
@@ -74,7 +76,9 @@ def get_searchable_attributes(
 
 
 def _get_concept_ids_for_processing_level(processing_level: str):
-    collections = collections_by_processing_level.get(processing_level, [])
+    collections = collections_by_processing_level.get(processing_level)
+    if collections is None:
+        raise ValueError(f'asf-search is missing concept-id aliases for processing level "{processing_level}". Please use `shortName` or `conceptID')
     return [('concept-id[]', collection) for collection in collections]
 
 

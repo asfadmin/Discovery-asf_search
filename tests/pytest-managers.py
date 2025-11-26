@@ -646,8 +646,9 @@ def test_keyword_aliasing_results(**args) -> None:
 def test_collection_attributes(**args) -> None:
     params = args['test_info']['params']
     expected_attributes = args['test_info']['expected_attributes']
+    expect_failure = args['test_info'].get('expect_failure', False)
     session = args["config"].getoption("authenticated_session")
-    run_test_collection_attributes(params, expected_attributes, session)
+    run_test_collection_attributes(params, expected_attributes, session, expect_failure)
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
