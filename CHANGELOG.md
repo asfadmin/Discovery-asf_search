@@ -26,7 +26,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v10.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.2...v10.2.0)
+## [v10.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.2.0...v10.2.1)
 ### Added
 - Added `get_searchable_attributes()` search method, return dict mapping of additional attribute names to `AdditionalAttribute` data class object
 
