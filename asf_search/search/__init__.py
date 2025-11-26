@@ -6,4 +6,4 @@ from .baseline_search import stack_from_id  # noqa: F401
 from .campaigns import campaigns  # noqa: F401
 from .search_count import search_count  # noqa: F401
 from .search_generator import search_generator, preprocess_opts  # noqa: F401
-from .collection_attributes import get_searchable_attributes
+from .collection_attributes import get_searchable_attributes  # noqa: F401
