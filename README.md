@@ -168,6 +168,11 @@ For test cases that require authentication you can use your EDL credentials
 python3 -m pytest tests/yml_tests/test_authenticated -s --auth_with_creds
 ```
 
+Or if you'd rather use your EDL token
+```bash
+python3 -m pytest tests/yml_tests/test_authenticated -s --auth_with_token
+```
+
 Tests should be written to relevant subfolder & files in `/tests`
 
 The test suite uses the `pytest-automation` pytest plugin which allows us to define and re-use input for test cases in the yaml format. Test cases are written to files in `tests/yml_tests/`, and reusable resources for those tests `tests/yml_tests/Resources/`.
