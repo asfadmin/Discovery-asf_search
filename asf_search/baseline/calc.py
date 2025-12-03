@@ -1,4 +1,7 @@
-from asf_search import ASFProduct, ALOS2Product
+# from asf_search import ASFProduct, ALOS2Product
+from ..ASFProduct import ASFProduct
+from ..Products import ALOS2Product
+
 from math import sqrt, cos, sin, radians
 from typing import List
 
