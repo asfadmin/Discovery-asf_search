@@ -34,7 +34,7 @@ asf_enumeration = [
     'asf-enumeration>=0.4.0'
 ]
 
-#Required for seasonal SBAS
+# Required for optional Sentinel-1 Pair coherence estimation
 sbas = [
     'pandas',
     'zarr',
