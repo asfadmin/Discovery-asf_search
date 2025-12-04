@@ -1,4 +1,4 @@
-ASF_AUTH_HOST = 'auth.asf.alaska.edu'
+ASF_AUTH_HOST = 'cumulus.asf.alaska.edu'
 
 CMR_HOST = 'cmr.earthdata.nasa.gov'
 CMR_HOST_UAT = 'cmr.uat.earthdata.nasa.gov'
