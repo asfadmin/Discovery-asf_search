@@ -22,7 +22,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install .[extras,test,asf-enumeration]
+          python3 -m pip install .[extras,test,asf-enumeration,coherence]
 
       - name: Run Tests
         env:
