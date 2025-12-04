@@ -118,7 +118,7 @@ class ASFSession(requests.Session):
 
 
         # need this to set the asf-urs cookie for certain dataset downloads to work
-        self._legacy_creds_auth()
+        # self._legacy_creds_auth()
 
         login_url = f'https://{self.edl_host}/api/users/find_or_create_token'
         ASF_LOGGER.info(f'Attempting to get account EDL Bearer token via "{login_url}"')
