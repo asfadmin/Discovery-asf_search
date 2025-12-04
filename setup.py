@@ -35,7 +35,7 @@ asf_enumeration = [
 ]
 
 # Required for optional Sentinel-1 Pair coherence estimation
-sbas = [
+coherence = [
     'pandas',
     'zarr',
     's3fs',
