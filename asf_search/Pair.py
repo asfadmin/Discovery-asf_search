@@ -79,7 +79,7 @@ class Pair:
                 f'dependencies {_COHERENCE_OPT_DEPS}, '
                 'but they could not be found in the current python environment. '
                 'Enable this method by including the appropriate pip or conda install. '
-                'Ex: `python -m pip install asf-search[sbas]`'
+                'Ex: `python -m pip install asf-search[coherence]`'
             )
 
         month = parse_datetime(self.ref.properties["startTime"]).month
