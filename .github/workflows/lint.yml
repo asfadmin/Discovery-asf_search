@@ -9,3 +9,4 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
           src: './asf_search'
+          version-file: 'pyproject.toml'

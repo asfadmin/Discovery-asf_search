@@ -1,0 +1,46 @@
+tests:
+- test-collection-attributes SLC:
+    params:
+      processingLevel: SLC
+    expected_attributes: ['SV_POSITION_PRE', 'SV_VELOCITY_PRE', 'SV_POSITION_POST', 'SV_VELOCITY_POST', 'ASC_NODE_TIME', 'SV_START_POSITION', 'SV_START_VELOCITY', 'SV_CENTER_POSITION', 'SV_CENTER_VELOCITY', 'SV_END_POSITION', 'SV_END_VELOCITY', 'POLARIZATION', 'FLIGHT_LINE', 'BEAM_MODE', 'BEAM_MODE_DESC', 'BEAM_MODE_TYPE', 'FARADAY_ROTATION', 'INSAR_STACK_ID', 'INSAR_STACK_SIZE', 'INSAR_BASELINE', 'DOPPLER', 'ASCENDING_DESCENDING', 'THUMBNAIL_URL', 'CENTER_FRAME_ID', 'PATH_NUMBER', 'FRAME_NUMBER', 'CENTER_ESA_FRAME', 'MISSION_NAME', 'GRANULE_TYPE', 'PROCESSING_DATE', 'PROCESSING_DESCRIPTION', 'LOOK_DIRECTION', 'PROCESSING_TYPE', 'PROCESSING_LEVEL', 'PROCESSING_TYPE_DISPLAY', 'BYTES', 'MD5SUM', 'OFF_NADIR_ANGLE', 'ACQUISITION_DATE', 'CENTER_LON', 'CENTER_LAT', 'NEAR_START_LAT', 'NEAR_START_LON', 'FAR_START_LAT', 'FAR_START_LON', 'NEAR_END_LAT', 'NEAR_END_LON', 'FAR_END_LAT', 'FAR_END_LON', 'ASF_PLATFORM', 'GROUP_ID', 'SV_POSITION', 'SV_VELOCITY']
+
+- test-collection-attributes DISP-S1:
+    params:
+      processingLevel: DISP-S1
+    expected_attributes: ['POLARIZATION', 'PRODUCT_VERSION', 'PROCESSING_TYPE', 'FRAME_ID', 'STACK_ID', 'ASCENDING_DESCENDING', 'PATH_NUMBER', 'REFERENCE_ZERO_DOPPLER_START_TIME', 'REFERENCE_ZERO_DOPPLER_END_TIME', 'SECONDARY_ZERO_DOPPLER_START_TIME', 'SECONDARY_ZERO_DOPPLER_END_TIME', 'FRAME_NUMBER']
+
+- test-collection-attributes ALOS2_L1_PSR2:
+    params:
+      shortName: ALOS2_L1_PSR2
+    expected_attributes: ['ASCENDING_DESCENDING', 'BEAM_MODE', 'BEAM_MODE_DESC', 'CENTER_LAT', 'CENTER_LON', 'FRAME_NUMBER', 'LOOK_DIRECTION', 'OFF_NADIR_ANGLE', 'OPERATIONAL_MODE', 'OPERATIONAL_MODE_DESC', 'PATH_NUMBER', 'POLARIZATION', 'PROCESSING_LEVEL', 'SV_POSITION', 'SV_VELOCITY']
+
+- test-collection-attributes SEASAT C3576379529-ASF:
+    params:
+      conceptID: C3576379529-ASF
+    expected_attributes: ['ASCENDING_DESCENDING', 'BEAM_MODE', 'BEAM_MODE_DESC', 'FRAME_NUMBER', 'PATH_NUMBER', 'POLARIZATION']
+
+- test-collection-attributes Fake Concept ID:
+    params:
+      conceptID: NotAValidConceptID-ASF
+    expected_attributes: []
+    expect_failure: True
+
+- test-collection-attributes Wrong CMR Host Maturity Correct Concept ID:
+    params:
+      conceptID: 'C1271768606-ASF'
+    expected_attributes: []
+    expect_failure: True
+
+- test-collection-attributes Wrong CMR Host Maturity Correct Concept ID:
+    params:
+      conceptID: None
+      shortName: None
+      processingLevel: None
+    expected_attributes: []
+    expect_failure: True
+
+- test-collection-attributes Wrong CMR invalid/missing processing level:
+    params:
+      processingLevel: NotARealProcessingLevel
+    expected_attributes: []
+    expect_failure: True
