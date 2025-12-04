@@ -124,10 +124,14 @@ class ASFSession(requests.Session):
         try:
             response.raise_for_status()
         except Exception as e:
-            warnings.warn(f'Failed to get EDL Bearer token from {login_url}. Restricted datasets may be searchable, but downloading might fail.\nOriginal Exception: {str(e)}')
-        else:
+            raise ASFAuthenticationError(f'Failed to get log in with provided credentials. Original Exception: {str(e)}')
+
+        try:
             # need this to set the asf-urs cookie for certain dataset downloads to work
-            self._auth_edl_host()
+            self._get_auth_cookie_edl_host()
+        except Exception as e:
+            raise ASFAuthenticationError(f'Unable to set asf-urs cookies while logging in. Original exception: {e}')
+        else:
             token = response.json().get('access_token')
             
             ASF_LOGGER.info('EDL Bearer Token retreived, using for future queries and downloads')
@@ -165,14 +169,17 @@ class ASFSession(requests.Session):
 
         return self
 
-    def _auth_edl_host(self):
+    def _get_auth_cookie_edl_host(self):
+        """Verify login via edl host and redirect to ASF_AUTH_HOST to set asf-urs auth cookies"""
         login_url = f'https://{self.edl_host}/oauth/authorize?splash=false&client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'  # noqa F401
 
         ASF_LOGGER.info(f'Attempting to get "asf-urs" cookie via "{login_url}"')
-        self.get(login_url)
+        response = self.get(login_url)
+
+        response.raise_for_status()
 
         if not self._check_auth_cookies(self.cookies.get_dict()):
-            raise ASFAuthenticationError('Username or password is incorrect')
+            raise ASFAuthenticationError(f'Failed to find `asf-urs` cookie in response from {login_url}. Unable to perform certain searches')
 
         ASF_LOGGER.info(f'Authenticated {self.edl_host} against {self.asf_auth_host}, cookies set sucessfully')
         
