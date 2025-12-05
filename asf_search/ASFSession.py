@@ -99,6 +99,8 @@ class ASFSession(requests.Session):
         """
         Authenticates the session using EDL username/password credentials
 
+        This method calls the /api/users/find_or_create_token endpoint to get an EDL token and sets the asf-urs cookie from an ASF auth host
+        (default `cumulus.asf.alaska.edu`)
         Parameters
         ----------
         username:
@@ -114,8 +116,7 @@ class ASFSession(requests.Session):
         """
 
         self.auth = HTTPBasicAuth(username, password)
-        token = self._get_urs_token()
-        # need this to set the asf-urs cookie for certain dataset downloads to work (SLC Bursts)
+        token = self._get_urs_access_token()
         self._set_asf_urs_cookie()
         
         ASF_LOGGER.info('EDL Bearer Token retreived and asf-urs cookie sucessfully set')
@@ -128,6 +129,7 @@ class ASFSession(requests.Session):
         """
         Authenticates the session using an EDL Authorization: Bearer token
 
+        Note: this does not set the asf-urs token, which is necessary for downloading certain products like SLC BURSTS 
         Parameters
         ----------
         token:
@@ -153,7 +155,7 @@ class ASFSession(requests.Session):
 
         return self
 
-    def _get_urs_token(self) -> str:
+    def _get_urs_access_token(self) -> str:
 
         login_url = f'https://{self.edl_host}/api/users/find_or_create_token'
         ASF_LOGGER.info(f'Attempting to get account EDL Bearer token via "{login_url}"')
