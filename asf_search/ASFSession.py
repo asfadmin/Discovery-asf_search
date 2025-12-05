@@ -1,5 +1,5 @@
 import platform
-from typing import List, Union
+from typing import List, Optional, Union
 import requests
 from requests.utils import get_netrc_auth
 from requests.auth import HTTPBasicAuth
@@ -13,13 +13,13 @@ import warnings
 class ASFSession(requests.Session):
     def __init__(
         self,
-        edl_host: str = None,
-        edl_client_id: str = None,
-        asf_auth_host: str = None,
-        cmr_host: str = None,
-        cmr_collections: str = None,
-        auth_domains: List[str] = None,
-        auth_cookie_names: List[str] = None,
+        edl_host: Optional[str] = None,
+        edl_client_id: Optional[str] = None,
+        asf_auth_host: Optional[str] = None,
+        cmr_host: Optional[str] = None,
+        cmr_collections: Optional[str] = None,
+        auth_domains: Optional[List[str]] = None,
+        auth_cookie_names: Optional[List[str]] = None,
     ):
         """
         ASFSession is a subclass of `requests.Session`, and is meant to ease
@@ -99,6 +99,8 @@ class ASFSession(requests.Session):
         """
         Authenticates the session using EDL username/password credentials
 
+        This method calls the /api/users/find_or_create_token endpoint to get an EDL token and sets the asf-urs cookie from an ASF auth host
+        (default `cumulus.asf.alaska.edu`)
         Parameters
         ----------
         username:
@@ -112,28 +114,14 @@ class ASFSession(requests.Session):
         ----------
         ASFSession
         """
-        from asf_search.constants import INTERNAL
 
         self.auth = HTTPBasicAuth(username, password)
-
-
-        # need this to set the asf-urs cookie for certain dataset downloads to work
-        self._legacy_creds_auth()
-
-        login_url = f'https://{self.edl_host}/api/users/find_or_create_token'
-        ASF_LOGGER.info(f'Attempting to get account EDL Bearer token via "{login_url}"')
-        response = self.post(login_url)
+        token = self._get_urs_access_token()
+        self._set_asf_urs_cookie()
         
-        try:
-            response.raise_for_status()
-        except Exception as e:
-            warnings.warn(f'Failed to get EDL Bearer token from {login_url}. Restricted datasets may be searchable, but downloading might fail.\nOriginal Exception: {str(e)}')
-        else:
-            token = response.json().get('access_token')
-            
-            ASF_LOGGER.info('EDL Bearer Token retreived, using for future queries and downloads')
-            self.auth = None
-            self._update_edl_token(token=token)
+        ASF_LOGGER.info('EDL Bearer Token retreived and asf-urs cookie sucessfully set')
+        self.auth = None
+        self._update_edl_token(token=token)
 
         return self
 
@@ -141,6 +129,7 @@ class ASFSession(requests.Session):
         """
         Authenticates the session using an EDL Authorization: Bearer token
 
+        Note: this does not set the asf-urs token, which is necessary for downloading certain products like SLC BURSTS 
         Parameters
         ----------
         token:
@@ -166,33 +155,38 @@ class ASFSession(requests.Session):
 
         return self
 
-    def _legacy_creds_auth(self):
-        login_url = f'https://{self.edl_host}/oauth/authorize?client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'  # noqa F401
+    def _get_urs_access_token(self) -> str:
+
+        login_url = f'https://{self.edl_host}/api/users/find_or_create_token'
+        ASF_LOGGER.info(f'Attempting to get account EDL Bearer token via "{login_url}"')
+        response = self.post(login_url)
+        
+        try:
+            response.raise_for_status()
+        except Exception as e:
+            raise ASFAuthenticationError(f'Failed to log in with provided credentials. Original Exception: {str(e)}')
+
+        token = response.json().get('access_token')
+        
+        ASF_LOGGER.info('EDL Bearer Token retreived, using for future queries and downloads')
+        return token
+
+    def _set_asf_urs_cookie(self):
+        """Verify login via edl host and redirect to ASF_AUTH_HOST to set asf-urs auth cookies (need this for SLC Burst extractor)"""
+        login_url = f'https://{self.edl_host}/oauth/authorize?splash=false&client_id={self.edl_client_id}&response_type=code&redirect_uri=https://{self.asf_auth_host}/login'  # noqa F401
 
         ASF_LOGGER.info(f'Attempting to get "asf-urs" cookie via "{login_url}"')
-        self.get(login_url)
+        response = self.get(login_url)
 
-        if not self._check_auth_cookies(self.cookies.get_dict()):
-            raise ASFAuthenticationError('Username or password is incorrect')
+        try:
+            response.raise_for_status()
 
-        ASF_LOGGER.info('Basic asf auth cookies set sucessfully')
+            if not self._check_auth_cookies(self.cookies.get_dict()):
+                raise ASFAuthenticationError(f'Failed to find `asf-urs` cookie in response from {login_url}. Unable to perform certain searches')
 
-        token = self.cookies.get_dict().get('urs-access-token')
-
-        if token is None:
-            warnings.warn(
-                f'Provided asf_auth_host "{self.asf_auth_host}" returned no EDL access token '
-                'during ASFSession validation. EDL Token expected in "urs-access-token" cookie, '
-                'required for searching hidden/restricted dataset access. '
-                'The current session will use basic authorization.'
-            )
-        else:
-            ASF_LOGGER.info(
-                'Found "urs-access-token" cookie in response from auth host, '
-                'using token for searching for cmr queries.'
-            )
-            self._update_edl_token(token=token)
-        
+            ASF_LOGGER.info(f'Authenticated {self.edl_host} against {self.asf_auth_host}, cookies set sucessfully')
+        except Exception as e:
+            raise ASFAuthenticationError(f'Failed to set asf-urs cookies. Original exception: {e}')
 
     def _try_legacy_token_auth(self, token: str) -> bool:
         """

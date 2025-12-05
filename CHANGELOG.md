@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v11.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.3.0...v11.0.0)
+### Changed
+- `ASF_AUTH_HOST` `auth.asf.alaska.edu` replaced with `cumulus.asf.alaska.edu`. This change should be seamless
+- `auth_with_creds()` now queries `ASF_AUTH_HOST` for `asf-urs` cookie after generating EDL token via `https://urs.earthdata.nasa.gov/api/users/find_or_create_token`
+
+------
 ## [v10.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.2.1...v10.3.0)
 ### Added
 - Add a Pair class that groups ASFProducts as reference and secondary scenes, and provides temporal and perpendicular baselines as member variables. Pair will be used for creating InSAR SBAS stacks, though its utility extends beyond that use case. A new dependency group `coherence` is included in the `setup.py`.
