@@ -22,8 +22,8 @@ precalc_platforms = [
 
 def stack_from_product(
     reference: ASFProduct,
-    opts: ASFSearchOptions = None,
-    ASFProductSubclass: Type[ASFProduct] = None,
+    opts: Optional[ASFSearchOptions] = None,
+    ASFProductSubclass: Optional[Type[ASFProduct]] = None,
 ) -> ASFSearchResults:
     """
     Finds a baseline stack from a reference ASFProduct
