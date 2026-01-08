@@ -55,6 +55,7 @@ from .baseline import *  # noqa: F403 F401 E402
 from .WKT import validate_wkt  # noqa: F401 E402
 from .export import *  # noqa: F403 F401 E402
 from .Pair import Pair  # noqa:  F401, E402
+from .Stack import Stack  # noqa:  F401, E402
 
 REPORT_ERRORS = True
 """Enables automatic search error reporting to ASF, send any questions to uso@asf.alaska.edu"""

@@ -29,6 +29,8 @@ class ASFAuthenticationError(ASFError):
 class ASFWKTError(ASFError):
     """Raise when wkt related errors occur"""
 
+class DateTypeError(ASFError):
+    """Raise when a provided date format is unable to be parsed"""
 
 class CoherenceEstimationError(ASFError):
     """Raise if coherence estimation is requested for a Pair with a temporal baseline > 48 days"""
