@@ -7,7 +7,6 @@ import warnings
 from .ASFProduct import ASFProduct
 from .Pair import Pair
 from .ASFSearchOptions import ASFSearchOptions
-from .exceptions import DateTypeError
 from .warnings import PairNotInFullStackWarning
 import numpy as np
 import pandas as pd
@@ -22,10 +21,9 @@ date_like = str | date | datetime | pd.Timestamp
 
 class Stack:
     """
-    A Stack contains collections of geographically overlapping Pairs
+    A Stack contains collections of Pairs
 
-    Stack objects contain several stacks as member variables, which are dictionaries
-    with tuples of datetime.dates as keys and cooresponding Pair objects as values.
+    Stack objects contain several stacks as member variables, which are lists of Pair objects.
     
     member stacks:
     - self.full_stack: Every possible pair based on the provided geo_reference scene 
@@ -48,8 +46,8 @@ class Stack:
         self.opts = opts
         self.full_stack = self._build_full_stack()
         self._remove_list = []
-        # self.subset_stack = self._get_subset_stack()
-        # self.connected_substacks = self._find_connected_substacks()
+        self.subset_stack = self._get_subset_stack()
+        self.connected_substacks = self._find_connected_substacks()
 
     @property
     def remove_list(self) -> List[Tuple[date, date]]:
@@ -68,72 +66,46 @@ class Stack:
         return copy(self._remove_list)
 
     @remove_list.setter
-    def remove_list(self, pairs: List[Tuple[date_like, date_like]]):
+    def remove_list(self, pairs: List[Pair]):
         """
         Accept date pair tuples as datetime.datetime, datetime.date, 
         pandas.Timestamp, or ISO datetime string.
 
         Return tuples of datetime.date
         """
-        normalized = [self._normalize_pair(pair) for pair in pairs]
         # remove duplicates
-        self._remove_list = list(set(normalized))
+        self._remove_list = list(set(pairs))
         self._update_stack()
 
-    def remove_pairs(self, pairs: List[Tuple[date_like, date_like]]):
+    def remove_pairs(self, pairs: List[Pair]):
         """
         Remove pairs from self.subset_stack, 
         i.e., add them to self._remove_list
         """
         for pair in pairs:
-            pair_dates = self._normalize_pair(pair)
-            if pair_dates not in self._remove_list:
-                if pair_dates in self.full_stack:
-                    self._remove_list.append(pair_dates)
+            if pair not in self._remove_list:
+                if pair in self.full_stack:
+                    self._remove_list.append(pair)
                 else:
-                    msg = f"warning: {pair_dates} is not in full_stack"
+                    msg = f"warning: {pair} is not in full_stack"
                     warnings.warn(PairNotInFullStackWarning(msg))
         self._update_stack()
 
-    def add_pairs(self, pairs: List[Tuple[date_like, date_like]]):
+    def add_pairs(self, pairs: List[Pair]):
         """
-        Add pairs to the subset_stack, 
-        i.e., remove them from self._remove_list
+        Add pairs to self.subset_stack and, if necessary, to self.full_stack 
+        i.e., remove them from self._remove_list if present
+              or else add them to self.full_stack 
+
+        This allows for the addition of custom pairs that were not originally present
+        in self.full_stack
         """
         for pair in pairs:
-            pair_dates = self._normalize_pair(pair)
-            if pair_dates in self._remove_list:
-                if pair_dates not in self.full_stack:
-                    warnings.warn(PairNotInFullStackWarning(pair_dates))
-                self._remove_list.remove(pair_dates)
-        self._update_stack()
-
-    def _normalize_pair(self, pair: Tuple[date_like, date_like]) -> Tuple[date, date]:
-        """
-        convert date tuples from pandas.Timestamp, datetime.datetime,
-        or iso formatted date string to tuples of datetime.date
-        """
-        def to_dt(val):
-            if isinstance(val, pd.Timestamp):
-                return val.to_pydatetime().date()
-            elif isinstance(val, date):
-                return val
-            elif isinstance(val, datetime):
-                return val.date()
-            elif isinstance(val, np.datetime64):
-                return val.astype(datetime)
-            elif isinstance(val, str):
-                return datetime.fromisoformat(val).date()
+            if pair in self._remove_list:
+                self._remove_list.remove(pair)
             else:
-                msg = (f"Cannot handle date or timestamp of type: {type(val)}")
-                if type(val) is str:
-                    msg = (
-                        f"{msg}\n"
-                        "ISO date strings must be properly formatted."
-                        "single-digit months and days should be preceded by a zero"
-                    )
-                raise DateTypeError(msg)
-        return to_dt(pair[0]), to_dt(pair[1])
+                self.full_stack.append(pair)
+        self._update_stack()
 
     def generate_pairs_within_baseline(self, dates):
         dates = sorted(dates)
@@ -167,38 +139,12 @@ class Stack:
             )
         ]
 
-    
-    # def _build_full_stack(self) -> Dict[Tuple[date, date], Pair]:
-    #     """
-    #     Create self._full_stack, which involves performing a stack search
-    #     of the georeference scene and adding every possible date pair
-    #     to a dict with tuples of datetime.dates as keys and cooresponding
-    #     Pairs as values
-    #     """
-    #     geo_ref_stack = self.geo_reference.stack(opts=self.opts)
-    #     dates = {parse_datetime(p.properties['stopTime']).date(): p for p in geo_ref_stack}
-    #     date_pairs = {
-    #         (d1, d2): (dates[d1], dates[d2])
-    #         for i, d1 in enumerate(sorted(dates))
-    #         for d2 in list(sorted(dates))[i + 1:]
-    #         if self.temporal_baseline is None or (d2 - d1).days <= self.temporal_baseline
-    #     }
-    #     stack = {}
-    #     for pair_dates, pair in date_pairs.items():
-    #         if not pair[0].baseline.get("noStateVectors") and not pair[1].baseline.get("noStateVectors"):
-    #             stack[(pair_dates[0], pair_dates[1])] = Pair(pair[0], pair[1])              
-    #     return stack
-
-    def _get_subset_stack(self) -> Dict[Tuple[date, date], Pair]:
+    def _get_subset_stack(self) -> List[Pair]:
         """
         Create a subset_stack by removing every pair in
         self.remove_list from self.full_stack
         """
-        stack = {}
-        for _, pair in self.full_stack.items():
-            if (pair.ref_time, pair.sec_time) not in self.remove_list:
-                stack[(pair.ref_time, pair.sec_time)] = pair
-        return stack
+        return [pair for pair in self.full_stack if pair not in self.remove_list]
 
     def _update_stack(self):
         """
@@ -208,15 +154,16 @@ class Stack:
         self.subset_stack = self._get_subset_stack()
         self.connected_substacks = self._find_connected_substacks()
 
+
     def _find_connected_substacks(self) -> List[Dict[Tuple[date, date], Pair]]:
         """
         BFS to find all connected components of self.subset_stack
         """
 
         graph = defaultdict(list)
-        for pair in self.subset_stack.values():
-            graph[pair.ref_time].append(pair.sec_time)
-            graph[pair.sec_time].append(pair.ref_time)
+        for pair in self.subset_stack:
+            graph[pair.ref].append(pair.sec)
+            graph[pair.sec].append(pair.ref)
 
         visited_nodes = set()
         visited_pairs = set()
@@ -236,10 +183,10 @@ class Stack:
 
                     for neighbor in graph[current]:
                         if (current, neighbor) not in visited_pairs and (neighbor, current) not in visited_pairs:
-                            for pair in self.subset_stack.values():
-                                if (pair.ref_time == current and pair.sec_time == neighbor) or \
-                                    (pair.sec_time == current and pair.ref_time == neighbor):
-                                    component_pairs[(pair.ref_time, pair.sec_time)] = pair
+                            for pair in self.subset_stack:
+                                if (pair.ref == current and pair.sec == neighbor) or \
+                                    (pair.sec == current and pair.ref == neighbor):
+                                    component_pairs[Pair(pair.ref, pair.sec)] = pair
                                     break
                             visited_pairs.add((current, neighbor))
                             visited_pairs.add((neighbor, current))
