@@ -13,19 +13,19 @@ class Stack:
     A Stack object contains 4+ lists of Pair objects. Each Pair contains a pair of asf_search.ASFProduct objects.
     
     Stack member variables holding lists of Pairs:
-    - self.full_stack: Every possible pair based on the provided geo_reference scene 
+    - Stack.full_stack: Every possible pair based on the provided geo_reference scene 
       and ASFSearchOptions. This forms a complete network of all represented asf_search.ASFProducts.
-    - self.remove_list: The list of Pairs to remove from self.full_stack, used to create self.subset_stack
-    - self.subset_stack: The resulting list after removing self.Remove_list from self.full_stack. This creates 
+    - Stack.remove_list: The list of Pairs to remove from Stack.full_stack, used to create Stack.subset_stack
+    - Stack.subset_stack: The resulting list after removing Stack.Remove_list from Stack.full_stack. This creates 
       a possibly disconnected network of asf_search.ASFProducts
-    - self.connected_substacks: This is a list of lists of Pairs. It contains each disconnected component of a self.subset_stack's
-      asf_search.ASFProduct network. A length of 1 indicates that self.subset_stack is a connected network of asf_search.ASFProducts.
+    - Stack.connected_substacks: This is a list of lists of Pairs. It contains each disconnected component of a Stack.subset_stack's
+      asf_search.ASFProduct network. A length of 1 indicates that Stack.subset_stack is a connected network of asf_search.ASFProducts.
 
     Public Stack methods:
-    - self.remove_pairs(): Adds Pairs to self.remove_list and removes them from self.subset_stack.
-    - self.add_pairs(): Adds Pairs to self.subset_stack. This either removes them from self.remove_list, or if not yet present in the
+    - Stack.remove_pairs(): Adds Pairs to Stack.remove_list and removes them from Stack.subset_stack.
+    - Stack.add_pairs(): Adds Pairs to Stack.subset_stack. This either removes them from Stack.remove_list, or if not yet present in the
       Stack, adds them to self.full_stack.
-    - self.get_scene_ids(): A convienience method that returns a given list of Pairs as a list of tuples of asf_search.ASFProduct
+    - Stack.get_scene_ids(): A convenience method that returns a given list of Pairs as a list of tuples of asf_search.ASFProduct
       product IDs, which is useful when ordering on-demand processing via ASF's HyP3 or HyP3+ services.
     """
     def __init__(
