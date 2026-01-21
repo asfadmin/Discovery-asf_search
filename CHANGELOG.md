@@ -26,6 +26,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v11.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.0...v11.0.1)
+### Fixed
+- Fixed parsing product byte size on newer ARIA S1-GUNW products
+
 ## [v11.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.3.0...v11.0.0)
 ### Changed
 - `ASF_AUTH_HOST` `auth.asf.alaska.edu` replaced with `cumulus.asf.alaska.edu`. This change should be seamless
