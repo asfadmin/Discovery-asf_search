@@ -175,12 +175,14 @@ class Stack:
     def get_scene_ids(self, pair_list: Optional[List[Pair]] = None) -> List[Tuple[str, str]]:
         """
         Provides scene names for all asf_search.ASFProducts in a list of Pairs.
-        Useful when ordering an SBAS stack from ASF HyP3 On-Demand Processing.
+        Useful when ordering pair-based products from ASF HyP3 On-Demand Processing.
 
         If no stack_dict is passed, defaults to the largest connected substack
 
+        pair_list: A list of `Pair`s for which to retrieve scene IDs.
+        
         Returns:
-            A list tuples containing the reference and secondary scene name for each inSAR pair in the SBAS stack
+            A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
         """
         if not pair_list:
             pair_list = max(self.connected_substacks, key=len)
