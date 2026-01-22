@@ -307,6 +307,7 @@ class JsonStreamArray(list):
                 'frameCoverage': p.get('frameCoverage'),
                 'jointObservation': p.get('jointObservation'),
                 'rangeBandwidth': p.get('rangeBandwidth'),
+                'crid': p.get('crid')
             }
         elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
             result.pop('perpendicularBaseline', None)
