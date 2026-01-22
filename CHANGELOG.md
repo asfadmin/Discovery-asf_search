@@ -27,6 +27,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v11.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.0...v11.0.1)
+### Added
+- `crid` property added to `NISARProduct`
+
 ### Fixed
 - `NISARProduct` class populates property `pathNumber` with `TRACK_NUMBER` field from UMM-G
     - Searching with `relativeOrbit` with `NISAR` dataset/product types in query automatically searches on `TRACK_NUMBER` instead of `PATH_NUMBER`
