@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v11.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.0...v11.0.1)
+### Fixed
+- `NISARProduct` class populates property `pathNumber` with `TRACK_NUMBER` field from UMM-G
+    - Searching with `relativeOrbit` with `NISAR` dataset/product types in query automatically searches on `TRACK_NUMBER` instead of `PATH_NUMBER`
+
+------
 ## [v11.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.3.0...v11.0.0)
 ### Changed
 - `ASF_AUTH_HOST` `auth.asf.alaska.edu` replaced with `cumulus.asf.alaska.edu`. This change should be seamless
