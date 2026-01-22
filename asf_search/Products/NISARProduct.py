@@ -32,6 +32,10 @@ class NISARProduct(ASFStackableProduct):
         'processingLevel': {'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0]},
         'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
         'collectionName': {'path': ["CollectionReference", "ShortName"]},
+        'pathNumber': {
+            'path': ['AdditionalAttributes', ('Name', 'TRACK_NUMBER'), 'Values', 0],
+            'cast': try_parse_int,
+        },
     }
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
