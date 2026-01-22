@@ -30,6 +30,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - Dropped `NISAR_STUF` collection from NISAR dataset (Still available when querying `NISAR` via `platform` search keyword)
 
+### Fixed
+- `NISARProduct` class populates property `pathNumber` with `TRACK_NUMBER` field from UMM-G
+    - Searching with `relativeOrbit` with `NISAR` dataset/product types in query automatically searches on `TRACK_NUMBER` instead of `PATH_NUMBER`
+
 ------
 ## [v11.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.3.0...v11.0.0)
 ### Changed
