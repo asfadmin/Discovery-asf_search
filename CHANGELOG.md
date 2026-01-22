@@ -27,6 +27,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v11.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.0...v11.0.1)
+### Added
+- `crid` property added to `NISARProduct`
+
 ### Changed
 - Dropped `NISAR_STUF` collection from NISAR dataset (Still available when querying `NISAR` via `platform` search keyword)
 

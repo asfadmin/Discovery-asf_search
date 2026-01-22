@@ -240,6 +240,7 @@ class JSONLiteStreamArray(list):
                 'additionalUrls': p.get('additionalUrls', []),
                 's3Urls': p.get('s3Urls', []),
                 'pgeVersion':  p.get('pgeVersion'),
+                'crid': p.get('crid'),
                 'mainBandPolarization':  p.get('mainBandPolarization'),
                 'sideBandPolarization':  p.get('sideBandPolarization'),
                 'frameCoverage':  p.get('frameCoverage'),
