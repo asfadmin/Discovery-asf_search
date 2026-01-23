@@ -22,9 +22,11 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
 
+    should_use_track = False
     if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
         processingType = dict_opts.get('processingLevel', [])[0]
         if processingType in NISAR_PRODUCT_TYPES:
+            should_use_track = True
             # Use new PRODUCT_TYPE keyword later, remove processingLevel so we don't try the value with PROCESSING_LEVEL
             dict_opts['productType'] = dict_opts.pop('processingLevel')[0]
 
@@ -107,7 +109,10 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     if should_use_asf_frame(cmr_opts):
         cmr_opts = use_asf_frame(cmr_opts)
-
+    
+    if should_use_track:
+        cmr_opts = use_track_number(cmr_opts)
+        
     cmr_opts.extend(custom_cmr_keywords)
 
     additional_keys = [
@@ -172,6 +177,24 @@ def use_asf_frame(cmr_opts):
 
     return cmr_opts
 
+def use_track_number(cmr_opts):
+    """
+    NISAR: always use track number instead of path number
+    """
+
+    for n, p in enumerate(cmr_opts):
+        if not isinstance(p[1], str):
+            continue
+
+        m = re.search(r'PATH_NUMBER', p[1])
+        if m is None:
+            continue
+
+        logging.debug('NISAR subquery with relativeOrbit, using TRACK_NUMBER instead of PATH_NUMBER')
+
+        cmr_opts[n] = (p[0], p[1].replace(',PATH_NUMBER,', ',TRACK_NUMBER,'))
+
+    return cmr_opts
 
 # some products don't have integer values in BYTES fields, round to nearest int
 def try_round_float(value: str) -> Optional[int]:

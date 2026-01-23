@@ -14,7 +14,12 @@ class NISARProduct(ASFStackableProduct):
             'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0],
             'cast': try_parse_int,
         },  # Sentinel, ALOSm and NISAR product alt for frameNumber (ESA_FRAME)
+        'pathNumber': { # AKA trackNumber, AKA relativeOrbit
+            'path': ['AdditionalAttributes', ('Name', 'TRACK_NUMBER'), 'Values', 0],
+            'cast': try_parse_int,
+        },
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
+        'crid': {'path': ['DataGranule', 'Identifiers', ('IdentifierType', 'CRID'), 'Identifier']},
         'mainBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_A_POLARIZATION'), 'Values']},
         'sideBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_B_POLARIZATION'), 'Values']},
         'frameCoverage': {'path': ['AdditionalAttributes', ('Name', 'FULL_FRAME'), 'Values', 0], 'cast': try_parse_frame_coverage},
