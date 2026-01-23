@@ -238,11 +238,6 @@ dataset_collections = {
             'C1257349067-ASF',
             'C3622253574-ASF',
         ],
-        'NISAR_STUF': [
-            'C1256535568-ASFDEV',
-            'C1257349089-ASF',
-            'C3622233495-ASF',
-        ],
         'NISAR_OROST': [
             'C1256578011-ASFDEV',
             'C1257349074-ASF',
