@@ -18,6 +18,160 @@ dataset_collections = {
         ]
     },
     'NISAR': {
+        'NISAR_L0B_RRSD_BETA_V1': [
+            'C1261815274-ASFDEV',
+            'C1273831320-ASF',
+            'C3622228339-ASF',
+        ],
+        'NISAR_L0B_RRSD_PROVISIONAL_V1': [
+            'C1261832497-ASFDEV',
+            'C1261832659-ASF',
+            'C2853089814-ASF',
+        ],
+        'NISAR_L0B_RRSD_V1': [
+            'C1256358262-ASFDEV',
+            'C1257349115-ASF',
+            'C3622265756-ASF',
+        ],
+        'NISAR_L1_RSLC_BETA_V1': [
+            'C1261813489-ASFDEV',
+            'C1273831203-ASF',
+            'C2850225585-ASF',
+        ],
+        'NISAR_L1_RSLC_PROVISIONAL_V1': [
+            'C1261832868-ASFDEV',
+            'C1261833052-ASF',
+            'C2853145197-ASF',
+        ],
+        'NISAR_L1_RSLC_V1': [
+            'C1273095154-ASFDEV',
+            'C1273831205-ASF',
+            'C3622236985-ASF',
+        ],
+        'NISAR_L1_RIFG_BETA_V1': [
+            'C1261819086-ASFDEV',
+            'C1273831200-ASF',
+            'C2850234202-ASF',
+        ],
+        'NISAR_L1_RIFG_PROVISIONAL_V1': [
+            'C1261832940-ASFDEV',
+            'C1261833063-ASF',
+            'C2853147928-ASF',
+        ],
+        'NISAR_L1_RIFG_V1': [
+            'C1256381769-ASFDEV',
+            'C1257349108-ASF',
+            'C3622229381-ASF',
+        ],
+        'NISAR_L1_RUNW_BETA_V1': [
+            'C1261819098-ASFDEV',
+            'C1261819121-ASF',
+            'C2850235455-ASF',
+        ],
+        'NISAR_L1_RUNW_PROVISIONAL_V1': [
+            'C1261832990-ASFDEV',
+            'C1261833064-ASF',
+            'C2853153429-ASF',
+        ],
+        'NISAR_L1_RUNW_V1': [
+            'C1256420738-ASFDEV',
+            'C1257349107-ASF',
+            'C3622237369-ASF',
+        ],
+        'NISAR_L1_ROFF_BETA_V1': [
+            'C1261819110-ASFDEV',
+            'C1261819145-ASF',
+            'C2850237619-ASF',
+        ],
+        'NISAR_L1_ROFF_PROVISIONAL_V1': [
+            'C1261832993-ASFDEV',
+            'C1261833076-ASF',
+            'C2853156054-ASF',
+        ],
+        'NISAR_L1_ROFF_V1': [
+            'C1256411631-ASFDEV',
+            'C1257349103-ASF',
+            'C3622241997-ASF',
+        ],
+        'NISAR_L3_SME2_BETA_V1': [
+            'C1261819245-ASFDEV',
+            'C1261819282-ASF',
+            'C2850265000-ASF',
+        ],
+        'NISAR_L3_SME2_PROVISIONAL_V1': [
+            'C1261833050-ASFDEV',
+            'C1261847095-ASF',
+            'C2854344945-ASF',
+        ],
+        'NISAR_L3_SME2_V1': [
+            'C1256568692-ASFDEV',
+            'C1257349093-ASF',
+            'C3622248530-ASF',
+        ],
+
+        'NISAR_L2_GSLC_BETA_V1': [
+            'C1261819167-ASFDEV',
+            'C1273831198-ASF',
+            'C2850259510-ASF',
+        ],
+        'NISAR_L2_GSLC_PROVISIONAL_V1': [
+            'C1261833024-ASFDEV',
+            'C1261833127-ASF',
+            'C2854332392-ASF',
+        ],
+        'NISAR_L2_GSLC_V1': [
+            'C1256413628-ASFDEV',
+            'C1257349102-ASF',
+            'C3622244601-ASF',
+        ],
+        'NISAR_L2_GCOV_BETA_V1': [
+            'C1261819211-ASFDEV',
+            'C1273831195-ASF',
+            'C3622214170-ASF',
+        ],
+        'NISAR_L2_GCOV_PROVISIONAL_V1': [
+            'C1261833026-ASFDEV',
+            'C1261846880-ASF',
+            'C2854338529-ASF',
+        ],
+        'NISAR_L2_GCOV_V1': [
+            'C1256477304-ASFDEV',
+            'C1257349095-ASF',
+            'C2727896018-ASF',
+        ],
+        'NISAR_L2_GUNW_BETA_V1': [
+            'C1261819168-ASFDEV',
+            'C1261819270-ASF',
+            'C2850261892-ASF',
+        ],
+        'NISAR_L2_GUNW_PROVISIONAL_V1': [
+            'C1261833025-ASFDEV',
+            'C1261846741-ASF',
+            'C2854335566-ASF',
+        ],
+        'NISAR_L2_GUNW_V1': [
+            'C1256432264-ASFDEV',
+            'C1257349096-ASF',
+            'C3622247503-ASF',
+        ],
+        'NISAR_L2_GOFF_BETA_V1': [
+            'C1261819233-ASFDEV',
+            'C1261819281-ASF',
+            'C2850263910-ASF',
+        ],
+        'NISAR_L2_GOFF_PROVISIONAL_V1': [
+            'C1261833027-ASFDEV',
+            'C1261846994-ASF',
+            'C2854341702-ASF',
+        ],
+        'NISAR_L2_GOFF_V1': [
+            'C1256479237-ASFDEV',
+            'C1257349094-ASF',
+            'C3622250865-ASF',
+        ],
+    },
+
+    'NISAR-FULL': {
         'NISAR_NEN_RRST_BETA_V1': [
             'C1261815181-ASFDEV',
             'C1261815288-ASF',
