@@ -56,6 +56,14 @@ class ARIAS1GUNWProduct(S1Product):
             self.properties['fileName'] = self.properties['fileID'] + '.' + urls[0].split('.')[-1]
             self.properties['additionalUrls'] = urls[1:]
 
+        if self.properties.get('bytes') is None:
+            bytesMap = self.umm_get(self.umm, 'DataGranule', 'ArchiveAndDistributionInformation')
+            if isinstance(bytesMap, list):
+                bytesMap = {entry['Format']: entry for entry in bytesMap}
+                if bytesMap.get('netCDF-4') is not None:
+                    self.properties['bytes'] = bytesMap['netCDF-4']['SizeInBytes']
+                    self.properties['md5sum'] = bytesMap['netCDF-4']['Checksum']['Value']
+
     def get_stack_opts(self, opts: Optional[ASFSearchOptions] = None) -> Optional[ASFSearchOptions]:
         """
         Build search options that can be used to find an insar stack for this product

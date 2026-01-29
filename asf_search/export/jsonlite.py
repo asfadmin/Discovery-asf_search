@@ -9,6 +9,8 @@ from shapely.ops import transform
 from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
+_MB = 1048576
+
 extra_jsonlite_fields = [
     (
         "processingTypeDisplay",
@@ -262,6 +264,11 @@ class JSONLiteStreamArray(list):
                 result['ariaVersion'] = re.sub(r'[^0-9\.]', '', version_unformatted.replace("_", '.'))
             else:
                 result['ariaVersion'] = p.get('ariaVersion')
+                result['productTypeDisplay'] = 'Standard Product, NetCDF'
+            
+            if result['sizeMB'] is None:
+                result["sizeMB"] = float(p["bytes"]) / _MB
+                pass
         
         return result
 
