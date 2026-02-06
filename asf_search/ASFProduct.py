@@ -358,6 +358,9 @@ class ASFProduct:
         return self.umm_cast(mapping['cast'], value)
 
     def _get_geometry(self, item: Dict):
+        """Helper method that creates a geometry context dictionary. 
+        Meant primarily for NISARProduct to override for dateline multipolygon parsing.
+        """
         try:
             coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry'][
                 'GPolygons'
