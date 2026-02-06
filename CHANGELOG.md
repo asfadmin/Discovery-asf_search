@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v11.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.2...v11.0.3)
+### Fixed
+- Properly parse multipolygons from NISAR UMM-G that cross dateline, unwrap geometry (add 360 to negative longitude polygon)
+
+------
 ## [v11.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.1...v11.0.2)
 ### Fixed
 - Fixed parsing product byte size on newer ARIA S1-GUNW products

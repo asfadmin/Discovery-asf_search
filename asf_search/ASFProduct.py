@@ -357,10 +357,7 @@ class ASFProduct:
 
         return self.umm_cast(mapping['cast'], value)
 
-    def translate_product(self, item: Dict) -> Dict:
-        """
-        Generates `properties` and `geometry` from the CMR UMM response
-        """
+    def _get_geometry(self, item: Dict):
         try:
             coordinates = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry'][
                 'GPolygons'
@@ -370,6 +367,13 @@ class ASFProduct:
         except KeyError:
             geometry = {'coordinates': None, 'type': 'Polygon'}
 
+        return geometry
+    
+    def translate_product(self, item: Dict) -> Dict:
+        """
+        Generates `properties` and `geometry` from the CMR UMM response
+        """
+        geometry = self._get_geometry(item)
         umm = item.get('umm')
 
         # additionalAttributes = {attr['Name']: attr['Values'] for attr in umm['AdditionalAttributes']}
