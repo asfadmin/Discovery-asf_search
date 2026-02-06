@@ -1,7 +1,10 @@
+from shapely import unary_union, multipolygons
 from typing import Dict, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
-
+from shapely.geometry import shape, MultiPolygon
+from shapely.geometry.base import BaseGeometry
+from shapely.ops import transform
 class NISARProduct(ASFStackableProduct):
     """
     Used for NISAR dataset products
@@ -73,3 +76,50 @@ class NISARProduct(ASFStackableProduct):
             return (self._read_property('processingDate', ''), keys[1])
 
         return keys
+
+
+    def _get_geometry(self, item: Dict) -> dict:
+        """Overload for dateline multipolygon parsing.
+        # TODO consider implications of moving this to base ASFProduct class in future
+        """
+        try:
+            polygons = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry'][
+                'GPolygons'
+            ]
+            # dateline spanning scenes are stored as multiple polygons in CMR, 
+            # we need to unwrap and merge them
+            if len(polygons) > 1:
+                polygon_shapes = []
+                for polygon in polygons:
+                    coordinates = [[c['Longitude'], c['Latitude']] for c in polygon['Boundary']['Points']]
+                    geometry = self._get_unwrapped({'coordinates': [coordinates], 'type': 'Polygon'})
+
+                    polygon_shapes.append(geometry)
+                
+                geom = unary_union(multipolygons(polygon_shapes))
+
+                # sometimes the dateline spanning polygons don't overlap properly
+                if isinstance(geom, MultiPolygon):
+                    geom = geom.convex_hull
+
+                return {'coordinates': [geom.exterior.coords], 'type': 'Polygon'}
+            else:
+                coordinates = polygons[0]['Boundary']['Points']
+                coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
+                geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
+        except KeyError:
+            geometry = {'coordinates': None, 'type': 'Polygon'}
+
+        return geometry
+
+    def _get_unwrapped(self, geometry: dict) -> BaseGeometry:
+        def unwrap_shape(x, y, z=None):
+            x = x if x > 0 else x + 360
+            return tuple([x, y])
+        wrapped = shape(geometry)
+        if wrapped.bounds[0] < 0 or wrapped.bounds[2] < 0:
+            unwrapped = transform(unwrap_shape, wrapped)
+        else:
+            unwrapped = wrapped
+
+        return unwrapped
