@@ -31,9 +31,16 @@ extra_requirements = [
 
 # Required for ARIA-S1 GUNW Stacking
 asf_enumeration = [
-    'asf-enumeration>=0.3.0'
+    'asf-enumeration>=0.4.0'
 ]
 
+# Required for optional Sentinel-1 Pair coherence estimation
+coherence = [
+    'pandas',
+    'zarr',
+    's3fs',
+    'rioxarray',
+]
 
 with open('README.md', 'r') as readme_file:
     readme = readme_file.read()
@@ -53,7 +60,7 @@ setup(
     include_package_data=True,
     python_requires='>=3.10',
     install_requires=requirements,
-    extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration},
+    extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration, 'coherence': coherence},
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[

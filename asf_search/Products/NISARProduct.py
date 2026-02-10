@@ -1,9 +1,12 @@
 from copy import copy
 from dateutil.parser import parse as parse_datetime
 from typing import Dict, Optional, Tuple, Union
+from shapely import unary_union, multipolygons
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
-
+from shapely.geometry import shape, MultiPolygon
+from shapely.geometry.base import BaseGeometry
+from shapely.ops import transform
 class NISARProduct(ASFStackableProduct):
     """
     Used for NISAR dataset products
@@ -16,7 +19,12 @@ class NISARProduct(ASFStackableProduct):
             'path': ['AdditionalAttributes', ('Name', 'FRAME_NUMBER'), 'Values', 0],
             'cast': try_parse_int,
         },  # Sentinel, ALOSm and NISAR product alt for frameNumber (ESA_FRAME)
+        'pathNumber': { # AKA trackNumber, AKA relativeOrbit
+            'path': ['AdditionalAttributes', ('Name', 'TRACK_NUMBER'), 'Values', 0],
+            'cast': try_parse_int,
+        },
         'pgeVersion': {'path': ['PGEVersionClass', 'PGEVersion']},
+        'crid': {'path': ['DataGranule', 'Identifiers', ('IdentifierType', 'CRID'), 'Identifier']},
         'mainBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_A_POLARIZATION'), 'Values']},
         'sideBandPolarization': {'path': ['AdditionalAttributes', ('Name', 'FREQUENCY_B_POLARIZATION'), 'Values']},
         'frameCoverage': {'path': ['AdditionalAttributes', ('Name', 'FULL_FRAME'), 'Values', 0], 'cast': try_parse_frame_coverage},
@@ -24,6 +32,8 @@ class NISARProduct(ASFStackableProduct):
         'rangeBandwidth': {'path': ['AdditionalAttributes', ('Name', 'RANGE_BANDWIDTH_CONCAT'), 'Values']},
         'productionConfiguration': {'path': ['AdditionalAttributes', ('Name', 'PRODUCTION_PIPELINE'), 'Values', 0]},
         'processingLevel': {'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0]},
+        'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
+        'collectionName': {'path': ["CollectionReference", "ShortName"]},
     }
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
@@ -36,6 +46,11 @@ class NISARProduct(ASFStackableProduct):
 
         if self.properties.get('groupID') is None:
             self.properties['groupID'] = self.properties['sceneName']
+        self.properties['bytes'] = {
+            entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']}
+            for entry in self.properties['bytes']
+        }
+        self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
@@ -82,3 +97,49 @@ class NISARProduct(ASFStackableProduct):
                 d = parse_datetime(validityStartDate)
                 if d <= parse_datetime(self.properties.get('stopTime')):
                     return product
+
+    def _get_geometry(self, item: Dict) -> dict:
+        """Overload for dateline multipolygon parsing.
+        # TODO consider implications of moving this to base ASFProduct class in future
+        """
+        try:
+            polygons = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry'][
+                'GPolygons'
+            ]
+            # dateline spanning scenes are stored as multiple polygons in CMR, 
+            # we need to unwrap and merge them
+            if len(polygons) > 1:
+                polygon_shapes = []
+                for polygon in polygons:
+                    coordinates = [[c['Longitude'], c['Latitude']] for c in polygon['Boundary']['Points']]
+                    geometry = self._get_unwrapped({'coordinates': [coordinates], 'type': 'Polygon'})
+
+                    polygon_shapes.append(geometry)
+                
+                geom = unary_union(multipolygons(polygon_shapes))
+
+                # sometimes the dateline spanning polygons don't overlap properly
+                if isinstance(geom, MultiPolygon):
+                    geom = geom.convex_hull
+
+                return {'coordinates': [geom.exterior.coords], 'type': 'Polygon'}
+            else:
+                coordinates = polygons[0]['Boundary']['Points']
+                coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
+                geometry = {'coordinates': [coordinates], 'type': 'Polygon'}
+        except KeyError:
+            geometry = {'coordinates': None, 'type': 'Polygon'}
+
+        return geometry
+
+    def _get_unwrapped(self, geometry: dict) -> BaseGeometry:
+        def unwrap_shape(x, y, z=None):
+            x = x if x > 0 else x + 360
+            return tuple([x, y])
+        wrapped = shape(geometry)
+        if wrapped.bounds[0] < 0 or wrapped.bounds[2] < 0:
+            unwrapped = transform(unwrap_shape, wrapped)
+        else:
+            unwrapped = wrapped
+
+        return unwrapped

@@ -1,4 +1,4 @@
-ASF_AUTH_HOST = 'auth.asf.alaska.edu'
+ASF_AUTH_HOST = 'cumulus.asf.alaska.edu'
 
 CMR_HOST = 'cmr.earthdata.nasa.gov'
 CMR_HOST_UAT = 'cmr.uat.earthdata.nasa.gov'
@@ -17,6 +17,6 @@ EDL_CLIENT_ID = 'BO_n7nTIlMljdvU6kRRB3g'
 DEFAULT_PROVIDER = 'ASF'
 
 AUTH_DOMAINS = ['asf.alaska.edu', 'earthdata.nasa.gov'] #, 'earthdatacloud.nasa.gov']
-AUTH_COOKIES = ['urs_user_already_logged', 'uat_urs_user_already_logged']
+AUTH_COOKIES = ['urs_user_already_logged', 'uat_urs_user_already_logged', 'asf-urs']
 
 ERROR_REPORTING_ENDPOINT = 'search-error-report.asf.alaska.edu'

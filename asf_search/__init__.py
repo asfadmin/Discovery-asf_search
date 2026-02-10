@@ -44,7 +44,8 @@ from .constants import (  # noqa: F401 E402
     PRODUCT_TYPE,  # noqa: F401 E402
     INTERNAL,  # noqa: F401 E402
     DATASET,  # noqa: F401 E402
-    RANGE_BANDWIDTH,  # noqa: F401 E402
+    RANGE_BANDWIDTH,  # noqa: F401 E402,
+    PRODUCTION_CONFIGURATION,  # noqa: F401 E402
 )
 from .health import *  # noqa: F403 F401 E402
 from .search import *  # noqa: F403 F401 E402
@@ -53,6 +54,7 @@ from .CMR import *  # noqa: F403 F401 E402
 from .baseline import *  # noqa: F403 F401 E402
 from .WKT import validate_wkt  # noqa: F401 E402
 from .export import *  # noqa: F403 F401 E402
+from .Pair import Pair  # noqa:  F401, E402
 
 REPORT_ERRORS = True
 """Enables automatic search error reporting to ASF, send any questions to uso@asf.alaska.edu"""

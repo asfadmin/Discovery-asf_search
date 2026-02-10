@@ -5,6 +5,11 @@ test_types:
     required_keys: products
     method: test_ASFProduct
 
+- For running ASFProduct Subproduct tests:
+    required_in_title: ASFSubproduct
+    required_keys: ['scenes', 'expected_subclass']
+    method: test_ASFSubproduct
+
 - For running ASFProduct_Stack tests:
     required_keys: ["product", "preprocessed_stack", "processed_stack"]
     required_in_title: ASFProduct_Stack
@@ -207,6 +212,11 @@ test_types:
     required_in_title: search-build_subquery
     required_keys: ['params', 'expected']
     method: test_build_subqueries
+
+- For running collection_attributes tests:
+    required_in_title: test-collection-attributes
+    required_keys: ['params', 'expected_attributes']
+    method: test_collection_attributes
 
 - For running jupyter notebook example tests:
     required_keys: notebook

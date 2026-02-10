@@ -26,9 +26,112 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v10.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.0...v10.0.1)
+## [v11.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.3...v11.0.4)
 ### Added
 - `NISARProduct.get_static_layer()` searches for and returns the latest valid NISAR static layer associated with a given product if available.
+
+------
+## [v11.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.2...v11.0.3)
+### Fixed
+- Properly parse multipolygons from NISAR UMM-G that cross dateline, unwrap geometry (add 360 to negative longitude polygon)
+
+------
+## [v11.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.1...v11.0.2)
+### Fixed
+- Fixed parsing product byte size on newer ARIA S1-GUNW products
+
+------
+## [v11.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.0...v11.0.1)
+### Added
+- `crid` property added to `NISARProduct`
+
+### Changed
+- Dropped `NISAR_STUF` collection from NISAR dataset (Still available when querying `NISAR` via `platform` search keyword)
+
+### Fixed
+- `NISARProduct` class populates property `pathNumber` with `TRACK_NUMBER` field from UMM-G
+    - Searching with `relativeOrbit` with `NISAR` dataset/product types in query automatically searches on `TRACK_NUMBER` instead of `PATH_NUMBER`
+
+------
+## [v11.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.3.0...v11.0.0)
+### Changed
+- `ASF_AUTH_HOST` `auth.asf.alaska.edu` replaced with `cumulus.asf.alaska.edu`. This change should be seamless
+- `auth_with_creds()` now queries `ASF_AUTH_HOST` for `asf-urs` cookie after generating EDL token via `https://urs.earthdata.nasa.gov/api/users/find_or_create_token`
+
+------
+## [v10.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.2.1...v10.3.0)
+### Added
+- Add a Pair class that groups ASFProducts as reference and secondary scenes, and provides temporal and perpendicular baselines as member variables. Pair will be used for creating InSAR SBAS stacks, though its utility extends beyond that use case. A new dependency group `coherence` is included in the `setup.py`.
+
+------
+## [v10.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.2.0...v10.2.1)
+### Added
+- Added `get_searchable_attributes()` search method, return dict mapping of additional attribute names to `AdditionalAttribute` data class object
+
+------
+## [v10.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.2...v10.2.0)
+### Changed
+- `SEATSAT 1` collections in CMR have been merged into a new single collection. Filtering by processing level for same scene no longer necessary. Different file urls, s3 uris, sizes, and md5sums of each scene now accessible via `additionalUrls`, `s3Urls`, `bytes`, and `md5sum` keys in each scene's `properties` dict.
+- NISAR products have collection id and collection name in products and jsonlite export
+
+### Added
+- Added authentication test case support for main `master` branch, `--auth_with_creds` and `--auth-with-token` for local test session authentication
+
+### Fixed
+- Removed `CRSD` from NISAR dataset and relevant constants, no longer part of `L0B` science product type
+
+------
+## [v10.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.1...v10.1.2)
+### Added
+- Add `CRSD` and `RRSD` constants to `PRODUCT_TYPE`
+- Add docstrings for `DATASET.NISAR` and the various related `PRODUCT_TYPE` constants
+- Add static method `get_stack_opts_for_frame()` to `ARIAS1GUNWProduct` class, returns ARIA frame stack opts for given frame ID
+
+### Fixed
+- No longer query CMR with `L0B` directly, now properly aliased to `CRSD` and `RRSD` product types
+
+### Changed
+- Bump asf-enumeration version minimum version to 0.4.0 for Sentinel-1C support
+
+------
+## [v10.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.1.0...v10.1.1)
+### Added
+- Adds `TROPO_ZENITH` OPERA-S1 product type constant to `PRODUCT_TYPE.py` and concept-id to dataset
+
+------
+## [v10.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.5...v10.1.0)
+### Changed
+- Updated publish `action-create-release` github action to v3
+
+### Fixed
+- Updated ARIA test case
+
+------
+## [v10.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.4...v10.0.5)
+### Fixed
+- Updates `ASFSession.auth_with_creds` to check for `asf-urs` in cookies
+- Cleans up NISAR size display for csv/kml/metalink formats
+
+------
+## [v10.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.3...v10.0.4)
+### Fixed
+- Removes erroneous deprecation warning when setting `cmr_host` in `ASFSession` constructor.
+
+------
+## [v10.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.2...v10.0.3)
+### Added
+- constant `CUSTOM` now available in `PRODUCTION_CONFIGURATION` module
+
+------
+## [v10.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.1...v10.0.2)
+### Fixed
+- `PRODUCTION_CONFIGURATION` constants module now accessible as top level import
+- NISAR Urgent Response works properly with processing level searches
+
+------
+## [v10.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v10.0.0...v10.0.1)
+### Added
+- adds NISAR file sizes to the `nisar` attribute of exports
 
 ------
 ## [v10.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v9.0.9...v10.0.0)

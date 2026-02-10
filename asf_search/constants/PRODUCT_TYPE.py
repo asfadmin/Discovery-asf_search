@@ -91,25 +91,36 @@ CSTOKES = 'CSTOKES'
 DEM = 'DEM'
 THREEFP = '3FP'
 
-# SEASAT
-GEOTIFF = 'GEOTIFF'
-# L1 provided by RADARSAT
-
 # OPERA-S1
 RTC = 'RTC'
 CSLC = 'CSLC'
 RTC_STATIC = 'RTC-STATIC'
 CSLC_STATIC = 'CSLC-STATIC'
 DISP_S1 = 'DISP-S1'
+TROPO_ZENITH = 'TROPO-ZENITH'
 
 # NISAR
 L0B = 'L0B'
+"""alias for RRSD Level Zero B product types"""
+
+RRSD = 'RRSD'
+
 RSLC = 'RSLC'
+"""Level 1 Range-Doppler Single Look Complex"""
 RIFG = 'RIFG'
+"""Level 1 Range-Doppler Wrapped Interferrogram"""
 RUNW = 'RUNW'
+"""Level 1 Range-Doppler Unwrapped Interferrogram"""
 ROFF = 'ROFF'
+"""Level 1 Range-Doppler Pixel Offsets"""
 GSLC = 'GSLC'
+"""Level 2 Geocoded Single Look Complex"""
 GCOV = 'GCOV'
+"""Level 2 Geocoded Polarimetric Covariance"""
 GUNW = 'GUNW'
+""""Level 2 Geocoded Unwrapped Inteferrogram"""
 GOFF = 'GOFF'
+"""Level 2 Geocoded Pixel Offsets"""
 SME2 = 'SME2'
+"""Level 3 Soil Moisture EASE-Grid 2.0"""
+

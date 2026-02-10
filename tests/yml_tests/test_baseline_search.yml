@@ -52,3 +52,8 @@ tests:
     stack_reference: null
     stack: ARIAS1GUNW_stack.yml
     dataset: 'ARIA S1 GUNW'
+
+- test-stack-id S1 ID:
+    stack_reference: null
+    stack: S1A_IW_SLC__1SSV_20160528T141908_20160528T141938_011460_011746_335C_stack.yml
+    stack_id: S1A_IW_SLC__1SSV_20160528T141908_20160528T141938_011460_011746_335C-SLC

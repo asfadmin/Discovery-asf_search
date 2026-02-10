@@ -8,7 +8,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import collections_per_platform
+from .datasets import collections_per_platform, NISAR_PRODUCT_TYPES
 import logging
 
 try:
@@ -21,6 +21,14 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
+
+    should_use_track = False
+    if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
+        processingType = dict_opts.get('processingLevel', [])[0]
+        if processingType in NISAR_PRODUCT_TYPES:
+            should_use_track = True
+            # Use new PRODUCT_TYPE keyword later, remove processingLevel so we don't try the value with PROCESSING_LEVEL
+            dict_opts['productType'] = dict_opts.pop('processingLevel')[0]
 
     # Escape commas for each key in the list.
     # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
@@ -79,6 +87,9 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     for key, val in dict_opts.items():
         # If it's "session" or something else CMR doesn't accept, don't send it:
         if key not in field_map:
+            if key == 'productType':
+                custom_cmr_keywords.append(('attribute[]', f'string,PRODUCT_TYPE,{val}'))
+            
             continue
         if isinstance(val, list):
             for x in val:
@@ -98,7 +109,10 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     if should_use_asf_frame(cmr_opts):
         cmr_opts = use_asf_frame(cmr_opts)
-
+    
+    if should_use_track:
+        cmr_opts = use_track_number(cmr_opts)
+        
     cmr_opts.extend(custom_cmr_keywords)
 
     additional_keys = [
@@ -125,7 +139,7 @@ def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def should_use_asf_frame(cmr_opts):
-    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS', 'ALOS-2', 'NISAR']
+    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS', 'ALOS-2', 'NISAR', 'SEASAT 1']
 
     asf_frame_collections = get_concept_id_alias(asf_frame_platforms, collections_per_platform)
 
@@ -163,6 +177,24 @@ def use_asf_frame(cmr_opts):
 
     return cmr_opts
 
+def use_track_number(cmr_opts):
+    """
+    NISAR: always use track number instead of path number
+    """
+
+    for n, p in enumerate(cmr_opts):
+        if not isinstance(p[1], str):
+            continue
+
+        m = re.search(r'PATH_NUMBER', p[1])
+        if m is None:
+            continue
+
+        logging.debug('NISAR subquery with relativeOrbit, using TRACK_NUMBER instead of PATH_NUMBER')
+
+        cmr_opts[n] = (p[0], p[1].replace(',PATH_NUMBER,', ',TRACK_NUMBER,'))
+
+    return cmr_opts
 
 # some products don't have integer values in BYTES fields, round to nearest int
 def try_round_float(value: str) -> Optional[int]:

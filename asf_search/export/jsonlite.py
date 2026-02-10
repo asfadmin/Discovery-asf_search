@@ -9,6 +9,8 @@ from shapely.ops import transform
 from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 
+_MB = 1048576
+
 extra_jsonlite_fields = [
     (
         "processingTypeDisplay",
@@ -240,12 +242,21 @@ class JSONLiteStreamArray(list):
                 'additionalUrls': p.get('additionalUrls', []),
                 's3Urls': p.get('s3Urls', []),
                 'pgeVersion':  p.get('pgeVersion'),
+                'crid': p.get('crid'),
                 'mainBandPolarization':  p.get('mainBandPolarization'),
                 'sideBandPolarization':  p.get('sideBandPolarization'),
                 'frameCoverage':  p.get('frameCoverage'),
                 'jointObservation':  p.get('jointObservation'),
                 'rangeBandwidth':  p.get('rangeBandwidth'),
+                'sizeMB': p.get('bytes'),
             }
+            result["collectionName"] = p.get("collectionName")
+            result["conceptID"] = p.get("conceptID")
+        elif p.get('platform') == 'SEASAT 1':
+            result['additionalUrls'] = p.get('additionalUrls', [])
+            result['s3Urls'] = p.get('s3Urls', [])
+            result['sizeMB'] = p.get('bytes', {})
+
         elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
             result.pop("perpendicularBaseline", None)
             if p.get('ariaVersion') is None:
@@ -253,6 +264,11 @@ class JSONLiteStreamArray(list):
                 result['ariaVersion'] = re.sub(r'[^0-9\.]', '', version_unformatted.replace("_", '.'))
             else:
                 result['ariaVersion'] = p.get('ariaVersion')
+                result['productTypeDisplay'] = 'Standard Product, NetCDF'
+            
+            if result['sizeMB'] is None:
+                result["sizeMB"] = float(p["bytes"]) / _MB
+                pass
         
         return result
 
