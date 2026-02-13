@@ -30,6 +30,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Add `DISP-S1-STATIC` support: product type constant, added to `OPERA-S1` dataset, supported in `OPERAS1Product` class
 - Add `TROPO` dataset for `TROPO-ZENITH` and `ECMWF_TROPO` product types
+- Add new `ASFProduct` subclass `TROPOProduct` for `TROPO-ZENITH` and `ECMWF_TROPO` product types
 
 ### Changed
 - Moved `TROPO-ZENITH` out of `OPERA-S1` dataset, now in standalone `TROPO` dataset
