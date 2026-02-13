@@ -19,17 +19,28 @@ class TROPOProduct(ASFProduct):
 
     _base_properties = {
         **ASFProduct._base_properties,
-        'processingLevel': {'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'),  'Values', 0]},
+        'processingLevel': {
+            'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0]
+        },
+        'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
         if self.properties['processingLevel'] == PRODUCT_TYPE.TROPO_ZENITH:
-            
-            self.umm_get(
-            self.umm, "AdditionalAttributes", ("Name", 'PRODUCT_VERSION'), 'values'
-            )
+            self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'PRODUCT_VERSION'), 'values')
+
+        bytes_mapping = {
+            entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']}
+            for entry in self.properties['bytes']
+        }
+        md5sum_mapping = {
+            entry['Name']: entry['Checksum']['Value'] for entry in self.properties['bytes']
+        }
+
+        self.properties['bytes'] = bytes_mapping
+        self.properties['md5sum'] = md5sum_mapping
 
         self.properties['additionalUrls'] = self._get_additional_urls()
         self.properties['s3Urls'] = self._get_s3_uris()
