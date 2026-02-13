@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v11.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.3...v11.0.4)
+### Added
+- Add `DISP-S1-STATIC` support: product type constant, added to `OPERA-S1` dataset, supported in `OPERAS1Product` class
+
+------
 ## [v11.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.2...v11.0.3)
 ### Fixed
 - Properly parse multipolygons from NISAR UMM-G that cross dateline, unwrap geometry (add 360 to negative longitude polygon)
