@@ -1,5 +1,6 @@
 from asf_search.ASFProduct import ASFProduct
 from asf_search import ASFSession
+from asf_search.CMR.translate import try_parse_date
 from asf_search.constants import PRODUCT_TYPE
 
 
@@ -30,6 +31,9 @@ class TROPOProduct(ASFProduct):
 
         if self.properties['processingLevel'] == PRODUCT_TYPE.TROPO_ZENITH:
             self.umm_get(self.umm, 'AdditionalAttributes', ('Name', 'PRODUCT_VERSION'), 'values')
+        elif self.properties['processingLevel'] == PRODUCT_TYPE.ECMWF_TROPO:
+            self.properties['startTime'] = self.umm_cast(try_parse_date, self.umm_get(self.umm, 'TemporalExtent', 'SingleDateTime'))
+            self.properties['stopTime'] = self.properties['startTime']
 
         bytes_mapping = {
             entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']}
