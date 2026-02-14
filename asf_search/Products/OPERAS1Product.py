@@ -127,7 +127,24 @@ class OPERAS1Product(S1Product):
 
             self.properties['zarrUri'] = self.find_urls(extension='.gz', pattern=product_zarr, directAccess=True)[0]
             self.properties['zarrStackUri'] = self.find_urls(extension='.gz', pattern=r'.*short_wavelength_displacement.zarr.json.gz', directAccess=True)[0]
-
+        elif processingLevel == 'DISP-S1-STATIC':
+            self.properties['frameNumber'] = try_parse_int(
+                self.umm_get(
+                    self.umm,
+                    'AdditionalAttributes',
+                    ('Name', 'FRAME_NUMBER'),
+                    'Values', 
+                    0)
+                )
+            self.properties['pathNumber'] = try_parse_int(
+                self.umm_get(
+                    self.umm,
+                    'AdditionalAttributes',
+                    ('Name', 'PATH_NUMBER'),
+                    'Values', 
+                    0)
+                )
+            pass
     @staticmethod
     def get_default_baseline_product_type() -> None:
         """

@@ -2,6 +2,7 @@ from asf_search import Products, search, ASFSearchOptions
 from asf_search.ASFSearchResults import ASFSearchResults
 import json
 import pytest
+from asf_search.constants import PRODUCT_TYPE
 
 def run_test_ASFSubproduct(scene_names: list[str], expected_subclass: str, opts: ASFSearchOptions):
     scenes = search(granule_list=scene_names, opts=opts)
@@ -16,6 +17,8 @@ def run_test_ASFSubproduct(scene_names: list[str], expected_subclass: str, opts:
             _test_S1BurstProduct(scene)
         if isinstance(scene, Products.SEASATProduct):
             _test_SEASATProduct(scene)
+        if isinstance(scene, Products.TROPOProduct):
+            _test_TROPOProduct(scene)
 
     for output_format in ['geojson', 'json', 'jsonlite', 'jsonlite2', 'csv', 'metalink', 'kml']:
         try:
@@ -43,6 +46,13 @@ def _test_OPERAS1Product(scene: Products.OPERAS1Product):
     
 def _test_SEASATProduct(scene: Products.SEASATProduct):
     assert isinstance(scene.properties['md5sum'], dict)
+    assert isinstance(scene.properties['bytes'], dict)
+    
+    bytes_entries = scene.properties['bytes'].keys()
+    _check_properties_set(scene.properties['md5sum'], bytes_entries)
+
+def _test_TROPOProduct(scene: Products.TROPOProduct):
+    assert scene.properties['processingLevel'] in [PRODUCT_TYPE.TROPO_ZENITH, PRODUCT_TYPE.ECMWF_TROPO]
     assert isinstance(scene.properties['bytes'], dict)
     
     bytes_entries = scene.properties['bytes'].keys()

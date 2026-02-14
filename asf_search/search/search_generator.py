@@ -567,4 +567,5 @@ dataset_to_product_types = {
     'SEASAT 1': ASFProductType.SEASATProduct,
     'NISAR': ASFProductType.NISARProduct,
     'ALOS-2': ASFProductType.ALOS2Product,
+    'TROPO': ASFProductType.TROPOProduct,
 }
