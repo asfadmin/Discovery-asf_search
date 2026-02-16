@@ -46,5 +46,6 @@ class TROPOProduct(ASFProduct):
         self.properties['bytes'] = bytes_mapping
         self.properties['md5sum'] = md5sum_mapping
 
+        self.properties['browse'] = [url for url in self._get_urls() if url.endswith('.png') or url.endswith('.jpg') or url.endswith('.jpeg')]
         self.properties['additionalUrls'] = self._get_additional_urls()
         self.properties['s3Urls'] = self._get_s3_uris()
