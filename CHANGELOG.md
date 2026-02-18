@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
+### Added
+- `collectionName` and `conceptID` added to `TROPOProduct` properties dict
+
+------
 ## [v12.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.3...v12.0.0)
 ### Added
 - Add `DISP-S1-STATIC` support: product type constant, added to `OPERA-S1` dataset, supported in `OPERAS1Product` class
