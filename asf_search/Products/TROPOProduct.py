@@ -24,6 +24,7 @@ class TROPOProduct(ASFProduct):
             'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0]
         },
         'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
+        'collectionName': {'path': ["CollectionReference", "ShortName"]},
     }
 
     def __init__(self, args: dict = {}, session: ASFSession = ASFSession()):
@@ -49,3 +50,5 @@ class TROPOProduct(ASFProduct):
         self.properties['browse'] = [url for url in self._get_urls() if url.endswith('.png') or url.endswith('.jpg') or url.endswith('.jpeg')]
         self.properties['additionalUrls'] = self._get_additional_urls()
         self.properties['s3Urls'] = self._get_s3_uris()
+        
+        self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
