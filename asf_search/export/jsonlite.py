@@ -233,6 +233,8 @@ class JSONLiteStreamArray(list):
             result['sizeMB'] = p.get('bytes', {})
             result['s3Urls'] = p.get('s3Urls', [])
             result['additionalUrls'] = p.get('additionalUrls')
+            result["collectionName"] = p.get("collectionName")
+            result["conceptID"] = p.get("conceptID")
         elif p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
             result['opera'] = {
                 'operaBurstID': p.get('operaBurstID'),
