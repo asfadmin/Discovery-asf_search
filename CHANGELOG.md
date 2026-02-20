@@ -26,9 +26,23 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v11.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.3...v11.0.4)
+## [v12.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.1...v12.0.2)
 ### Added
 - `NISARProduct.get_static_layer()` searches for and returns the latest valid NISAR static layer associated with a given product if available.
+
+## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
+### Added
+- `collectionName` and `conceptID` added to `TROPOProduct` properties dict
+
+------
+## [v12.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.3...v12.0.0)
+### Added
+- Add `DISP-S1-STATIC` support: product type constant, added to `OPERA-S1` dataset, supported in `OPERAS1Product` class
+- Add `TROPO` dataset for `TROPO-ZENITH` and `ECMWF_TROPO` product types
+- Add new `ASFProduct` subclass `TROPOProduct` for `TROPO-ZENITH` and `ECMWF_TROPO` product types
+
+### Changed
+- Moved `TROPO-ZENITH` out of `OPERA-S1` dataset, now in standalone `TROPO` dataset
 
 ------
 ## [v11.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v11.0.2...v11.0.3)
