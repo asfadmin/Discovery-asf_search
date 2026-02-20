@@ -13,7 +13,7 @@ from shapely.ops import transform
 from asf_search.constants import PRODUCT_TYPE
 
 STATIC_PATTERN_STR = (
-    r'NISAR_L2_STATIC_.*_(?P<posting>\d{3}_{3})_(?:\d{8}T\d{6})_(?:R\d{5})_\D_(?P<counter>\d{3})'
+    r'NISAR_L2_STATIC_.*_(?P<posting>\d{4}_{4})_(?:\d{8}T\d{6})_(?:\D\d{5})_\D_(?P<counter>\d{3})'
 )
 STATIC_PATTERN = re.compile(STATIC_PATTERN_STR)
 
@@ -202,15 +202,44 @@ class NISARProduct(ASFStackableProduct):
                         latest_valid = product
                     else:
                         if parse_datetime(product.properties.get('validityStartDate')) == parse_datetime(latest_valid.properties.get('validityStartDate')):
-                            if int(product.properties['crid_counter']) > int(latest_valid.properties['crid_counter']):
+                            crid_comparison = self._compare_crid(latest_valid.properties['crid'], product.properties['crid'])
+                            
+                            if crid_comparison == 0:
+                                if int(product.properties['crid_counter']) > int(latest_valid.properties['crid_counter']):
+                                    latest_valid = product
+                            elif crid_comparison == -1:
                                 latest_valid = product
                         else:
-                            # results pre-sorted by latest validity start time, if there's no similar product with a higher crid counter
+                            # results pre-sorted by latest validity start time, if there's no similar product with a higher crid or counter
                             # we've found the latest
                             break
             
             if latest_valid is not None:
                 return latest_valid
+
+    @staticmethod
+    def _compare_crid(lhs: str, rhs: str):
+        lhs_release_initial, lhs_version = lhs[0], int(lhs[1:])
+        rhs_release_initial, rhs_version = rhs[0], int(rhs[1:])
+
+        ranking = {
+            'R': 3,
+            'X': 2,
+            'P': 1,
+        }
+
+        if ranking[lhs_release_initial] > ranking[rhs_release_initial]:
+            return 1
+        if ranking[lhs_release_initial] < ranking[rhs_release_initial]:
+            return -1
+        
+        if lhs_version > rhs_version:
+            return 1
+        elif lhs_version < rhs_version:
+            return -1
+        
+        return 0
+
 
     def _get_geometry(self, item: Dict) -> dict:
         """Overload for dateline multipolygon parsing.
@@ -271,58 +300,58 @@ class NISARProduct(ASFStackableProduct):
 
     _FREQ_POSTING_MAP = {
         'GCOV': {
-            5: [('080', '080'), ('020', '020'), ('010', '010')],
-            20: [('020', '020'), ('010', '010'), ('080', '080')],
-            77: [('020', '020'), ('010', '010'), ('080', '080')],
-            40: [('010', '010'), ('020', '020'), ('080', '080')],
+            5:  [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
+            20: [('0200', '0200'), ('0100', '0100'), ('0800', '0800')],
+            77: [('0200', '0200'), ('0100', '0100'), ('0800', '0800')],
+            40: [('0100', '0100'), ('0200', '0200'), ('0800', '0800')],
         },
         'GSLC': {
             5: [
-                ('005', '040'),
-                ('005', '010'),
-                ('005', '005'),
-                ('005', '2.5'),
-                ('010', '010'),
-                ('020', '020'),
-                ('080', '080'),
+                ('0050', '0400'),
+                ('0050', '0100'),
+                ('0050', '0050'),
+                ('0050', '0025'),
+                ('0100', '0100'),
+                ('0200', '0200'),
+                ('0800', '0800'),
             ],
             20: [
-                ('005', '010'),
-                ('005', '005'),
-                ('005', '2.5'),
-                ('005', '040'),
-                ('010', '010'),
-                ('020', '020'),
-                ('080', '080'),
+                ('0050', '0100'),
+                ('0050', '0050'),
+                ('0050', '0025'),
+                ('0050', '0400'),
+                ('0100', '0100'),
+                ('0200', '0200'),
+                ('0800', '0800'),
             ],
             40: [
-                ('005', '005'),
-                ('005', '2.5'),
-                ('005', '010'),
-                ('005', '040'),
-                ('010', '010'),
-                ('020', '020'),
-                ('080', '080'),
+                ('0050', '0050'),
+                ('0050', '0025'),
+                ('0050', '0100'),
+                ('0050', '0400'),
+                ('0100', '0100'),
+                ('0200', '0200'),
+                ('0800', '0800'),
             ],
             77: [
-                ('005', '2.5'),
-                ('005', '005'),
-                ('005', '010'),
-                ('005', '040'),
-                ('010', '010'),
-                ('020', '020'),
-                ('080', '080'),
+                ('0050', '0025'),
+                ('0050', '0050'),
+                ('0050', '0100'),
+                ('0050', '0400'),
+                ('0100', '0100'),
+                ('0200', '0200'),
+                ('0800', '0800'),
             ],
         },
         # in vertex, GUNW should return both 080 and 020 version
         'GUNW': {
-            20: [('080', '080'), ('020', '020'), ('010', '010')],
-            40: [('080', '080'), ('020', '020'), ('010', '010')],
-            77: [('080', '080'), ('020', '020'), ('010', '010')],
+            20: [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
+            40: [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
+            77: [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
         },
         'GOFF': {
-            20: [('080', '080'), ('020', '020'), ('010', '010')],
-            40: [('080', '080'), ('020', '020'), ('010', '010')],
-            77: [('080', '080'), ('020', '020'), ('010', '010')],
+            20: [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
+            40: [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
+            77: [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
         },
     }

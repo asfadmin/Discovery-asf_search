@@ -30,6 +30,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - `NISARProduct.get_static_layer()` searches for and returns the latest valid NISAR static layer associated with a given product if available.
 
+------
 ## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
 ### Added
 - `collectionName` and `conceptID` added to `TROPOProduct` properties dict
