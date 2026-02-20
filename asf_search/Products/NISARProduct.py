@@ -89,7 +89,7 @@ class NISARProduct(ASFStackableProduct):
             posting = STATIC_PATTERN.match(self.properties['sceneName'])
             if posting is not None:
                 static_props = posting.groupdict()
-    
+
                 postings = static_props['posting'].split('_')
                 self.properties['posting'] = (postings[0], postings[1])
                 self.properties['crid_counter'] = static_props['crid_counter']
@@ -122,12 +122,30 @@ class NISARProduct(ASFStackableProduct):
 
         return keys
 
+    @staticmethod
+    def get_static_layer_from_id(
+        product_id: str,
+        frequency: Literal['A', 'B'] | None = None,
+        posting: tuple[str] | None = None,
+        opts: ASFSearchOptions | None = None,
+    ) -> 'NISARProduct':
+        from asf_search import granule_search
+
+        static_opts = ASFSearchOptions() if opts is None else copy(opts)
+
+        result = granule_search(product_id, opts=static_opts)
+
+        if len(result) and isinstance(result[0], 'NISARProduct'):
+            return result[0].get_static_layer(frequency, posting, static_opts)
+
+        raise ValueError('Unable to find valid granule from id.')
+
     def get_static_layer(
         self,
         frequency: Literal['A', 'B'] | None = None,
         posting: tuple[str] | None = None,
         opts: ASFSearchOptions | None = None,
-    ) -> Optional['NISARProduct']:
+    ) -> 'NISARProduct':
         """Returns the equivalent static layer for the given NISAR Level 2 static product
 
         Parameters
@@ -150,7 +168,16 @@ class NISARProduct(ASFStackableProduct):
             PRODUCT_TYPE.GUNW,
             PRODUCT_TYPE.GOFF,
         ]:
-            return None
+            raise ValueError(
+                f'Finding valid static layer requires processing level of type {
+                    (
+                        PRODUCT_TYPE.GSLC,
+                        PRODUCT_TYPE.GCOV,
+                        PRODUCT_TYPE.GUNW,
+                        "or " + PRODUCT_TYPE.GOFF,
+                    )
+                }, got {self.properties.get("processingLevel")}'
+            )
 
         static_opts = ASFSearchOptions() if opts is None else copy(opts)
 
@@ -201,11 +228,17 @@ class NISARProduct(ASFStackableProduct):
                     if latest_valid is None:
                         latest_valid = product
                     else:
-                        if parse_datetime(product.properties.get('validityStartDate')) == parse_datetime(latest_valid.properties.get('validityStartDate')):
-                            crid_comparison = self._compare_crid(latest_valid.properties['crid'], product.properties['crid'])
-                            
+                        if parse_datetime(
+                            product.properties.get('validityStartDate')
+                        ) == parse_datetime(latest_valid.properties.get('validityStartDate')):
+                            crid_comparison = self._compare_crid(
+                                latest_valid.properties['crid'], product.properties['crid']
+                            )
+
                             if crid_comparison == 0:
-                                if int(product.properties['crid_counter']) > int(latest_valid.properties['crid_counter']):
+                                if int(product.properties['crid_counter']) > int(
+                                    latest_valid.properties['crid_counter']
+                                ):
                                     latest_valid = product
                             elif crid_comparison == -1:
                                 latest_valid = product
@@ -213,9 +246,13 @@ class NISARProduct(ASFStackableProduct):
                             # results pre-sorted by latest validity start time, if there's no similar product with a higher crid or counter
                             # we've found the latest
                             break
-            
+
             if latest_valid is not None:
                 return latest_valid
+
+        raise ValueError(
+            f'Unable to find valid static layer for frequency {frequency} postings of granule {self.properties["sceneName"]}'
+        )
 
     @staticmethod
     def _compare_crid(lhs: str, rhs: str):
@@ -232,14 +269,13 @@ class NISARProduct(ASFStackableProduct):
             return 1
         if ranking[lhs_release_initial] < ranking[rhs_release_initial]:
             return -1
-        
+
         if lhs_version > rhs_version:
             return 1
         elif lhs_version < rhs_version:
             return -1
-        
-        return 0
 
+        return 0
 
     def _get_geometry(self, item: Dict) -> dict:
         """Overload for dateline multipolygon parsing.
