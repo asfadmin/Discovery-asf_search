@@ -355,3 +355,4 @@ class NISARProduct(ASFStackableProduct):
             77: [('0800', '0800'), ('0200', '0200'), ('0100', '0100')],
         },
     }
+    """Map of range bandwidth frequencies to prefered static layer x/y decimeter posting by L2 science product type"""
