@@ -218,6 +218,11 @@ test_types:
     required_keys: ['params', 'expected_attributes']
     method: test_collection_attributes
 
+- For running NISARProduct static layer tests:
+    required_in_title: NISARProduct-static-layer
+    required_keys: ['params', 'expected_output', 'test_data']
+    method: test_nisar_static_layer_from_id
+
 - For running jupyter notebook example tests:
     required_keys: notebook
     method: test_notebook_examples
