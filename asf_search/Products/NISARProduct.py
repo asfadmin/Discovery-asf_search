@@ -3,17 +3,17 @@ import re
 from asf_search.ASFSearchOptions import parse_int
 from copy import copy
 from dateutil.parser import parse as parse_datetime
-from typing import Dict, Optional, Tuple, Union, Literal
+from typing import Dict, Tuple, Union, Literal
 from shapely import unary_union, multipolygons
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
+from asf_search.CMR.translate import try_parse_date, try_parse_frame_coverage, try_parse_bool, try_parse_int
 from shapely.geometry import shape, MultiPolygon
 from shapely.geometry.base import BaseGeometry
 from shapely.ops import transform
 from asf_search.constants import PRODUCT_TYPE
 
 STATIC_PATTERN_STR = (
-    r'NISAR_L2_STATIC_.*_(?P<posting>\d{4}_{4})_(?:\d{8}T\d{6})_(?:\D\d{5})_\D_(?P<counter>\d{3})'
+    r'NISAR_L2_STATIC_.*_(?P<posting>\d{4}_\d{4})_(?:\d{8}T\d{6})_(?:\D\d{5})_\D_(?P<counter>\d{3})'
 )
 STATIC_PATTERN = re.compile(STATIC_PATTERN_STR)
 
@@ -135,7 +135,7 @@ class NISARProduct(ASFStackableProduct):
 
         result = granule_search(product_id, opts=static_opts)
 
-        if len(result) and isinstance(result[0], 'NISARProduct'):
+        if len(result) and isinstance(result[0], NISARProduct):
             return result[0].get_static_layer(frequency, posting, static_opts)
 
         raise ValueError('Unable to find valid granule from id.')
@@ -198,25 +198,25 @@ class NISARProduct(ASFStackableProduct):
                 filter(
                     lambda x: (
                         cutoff_datetime
-                        > datetime.fromisoformat(x.properties.get('validityStartDate'))
+                        > datetime.fromisoformat(try_parse_date(x.properties.get('validityStartDate')))
                     ),
                     response,
                 ),
-                key=lambda x: parse_datetime(x.properties.get('validityStartDate')),
+                key=lambda x: parse_datetime(try_parse_date(x.properties.get('validityStartDate'))),
                 reverse=True,
             )
         ]
 
         postings = [posting]
         if posting is None:
-            bandwidths = self.properties['rangeBandwidth'].split('+')
+            bandwidths = self.properties['rangeBandwidth'][0].split('+')
             if frequency is None:
-                if parse_int(bandwidths[0]) == 0:
+                if parse_int(bandwidths[0]) != 0:
                     frequency = 'A'
                 else:
                     frequency = 'B'
 
-            bandwidth_frequency = bandwidths[0] if frequency == 'A' else bandwidths[1]
+            bandwidth_frequency = int(bandwidths[0] if frequency == 'A' else bandwidths[1])
             postings = self.get_postings_for_frequency(
                 self.properties['processingLevel'], bandwidth_frequency
             )
