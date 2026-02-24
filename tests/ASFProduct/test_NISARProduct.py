@@ -21,9 +21,6 @@ def run_test_nisar_static_layer_from_id(params: dict, test_data: dict, expected_
                     f"Unexpected error type '{expected_error_type}' in test case data. Fix or add error type to check"
                 )
 
-    pass
-
-
     if expected_error is not None:
         with pytest.raises(expected_error):
             NISARProduct.get_static_layer_from_id(params['product_id'])
@@ -35,6 +32,8 @@ def run_test_nisar_static_layer_from_id(params: dict, test_data: dict, expected_
         ]
 
         with patch('asf_search.search') as NISARProductPatch:
+            if 'posting' in params:
+                params['posting'] = (params['posting'][0], params['posting'][1])
             NISARProductPatch.return_value = mock_test_data
             # NISARProductPatch.get_static_layer_from_id.isinstance.return_value = True
             scene_name = NISARProduct.get_static_layer_from_id(**params).properties['sceneName']

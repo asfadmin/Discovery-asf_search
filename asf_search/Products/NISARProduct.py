@@ -6,7 +6,12 @@ from dateutil.parser import parse as parse_datetime
 from typing import Dict, Tuple, Union, Literal
 from shapely import unary_union, multipolygons
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
-from asf_search.CMR.translate import try_parse_date, try_parse_frame_coverage, try_parse_bool, try_parse_int
+from asf_search.CMR.translate import (
+    try_parse_date,
+    try_parse_frame_coverage,
+    try_parse_bool,
+    try_parse_int,
+)
 from shapely.geometry import shape, MultiPolygon
 from shapely.geometry.base import BaseGeometry
 from shapely.ops import transform
@@ -198,7 +203,9 @@ class NISARProduct(ASFStackableProduct):
                 filter(
                     lambda x: (
                         cutoff_datetime
-                        > datetime.fromisoformat(try_parse_date(x.properties.get('validityStartDate')))
+                        > datetime.fromisoformat(
+                            try_parse_date(x.properties.get('validityStartDate'))
+                        )
                     ),
                     response,
                 ),
@@ -215,7 +222,12 @@ class NISARProduct(ASFStackableProduct):
                     frequency = 'A'
                 else:
                     frequency = 'B'
-
+            elif (frequency == 'A' and bandwidths[0] == '00') or (
+                frequency == 'B' and bandwidths[1] == '00'
+            ):
+                raise ValueError(
+                    f'Cannot query for Static Layer for desired frequency {frequency} with range bandwidth "00". Please select other frequency.'
+                )
             bandwidth_frequency = int(bandwidths[0] if frequency == 'A' else bandwidths[1])
             postings = self.get_postings_for_frequency(
                 self.properties['processingLevel'], bandwidth_frequency
