@@ -81,6 +81,7 @@ import nbformat
 from nbconvert.preprocessors import ExecutePreprocessor
 
 from ASFProduct.test_ASFSubproduct import run_test_ASFSubproduct
+from tests.ASFProduct.test_NISARProduct import run_test_nisar_static_layer_from_id
 from tests.Search.test_collection_attributes import run_test_collection_attributes
 
 
@@ -649,6 +650,12 @@ def test_collection_attributes(**args) -> None:
     expect_failure = args['test_info'].get('expect_failure', False)
     session = args["config"].getoption("authenticated_session")
     run_test_collection_attributes(params, expected_attributes, session, expect_failure)
+
+def test_nisar_static_layer_from_id(**args) -> None:
+    params = args['test_info']['params']
+    test_data = args['test_info']['test_data']
+    expected_output = args['test_info']['expected_output']
+    run_test_nisar_static_layer_from_id(params, test_data, expected_output)
 
 # Finds and loads file from yml_tests/Resouces/ if loaded field ends with .yml/yaml extension
 def get_resource(yml_file):
