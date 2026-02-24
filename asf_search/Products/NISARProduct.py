@@ -1,4 +1,3 @@
-from datetime import datetime
 import re
 from asf_search.ASFSearchOptions import parse_int
 from copy import copy
@@ -189,14 +188,14 @@ class NISARProduct(ASFStackableProduct):
 
         response = search(opts=static_opts)
 
-        cutoff_datetime = datetime.fromisoformat(self.properties['startTime'])
+        cutoff_datetime = parse_datetime(self.properties['startTime'])
         response = [
             product
             for product in sorted(
                 filter(
                     lambda x: (
                         cutoff_datetime
-                        > datetime.fromisoformat(
+                        > parse_datetime(
                             try_parse_date(x.properties.get('validityStartDate'))
                         )
                     ),

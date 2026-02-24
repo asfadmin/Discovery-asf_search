@@ -28,7 +28,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v12.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.1...v12.0.2)
 ### Added
-- `NISARProduct.get_static_layer()` searches for and returns the latest valid NISAR static layer associated with a given product if available.
+- Added `NISARProduct.get_static_layer()` and `NISARProduct.get_static_layer_from_id()` searches for and returns the latest valid NISAR static layer associated with a given product if available.
 
 ------
 ## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
