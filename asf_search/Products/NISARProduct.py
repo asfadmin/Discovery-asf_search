@@ -174,14 +174,7 @@ class NISARProduct(ASFStackableProduct):
             PRODUCT_TYPE.GOFF,
         ]:
             raise ValueError(
-                f'Finding valid static layer requires processing level of type {
-                    (
-                        PRODUCT_TYPE.GSLC,
-                        PRODUCT_TYPE.GCOV,
-                        PRODUCT_TYPE.GUNW,
-                        "or " + PRODUCT_TYPE.GOFF,
-                    )
-                }, got {self.properties.get("processingLevel")}'
+                f'Finding valid static layer requires processing level of type {PRODUCT_TYPE.GSLC}, {PRODUCT_TYPE.GCOV}, {PRODUCT_TYPE.GUNW}, or {PRODUCT_TYPE.GOFF}, got {self.properties.get("processingLevel")}'
             )
 
         static_opts = ASFSearchOptions() if opts is None else copy(opts)
