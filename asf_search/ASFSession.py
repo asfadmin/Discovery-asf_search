@@ -1,6 +1,7 @@
 import platform
 from typing import List, Optional, Union
 import requests
+import requests.cookies
 from requests.utils import get_netrc_auth
 from requests.auth import HTTPBasicAuth
 import http.cookiejar
@@ -280,7 +281,7 @@ class ASFSession(requests.Session):
         if new_auth is not None:
             prepared_request.prepare_auth(new_auth)
 
-    def _get_domain(self, url: str):
+    def _get_domain(self, url: Optional[str]):
         return requests.utils.urlparse(url).hostname
 
     # multi-processing does an implicit copy of ASFSession objects,
