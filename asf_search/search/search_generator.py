@@ -71,6 +71,7 @@ def search_generator(
     ] = None,
     season: Tuple[int, int] = None,
     start: Union[datetime.datetime, str] = None,
+    ariaVersion: str = None,
     absoluteBurstID: Union[int, Sequence[int]] = None,
     relativeBurstID: Union[int, Sequence[int]] = None,
     fullBurstID: Union[str, Sequence[str]] = None,

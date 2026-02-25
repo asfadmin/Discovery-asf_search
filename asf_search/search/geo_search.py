@@ -46,6 +46,7 @@ def geo_search(
     start: Union[datetime.datetime, str] = None,
     absoluteBurstID: Union[int, Sequence[int]] = None,
     relativeBurstID: Union[int, Sequence[int]] = None,
+    ariaVersion: str = None,
     fullBurstID: Union[str, Sequence[str]] = None,
     temporalBaselineDays: Union[str, Sequence[str]] = None,
     operaBurstID: Union[str, Sequence[str]] = None,
