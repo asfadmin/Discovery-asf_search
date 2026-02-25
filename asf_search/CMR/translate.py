@@ -8,7 +8,7 @@ from shapely import wkt
 from shapely.geometry import Polygon
 from shapely.geometry.base import BaseGeometry
 from .field_map import field_map
-from .datasets import collections_per_platform, NISAR_PRODUCT_TYPES
+from .datasets import collections_per_platform, NISAR_SCIENCE_PRODUCT_TYPES
 import logging
 
 try:
@@ -25,7 +25,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     should_use_track = False
     if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
         processingType = dict_opts.get('processingLevel', [])[0]
-        if processingType in NISAR_PRODUCT_TYPES:
+        if processingType in NISAR_SCIENCE_PRODUCT_TYPES:
             should_use_track = True
             # Use new PRODUCT_TYPE keyword later, remove processingLevel so we don't try the value with PROCESSING_LEVEL
             dict_opts['productType'] = dict_opts.pop('processingLevel')[0]

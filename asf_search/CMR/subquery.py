@@ -5,7 +5,7 @@ from copy import copy
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.constants import CMR_PAGE_SIZE
 from asf_search.CMR.datasets import (
-    NISAR_PRODUCT_TYPES,
+    NISAR_SCIENCE_PRODUCT_TYPES,
     collections_by_processing_level,
     collections_per_platform,
     get_concept_id_alias,
@@ -48,7 +48,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     includes_nisar_products = False
     if params.get('processingLevel') is not None:
         for product in params.get('processingLevel', []):
-            if product in NISAR_PRODUCT_TYPES:
+            if product in NISAR_SCIENCE_PRODUCT_TYPES:
                 includes_nisar_products = True
                 break
     collections, aliased_keywords = get_keyword_concept_ids(params, opts.collectionAlias, includes_nisar_products)
