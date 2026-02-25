@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v12.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.1...v12.0.2)
+### Added
+- Adds convenience processingLevel alias `PRODUCT_TYPE.NISAR_SCIENCE_PRODUCT`, aliases L0B-L3 NISAR Science Products
+
+------
 ## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
 ### Added
 - `collectionName` and `conceptID` added to `TROPOProduct` properties dict

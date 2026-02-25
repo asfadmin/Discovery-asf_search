@@ -104,6 +104,9 @@ TROPO_ZENITH = 'TROPO-ZENITH'
 ECMWF_TROPO = 'ECMWF_TROPO'
 
 # NISAR
+NISAR_SCIENCE_PRODUCTS = 'NISAR-SCIENCE-PRODUCTS'
+"""Convenient alias for L0B, L1, L2, and L3 NISAR Science Products"""
+
 L0B = 'L0B'
 """alias for RRSD Level Zero B product types"""
 

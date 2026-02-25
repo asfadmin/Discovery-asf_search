@@ -19,6 +19,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.CMR.datasets import dataset_collections
+from asf_search.constants import PRODUCT_TYPE
 
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
@@ -454,7 +455,13 @@ def set_science_product_alias(opts: ASFSearchOptions):
     """Alias certain product types (primarily NISAR L0B)"""
     if opts.processingLevel is not None:
         processingLevelAliases = {
-            'L0B': ['RRSD']
+            PRODUCT_TYPE.L0B: [PRODUCT_TYPE.RRSD],
+            PRODUCT_TYPE.NISAR_SCIENCE_PRODUCTS:    [
+                PRODUCT_TYPE.RRSD, #L0
+                PRODUCT_TYPE.SME2, # L3
+                PRODUCT_TYPE.GSLC, PRODUCT_TYPE.GCOV, PRODUCT_TYPE.GUNW, PRODUCT_TYPE.GOFF, # L2
+                PRODUCT_TYPE.RSLC, PRODUCT_TYPE.RIFG, PRODUCT_TYPE.RUNW, PRODUCT_TYPE.ROFF,  # L1
+            ]
         }
 
         processing_levels = []
