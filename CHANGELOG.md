@@ -27,9 +27,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ------
-## [v12.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.1...v12.0.2)
+## [v12.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.1...v12.0.2)
 ### Added
-- added `ariaVersion` as a searchable attribute
+- Add `ariaVersion` as a searchable attribute
 
 ------
 ## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
