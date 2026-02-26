@@ -18,4 +18,6 @@ NISAR = 'NISAR'
 """NISAR provides L and S-band SAR data to measure Earth's changing ecosystems,
  dynamic surfaces, and ice masses with 12-day regularity
  on ascending and descending passes."""
+NISAR_SCIENCE_PRODUCTS = 'NISAR-SCIENCE-PRODUCTS'
+"""Dataset with NISAR's L0B, L1, L2, and L3 science products"""
 TROPO = 'TROPO'
