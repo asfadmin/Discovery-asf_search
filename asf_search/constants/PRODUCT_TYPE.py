@@ -104,10 +104,13 @@ TROPO_ZENITH = 'TROPO-ZENITH'
 ECMWF_TROPO = 'ECMWF_TROPO'
 
 # NISAR
+
+# NISAR Science Products
 L0B = 'L0B'
-"""alias for RRSD Level Zero B product types"""
+"""alias for RRSD Level 0B product types"""
 
 RRSD = 'RRSD'
+"""Level 0B Radar Raw Signal Data"""
 
 RSLC = 'RSLC'
 """Level 1 Range-Doppler Single Look Complex"""
@@ -128,3 +131,34 @@ GOFF = 'GOFF'
 SME2 = 'SME2'
 """Level 3 Soil Moisture EASE-Grid 2.0"""
 
+# NISAR Ancillary Products
+COP = "COP"
+"""Coordinated Observation Plan that contains a 7 day plan of observations"""
+LRCLK_UTC = "LRCLK-UTC"
+"""L-SAR Radar clock to UTC Spacecraft Clock Spacecraft Event Time (SCLKSCET) conversion file"""
+FOE	= "FOE"
+"""Forecast Orbit Ephemeris"""
+MOE = "MOE"
+"""	Medium Orbit Ephemeris"""
+NOE = "NOE"
+"""	Near-Realtime Orbit Ephemeris"""
+POE = "POE"
+"""	Precise Orbit Ephemeris"""
+STUF = "STUF"
+"""	STUF - 1 week plan of orbit boundaries, convert UTC to Orbit"""
+FRP = "FRP"
+"""	Forecast Radar Pointing"""
+NRP = "NRP"
+"""	Near-Realtime Radar Pointing"""
+PRP = "PRP"
+"""	Precise Radar Pointing"""
+DEM = "DEM"
+"""	Digital Elevation Model"""
+ECMWF = "ECMWF"
+"""	European Centre for Medium-Range Weather Forecasts (models)"""
+LOCAL_INC_ANG = "LOCAL_INC_ANG" 
+"""	Local Incidence Angles"""
+VWC = "VWC"
+"""	Vegetation water content"""
+WATER_MASK = "WaterMask"
+"""Water Mask"""
