@@ -258,6 +258,11 @@ dataset_collections = {
             'C1257349067-ASF',
             'C3622253574-ASF',
         ],
+        'NISAR_STUF': [
+            'C1256535568-ASFDEV',
+            'C1257349089-ASF',
+            'C3622233495-ASF',
+        ],
         'NISAR_OROST': [
             'C1256578011-ASFDEV',
             'C1257349074-ASF',
@@ -277,6 +282,15 @@ dataset_collections = {
             'C1256535570-ASFDEV',
             'C1257349082-ASF',
             'C2727904608-ASF',
+        ],
+        # TODO: Find ASFDEV collection
+        'NISAR_LRCLK_UTC': [
+            'C3632501432-ASF',
+            'C1275622548-ASF',
+        ],
+        'ASF_ECMWF_SMST': [
+            'C3653529349-ASF',
+            'C1274178507-ASF',
         ],
     },
     'SENTINEL-1': {
