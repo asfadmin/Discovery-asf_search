@@ -479,7 +479,7 @@ dataset_collections = {
         
     },
     'TROPO': {
-        'ASF_ECMWF_TROPO': ['C3653531162-ASF'],
+        'ASF_ECMWF_TROP': ['C3653531162-ASF'],
         'OPERA_L4_TROPO-ZENITH_V1': ['C3717139408-ASF', 'C1273910987-ASF', 'C1273615785-ASFDEV'],
     },
     'OPERA-S1-CALVAL': {

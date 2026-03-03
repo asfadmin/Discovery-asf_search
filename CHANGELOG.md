@@ -30,6 +30,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 - Add `NISAR` product type constants for ancillary/aux products (`FOE`, `STUF`, etc), now useable with `search()` methods.
 
+### Fixed
+- Correct typo, `ASF_ECMWF_TROPO` -> `ASF_ECMWF_TROP` in dataset collection short name dictionary
+
 ------
 ## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
 ### Added
