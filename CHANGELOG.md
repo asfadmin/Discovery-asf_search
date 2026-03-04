@@ -26,6 +26,40 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v12.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.1...v12.0.2)
+### Added
+- Add `NISAR` product type constants for ancillary/aux products, now useable with `search()` methods. New constants: 
+    `DCOP`,
+    `OROST`,
+    `STUF`,
+    `TEC`,
+    `LRCLK_UTC`,
+    `FOE`,
+    `MOE`,
+    `NOE`,
+    `POE`,
+    `TSR_STATIC`,
+    `PMI_STATIC`,
+    `CORNER_REFL`,
+    `LSAR_INT_CAL`,
+    `LSAR_EXT_CAL`,
+    `FT_WAVEFORM`,
+    `FT_PARAM`,
+    `ANTPAT`,
+    `BFPQ`,
+    `TFDB`,
+    `L_CHAN_DATA`,
+    `SM_STATIC`,
+    `DSG_STATIC`,
+    `FRP`,
+    `PRP`,
+    `NRP`,
+    `ECMWF_SMST`
+
+### Fixed
+- Update `ASF_ECMWF_TROPO` -> `ASF_ECMWF_TROP` in dataset collection short name dictionary
+
+------
 ## [v12.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.0...v12.0.1)
 ### Added
 - `collectionName` and `conceptID` added to `TROPOProduct` properties dict

@@ -103,11 +103,14 @@ DISP_S1_STATIC = 'DISP-S1-STATIC'
 TROPO_ZENITH = 'TROPO-ZENITH'
 ECMWF_TROPO = 'ECMWF_TROPO'
 
-# NISAR
+### NISAR
+
+### NISAR Science Products ###
 L0B = 'L0B'
-"""alias for RRSD Level Zero B product types"""
+"""alias for RRSD Level 0B product types"""
 
 RRSD = 'RRSD'
+"""Level 0B Radar Raw Signal Data"""
 
 RSLC = 'RSLC'
 """Level 1 Range-Doppler Single Look Complex"""
@@ -128,3 +131,92 @@ GOFF = 'GOFF'
 SME2 = 'SME2'
 """Level 3 Soil Moisture EASE-Grid 2.0"""
 
+### NISAR ANCILLARY PRODUCTS ###
+
+# NISAR Coordinated Observation Plan (NISAR_COP)
+DCOP = 'DCOP'
+"""NISAR Coordinates Observation Plan"""
+# NISAR_OROST
+OROST = 'OROST'
+"""NISAR Radar Observation Sequence Table"""
+# NISAR_STUF
+STUF = "STUF"
+"""	STUF - 1 week plan of orbit boundaries, convert UTC to Orbit"""
+
+# NISAR Total Electron Content (NISAR_TEC)
+TEC = "TEC"
+"NISAR Total Electron Content"
+
+# NISAR L-SAR Radar Clock to UTC Conversion File (NISAR_LRCLK_UTC)
+LRCLK_UTC = "LRCLK_UTC"
+"""L-SAR Radar clock to UTC Spacecraft Clock Spacecraft Event Time (SCLKSCET) conversion file"""
+
+
+# NISAR Orbit Ephemeris (NISAR_OE)
+# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Orbit Ephemeris collection contains 
+# the state vector files for the NISAR mission"
+FOE = "FOE"
+"""Forecast Orbit Ephemeris"""
+MOE = "MOE"
+"""	Medium Orbit Ephemeris"""
+NOE = "NOE"
+"""	Near-Realtime Orbit Ephemeris"""
+POE = "POE"
+"""	Precise Orbit Ephemeris"""
+
+# NISAR Ancillary and Auxiliary Data (NISAR_ANC_AUX)
+# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Ancilliary and Auxiallry collection contains products 
+# that are supplementary information for the NISAR mission and are created a limited number of times.""
+TSR_STATIC = "TSR_STATIC"
+"""Time Series Ratio (TSR_STATIC)"""
+PMI_STATIC = "PMI_STATIC"
+"""Physical Model Inversion (PMI_STATIC)"""
+CORNER_REFL = "CORNER_REFL"
+"""Corner Reflector locations (CORNER_REFL)"""
+LSAR_INT_CAL = "LSAR_INT_CAL"
+"""Combined ADT Flight Table (INT_CAL)"""
+LSAR_EXT_CAL = "LSAR_EXT_CAL"
+"""LSAR Calibration File (EXT_CAL)"""
+FT_WAVEFORM = "FT_WAVEFORM"
+"""Flight Table Waveform (FT_WAVEFORM)"""
+FT_PARAM = "FT_PARAM"
+"""Flight Table Parameters (FT_PARAM)"""
+ANTPAT = "ANTPAT"
+"""Antenna Pattern (ANTPAT)"""
+BFPQ = "BFPQ"
+"""Block Floating Point Quantization Look-up Table (BFPQ)"""
+TFDB = "TFDB"
+"""Track Frame Database (TFDB)"""
+L_CHAN_DATA = "L_CHAN_DATA"
+"""L-SAR Channel Data (L_CHAN_DATA)"""
+SM_STATIC = "SM_STATIC"
+"""Soil Moisture Static File (SM_STATIC)"""
+DSG_STATIC = "DSG_STATIC"
+"""Disaggregation File (DSG_STATIC)"""
+
+# NISAR Pointing: (NISAR_RP)
+# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Radar Pointing collection contains the radar pointing files for the NISAR mission.
+# The collection includes multiple accuracy levels"
+FRP = "FRP"
+"""	Forecast Radar Pointing"""
+PRP = "PRP"
+"""	Precise Radar Pointing"""
+NRP = "NRP"
+"""	Near-Realtime Radar Pointing"""
+
+# ECMWF SMST Data (ASF_ECMWF_SMST)
+ECMWF_SMST = "ECMWF_SMST"
+"""	European Centre for Medium-Range Weather Forecasts (models)"""
+
+# TODO: Verify/Add/Remove these product types as necessary
+# COP = "COP"
+# """Coordinated Observation Plan that contains a 7 day plan of observations"""
+# DEM = "DEM"
+# """	Digital Elevation Model"""
+
+# LOCAL_INC_ANG = "LOCAL_INC_ANG" 
+# """	Local Incidence Angles"""
+# VWC = "VWC"
+# """	Vegetation water content"""
+# WATER_MASK = "WaterMask"
+# """Water Mask"""
