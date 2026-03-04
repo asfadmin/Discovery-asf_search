@@ -173,9 +173,9 @@ PMI_STATIC = "PMI_STATIC"
 """Physical Model Inversion (PMI_STATIC)"""
 CORNER_REFL = "CORNER_REFL"
 """Corner Reflector locations (CORNER_REFL)"""
-INT_CAL = "INT_CAL"
+LSAR_INT_CAL = "LSAR_INT_CAL"
 """Combined ADT Flight Table (INT_CAL)"""
-EXT_CAL = "EXT_CAL"
+LSAR_EXT_CAL = "LSAR_EXT_CAL"
 """LSAR Calibration File (EXT_CAL)"""
 FT_WAVEFORM = "FT_WAVEFORM"
 """Flight Table Waveform (FT_WAVEFORM)"""
@@ -205,7 +205,7 @@ NRP = "NRP"
 """	Near-Realtime Radar Pointing"""
 
 # ECMWF SMST Data (ASF_ECMWF_SMST)
-ECMWF = "ECMWF"
+ECMWF_SMST = "ECMWF_SMST"
 """	European Centre for Medium-Range Weather Forecasts (models)"""
 
 # TODO: Verify/Add/Remove these product types as necessary
