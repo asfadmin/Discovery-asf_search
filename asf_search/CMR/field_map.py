@@ -38,6 +38,7 @@ field_map = {
     'collections':                  {'key': 'echo_collection_id[]',     'fmt': '{0}'},
     'shortName':                    {'key': 'shortName',                'fmt': '{0}'},
     'temporalBaselineDays':         {'key': 'attribute[]',              'fmt': 'int,TEMPORAL_BASELINE_DAYS,{0}'},  # noqa F401
+    'ariaVersion':                  {'key': 'attribute[]',              'fmt': 'string,VERSION,{0}'},
     # SLC BURST fields
     'absoluteBurstID':              {'key': 'attribute[]',              'fmt': 'int,BURST_ID_ABSOLUTE,{0}'},
     'relativeBurstID':              {'key': 'attribute[]',              'fmt': 'int,BURST_ID_RELATIVE,{0}'},
