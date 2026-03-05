@@ -73,6 +73,8 @@ def geo_search(
         For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B
         this value corresponds to the orbit count within the orbit cycle.
         For UAVSAR it is the Flight ID.
+    ariaVersion:
+        For ARIAS1GUNW this value describes the version a product was generated under
     asfFrame:
         This is primarily an ASF / JAXA frame reference. However,
         some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
