@@ -231,6 +231,7 @@ dataset_collections = {
         ]
     },
     'NISAR': {
+        **NISAR_SCIENCE_PRODUCT_COLLECTIONS,
         'NISAR_NEN_RRST_BETA_V1': [
             'C1261815181-ASFDEV',
             'C1261815288-ASF',
@@ -261,7 +262,6 @@ dataset_collections = {
             'C1257349120-ASF',
             'C3622203972-ASF',
         ],
-        **NISAR_SCIENCE_PRODUCT_COLLECTIONS,
         'NISAR_ANC_AUX': [
             'C1261630276-ASFDEV',
             'C1261712879-ASF',
@@ -271,11 +271,6 @@ dataset_collections = {
             'C1256729502-ASFDEV',
             'C1257349067-ASF',
             'C3622253574-ASF',
-        ],
-        'NISAR_STUF': [
-            'C1256535568-ASFDEV',
-            'C1257349089-ASF',
-            'C3622233495-ASF',
         ],
         'NISAR_OROST': [
             'C1256578011-ASFDEV',
