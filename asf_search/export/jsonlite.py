@@ -255,6 +255,7 @@ class JSONLiteStreamArray(list):
                 'jointObservation':  p.get('jointObservation'),
                 'rangeBandwidth':  p.get('rangeBandwidth'),
                 'sizeMB': p.get('bytes'),
+                'orbitType': p.get('orbitType'),
             }
             result["collectionName"] = p.get("collectionName")
             result["conceptID"] = p.get("conceptID")
