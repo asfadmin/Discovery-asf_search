@@ -155,6 +155,7 @@ LRCLK_UTC = "LRCLK_UTC"
 # NISAR Orbit Ephemeris (NISAR_OE)
 # "The NASA-ISRO Synthetic Aperture Radar (NISAR) Orbit Ephemeris collection contains 
 # the state vector files for the NISAR mission"
+# See the docs for more details https://nisar-docs.asf.alaska.edu/orbit-ephemeris/
 FOE = "FOE"
 """Forecast Orbit Ephemeris"""
 MOE = "MOE"
