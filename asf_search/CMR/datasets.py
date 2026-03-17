@@ -85,13 +85,13 @@ dataset_collections = {
             'C3622228339-ASF',
         ],
         'NISAR_L0B_RRSD_PROVISIONAL_V1': [
-            'C1261832497-ASFDEV',
-            'C1261832659-ASF',
+            'C1273126538-ASFDEV',
+            'C1273445045-ASF',
             'C2853089814-ASF',
         ],
         'NISAR_L0B_RRSD_V1': [
-            'C1256358262-ASFDEV',
-            'C1257349115-ASF',
+            'C1273126543-ASFDEV',
+            'C1273445159-ASF',
             'C3622265756-ASF',
         ],
         'NISAR_L1_RSLC_BETA_V1': [
@@ -100,8 +100,8 @@ dataset_collections = {
             'C2850225585-ASF',
         ],
         'NISAR_L1_RSLC_PROVISIONAL_V1': [
-            'C1261832868-ASFDEV',
-            'C1261833052-ASF',
+            'C1273095152-ASFDEV',
+            'C1273153208-ASF',
             'C2853145197-ASF',
         ],
         'NISAR_L1_RSLC_V1': [
@@ -115,13 +115,13 @@ dataset_collections = {
             'C2850234202-ASF',
         ],
         'NISAR_L1_RIFG_PROVISIONAL_V1': [
-            'C1261832940-ASFDEV',
-            'C1261833063-ASF',
+            'C1273095181-ASFDEV',
+            'C1273153326-ASF',
             'C2853147928-ASF',
         ],
         'NISAR_L1_RIFG_V1': [
-            'C1256381769-ASFDEV',
-            'C1257349108-ASF',
+            'C1273095184-ASFDEV',
+            'C1273287787-ASF',
             'C3622229381-ASF',
         ],
         'NISAR_L1_RUNW_BETA_V1': [
@@ -130,13 +130,13 @@ dataset_collections = {
             'C2850235455-ASF',
         ],
         'NISAR_L1_RUNW_PROVISIONAL_V1': [
-            'C1261832990-ASFDEV',
-            'C1261833064-ASF',
+            'C1273152981-ASFDEV',
+            'C1273220358-ASF',
             'C2853153429-ASF',
         ],
         'NISAR_L1_RUNW_V1': [
-            'C1256420738-ASFDEV',
-            'C1257349107-ASF',
+            'C1273152983-ASFDEV',
+            'C1273220386-ASF',
             'C3622237369-ASF',
         ],
         'NISAR_L1_ROFF_BETA_V1': [
@@ -145,13 +145,13 @@ dataset_collections = {
             'C2850237619-ASF',
         ],
         'NISAR_L1_ROFF_PROVISIONAL_V1': [
-            'C1261832993-ASFDEV',
-            'C1261833076-ASF',
+            'C1273153081-ASFDEV',
+            'C1273316385-ASF',
             'C2853156054-ASF',
         ],
         'NISAR_L1_ROFF_V1': [
-            'C1256411631-ASFDEV',
-            'C1257349103-ASF',
+            'C1273153083-ASFDEV',
+            'C1273316399-ASF',
             'C3622241997-ASF',
         ],
         'NISAR_L2_GSLC_BETA_V1': [
@@ -160,13 +160,13 @@ dataset_collections = {
             'C2850259510-ASF',
         ],
         'NISAR_L2_GSLC_PROVISIONAL_V1': [
-            'C1261833024-ASFDEV',
-            'C1261833127-ASF',
+            'C1273181122-ASFDEV',
+            'C1273397067-ASF',
             'C2854332392-ASF',
         ],
         'NISAR_L2_GSLC_V1': [
-            'C1256413628-ASFDEV',
-            'C1257349102-ASF',
+            'C1273181124-ASFDEV',
+            'C1273397074-ASF',
             'C3622244601-ASF',
         ],
         'NISAR_L2_GUNW_BETA_V1': [
@@ -175,13 +175,13 @@ dataset_collections = {
             'C2850261892-ASF',
         ],
         'NISAR_L2_GUNW_PROVISIONAL_V1': [
-            'C1261833025-ASFDEV',
-            'C1261846741-ASF',
+            'C1273304471-ASFDEV',
+            'C1273424673-ASF',
             'C2854335566-ASF',
         ],
         'NISAR_L2_GUNW_V1': [
-            'C1256432264-ASFDEV',
-            'C1257349096-ASF',
+            'C1273304473-ASFDEV',
+            'C1273424675-ASF',
             'C3622247503-ASF',
         ],
         'NISAR_L2_GCOV_BETA_V1': [
@@ -190,14 +190,14 @@ dataset_collections = {
             'C3622214170-ASF',
         ],
         'NISAR_L2_GCOV_PROVISIONAL_V1': [
-            'C1261833026-ASFDEV',
-            'C1261846880-ASF',
+            'C1273304517-ASFDEV',
+            'C1273428591-ASF',
             'C2854338529-ASF',
         ],
         'NISAR_L2_GCOV_V1': [
-            'C1256477304-ASFDEV',
-            'C1257349095-ASF',
-            'C2727896018-ASF',
+            'C1273304519-ASFDEV',
+            'C1273428593-ASF',
+            'C3622241360-ASF',
         ],
         'NISAR_L2_GOFF_BETA_V1': [
             'C1261819233-ASFDEV',
@@ -205,28 +205,28 @@ dataset_collections = {
             'C2850263910-ASF',
         ],
         'NISAR_L2_GOFF_PROVISIONAL_V1': [
-            'C1261833027-ASFDEV',
-            'C1261846994-ASF',
+            'C1273304466-ASFDEV',
+            'C1273429896-ASF',
             'C2854341702-ASF',
         ],
         'NISAR_L2_GOFF_V1': [
-            'C1256479237-ASFDEV',
-            'C1257349094-ASF',
+            'C1273304468-ASFDEV',
+            'C1273429898-ASF',
             'C3622250865-ASF',
         ],
         'NISAR_L3_SME2_BETA_V1': [
-            'C1261819245-ASFDEV',
-            'C1261819282-ASF',
+            'C1273421239-ASFDEV',
+            'C1273553457-ASF',
             'C2850265000-ASF',
         ],
         'NISAR_L3_SME2_PROVISIONAL_V1': [
-            'C1261833050-ASFDEV',
-            'C1261847095-ASF',
+            'C1273410799-ASFDEV',
+            'C1273602244-ASF',
             'C2854344945-ASF',
         ],
         'NISAR_L3_SME2_V1': [
-            'C1256568692-ASFDEV',
-            'C1257349093-ASF',
+            'C1273410801-ASFDEV',
+            'C1273602265-ASF',
             'C3622248530-ASF',
         ],
         'NISAR_CUSTOM_PROVISIONAL_V1': [
@@ -239,12 +239,12 @@ dataset_collections = {
             'C1258836794-ASF',
             'C2887469134-ASF',
         ],
-        'NISAR_UR_L1':[
+        'NISAR_UR_L1': [
             'C1258290319-ASFDEV',
             'C1273831207-ASF',
             'C2887499907-ASF',
         ],
-        'NISAR_UR_L2':[
+        'NISAR_UR_L2': [
             'C1258301530-ASFDEV',
             'C1258836800-ASF',
             'C2887502657-ASF',
@@ -285,7 +285,7 @@ dataset_collections = {
             'C3622219145-ASF',
         ],
         'NISAR_DC_RADAR': [
-            'C1256938783-ASFDEV',
+            'C1276806641-ASFDEV',
             'C1257349059-ASF',
             'C3622216140-ASF',
         ],
@@ -294,8 +294,8 @@ dataset_collections = {
             'C1257349082-ASF',
             'C2727904608-ASF',
         ],
-        # TODO: Find ASFDEV collection
         'NISAR_LRCLK_UTC': [
+            'C1275622488-ASFDEV',
             'C3632501432-ASF',
             'C1275622548-ASF',
         ],
@@ -487,7 +487,6 @@ dataset_collections = {
         'OPERA_L2_RTC-S1_PROVISIONAL_V0': ['C1257995186-ASF'],
         'OPERA_L3_DISP-S1_V1': ['C3294057315-ASF', 'C1271830354-ASF'],
         'OPERA_L3_DISP-S1-STATIC_V1': ['C3959290248-ASF', 'C1273910948-ASF', 'C1273460752-ASFDEV'],
-        
     },
     'TROPO': {
         'ASF_ECMWF_TROP': ['C3653531162-ASF'],
@@ -1115,35 +1114,35 @@ collections_per_platform = {
         'C1261832466-ASFDEV',
         'C1256524081-ASFDEV',
         'C1261815274-ASFDEV',
-        'C1261832497-ASFDEV',
-        'C1256358262-ASFDEV',
+        'C1273126538-ASFDEV',
+        'C1273126543-ASFDEV',
         'C1261813489-ASFDEV',
-        'C1261832868-ASFDEV',
+        'C1273095152-ASFDEV',
         'C1273095154-ASFDEV',
         'C1261819086-ASFDEV',
-        'C1261832940-ASFDEV',
-        'C1256381769-ASFDEV',
+        'C1273095181-ASFDEV',
+        'C1273095184-ASFDEV',
         'C1261819098-ASFDEV',
-        'C1261832990-ASFDEV',
-        'C1256420738-ASFDEV',
+        'C1273152981-ASFDEV',
+        'C1273152983-ASFDEV',
         'C1261819110-ASFDEV',
-        'C1261832993-ASFDEV',
-        'C1256411631-ASFDEV',
+        'C1273153081-ASFDEV',
+        'C1273153083-ASFDEV',
         'C1261819167-ASFDEV',
-        'C1261833024-ASFDEV',
-        'C1256413628-ASFDEV',
+        'C1273181122-ASFDEV',
+        'C1273181124-ASFDEV',
         'C1261819168-ASFDEV',
-        'C1261833025-ASFDEV',
-        'C1256432264-ASFDEV',
+        'C1273304471-ASFDEV',
+        'C1273304473-ASFDEV',
         'C1261819211-ASFDEV',
-        'C1261833026-ASFDEV',
-        'C1256477304-ASFDEV',
+        'C1273304517-ASFDEV',
+        'C1273304519-ASFDEV',
         'C1261819233-ASFDEV',
-        'C1261833027-ASFDEV',
-        'C1256479237-ASFDEV',
-        'C1261819245-ASFDEV',
-        'C1261833050-ASFDEV',
-        'C1256568692-ASFDEV',
+        'C1273304466-ASFDEV',
+        'C1273304468-ASFDEV',
+        'C1273421239-ASFDEV',
+        'C1273410799-ASFDEV',
+        'C1273410801-ASFDEV',
         'C1262134528-ASFDEV',
         'C1258125097-ASFDEV',
         'C1258290319-ASFDEV',
@@ -1155,8 +1154,9 @@ collections_per_platform = {
         'C1256535568-ASFDEV',
         'C1256578011-ASFDEV',
         'C1256802323-ASFDEV',
-        'C1256938783-ASFDEV',
+        'C1276806641-ASFDEV',
         'C1256535570-ASFDEV',
+        'C1275622488-ASFDEV',
         # UAT
         'C1261815288-ASF',
         'C1261832657-ASF',
@@ -1165,35 +1165,35 @@ collections_per_platform = {
         'C1261832658-ASF',
         'C1257349120-ASF',
         'C1273831320-ASF',
-        'C1261832659-ASF',
-        'C1257349115-ASF',
+        'C1273445045-ASF',
+        'C1273445159-ASF',
         'C1273831203-ASF',
-        'C1261833052-ASF',
+        'C1273153208-ASF',
         'C1273831205-ASF',
         'C1273831200-ASF',
-        'C1261833063-ASF',
-        'C1257349108-ASF',
+        'C1273153326-ASF',
+        'C1273287787-ASF',
         'C1261819121-ASF',
-        'C1261833064-ASF',
-        'C1257349107-ASF',
+        'C1273220358-ASF',
+        'C1273220386-ASF',
         'C1261819145-ASF',
-        'C1261833076-ASF',
-        'C1257349103-ASF',
+        'C1273316385-ASF',
+        'C1273316399-ASF',
         'C1273831198-ASF',
-        'C1261833127-ASF',
-        'C1257349102-ASF',
+        'C1273397067-ASF',
+        'C1273397074-ASF',
         'C1261819270-ASF',
-        'C1261846741-ASF',
-        'C1257349096-ASF',
+        'C1273424673-ASF',
+        'C1273424675-ASF',
         'C1273831195-ASF',
-        'C1261846880-ASF',
-        'C1257349095-ASF',
+        'C1273428591-ASF',
+        'C1273428593-ASF',
         'C1261819281-ASF',
-        'C1261846994-ASF',
-        'C1257349094-ASF',
-        'C1261819282-ASF',
-        'C1261847095-ASF',
-        'C1257349093-ASF',
+        'C1273429896-ASF',
+        'C1273429898-ASF',
+        'C1273553457-ASF',
+        'C1273602244-ASF',
+        'C1273602265-ASF',
         'C1262135006-ASF',
         'C1258836794-ASF',
         'C1273831207-ASF',
@@ -1207,6 +1207,8 @@ collections_per_platform = {
         'C1257349063-ASF',
         'C1257349059-ASF',
         'C1257349082-ASF',
+        'C1275622548-ASF',
+        'C1274178507-ASF'
         # PROD
         'C2850220296-ASF',
         'C2853068083-ASF',
@@ -1237,7 +1239,7 @@ collections_per_platform = {
         'C3622247503-ASF',
         'C3622214170-ASF',
         'C2854338529-ASF',
-        'C2727896018-ASF',
+        'C3622241360-ASF',
         'C2850263910-ASF',
         'C2854341702-ASF',
         'C3622250865-ASF',
@@ -1257,6 +1259,8 @@ collections_per_platform = {
         'C3622219145-ASF',
         'C3622216140-ASF',
         'C2727904608-ASF',
+        'C3632501432-ASF',
+        'C3653529349-ASF',
     ],
 }
 
@@ -1636,98 +1640,97 @@ collections_by_processing_level = {
     'SLOPE': ['C1214408428-ASF', 'C1210599503-ASF'],
     'STOKES': ['C1214419355-ASF', 'C1210599673-ASF'],
     'L0B': [
-        'C1261815274-ASFDEV', # RRSD BETA
+        'C1261815274-ASFDEV',  # RRSD BETA
         'C1273831320-ASF',
         'C3622228339-ASF',
-        'C1261832497-ASFDEV', # Provisional
-        'C1261832659-ASF',
+        'C1273126538-ASFDEV',  # Provisional
+        'C1273445045-ASF',
         'C2853089814-ASF',
-        'C1256358262-ASFDEV', # Validated
-        'C1257349115-ASF',
+        'C1273126543-ASFDEV',  # Validated
+        'C1273445159-ASF',
         'C3622265756-ASF',
         'C1258125097-ASFDEV',
         'C1258836794-ASF',
         'C2887469134-ASF',
     ],
     'RRSD': [
-        'C1261815274-ASFDEV', # RRSD BETA
+        'C1261815274-ASFDEV',  # RRSD BETA
         'C1273831320-ASF',
         'C3622228339-ASF',
-        'C1261832497-ASFDEV', # Provisional
-        'C1261832659-ASF',
+        'C1273126538-ASFDEV',  # Provisional
+        'C1273445045-ASF',
         'C2853089814-ASF',
-        'C1256358262-ASFDEV', # Validated
-        'C1257349115-ASF',
+        'C1273126543-ASFDEV',  # Validated
+        'C1273445159-ASF',
         'C3622265756-ASF',
-        
         'C1258125097-ASFDEV',
         'C1258836794-ASF',
         'C2887469134-ASF',
     ],
     'RSLC': [
-            'C1261813489-ASFDEV', # Beta
-            'C1273831203-ASF',
-            'C2850225585-ASF',
-            'C1261832868-ASFDEV', # Provisional
-            'C1261833052-ASF',
-            'C2853145197-ASF',
-            'C1273095154-ASFDEV', # Validated
-            'C1273831205-ASF',
-            'C3622236985-ASF',
+        'C1261813489-ASFDEV',  # Beta
+        'C1273831203-ASF',
+        'C2850225585-ASF',
+        'C1273095152-ASFDEV',  # Provisional
+        'C1273153208-ASF',
+        'C2853145197-ASF',
+        'C1273095154-ASFDEV',  # Validated
+        'C1273831205-ASF',
+        'C3622236985-ASF',
     ],
     'RIFG': [
-            'C1261819086-ASFDEV', # Beta
-            'C1273831200-ASF',
-            'C2850234202-ASF',
-            'C1261832940-ASFDEV', # Provisional
-            'C1261833063-ASF',
-            'C2853147928-ASF',
-            'C1256381769-ASFDEV', # Validated
-            'C1257349108-ASF',
-            'C3622229381-ASF',
-        ],
+        'C1261819086-ASFDEV',  # Beta
+        'C1273831200-ASF',
+        'C2850234202-ASF',
+        'C1273095181-ASFDEV',  # Provisional
+        'C1273153326-ASF',
+        'C2853147928-ASF',
+        'C1273095184-ASFDEV',  # Validated
+        'C1273287787-ASF',
+        'C3622229381-ASF',
+    ],
     'RUNW': [
-        'C1261819098-ASFDEV', # Beta
+        'C1261819098-ASFDEV',  # Beta
         'C1261819121-ASF',
         'C2850235455-ASF',
-        'C1261832990-ASFDEV', # Provisional
-        'C1261833064-ASF',
+        'C1273152981-ASFDEV',  # Provisional
+        'C1273220358-ASF',
         'C2853153429-ASF',
-        'C1256420738-ASFDEV', # Validated
-        'C1257349107-ASF',
+        'C1273152983-ASFDEV',  # Validated
+        'C1273220386-ASF',
         'C3622237369-ASF',
     ],
     'ROFF': [
-        'C1261819110-ASFDEV', # Beta
+        'C1261819110-ASFDEV',  # Beta
         'C1261819145-ASF',
         'C2850237619-ASF',
-        'C1261832993-ASFDEV', # Provisional
-        'C1261833076-ASF',
+        'C1273153081-ASFDEV',  # Provisional
+        'C1273316385-ASF',
         'C2853156054-ASF',
-        'C1256411631-ASFDEV', # Validated
-        'C1257349103-ASF',
+        'C1273153083-ASFDEV',  # Validated
+        'C1273316399-ASF',
         'C3622241997-ASF',
     ],
     'GCOV': [
-        'C1261819211-ASFDEV', # Beta
+        'C1261819211-ASFDEV',  # Beta
         'C1273831195-ASF',
         'C3622214170-ASF',
-        'C1261833026-ASFDEV', # Provisional
-        'C1261846880-ASF',
+        'C1273304517-ASFDEV',  # Provisional
+        'C1273428591-ASF',
         'C2854338529-ASF',
-        'C1256477304-ASFDEV', # Validated
-        'C1257349095-ASF',
-        'C2727896018-ASF',
+        'C1273304519-ASFDEV',  # Validated
+        'C1273428593-ASF',
+        'C3622241360-ASF',
     ],
     'GOFF': [
-        'C1261819233-ASFDEV', # Beta
+        'C1261819233-ASFDEV',  # Beta
         'C1261819281-ASF',
         'C2850263910-ASF',
-        'C1261833027-ASFDEV', # Provisional
-        'C1261846994-ASF',
+        'C1273304466-ASFDEV',  # Provisional
+        'C1273429896-ASF',
         'C2854341702-ASF',
-        'C1256479237-ASFDEV', # Validated
-        'C1257349094-ASF',
+        'C1273304468-ASFDEV',  # Validated
+        'C1273429898-ASF',
         'C3622250865-ASF',
     ],
     'GSLC': [
@@ -1736,12 +1739,12 @@ collections_by_processing_level = {
         'C1273831198-ASF',
         'C2850259510-ASF',
         # 'NISAR_L2_GSLC_PROVISIONAL_V1'
-        'C1261833024-ASFDEV',
-        'C1261833127-ASF',
+        'C1273181122-ASFDEV',
+        'C1273397067-ASF',
         'C2854332392-ASF',
         # 'NISAR_L2_GSLC_V1'
-        'C1256413628-ASFDEV',
-        'C1257349102-ASF',
+        'C1273181124-ASFDEV',
+        'C1273397074-ASF',
         'C3622244601-ASF',
     ],
     'GUNW': [
@@ -1750,23 +1753,23 @@ collections_by_processing_level = {
         'C1261819270-ASF',
         'C2850261892-ASF',
         # 'NISAR_L2_GUNW_PROVISIONAL_V1'
-        'C1261833025-ASFDEV',
-        'C1261846741-ASF',
+        'C1273304471-ASFDEV',
+        'C1273424673-ASF',
         'C2854335566-ASF',
         # 'NISAR_L2_GUNW_V1'
-        'C1256432264-ASFDEV',
-        'C1257349096-ASF',
+        'C1273304473-ASFDEV',
+        'C1273424675-ASF',
         'C3622247503-ASF',
     ],
     'SME2': [
-        'C1261819245-ASFDEV', # Beta
-        'C1261819282-ASF',
+        'C1273421239-ASFDEV',  # Beta
+        'C1273553457-ASF',
         'C2850265000-ASF',
-        'C1261833050-ASFDEV', # Provisional
-        'C1261847095-ASF',
+        'C1273410799-ASFDEV',  # Provisional
+        'C1273602244-ASF',
         'C2854344945-ASF',
-        'C1256568692-ASFDEV', # Validated
-        'C1257349093-ASF',
+        'C1273410801-ASFDEV',  # Validated
+        'C1273602265-ASF',
         'C3622248530-ASF',
     ],
 }
