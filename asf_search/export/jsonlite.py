@@ -240,6 +240,8 @@ class JSONLiteStreamArray(list):
                 'operaBurstID': p.get('operaBurstID'),
                 's3Urls': p.get('s3Urls', []),
                 'additionalUrls': p.get('additionalUrls'),
+                'tileID': p.get('tileID'),
+                'productVersion': p.get('productVersion')
             }
             if p.get('validityStartDate'):
                 result['opera']['validityStartDate'] = p.get('validityStartDate')
