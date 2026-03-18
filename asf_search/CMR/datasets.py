@@ -10,6 +10,7 @@ NISAR_SCIENCE_PRODUCT_TYPES = [
 ]
 
 NISAR_ANCILLARY_PRODUCT_TYPES = [
+    PRODUCT_TYPE.CRSD,
     PRODUCT_TYPE.DCOP,
     PRODUCT_TYPE.OROST,
     PRODUCT_TYPE.STUF,
@@ -303,6 +304,45 @@ dataset_collections = {
             'C3653529349-ASF',
             'C1274178507-ASF',
         ],
+    # "NISAR_DEM": [
+    #     "C3803703055-ASF",
+    #     "C1274665933-ASF",
+    #     "C1276777683-ASFDEV"
+    # ],
+    # "NISAR_VWC": [
+    #     "C4066106685-ASF",
+    #     "C1280516250-ASF",
+    #     "C1280516237-ASFDEV"
+    # ],
+    # "NISAR_LIA": [
+    #     "C1274178361-ASF",
+    #     "C1274178360-ASFDEV"
+    # ],
+    # "NISAR_WATERMASK": [
+    #     "C3807638962-ASF",
+    #     "C1274177987-ASF",
+    #     "C1276991363-ASFDEV"
+    # ],
+    "NISAR_L0B_CRSD_BETA_V1": [
+        "C2850225137-ASF",
+        "C1273831262-ASF",
+        "C1261815276-ASFDEV",
+    ],
+    "NISAR_L0B_CRSD_PROVISIONAL_V1": [
+        "C2853091612-ASF",
+        "C1261832671-ASF",
+        "C1261832632-ASFDEV",
+    ],
+    "NISAR_L0B_CRSD_V1": [
+        "C3622254588-ASF",
+        "C1257349114-ASF",
+        "C1256358463-ASFDEV",
+    ],
+    # "NISAR_L2_STATIC_LAYERS": [
+    #     "C3852453107-ASF",
+    #     "C1274178365-ASF",
+    #     "C1274178363-ASFDEV"
+    # ],
     },
     'SENTINEL-1': {
         'SENTINEL-1A_SLC': ['C1214470488-ASF', 'C1205428742-ASF', 'C1234413245-ASFDEV'],
@@ -1157,6 +1197,14 @@ collections_per_platform = {
         'C1276806641-ASFDEV',
         'C1256535570-ASFDEV',
         'C1275622488-ASFDEV',
+        # 'C1276777683-ASFDEV',
+        # 'C1280516237-ASFDEV',
+        # 'C1274178360-ASFDEV',
+        # 'C1276991363-ASFDEV',
+        'C1261815276-ASFDEV',
+        'C1261832632-ASFDEV',
+        'C1256358463-ASFDEV',
+        # 'C1274178363-ASFDEV',
         # UAT
         'C1261815288-ASF',
         'C1261832657-ASF',
@@ -1208,7 +1256,15 @@ collections_per_platform = {
         'C1257349059-ASF',
         'C1257349082-ASF',
         'C1275622548-ASF',
-        'C1274178507-ASF'
+        'C1274178507-ASF',
+        # 'C1274665933-ASF',
+        # 'C1280516250-ASF',
+        # 'C1274178361-ASF',
+        # 'C1274177987-ASF',
+        'C1273831262-ASF',
+        'C1261832671-ASF',
+        'C1257349114-ASF',
+        # 'C1274178365-ASF',
         # PROD
         'C2850220296-ASF',
         'C2853068083-ASF',
@@ -1261,6 +1317,13 @@ collections_per_platform = {
         'C2727904608-ASF',
         'C3632501432-ASF',
         'C3653529349-ASF',
+        # 'C3803703055-ASF',
+        # 'C4066106685-ASF',
+        # 'C3807638962-ASF',
+        'C2850225137-ASF',
+        'C2853091612-ASF',
+        'C3622254588-ASF',
+        # 'C3852453107-ASF',
     ],
 }
 
