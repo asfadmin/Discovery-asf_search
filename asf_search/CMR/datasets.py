@@ -323,21 +323,21 @@ dataset_collections = {
     #     "C1274177987-ASF",
     #     "C1276991363-ASFDEV"
     # ],
-    "NISAR_L0B_CRSD_BETA_V1": [
-        "C2850225137-ASF",
-        "C1273831262-ASF",
-        "C1261815276-ASFDEV",
-    ],
-    "NISAR_L0B_CRSD_PROVISIONAL_V1": [
-        "C2853091612-ASF",
-        "C1261832671-ASF",
-        "C1261832632-ASFDEV",
-    ],
-    "NISAR_L0B_CRSD_V1": [
-        "C3622254588-ASF",
-        "C1257349114-ASF",
-        "C1256358463-ASFDEV",
-    ],
+    # "NISAR_L0B_CRSD_BETA_V1": [
+    #     "C2850225137-ASF",
+    #     "C1273831262-ASF",
+    #     "C1261815276-ASFDEV",
+    # ],
+    # "NISAR_L0B_CRSD_PROVISIONAL_V1": [
+    #     "C2853091612-ASF",
+    #     "C1261832671-ASF",
+    #     "C1261832632-ASFDEV",
+    # ],
+    # "NISAR_L0B_CRSD_V1": [
+    #     "C3622254588-ASF",
+    #     "C1257349114-ASF",
+    #     "C1256358463-ASFDEV",
+    # ],
     # "NISAR_L2_STATIC_LAYERS": [
     #     "C3852453107-ASF",
     #     "C1274178365-ASF",
@@ -1201,9 +1201,9 @@ collections_per_platform = {
         # 'C1280516237-ASFDEV',
         # 'C1274178360-ASFDEV',
         # 'C1276991363-ASFDEV',
-        'C1261815276-ASFDEV',
-        'C1261832632-ASFDEV',
-        'C1256358463-ASFDEV',
+        # 'C1261815276-ASFDEV',
+        # 'C1261832632-ASFDEV',
+        # 'C1256358463-ASFDEV',
         # 'C1274178363-ASFDEV',
         # UAT
         'C1261815288-ASF',
@@ -1261,9 +1261,9 @@ collections_per_platform = {
         # 'C1280516250-ASF',
         # 'C1274178361-ASF',
         # 'C1274177987-ASF',
-        'C1273831262-ASF',
-        'C1261832671-ASF',
-        'C1257349114-ASF',
+        # 'C1273831262-ASF',
+        # 'C1261832671-ASF',
+        # 'C1257349114-ASF',
         # 'C1274178365-ASF',
         # PROD
         'C2850220296-ASF',
@@ -1320,9 +1320,9 @@ collections_per_platform = {
         # 'C3803703055-ASF',
         # 'C4066106685-ASF',
         # 'C3807638962-ASF',
-        'C2850225137-ASF',
-        'C2853091612-ASF',
-        'C3622254588-ASF',
+        # 'C2850225137-ASF',
+        # 'C2853091612-ASF',
+        # 'C3622254588-ASF',
         # 'C3852453107-ASF',
     ],
 }
