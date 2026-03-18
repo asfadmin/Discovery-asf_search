@@ -80,6 +80,7 @@ validator_map = {
     'dataset': parse_string_list,
     'cmr_keywords': parse_cmr_keywords_list,
     'ariaVersion': parse_string,
+    'tileID': parse_string,
     # S1 Inteferrogram Filters
     'temporalBaselineDays': parse_string_list,
     # Opera Burst Filters

@@ -87,6 +87,7 @@ def search_generator(
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
+    tileID: str = None,
     maxResults: int = None,
     opts: ASFSearchOptions = None,
 ) -> Generator[ASFSearchResults, None, None]:
@@ -180,6 +181,8 @@ def search_generator(
     start:
         Start date of data acquisition.
         Supports timestamps as well as natural language such as "3 weeks ago"
+    tileID:
+        For DIST-ALERT-S1 product type products,
     collections:
         List of collections (concept-ids) to limit search to
     temporalBaselineDays:

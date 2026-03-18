@@ -43,7 +43,8 @@ class OPERAS1Product(S1Product):
         'C2803501758-ASF',
         'C3294057315-ASF',
         'C1271830354-ASF',
-        'C1275699127-ASF',
+        'C1275699124-ASF',
+        'C4090131664-ASF',
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
