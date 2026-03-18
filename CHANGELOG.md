@@ -25,6 +25,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+------
+## [v12.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.4...v12.0.5)
+### Fixed
+- Fix edge-case with `platform` & `processingLevel` concept-id aliasing
 
 ------
 ## [v12.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.3...v12.0.4)
