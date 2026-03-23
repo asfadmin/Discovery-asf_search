@@ -543,6 +543,26 @@ tests:
             C1212001698-ASF]
         }
       ]
+  - test-search-build_subquery mismatched processingLevel for platform:
+      params:
+        processingLevel: METADATA
+        platform: NISAR
+      expected: [
+        {
+        processingLevel: [METADATA],
+        platform: [NISAR]
+        }
+      ]
+  - test-search-build_subquery mismatched processingLevel for platform CSLC and S1A:
+      params:
+        processingLevel: METADATA
+        platform: SENTINEL-1A
+      expected: [
+        {
+        processingLevel: [METADATA],
+        platform: [SENTINEL-1A]
+        }
+      ]
   - test-search-build_subquery UNKNOWN_PROCESSING_TYPE with platform, SLC, & collection (skip set difference with unknown processing level):
       params:
         platform:
