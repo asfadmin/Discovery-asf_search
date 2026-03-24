@@ -134,6 +134,9 @@ SME2 = 'SME2'
 
 ### NISAR ANCILLARY PRODUCTS ###
 
+CRSD = 'CRSD'
+"""NISAR Radar Raw Signal Calibration Data"""
+
 # NISAR Coordinated Observation Plan (NISAR_COP)
 DCOP = 'DCOP'
 """NISAR Coordinates Observation Plan"""
