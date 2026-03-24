@@ -182,7 +182,7 @@ def search_generator(
         Start date of data acquisition.
         Supports timestamps as well as natural language such as "3 weeks ago"
     tileID:
-        For DIST-ALERT-S1 product type products,
+        For DIST-ALERT-S1 product type products
     collections:
         List of collections (concept-ids) to limit search to
     temporalBaselineDays:

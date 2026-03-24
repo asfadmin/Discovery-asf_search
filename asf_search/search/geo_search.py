@@ -156,7 +156,7 @@ def geo_search(
         List of temporal baselines,
         used for Sentinel-1 Interferogram (BETA)
     tileID:
-        For DIST-ALERT-S1 product type products,
+        For DIST-ALERT-S1 product type products
     maxResults:
         The maximum number of results to be returned by the search
     opts:
