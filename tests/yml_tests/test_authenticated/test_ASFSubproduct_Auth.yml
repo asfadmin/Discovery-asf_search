@@ -6,7 +6,7 @@ tests:
 
 - Test NISAR ASFSubproduct cross-dateline:
     scenes: [
-      'NISAR_L0_PR_RRSD_008_005_A_153S_20251022T161112_20251022T161132_P05000_F_J_001', # polygons don't overlap correctly, need convex_hull
-      'NISAR_L0_PR_RRSD_008_086_D_148S_20251028T071837_20251028T071901_P05000_F_J_001' # simple unary union case
+      'NISAR_L0_PR_RRSD_010_136_A_153S_20260118T150500_20260118T151316_X05009_N_J_001', # polygons don't overlap correctly, need convex_hull
+      'NISAR_L0_PR_RRSD_010_103_A_153S_20260116T081212_20260116T082016_X05009_N_J_001' # simple unary union case
     ]
     expected_subclass: NISARProduct
