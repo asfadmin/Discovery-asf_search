@@ -87,7 +87,7 @@ def search_generator(
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
-    tileID: str = None,
+    tileID: Union[str, Sequence[str]] = None,
     maxResults: int = None,
     opts: ASFSearchOptions = None,
 ) -> Generator[ASFSearchResults, None, None]:

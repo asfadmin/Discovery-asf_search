@@ -61,7 +61,7 @@ def geo_search(
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
-    tileID: str = None,
+    tileID: Union[str, Sequence[str]] = None,
     opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
