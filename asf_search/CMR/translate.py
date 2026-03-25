@@ -16,14 +16,15 @@ try:
 except ImportError:
     from dateutil.parser import parse as parse_datetime
 
-
+nisar_collections_set = set(collections_per_platform['NISAR'])
 def translate_opts(opts: ASFSearchOptions) -> List:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
 
-    should_use_track = False
-    if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
+    should_use_track = not set(dict_opts.get('collections', [])).isdisjoint(nisar_collections_set)
+
+    if not should_use_track and dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
         processingType = dict_opts.get('processingLevel', [])[0]
         if processingType in NISAR_PRODUCT_TYPES:
             should_use_track = True
