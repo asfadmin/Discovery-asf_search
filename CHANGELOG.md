@@ -27,6 +27,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v12.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.4...v12.0.5)
+### Added
+- DIST-ALERT-S1 product type to OPERA dataset
+  - TileID searchable attribute
+  - productVersion attribute
 ### Fixed
 - Fix edge-case with `platform` & `processingLevel` concept-id aliasing
 

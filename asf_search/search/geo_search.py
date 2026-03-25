@@ -61,6 +61,7 @@ def geo_search(
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
+    tileID: Union[str, Sequence[str]] = None,
     opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
@@ -154,6 +155,8 @@ def geo_search(
     temporalBaselineDays:
         List of temporal baselines,
         used for Sentinel-1 Interferogram (BETA)
+    tileID:
+        For DIST-ALERT-S1 product type products
     maxResults:
         The maximum number of results to be returned by the search
     opts:
