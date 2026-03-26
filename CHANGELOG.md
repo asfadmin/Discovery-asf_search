@@ -27,6 +27,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 ------
 ## [v12.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.5...v12.0.6)
+### Added
+- `utils` module added as top level module
+    - `get_nisar_orbit_ephemeras()` method returns dictionary with latest `NISAR` `POE`, `MOE`, `NOE`, and `FOE` orbit ephemeras
+
 ### Fixed
 - Fix track based searches when `processingLevel` specified on `NISAR` dataset searches
 
