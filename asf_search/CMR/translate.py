@@ -24,7 +24,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     should_use_track = not set(dict_opts.get('collections', [])).isdisjoint(nisar_collections_set)
 
-    if not should_use_track and dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
+    if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
         processingType = dict_opts.get('processingLevel', [])[0]
         if processingType in NISAR_PRODUCT_TYPES:
             should_use_track = True
@@ -140,7 +140,6 @@ def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def should_use_asf_frame(cmr_opts):
-    # TODO: Investigate why this fails for NISAR when processing level specified
     asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS', 'ALOS-2', 'NISAR', 'SEASAT 1']
 
     asf_frame_collections = get_concept_id_alias(asf_frame_platforms, collections_per_platform)
