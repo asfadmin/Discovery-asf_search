@@ -193,12 +193,12 @@ class ASFProduct:
         urls = self.get_urls(fileType=fileType)
 
         for url in urls:
-            base_filename = '.'.join(default_filename.split('.')[:-1])
-            extension = url.split('.')[-1]
+            # base_filename = '.'.join(default_filename.split('.')[:-1])
+            # extension = url.split('.')[-1]
             download_url(
                 url=url,
                 path=path,
-                filename=f'{base_filename}.{extension}',
+                filename=os.path.basename(url),
                 session=session,
             )
 
