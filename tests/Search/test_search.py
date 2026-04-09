@@ -5,6 +5,7 @@ from asf_search import ASFSession
 
 from tenacity import retry, retry_if_exception_type, stop_after_attempt
 from asf_search import ASF_LOGGER
+from asf_search.ASFSearchOptions.validator_map import validator_map
 from asf_search.CMR.subquery import build_subqueries
 from asf_search.CMR.translate import try_parse_date
 from asf_search.constants import INTERNAL
@@ -158,9 +159,9 @@ def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
                         actual_set = set(actual_val)
 
                         difference = expected_set.symmetric_difference(actual_set)
-                        assert (
-                            len(difference) == 0
-                        ), f'Found {len(difference)} missing entries for subquery generated keyword: "{key}"\n{list(difference)}'
+                        assert len(difference) == 0, (
+                            f'Found {len(difference)} missing entries for subquery generated keyword: "{key}"\n{list(difference)}'
+                        )
             else:
                 assert actual_val == expected_val
 
@@ -180,9 +181,54 @@ def run_test_keyword_aliasing_results(params: ASFSearchOptions):
 
     for product in module_response:
         sceneName = product.properties['sceneName']
-        assert api_dict.get(
-            sceneName, False
-        ), f'Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}'
+        assert api_dict.get(sceneName, False), (
+            f'Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}'
+        )
+
+
+def _convert_nested_lists_to_ranges(param_value):
+    return [
+        (param_value[0], param_value[1]) if isinstance(param_value, list) else param_value
+        for param_value in param_value
+    ]
+    pass
+
+
+def run_test_granule_search_patterns(params: dict, output: dict):
+    for param_key, param_value in params.items():
+        validator_method = validator_map.get(param_key)
+        # Convert any nested lists into ranges since yaml doesn't support ()
+        if callable(validator_method) and validator_method.__name__.endswith('_range_list'):
+            if isinstance(param_value, list):
+                params[param_key] = _convert_nested_lists_to_ranges(param_value)
+
+    opts = ASFSearchOptions(**params)
+    response = search(opts=opts)
+    if not output['expect_results']:
+        assert len(response) == 0
+    else:
+        expected_properties: dict = output['expected_properties']
+        for property, value in expected_properties.items():
+            if isinstance(value, list):
+                expanded_list = []
+                for val in value:
+                    if isinstance(val, list):
+                        expanded_list.extend([*range(val[0], val[1] + 1)])
+                    else:
+                        expanded_list.append(val)
+                expected_properties[property] = expanded_list
+
+        for result in response:
+            for property, expected_values in expected_properties.items():
+                if isinstance(expected_values, list):
+                    if isinstance(result.properties[property], list):
+                        assert any(
+                            value in expected_values for value in result.properties[property]
+                        )
+                    else:
+                        assert result.properties[property] in expected_values
+                else:
+                    assert result.properties[property] == expected_values
 
 
 @retry(
