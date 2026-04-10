@@ -57,7 +57,7 @@ def search(
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
     jointObservation: bool = None,
-    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
+    productionConfiguration: Union[Literal['PR', 'UR'], Sequence[Literal['PR', 'UR']]] = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
@@ -118,6 +118,7 @@ def search(
     granule_list:
         List of specific granules.
         Search results may include several products per granule name.
+        Supports wildcard queries (*/?)
     groupID:
         Identifier used to find products considered to
         be of the same scene but having different granule names
@@ -191,7 +192,6 @@ def search(
         results.searchOptions = page.searchOptions
         perf = time.time()
 
-
     if not results.searchComplete:
         msg = (
             'Results may be incomplete due to a search error. '
@@ -199,7 +199,6 @@ def search(
         )
 
         ASF_LOGGER.error(msg)
-        
 
     try:
         results.sort(key=lambda p: p.get_sort_keys(), reverse=True)

@@ -1,223 +1,228 @@
 # Contents of pytest-config.yml
 test_types:
+  - For running ASFProduct tests:
+      required_keys: products
+      method: test_ASFProduct
 
-- For running ASFProduct tests:
-    required_keys: products
-    method: test_ASFProduct
+  - For running ASFProduct Subproduct tests:
+      required_in_title: ASFSubproduct
+      required_keys: ["scenes", "expected_subclass"]
+      method: test_ASFSubproduct
 
-- For running ASFProduct Subproduct tests:
-    required_in_title: ASFSubproduct
-    required_keys: ['scenes', 'expected_subclass']
-    method: test_ASFSubproduct
+  - For running ASFProduct_Stack tests:
+      required_keys: ["product", "preprocessed_stack", "processed_stack"]
+      required_in_title: ASFProduct_Stack
+      method: test_ASFProduct_Stack
 
-- For running ASFProduct_Stack tests:
-    required_keys: ["product", "preprocessed_stack", "processed_stack"]
-    required_in_title: ASFProduct_Stack
-    method: test_ASFProduct_Stack
+  - For running ASFProduct_get_stack_options tests:
+      required_keys: ["product", "options"]
+      required_in_title: ASFProduct-get-stack-options
+      method: test_ASFProduct_get_stack_options
 
-- For running ASFProduct_get_stack_options tests:
-    required_keys: ["product", "options"]
-    required_in_title: ASFProduct-get-stack-options
-    method: test_ASFProduct_get_stack_options
+  - For running ASFProduct_download_file tests:
+      required_keys: ["product", "filename", "filetype", "additionalUrls"]
+      required_in_title: ASFProduct-download-file
+      method: test_ASFProduct_download
 
-- For running ASFProduct_download_file tests:
-    required_keys: ["product", "filename", "filetype", "additionalUrls"]
-    required_in_title: ASFProduct-download-file
-    method: test_ASFProduct_download
+  - For running ASFSession tests:
+      required_in_title: password-login
+      required_keys: ["username", "password"]
+      method: test_ASFSession_Error
 
-- For running ASFSession tests:
-    required_in_title: password-login
-    required_keys: ['username', 'password']
-    method: test_ASFSession_Error
+  - For running ASFSession token_auth tests:
+      required_in_title: token-auth
+      required_keys: token
+      method: test_ASFSession_Token_Error
 
-- For running ASFSession token_auth tests:
-    required_in_title: token-auth
-    required_keys: token
-    method: test_ASFSession_Token_Error
+  - For running ASFSession cookiejar_auth tests:
+      required_in_title: cookiejar-auth
+      required_keys: cookies
+      method: test_ASFSession_Cookie_Error
 
-- For running ASFSession cookiejar_auth tests:
-    required_in_title: cookiejar-auth
-    required_keys: cookies
-    method: test_ASFSession_Cookie_Error
+  - For running ASFSession rebuild_auth tests:
+      required_in_title: rebuild_auth
+      required_keys:
+        ["original_domain", "response_domain", "response_code", "final_token"]
+      method: test_asf_session_rebuild_auth
 
-- For running ASFSession rebuild_auth tests:
-    required_in_title: rebuild_auth
-    required_keys: ['original_domain', 'response_domain', 'response_code', 'final_token']
-    method: test_asf_session_rebuild_auth
+  - For running preprocessed baseline stack params tests:
+      required_keys: product
+      required_in_title: test-preprocessed-product
+      method: test_get_preprocessed_stack_params
 
-- For running preprocessed baseline stack params tests:
-    required_keys: product
-    required_in_title: test-preprocessed-product
-    method: test_get_preprocessed_stack_params
+  - For running unprocessed baseline stack params tests:
+      required_keys: product
+      required_in_title: test-unprocessed-product
+      method: test_get_unprocessed_stack_params
 
-- For running unprocessed baseline stack params tests:
-    required_keys: product
-    required_in_title: test-unprocessed-product
-    method: test_get_unprocessed_stack_params
+  - For running Invalid Stack ID stack params tests:
+      required_keys: product
+      required_in_title: test-invalid-insarStackID
+      method: test_get_stack_opts_invalid_insarStackId
 
-- For running Invalid Stack ID stack params tests:
-    required_keys: product
-    required_in_title: test-invalid-insarStackID
-    method: test_get_stack_opts_invalid_insarStackId
+  - For running Invalid Platform stack params tests:
+      required_keys: ["product", "stack"]
+      required_in_title: test-temporal-baseline
+      method: test_temporal_baseline
 
-- For running Invalid Platform stack params tests:
-    required_keys: ["product", "stack"]
-    required_in_title: test-temporal-baseline
-    method: test_temporal_baseline
+  - For running Invalid Platform stack params tests:
+      required_keys: ["product", "stack"]
+      required_in_title: test-product-stack
+      method: test_stack_from_product
 
-- For running Invalid Platform stack params tests:
-    required_keys: ["product", "stack"]
-    required_in_title: test-product-stack
-    method: test_stack_from_product
+  - For running stack_from_id tests:
+      required_keys: ["stack_id", "stack", "stack_reference"]
+      required_in_title: test-stack-id
+      method: test_stack_from_id
 
-- For running stack_from_id tests:
-    required_keys: ["stack_id", "stack", "stack_reference"]
-    required_in_title: test-stack-id
-    method: test_stack_from_id
+  - For running stack from ASFSearch tests:
+      required_keys: response
+      required_in_title: test-ASFSearch
+      method: test_ASFSearchResults
 
-- For running stack from ASFSearch tests:
-    required_keys: response
-    required_in_title: test-ASFSearch
-    method: test_ASFSearchResults
+  - For ASFSearch search with parameters tests:
+      required_keys: ["parameters", "answer"]
+      required_in_title: test-ASFSearch-search-valid
+      method: test_ASFSearch_Search
 
-- For ASFSearch search with parameters tests:
-    required_keys: ["parameters", "answer"]
-    required_in_title: test-ASFSearch-search-valid
-    method: test_ASFSearch_Search
+  - For ASFSearch search_generator with parameters tests:
+      required_keys: parameters
+      required_in_title: test-ASFSearch-search-valid
+      method: test_ASFSearch_Search_Generator
 
-- For ASFSearch search_generator with parameters tests:
-    required_keys: parameters
-    required_in_title: test-ASFSearch-search-valid
-    method: test_ASFSearch_Search_Generator
+  - For running ASFSearch search error tests:
+      required_keys: ["parameters", "status_code", "report"]
+      required_in_title: test-ASFSearch-search-error
+      method: test_ASFSearch_Search_Error
 
-- For running ASFSearch search error tests:
-    required_keys: ["parameters", "status_code", "report"]
-    required_in_title: test-ASFSearch-search-error
-    method: test_ASFSearch_Search_Error
+  - For running WKT Validation invalid wkt error tests:
+      required_keys: wkt
+      required_in_title: "test-validate-wkt-invalid-error"
+      method: test_wkt_validation_Invalid_WKT_Error
 
-- For running WKT Validation invalid wkt error tests:
-    required_keys: wkt
-    required_in_title: 'test-validate-wkt-invalid-error'
-    method: test_wkt_validation_Invalid_WKT_Error
+  - For running WKT Validation point tests:
+      required_keys: ["wkt", "validated-wkt"]
+      required_in_title: "test-validate-wkt-valid"
+      method: test_wkt_validation_WKT_Valid
 
-- For running WKT Validation point tests:
-    required_keys: ["wkt", "validated-wkt"]
-    required_in_title: 'test-validate-wkt-valid'
-    method: test_wkt_validation_WKT_Valid
+  - For running _get_clamped_and_wrapped_geometry tests:
+      required_keys: ["wkt", "clamped-wkt", "clamped-count", "wrapped-count"]
+      required_in_title: test-validate-wkt-clamp
+      method: test_wkt_validation_WKT_clamp_geometry
 
-- For running _get_clamped_and_wrapped_geometry tests:
-    required_keys: ["wkt", "clamped-wkt", "clamped-count", "wrapped-count"]
-    required_in_title: test-validate-wkt-clamp
-    method: test_wkt_validation_WKT_clamp_geometry
+  - For running _get_convex_hull tests:
+      required_keys: ["wkt", "convex-wkt"]
+      required_in_title: test-validate-wkt-convex-hull
+      method: test_wkt_validation_convex_hull
 
-- For running _get_convex_hull tests:
-    required_keys: ["wkt", "convex-wkt"]
-    required_in_title: test-validate-wkt-convex-hull
-    method: test_wkt_validation_convex_hull
+  - For running _get_convex_hull tests:
+      required_keys: ["wkt", "merged-wkt"]
+      required_in_title: test-validate-wkt-merge-overlapping-geometry
+      method: test_wkt_validation_merge_overlapping_geometry
 
-- For running _get_convex_hull tests:
-    required_keys: ["wkt", "merged-wkt"]
-    required_in_title: test-validate-wkt-merge-overlapping-geometry
-    method: test_wkt_validation_merge_overlapping_geometry
+  - For running _counter_clockwise_reorientation tests:
+      required_keys: ["wkt", "cc-wkt"]
+      required_in_title: test-validate-wkt-reorient
+      method: test_wkt_validation_counter_clockwise_reorientation
 
-- For running _counter_clockwise_reorientation tests:
-    required_keys: ["wkt", "cc-wkt"]
-    required_in_title: test-validate-wkt-reorient
-    method: test_wkt_validation_counter_clockwise_reorientation
+  - For running _wkt_prep tests:
+      required_keys: wkt
+      required_in_title: test-search-wkt-prep
+      method: test_search_wkt_prep
 
-- For running _wkt_prep tests:
-    required_keys: wkt
-    required_in_title: test-search-wkt-prep
-    method: test_search_wkt_prep
+  - For running _simplify_aoi tests:
+      required_keys: ["wkt", "simplified-wkt", "RepairEntries"]
+      required_in_title: test-simplify-aoi
+      method: test_simplify_aoi
 
-- For running _simplify_aoi tests:
-    required_keys: ["wkt", "simplified-wkt", "RepairEntries"]
-    required_in_title: test-simplify-aoi
-    method: test_simplify_aoi
+  - For running _get_project_names tests:
+      required_keys: ["cmr_ummjson", "campaigns"]
+      required_in_title: test_get_project_names
+      method: test_get_platform_campaign_names
 
-- For running _get_project_names tests:
-    required_keys: ["cmr_ummjson", "campaigns"]
-    required_in_title: test_get_project_names
-    method: test_get_platform_campaign_names
+  - For running _get_project_names tests:
+      required_keys: ["wkt", "coordinates"]
+      required_in_title: test-validate-wkt-get-shape-coords
+      method: test_validate_wkt_get_shape_coords
 
-- For running _get_project_names tests:
-    required_keys: ["wkt", "coordinates"]
-    required_in_title: test-validate-wkt-get-shape-coords
-    method: test_validate_wkt_get_shape_coords
+  - For running ASFSearchResults_intersection tests:
+      required_keys: ["wkt"]
+      required_in_title: ASFSearchResults_intersection
+      method: test_ASFSearchResults_intersection
 
-- For running ASFSearchResults_intersection tests:
-    required_keys: ["wkt"]
-    required_in_title: ASFSearchResults_intersection
-    method: test_ASFSearchResults_intersection
+  - For running download_url tests:
+      required_keys: ["url", "path", "filename"]
+      required_in_title: test-download-url
+      method: test_download_url
 
-- For running download_url tests:
-    required_keys: ["url", "path", "filename"]
-    required_in_title: test-download-url
-    method: test_download_url
+  - For running find_new_reference tests:
+      required_keys: ["stack", "output_index"]
+      required_in_title: test-find-new-reference
+      method: test_find_new_reference
 
-- For running find_new_reference tests:
-    required_keys: ["stack", "output_index"]
-    required_in_title: test-find-new-reference
-    method: test_find_new_reference
+  - For running test_get_default_product_type tests:
+      required_keys: ["product", "product_type"]
+      required_in_title: test-get_default_product_type
+      method: test_get_default_product_type
 
-- For running test_get_default_product_type tests:
-    required_keys: ["product", "product_type"]
-    required_in_title: test-get_default_product_type
-    method: test_get_default_product_type
+  - For running test_get_baseline_from_stack tests:
+      required_keys: ["reference", "stack", "output_stack", "error"]
+      required_in_title: test-get-baseline-from-stack
+      method: test_get_baseline_from_stack
 
-- For running test_get_baseline_from_stack tests:
-    required_keys: ['reference', 'stack', 'output_stack', 'error']
-    required_in_title: test-get-baseline-from-stack
-    method: test_get_baseline_from_stack
+  - For running test_get_default_product_type tests:
+      required_keys: ["reference", "output"]
+      required_in_title: test-valid-state-vectors
+      method: test_valid_state_vectors
 
-- For running test_get_default_product_type tests:
-    required_keys: ["reference", "output"]
-    required_in_title: test-valid-state-vectors
-    method: test_valid_state_vectors
+  - For running test_validator_map_validate tests:
+      required_keys: ["key", "value", "output"]
+      required_in_title: test-validator-map-validate
+      method: test_validator_map_validate
 
-- For running test_validator_map_validate tests:
-    required_keys: ['key', 'value', 'output']
-    required_in_title: test-validator-map-validate
-    method: test_validator_map_validate
+  - For running ASFSearchOption-validator tests:
+      required_keys: ["validator", "input", "output", "error"]
+      required_in_title: test-validators
+      method: test_ASFSearchOptions_validator
 
-- For running ASFSearchOption-validator tests:
-    required_keys: ['validator', 'input', 'output', 'error']
-    required_in_title: test-validators
-    method: test_ASFSearchOptions_validator
+  - For running ASFSearchOptions tests:
+      required_in_title: test-ASFSearchOptions
+      method: test_ASFSearchOptions
 
-- For running ASFSearchOptions tests:
-    required_in_title: test-ASFSearchOptions
-    method: test_ASFSearchOptions
+  - For running serialization tests:
+      required_in_title: serialization
+      method: test_serialization
 
-- For running serialization tests:
-    required_in_title: serialization
-    method: test_serialization
+  # - For running ASFSearchOptions tests:
+  #     required_in_title: ASFSearchResults-format
+  #     required_keys: results
+  #     method: test_output_format
 
-# - For running ASFSearchOptions tests:
-#     required_in_title: ASFSearchResults-format
-#     required_keys: results
-#     method: test_output_format
+  - For running search-api keyword-collection aliasing tests:
+      required_in_title: test-aliasing-search-against-api
+      required_keys: params
+      method: test_keyword_aliasing_results
 
-- For running search-api keyword-collection aliasing tests:
-    required_in_title: test-aliasing-search-against-api
-    required_keys: params
-    method: test_keyword_aliasing_results
+  - For running dataset keyword tests:
+      required_in_title: search-dataset
+      required_keys: dataset
+      method: test_search_dataset
 
-- For running dataset keyword tests:
-    required_in_title: search-dataset
-    required_keys: dataset
-    method: test_search_dataset
+  - For running build_subquery tests:
+      required_in_title: search-build_subquery
+      required_keys: ["params", "expected"]
+      method: test_build_subqueries
 
-- For running build_subquery tests:
-    required_in_title: search-build_subquery
-    required_keys: ['params', 'expected']
-    method: test_build_subqueries
+  - For running collection_attributes tests:
+      required_in_title: test-collection-attributes
+      required_keys: ["params", "expected_attributes"]
+      method: test_collection_attributes
 
-- For running collection_attributes tests:
-    required_in_title: test-collection-attributes
-    required_keys: ['params', 'expected_attributes']
-    method: test_collection_attributes
+  - For running granule-search-patterns tests:
+      required_in_title: test-granule-search-patterns
+      required_keys: [params, output]
+      method: test_granule_search_patterns
 
-- For running jupyter notebook example tests:
-    required_keys: notebook
-    method: test_notebook_examples
+  - For running jupyter notebook example tests:
+      required_keys: notebook
+      method: test_notebook_examples

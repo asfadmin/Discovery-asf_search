@@ -77,12 +77,12 @@ def search_generator(
     fullBurstID: Union[str, Sequence[str]] = None,
     temporalBaselineDays: Union[str, Sequence[str]] = None,
     operaBurstID: Union[str, Sequence[str]] = None,
-    frameCoverage: Literal["FULL", "PARTIAL"] = None,
+    frameCoverage: Literal['FULL', 'PARTIAL'] = None,
     mainBandPolarization: Union[str, Sequence[str]] = None,
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
     jointObservation: bool = None,
-    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
+    productionConfiguration: Union[Literal['PR', 'UR'], Sequence[Literal['PR', 'UR']]] = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
@@ -142,6 +142,7 @@ def search_generator(
     granule_list:
         List of specific granules.
         Search results may include several products per granule name.
+        Supports wildcard queries (*/?)
     groupID:
         Identifier used to find products considered to
         be of the same scene but having different granule names
@@ -215,7 +216,11 @@ def search_generator(
     if maxResults is not None and (
         getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)
     ):
-        raise ValueError('Cannot use maxResults along with product_list/granule_list.')
+        names = [] if opts.granule_list is None else opts.granule_list
+        if not any('*' in name or '?' in name for name in names):
+            raise ValueError(
+                'Cannot use maxResults with product_list or non-wildcard granule_list.'
+            )
 
     ASF_LOGGER.debug(f'SEARCH: preprocessing opts: {opts}')
     preprocess_opts(opts)
@@ -258,13 +263,18 @@ def search_generator(
                 f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items.'
             )
 
-            if len(items) != INTERNAL.CMR_PAGE_SIZE and len(items) + subquery_count < subquery_max_results:
-                message = 'CMR returned page of incomplete results.' \
-                f'Expected {min(INTERNAL.CMR_PAGE_SIZE, subquery_max_results - subquery_count)} results,' \
-                f'got {len(items)}'
+            if (
+                len(items) != INTERNAL.CMR_PAGE_SIZE
+                and len(items) + subquery_count < subquery_max_results
+            ):
+                message = (
+                    'CMR returned page of incomplete results.'
+                    f'Expected {min(INTERNAL.CMR_PAGE_SIZE, subquery_max_results - subquery_count)} results,'
+                    f'got {len(items)}'
+                )
                 ASF_LOGGER.warning(message)
                 report_search_error(query, message)
-            
+
             opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
             perf = time.time()
             last_page = process_page(
@@ -409,7 +419,7 @@ def set_default_dates(opts: ASFSearchOptions):
             )
             opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
-    #TODO python 3.13 deprecation warning, ambiguous date when month specified but not year
+    # TODO python 3.13 deprecation warning, ambiguous date when month specified but not year
     if opts.start is not None:
         opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
     if opts.end is not None:
@@ -456,12 +466,11 @@ def set_platform_alias(opts: ASFSearchOptions):
 
 _dataset_collection_items = dataset_collections.items()
 
+
 def set_science_product_alias(opts: ASFSearchOptions):
     """Alias certain product types (primarily NISAR L0B)"""
     if opts.processingLevel is not None:
-        processingLevelAliases = {
-            'L0B': ['RRSD']
-        }
+        processingLevelAliases = {'L0B': ['RRSD']}
 
         processing_levels = []
         for processing_level in opts.processingLevel:
