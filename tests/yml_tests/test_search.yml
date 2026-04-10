@@ -1016,7 +1016,19 @@ tests:
           productionConfiguration: "PR"
           pathNumber: [[40, 42]]
           mainBandPolarization: null
+          flightDirection: ASCENDING
         expect_results: True
+
+  - test-granule-search-patterns basic case NISAR ? overlapping filters:
+      params:
+        maxResults: 250
+        flightDirection: "ASCENDING"
+        granule_list: ["NISAR_L?_PR_*"]
+      output:
+        expect_results: True
+        expected_properties:
+          flightDirection: ASCENDING
+          processingLevel: ["SME2", "GSLC", "GCOV", "GOFF", "GUNW", "RSLC", "RUNW", "ROFF", "RIFG", "RRSD"]
 
   - test-granule-search-patterns basic case NISAR wildcard zero overlapping filters:
       params:
@@ -1024,5 +1036,63 @@ tests:
         flightDirection: "ASCENDING"
         processingLevel: ["GSLC", "GCOV", "RSLC"]
         granule_list: ["NISAR_L3_PR_*_NA*"]
+      output:
+        expect_results: False
+
+  - test-granule-search-patterns basic case NISAR wildcard + ? overlapping filters:
+      params:
+        maxResults: 250
+        flightDirection: "ASCENDING"
+        processingLevel: ["GSLC", "GCOV", "RSLC"]
+        granule_list: ["NISAR_L?_PR_*_NA*"]
+      output:
+        expect_results: True
+        expected_properties:
+          processingLevel: ["GSLC", "GCOV", "RSLC"]
+          productionConfiguration: "PR"
+          mainBandPolarization: null
+          flightDirection: ASCENDING
+
+  - test-granule-search-patterns NISAR crid filter L2 X0500?:
+      params:
+        maxResults: 250
+        dataset: NISAR
+        granule_list: ["NISAR_L2_PR_*X0500?*"]
+      output:
+        expect_results: True
+        expected_properties:
+          processingLevel: ["GSLC", "GCOV", "GUNW", "GOFF"]
+          productionConfiguration: "PR"
+          crid: ['X05000', 'X05001','X05002','X05003','X05004','X05005','X05006','X05007','X05008', 'X05009']
+
+  - test-granule-search-patterns NISAR crid filter X05005:
+      params:
+        maxResults: 250
+        dataset: NISAR
+        granule_list: ["NISAR_L?_PR_*X05005*"]
+      output:
+        expect_results: True
+        expected_properties:
+          processingLevel: ["SME2", "GSLC", "GCOV", "GOFF", "GUNW", "RSLC", "RUNW", "ROFF", "RIFG", "RRSD"]
+          productionConfiguration: "PR"
+          crid: X05005
+
+  - test-granule-search-patterns NISAR RUNW crid filter X05010:
+      params:
+        maxResults: 250
+        dataset: NISAR
+        granule_list: ["NISAR_L1_PR_RUNW*X05010*"]
+      output:
+        expect_results: True
+        expected_properties:
+          processingLevel: RUNW
+          productionConfiguration: "PR"
+          crid: X05010
+
+  - test-granule-search-patterns NISAR RUNW bad crid filter:
+      params:
+        maxResults: 250
+        dataset: NISAR
+        granule_list: ["NISAR_L1_PR_RUNW*Y05010*"]
       output:
         expect_results: False

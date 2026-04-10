@@ -102,7 +102,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
                 if key in ['granule_list', 'product_list']:
                     for y in x.split(','):
                         cmr_opts.append((key, y))
-                        if key == 'granule_list' and '*' in y:
+                        if key == 'granule_list' and ('*' in y or '?' in y):
                             granule_list_with_wildcard = True
                 else:
                     if isinstance(x, tuple):

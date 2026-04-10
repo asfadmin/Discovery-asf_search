@@ -142,6 +142,7 @@ def search_generator(
     granule_list:
         List of specific granules.
         Search results may include several products per granule name.
+        Supports wildcard queries (*/?)
     groupID:
         Identifier used to find products considered to
         be of the same scene but having different granule names
@@ -216,7 +217,7 @@ def search_generator(
         getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)
     ):
         names = [] if opts.granule_list is None else opts.granule_list
-        if not any('*' in name for name in names):
+        if not any('*' in name or '?' in name for name in names):
             raise ValueError(
                 'Cannot use maxResults with product_list or non-wildcard granule_list.'
             )
