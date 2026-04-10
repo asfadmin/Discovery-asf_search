@@ -28,7 +28,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ------
 ## [v12.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.6...v12.0.7)
 ### Added
-- `granule_list` supports wildcards (*) searches
+- `granule_list` supports wildcard ("*" and "?") searches
     - For more information: https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#parameter-options
 
 ------
