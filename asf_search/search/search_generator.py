@@ -212,7 +212,6 @@ def search_generator(
 
     maxResults = opts.pop('maxResults', None)
 
-    wildcard_search = False
     if maxResults is not None and (
         getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)
     ):
