@@ -81,9 +81,13 @@ class JSONLite2StreamArray(JSONLiteStreamArray):
         
         if p.get('nisar') is not None:
             result['nsr'] = p['nisar']
-            result["cnm"] = p["collectionName"]
-            result["cid"] = p["conceptID"]
         
+        if p.get('collectionName') is not None:
+            result["cnm"] = p["collectionName"]
+
+        if p.get('conceptID') is not None:
+            result["cid"] = p["conceptID"]
+
         if p.get('ariaVersion') is not None:
             result['ariav'] = p.get('ariaVersion')
     

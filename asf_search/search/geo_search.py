@@ -46,6 +46,7 @@ def geo_search(
     start: Union[datetime.datetime, str] = None,
     absoluteBurstID: Union[int, Sequence[int]] = None,
     relativeBurstID: Union[int, Sequence[int]] = None,
+    ariaVersion: str = None,
     fullBurstID: Union[str, Sequence[str]] = None,
     temporalBaselineDays: Union[str, Sequence[str]] = None,
     operaBurstID: Union[str, Sequence[str]] = None,
@@ -60,6 +61,7 @@ def geo_search(
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
+    tileID: Union[str, Sequence[str]] = None,
     opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
@@ -72,6 +74,8 @@ def geo_search(
         For ALOS, ERS-1, ERS-2, JERS-1, and RADARSAT-1, Sentinel-1A, Sentinel-1B
         this value corresponds to the orbit count within the orbit cycle.
         For UAVSAR it is the Flight ID.
+    ariaVersion:
+        For ARIAS1GUNW this value describes the version a product was generated under
     asfFrame:
         This is primarily an ASF / JAXA frame reference. However,
         some platforms use other conventions. See ‘frame’ for ESA-centric frame searches.
@@ -151,6 +155,8 @@ def geo_search(
     temporalBaselineDays:
         List of temporal baselines,
         used for Sentinel-1 Interferogram (BETA)
+    tileID:
+        For DIST-ALERT-S1 product type products
     maxResults:
         The maximum number of results to be returned by the search
     opts:

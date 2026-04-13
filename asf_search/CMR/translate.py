@@ -16,15 +16,22 @@ try:
 except ImportError:
     from dateutil.parser import parse as parse_datetime
 
+nisar_collections_set = set(collections_per_platform['NISAR'])
+
 
 def translate_opts(opts: ASFSearchOptions) -> List:
     # Need to add params which ASFSearchOptions cant support (like temporal),
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
 
-    if dict_opts.get('processingLevel') is not None: # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
+    should_use_track = not set(dict_opts.get('collections', [])).isdisjoint(nisar_collections_set)
+
+    if (
+        dict_opts.get('processingLevel') is not None
+    ):  # Certain products are now using PRODUCT_TYPE instead of PROCESSING_LEVEL
         processingType = dict_opts.get('processingLevel', [])[0]
         if processingType in NISAR_PRODUCT_TYPES:
+            should_use_track = True
             # Use new PRODUCT_TYPE keyword later, remove processingLevel so we don't try the value with PROCESSING_LEVEL
             dict_opts['productType'] = dict_opts.pop('processingLevel')[0]
 
@@ -82,18 +89,21 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # user provided umm fields
     custom_cmr_keywords = dict_opts.pop('cmr_keywords', [])
 
+    granule_list_with_wildcard = False
     for key, val in dict_opts.items():
         # If it's "session" or something else CMR doesn't accept, don't send it:
         if key not in field_map:
             if key == 'productType':
                 custom_cmr_keywords.append(('attribute[]', f'string,PRODUCT_TYPE,{val}'))
-            
+
             continue
         if isinstance(val, list):
             for x in val:
                 if key in ['granule_list', 'product_list']:
                     for y in x.split(','):
                         cmr_opts.append((key, y))
+                        if key == 'granule_list' and ('*' in y or '?' in y):
+                            granule_list_with_wildcard = True
                 else:
                     if isinstance(x, tuple):
                         cmr_opts.append((key, ','.join([str(t) for t in x])))
@@ -108,6 +118,9 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     if should_use_asf_frame(cmr_opts):
         cmr_opts = use_asf_frame(cmr_opts)
 
+    if should_use_track:
+        cmr_opts = use_track_number(cmr_opts)
+
     cmr_opts.extend(custom_cmr_keywords)
 
     additional_keys = [
@@ -118,6 +131,9 @@ def translate_opts(opts: ASFSearchOptions) -> List:
         ('options[platform][ignore_case]', 'true'),
         ('provider', opts.provider),
     ]
+
+    if granule_list_with_wildcard:
+        additional_keys.append(('options[readable_granule_name][pattern]', 'true'))
 
     cmr_opts.extend(additional_keys)
 
@@ -134,7 +150,15 @@ def fix_cmr_shapes(fixed_params: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def should_use_asf_frame(cmr_opts):
-    asf_frame_platforms = ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'ALOS', 'ALOS-2', 'NISAR', 'SEASAT 1']
+    asf_frame_platforms = [
+        'SENTINEL-1A',
+        'SENTINEL-1B',
+        'SENTINEL-1C',
+        'ALOS',
+        'ALOS-2',
+        'NISAR',
+        'SEASAT 1',
+    ]
 
     asf_frame_collections = get_concept_id_alias(asf_frame_platforms, collections_per_platform)
 
@@ -173,6 +197,28 @@ def use_asf_frame(cmr_opts):
     return cmr_opts
 
 
+def use_track_number(cmr_opts):
+    """
+    NISAR: always use track number instead of path number
+    """
+
+    for n, p in enumerate(cmr_opts):
+        if not isinstance(p[1], str):
+            continue
+
+        m = re.search(r'PATH_NUMBER', p[1])
+        if m is None:
+            continue
+
+        logging.debug(
+            'NISAR subquery with relativeOrbit, using TRACK_NUMBER instead of PATH_NUMBER'
+        )
+
+        cmr_opts[n] = (p[0], p[1].replace(',PATH_NUMBER,', ',TRACK_NUMBER,'))
+
+    return cmr_opts
+
+
 # some products don't have integer values in BYTES fields, round to nearest int
 def try_round_float(value: str) -> Optional[int]:
     if value is None:
@@ -195,12 +241,14 @@ def try_parse_float(value: str) -> Optional[float]:
 
     return float(value)
 
+
 def try_parse_bool(val: str) -> Optional[bool]:
     """Boolean values are stored as strings in umm json"""
     if val is None:
         return None
-    
+
     return val.lower() == 'true'
+
 
 def try_parse_frame_coverage(val: str) -> Optional[str]:
     """Frame Coverage is stored as a string boolean in FULL_FRAME, convert it to Partial/Full"""
@@ -209,8 +257,9 @@ def try_parse_frame_coverage(val: str) -> Optional[str]:
             val = 'Full'
         else:
             val = 'Partial'
-    
+
     return val
+
 
 def try_parse_date(value: str) -> Optional[str]:
     if value is None:

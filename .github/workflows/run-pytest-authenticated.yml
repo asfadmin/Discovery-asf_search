@@ -27,7 +27,7 @@ jobs:
       - name: Run Tests
         env:
             EDL_TOKEN: ${{ secrets.EDL_TOKEN }}
-        run: python3 -m pytest --should_auth_session TRUE
+        run: python3 -m pytest tests/yml_tests/test_authenticated --should_auth_session TRUE
 
     #   - name: Upload coverage to Codecov
     #     uses: codecov/codecov-action@v5

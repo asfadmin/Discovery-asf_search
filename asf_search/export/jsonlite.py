@@ -8,6 +8,8 @@ from shapely.ops import transform
 
 from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
+from asf_search.constants import PRODUCT_TYPE
+_MB = 1048576
 
 extra_jsonlite_fields = [
     (
@@ -227,11 +229,19 @@ class JSONLiteStreamArray(list):
             result["burst"] = p["burst"]
             result["sizeMB"] = float(p["bytes"]) / 1024000
 
+        elif result.get('productType', None) in [PRODUCT_TYPE.TROPO_ZENITH, PRODUCT_TYPE.ECMWF_TROPO]:
+            result['sizeMB'] = p.get('bytes', {})
+            result['s3Urls'] = p.get('s3Urls', [])
+            result['additionalUrls'] = p.get('additionalUrls')
+            result["collectionName"] = p.get("collectionName")
+            result["conceptID"] = p.get("conceptID")
         elif p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
             result['opera'] = {
                 'operaBurstID': p.get('operaBurstID'),
                 's3Urls': p.get('s3Urls', []),
                 'additionalUrls': p.get('additionalUrls'),
+                'tileID': p.get('tileID'),
+                'productVersion': p.get('productVersion')
             }
             if p.get('validityStartDate'):
                 result['opera']['validityStartDate'] = p.get('validityStartDate')
@@ -240,12 +250,14 @@ class JSONLiteStreamArray(list):
                 'additionalUrls': p.get('additionalUrls', []),
                 's3Urls': p.get('s3Urls', []),
                 'pgeVersion':  p.get('pgeVersion'),
+                'crid': p.get('crid'),
                 'mainBandPolarization':  p.get('mainBandPolarization'),
                 'sideBandPolarization':  p.get('sideBandPolarization'),
                 'frameCoverage':  p.get('frameCoverage'),
                 'jointObservation':  p.get('jointObservation'),
                 'rangeBandwidth':  p.get('rangeBandwidth'),
                 'sizeMB': p.get('bytes'),
+                'orbitType': p.get('orbitType'),
             }
             result["collectionName"] = p.get("collectionName")
             result["conceptID"] = p.get("conceptID")
@@ -261,6 +273,11 @@ class JSONLiteStreamArray(list):
                 result['ariaVersion'] = re.sub(r'[^0-9\.]', '', version_unformatted.replace("_", '.'))
             else:
                 result['ariaVersion'] = p.get('ariaVersion')
+                result['productTypeDisplay'] = 'Standard Product, NetCDF'
+            
+            if result['sizeMB'] is None:
+                result["sizeMB"] = float(p["bytes"]) / _MB
+                pass
         
         return result
 

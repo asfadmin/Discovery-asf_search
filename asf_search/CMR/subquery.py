@@ -108,14 +108,16 @@ def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True, inc
     aliased_keywords = []
 
     if use_collection_alias:
-        if 'processingLevel' in params.keys() and not includes_nisar_products:
+        alias_processing_levels = 'processingLevel' in params.keys() and not includes_nisar_products
+        if alias_processing_levels:
             collections = get_concept_id_alias(
                 params.get('processingLevel'), collections_by_processing_level
             )
             if len(collections):
                 aliased_keywords.append('processingLevel')
 
-        if 'platform' in params.keys():
+        alias_platforms = 'platform' in params.keys()
+        if alias_platforms:
             platform_concept_ids = get_concept_id_alias(
                 [platform.upper() for platform in params.get('platform')],
                 collections_per_platform,
@@ -123,7 +125,10 @@ def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True, inc
             if len(platform_concept_ids):
                 aliased_keywords.append('platform')
                 collections = _get_intersection(platform_concept_ids, collections)
-
+        if alias_processing_levels and alias_platforms and not len(collections):
+            # processingLevel isn't part of the given platform. Drop aliased keywords so we don't search on zero collections
+            aliased_keywords = []
+            
     if 'dataset' in params.keys():
         aliased_keywords.append('dataset')
         dataset_concept_ids = get_dataset_concept_ids(params.get('dataset'))

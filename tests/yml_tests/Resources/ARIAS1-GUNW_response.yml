@@ -231,6 +231,32 @@
               {
                 "Name": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.nc",
                 "SizeInBytes": 136887876,
+                "Format": "netCDF-4",
+                "Checksum":
+                  {
+                    "Value": "1da292d57037f6a3aabcbe2f0e513a5b",
+                    "Algorithm": "MD5",
+                  },
+              },
+              {
+                "Name": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.png",
+                "SizeInBytes": 519881,
+                "Format": "PNG",
+                "Checksum":
+                  {
+                    "Value": "198362a1ce9685adc675ab3bb4dc5f07",
+                    "Algorithm": "MD5",
+                  },
+              },
+              {
+                "Name": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1.json",
+                "SizeInBytes": 2101,
+                "Format": "JSON",
+                "Checksum":
+                  {
+                    "Value": "e7e784e4dff95f6bcf4731c203ac65de",
+                    "Algorithm": "MD5",
+                  },
               },
             ],
           "DayNightFlag": "Unspecified",
@@ -244,6 +270,36 @@
           "Version": "1.6.6",
         },
     },
-    'meta':{'concept-type': 'granule', 'concept-id': 'G3240626260-ASF', 'revision-id': 1, 'native-id': 'S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1', 'collection-concept-id': 'C2859376221-ASF', 'provider-id': 'ASF', 'format': 'application/vnd.nasa.cmr.umm+json', 'revision-date': '2024-09-16T22:41:27.238Z'},
-    'baseline': {'stateVectors': {'positions': {'prePosition': None, 'prePositionTime': None, 'postPosition': None, 'postPositionTime': None}, 'velocities': {'preVelocity': None, 'preVelocityTime': None, 'postVelocity': None, 'postVelocityTime': None}}, 'ascendingNodeTime': None}
+  "meta":
+    {
+      "concept-type": "granule",
+      "concept-id": "G3240626260-ASF",
+      "revision-id": 1,
+      "native-id": "S1-GUNW-A-R-035-tops-20240816_20230717-020815-00124W_00037N-PP-cf9c-v3_0_1",
+      "collection-concept-id": "C2859376221-ASF",
+      "provider-id": "ASF",
+      "format": "application/vnd.nasa.cmr.umm+json",
+      "revision-date": "2024-09-16T22:41:27.238Z",
+    },
+  "baseline":
+    {
+      "stateVectors":
+        {
+          "positions":
+            {
+              "prePosition": None,
+              "prePositionTime": None,
+              "postPosition": None,
+              "postPositionTime": None,
+            },
+          "velocities":
+            {
+              "preVelocity": None,
+              "preVelocityTime": None,
+              "postVelocity": None,
+              "postVelocityTime": None,
+            },
+        },
+      "ascendingNodeTime": None,
+    },
 }
