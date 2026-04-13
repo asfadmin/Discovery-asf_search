@@ -19,6 +19,12 @@ def test_make_s1_stack():
     assert len(stack.full_stack) == 21
     assert stack.subset_stack == stack.full_stack
 
+    # Create a Stack from ASFProduct.stack search results with the Stack.from_search_results alternate class method constructor
+    stack_search_results = reference.stack(opts=args)
+    stack_from_search_results = Stack.from_search_results(stack_search_results)
+    assert len(stack_from_search_results.full_stack) == 21
+    assert stack_from_search_results.subset_stack == stack_from_search_results.full_stack
+
     # Remove Pairs from the Stack, confirm expected Pair list lengths
     stack.remove_pairs(stack.full_stack[1:11])
     assert len(stack.subset_stack) == 11

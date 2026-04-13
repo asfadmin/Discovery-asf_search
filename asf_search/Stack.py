@@ -6,6 +6,7 @@ import warnings
 from .ASFProduct import ASFProduct
 from .Pair import Pair
 from .ASFSearchOptions import ASFSearchOptions
+from .ASFSearchResults import ASFSearchResults
 from .warnings import PairNotInFullStackWarning
 
 class Stack:
@@ -33,6 +34,12 @@ class Stack:
         geo_reference: ASFProduct,
         opts: Optional[ASFSearchOptions] = None
     ):
+        """
+        Constructor that builds a Stack from a geo-reference ASFProduct
+
+        geo_reference: An ASFProduct that serves as a geo-reference scene for the Stack
+        opts: (Optional) ASFSearchOptions to apply to the geo_reference.stack() search when creating Stack.full_stack
+        """
         self.geo_reference = geo_reference
         if opts is None:
             opts = ASFSearchOptions()
@@ -41,6 +48,23 @@ class Stack:
         self._remove_list = []
         self.subset_stack = self._get_subset_stack()
         self.connected_substacks = self._find_connected_substacks()
+
+    @classmethod
+    def from_search_results(
+        cls,
+        stack_search_results: ASFSearchResults,
+    ):
+        """
+        Alternate class method constructor using ASFSearchResults instead of a single geo_reference.
+        """
+        obj = cls.__new__(cls)
+
+        obj.full_stack = obj._build_full_stack(stack_search_results)
+        obj._remove_list = []
+        obj.subset_stack = obj._get_subset_stack()
+        obj.connected_substacks = obj._find_connected_substacks()
+
+        return obj
 
     @property
     def remove_list(self) -> List[Pair]:
@@ -100,16 +124,20 @@ class Stack:
                 self.full_stack.append(pair)
         self._update_stack()
 
-    def _build_full_stack(self) -> List[Pair]:
+    def _build_full_stack(self, stack_search_results: Optional[ASFSearchResults]=None) -> List[Pair]:
         """
         Create self._full_stack, which involves performing a stack search
         of the georeference scene and creating a list of every possible Pair.
+
+        stack_search_results: (Optional) ASFSearchResults from an ASFProduct.stack search
         """
-        geo_ref_stack = self.geo_reference.stack(opts=self.opts)
+        if stack_search_results is None: 
+            stack_search_results = self.geo_reference.stack(opts=self.opts)
+
         return [
             Pair(p1, p2)
-            for i, p1 in enumerate(geo_ref_stack)
-            for p2 in geo_ref_stack[i+1:]
+            for i, p1 in enumerate(stack_search_results)
+            for p2 in stack_search_results[i+1:]
         ]
 
     def _get_subset_stack(self) -> List[Pair]:
@@ -179,7 +207,7 @@ class Stack:
 
         If no stack_dict is passed, defaults to the largest connected substack
 
-        pair_list: A list of `Pair`s for which to retrieve scene IDs.
+        pair_list: (Optional) A list of `Pair`s for which to retrieve scene IDs.
         
         Returns:
             A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
