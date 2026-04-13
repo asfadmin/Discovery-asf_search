@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v12.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.0.8)
+### Added
+- `Sentinel-1D` constants and search support
+
+------
 ## [v12.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.6...v12.0.7)
 ### Added
 - `granule_list` supports wildcard ("*" and "?") searches
