@@ -155,7 +155,6 @@ class Stack:
         self.subset_stack = self._get_subset_stack()
         self.connected_substacks = self._find_connected_substacks()
 
-
     def _find_connected_substacks(self) -> List[List[Pair]]:
         """
         Perform a bredth first search to find all connected components of self.subset_stack
@@ -195,7 +194,7 @@ class Stack:
                         if neighbor not in visited_nodes:
                             visited_nodes.add(neighbor)
                             queue.append(neighbor)
-
+                component_pairs = [v for v in component_pairs.values()]
                 components.append(component_pairs)
 
         return components
