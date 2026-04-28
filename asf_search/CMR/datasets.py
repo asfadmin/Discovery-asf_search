@@ -304,45 +304,70 @@ dataset_collections = {
             'C3653529349-ASF',
             'C1274178507-ASF',
         ],
-    # "NISAR_DEM": [
-    #     "C3803703055-ASF",
-    #     "C1274665933-ASF",
-    #     "C1276777683-ASFDEV"
-    # ],
-    # "NISAR_VWC": [
-    #     "C4066106685-ASF",
-    #     "C1280516250-ASF",
-    #     "C1280516237-ASFDEV"
-    # ],
-    # "NISAR_LIA": [
-    #     "C1274178361-ASF",
-    #     "C1274178360-ASFDEV"
-    # ],
-    # "NISAR_WATERMASK": [
-    #     "C3807638962-ASF",
-    #     "C1274177987-ASF",
-    #     "C1276991363-ASFDEV"
-    # ],
-    # "NISAR_L0B_CRSD_BETA_V1": [
-    #     "C2850225137-ASF",
-    #     "C1273831262-ASF",
-    #     "C1261815276-ASFDEV",
-    # ],
-    # "NISAR_L0B_CRSD_PROVISIONAL_V1": [
-    #     "C2853091612-ASF",
-    #     "C1261832671-ASF",
-    #     "C1261832632-ASFDEV",
-    # ],
-    # "NISAR_L0B_CRSD_V1": [
-    #     "C3622254588-ASF",
-    #     "C1257349114-ASF",
-    #     "C1256358463-ASFDEV",
-    # ],
-    # "NISAR_L2_STATIC_LAYERS": [
-    #     "C3852453107-ASF",
-    #     "C1274178365-ASF",
-    #     "C1274178363-ASFDEV"
-    # ],
+        # "NISAR_DEM": [
+        #     "C3803703055-ASF",
+        #     "C1274665933-ASF",
+        #     "C1276777683-ASFDEV"
+        # ],
+        # "NISAR_VWC": [
+        #     "C4066106685-ASF",
+        #     "C1280516250-ASF",
+        #     "C1280516237-ASFDEV"
+        # ],
+        # "NISAR_LIA": [
+        #     "C1274178361-ASF",
+        #     "C1274178360-ASFDEV"
+        # ],
+        # "NISAR_WATERMASK": [
+        #     "C3807638962-ASF",
+        #     "C1274177987-ASF",
+        #     "C1276991363-ASFDEV"
+        # ],
+        # "NISAR_L0B_CRSD_BETA_V1": [
+        #     "C2850225137-ASF",
+        #     "C1273831262-ASF",
+        #     "C1261815276-ASFDEV",
+        # ],
+        # "NISAR_L0B_CRSD_PROVISIONAL_V1": [
+        #     "C2853091612-ASF",
+        #     "C1261832671-ASF",
+        #     "C1261832632-ASFDEV",
+        # ],
+        # "NISAR_L0B_CRSD_V1": [
+        #     "C3622254588-ASF",
+        #     "C1257349114-ASF",
+        #     "C1256358463-ASFDEV",
+        # ],
+        # "NISAR_L2_STATIC_LAYERS": [
+        #     "C3852453107-ASF",
+        #     "C1274178365-ASF",
+        #     "C1274178363-ASFDEV"
+        # ],
+        "NISAR_EA_L3": [
+            "C1280063122-ASFDEV",
+            "C1280063178-ASF",
+            "C4052499802-ASF",
+        ],
+        "NISAR_EA_L2": [
+            "C1280063121-ASFDEV",
+            "C1280063176-ASF",
+            "C4052499921-ASF",
+        ],
+        "NISAR_EA_L1": [
+            "C1280062841-ASFDEV",
+            "C1280063175-ASF",
+            "C4052500045-ASF",
+        ],
+        "NISAR_EA_L0B_CRSD": [
+            "C1280064293-ASFDEV",
+            "C1280064295-ASF",
+            "C4052499976-ASF",
+        ],
+        "NISAR_EA_L0B_RRSD": [
+            "C1280064294-ASFDEV",
+            "C1280064296-ASF",
+            "C4052499850-ASF",
+        ],
     },
     'SENTINEL-1': {
         'SENTINEL-1A_SLC': ['C1214470488-ASF', 'C1205428742-ASF', 'C1234413245-ASFDEV'],
@@ -526,7 +551,8 @@ dataset_collections = {
         'OPERA_L2_RTC-S1-STATIC_V1': ['C1259981910-ASF', 'C2795135174-ASF'],
         'OPERA_L2_RTC-S1_PROVISIONAL_V0': ['C1257995186-ASF'],
         'OPERA_L3_DISP-S1_V1': ['C3294057315-ASF', 'C1271830354-ASF'],
-        'OPERA_L3_DIST-ALERT': ['C1275699124-ASF', 'C4090131664-ASF'],
+        'OPERA_L3_DIST-ALERT': ['C1275699124-ASF'],
+        'OPERA_L3_DIST-ALERT-S1_V1': ['C1275699127-ASF', 'C4090131664-ASF'],
         'OPERA_L3_DISP-S1-STATIC_V1': ['C3959290248-ASF', 'C1273910948-ASF', 'C1273460752-ASFDEV'],
     },
     'TROPO': {
@@ -1490,7 +1516,7 @@ collections_by_processing_level = {
         'C1271830354-ASF'
     ],
     'DISP-S1-STATIC': ['C3959290248-ASF', 'C1273910948-ASF', 'C1273460752-ASFDEV'],
-    'DIST-ALERT-S1': ['C1275699124-ASF', 'C4090131664-ASF'],
+    'DIST-ALERT-S1': ['C1275699124-ASF', 'C4090131664-ASF', 'C1275699127-ASF'],
     'TROPO-ZENITH': ['C3717139408-ASF', 'C1273910987-ASF', 'C1273615785-ASFDEV'],
     'ECMWF_TROPO': [
         'C3653531162-ASF'

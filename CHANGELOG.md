@@ -26,6 +26,14 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v12.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.1.0)
+### Added
+- Add `Stack` class, used to create stacks of `Pair` objects. This is a foundational class, which will be used by a near-future `SBASNetwork` class to automate the creation of connected, multi-annual seasonal SBAS stacks of interferograms.
+    - For usage examples, see `examples/Stack.ipynb`
+- `OPERA_L3_DIST-ALERT-S1_V1` shortname/collections added
+- Add `NISAR_EA` shortname/collections to NISAR dataset (available to authorized users)
+
+------
 ## [v12.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.6...v12.0.7)
 ### Added
 - `granule_list` supports wildcard ("*" and "?") searches
