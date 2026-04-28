@@ -235,6 +235,11 @@ nisar_collections: &nisar_collections [
     # 'C1261832632-ASFDEV',
     # 'C1256358463-ASFDEV',
     # 'C1274178363-ASFDEV',
+    "C1280063122-ASFDEV",
+    "C1280063121-ASFDEV",
+    "C1280062841-ASFDEV",
+    "C1280064293-ASFDEV",
+    "C1280064294-ASFDEV",
     # UAT
     "C1261815288-ASF",
     "C1261832657-ASF",
@@ -295,6 +300,11 @@ nisar_collections: &nisar_collections [
     # 'C1261832671-ASF',
     # 'C1257349114-ASF',
     # 'C1274178365-ASF',
+    "C1280063178-ASF",
+    "C1280063176-ASF",
+    "C1280063175-ASF",
+    "C1280064295-ASF",
+    "C1280064296-ASF",
     # PROD
     "C2850220296-ASF",
     "C2853068083-ASF",
@@ -354,6 +364,11 @@ nisar_collections: &nisar_collections [
     # 'C2853091612-ASF',
     # 'C3622254588-ASF',
     # 'C3852453107-ASF',
+    "C4052499802-ASF",
+    "C4052499921-ASF",
+    "C4052500045-ASF",
+    "C4052499976-ASF",
+    "C4052499850-ASF",
   ]
 
 tests:
