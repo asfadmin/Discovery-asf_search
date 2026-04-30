@@ -372,7 +372,7 @@ class SBASNetwork(Stack):
         if pair_list is self.full_stack:
             plot_header_text = (
                 "<b>SBAS Stack</b><br>"
-                f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
+                f"Geographic Reference: {self.geo_reference.properties['sceneName']}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
                 f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
                 f"Full Stack Size: {len(largest_network)} pairs from {largest_network_slc_count} scenes<br>"
@@ -380,7 +380,7 @@ class SBASNetwork(Stack):
         else:
             plot_header_text = (
                 "<b>SBAS Stack</b><br>"
-                f"Geographic Reference: {self.geo_reference.properties["sceneName"]}<br>"
+                f"Geographic Reference: {self.geo_reference.properties['sceneName']}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
                 f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
                 f"Temporal Baseline: {self.inseason_temporal_baseline} days, "
