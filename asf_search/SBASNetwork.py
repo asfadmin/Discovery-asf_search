@@ -28,10 +28,6 @@ class SBASNetwork(Stack):
     ):
         """
         geo_reference: an ASFProduct used as a georeference scene for the network
-        multiburst: a MultiBurst object describing a collection of bursts for a multi-burst SBASNetwork
-        
-        (pass geo_reference xor multiburst)
-
         perpendicular_baseline: the perpendicular baseline for the SBAS network
         inseason_temporal_baseline: the temporal baseline for the SBAS network, not accounting for multiannual bridging
         bridge_year_threshold: the number of year for which to allow multiannual bridging
