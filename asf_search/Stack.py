@@ -1,6 +1,6 @@
 from collections import defaultdict, deque
 from copy import copy
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Union
 import warnings
 
 from .ASFProduct import ASFProduct
@@ -91,13 +91,16 @@ class Stack:
         self._remove_list = list(set(pairs))
         self._update_stack()
 
-    def remove_pairs(self, pairs: List[Pair]):
+    def remove_pairs(self, pairs: Union[List[Pair], Pair]):
         """
         Remove pairs from self.subset_stack, 
         i.e., add them to self._remove_list
 
-        pairs: A list of Pairs to remove from self.subset_stack
+        pairs: A Pair or list of Pairs to remove from self.subset_stack
         """
+        if isinstance(pairs, Pair):
+            pairs = [pairs]
+
         for pair in pairs:
             if pair not in self._remove_list:
                 if pair in self.full_stack:
@@ -107,7 +110,7 @@ class Stack:
                     warnings.warn(PairNotInFullStackWarning(msg))
         self._update_stack()
 
-    def add_pairs(self, pairs: List[Pair]):
+    def add_pairs(self, pairs: Union[List[Pair], Pair]):
         """
         Add pairs to self.subset_stack and, if necessary, to self.full_stack 
         i.e., remove them from self._remove_list if present or else add them to self.full_stack 
@@ -115,8 +118,11 @@ class Stack:
         This allows for the addition of custom pairs that were not originally present
         in self.full_stack
 
-        pairs: A list of Pairs to add to self.subset_stack
+        pairs: A Pair or list of Pairs to add to self.subset_stack
         """
+        if isinstance(pairs, Pair):
+            pairs = [pairs]
+
         for pair in pairs:
             if pair in self._remove_list:
                 self._remove_list.remove(pair)
