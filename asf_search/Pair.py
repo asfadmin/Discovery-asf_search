@@ -1,5 +1,6 @@
 import importlib.util
 import math
+from typing import Optional
 
 from .ASFProduct import ASFProduct
 from .baseline import calculate_perpendicular_baselines
@@ -32,6 +33,9 @@ class Pair:
     and stored in the self.perpendicular_baseline and self.temporal_baseline member variables.
 
     Two pairs are equivalent if they have matching reference and secondary dates
+
+    ref: ASFProduct for reference scene
+    sec: ASFProduct for secondary scene
     """
     def __init__(self, ref: ASFProduct, sec: ASFProduct):
         self.ref = ref
