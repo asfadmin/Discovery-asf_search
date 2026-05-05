@@ -1,9 +1,7 @@
-from datetime import datetime, timedelta, timezone
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.search import product_search
 from asf_search import Pair, Stack
 from asf_search.warnings import PairNotInFullStackWarning
-import numpy as np
 import pytest
 
 def test_make_s1_stack():
@@ -37,6 +35,15 @@ def test_make_s1_stack():
     assert len(stack.remove_list) == 9
     assert len(stack.connected_substacks) == 1
 
+    # Test the optional allow_missing_state_vectors argument
+    stack_search_results[2].baseline["stateVectors"]["positions"]["prePositionTime"] = None
+    missing_state_vectors_not_allowed_stack = Stack.from_search_results(stack_search_results)
+    assert len(missing_state_vectors_not_allowed_stack.full_stack) == 15
+    assert len([p for p in missing_state_vectors_not_allowed_stack.full_stack if p.perpendicular_baseline is None]) == 0
+    missing_state_vectors_allowed_stack = Stack.from_search_results(stack_search_results, allow_missing_state_vectors=True)
+    assert len(missing_state_vectors_allowed_stack.full_stack) == 21
+    assert len([p for p in missing_state_vectors_allowed_stack.full_stack if p.perpendicular_baseline is None]) == 6
+
     # Create a Pair not present in the stack and confirm that it cannot be removed
     results_1 = product_search('S1A_IW_SLC__1SDV_20250903T225120_20250903T225147_060830_0792D3_868A-SLC')
     results_2 = product_search('S1A_IW_SLC__1SDV_20250822T225120_20250822T225147_060655_078BEA_2065-SLC')
@@ -59,4 +66,3 @@ def test_make_s1_stack():
     assert len(remove_list_scene_ids) == 9
     assert len(full_stack_scene_ids) == 22
     assert len(subset_stack_scene_ids) == 13
-
