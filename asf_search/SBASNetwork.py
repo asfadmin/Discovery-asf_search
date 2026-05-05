@@ -12,6 +12,20 @@ from .ASFSearchOptions import ASFSearchOptions
 from .warnings import OptionalDependencyWarning
 from .ASFSearchResults import ASFSearchResults
 
+_SBASNETWORK_PLOT_OPT_DEPS = ['plotly', 'networkx']
+try:
+    for spec in _SBASNETWORK_PLOT_OPT_DEPS:
+        if importlib.util.find_spec(spec) is None:
+            raise ImportError
+        
+    import plotly.graph_objects as go
+    import networkx as nx
+    from plotly.colors import sample_colorscale
+except ImportError:
+    go = None
+    nx = None
+    sample_colorscale = None
+
 class SBASNetwork(Stack):
     """
     SBASNetwork is a child class of Stack, used to create seasonal SBAS networks. It can be used
@@ -209,9 +223,15 @@ class SBASNetwork(Stack):
         pair_list (optional): One of the SBASNetwork's pair lists or lists of pair list (options listed above).
                                Default: `self.connected_substacks`.
         """
-        import plotly.graph_objects as go
-        import networkx as nx
-        from plotly.colors import sample_colorscale
+
+        if go is None or nx is None or sample_colorscale is None:
+            raise ImportError(
+                'The `plot()` method requires the optional asf-search '
+                f'dependencies {_SBASNETWORK_PLOT_OPT_DEPS}, '
+                'but they could not be found in the current python environment. '
+                'Enable this method by including the appropriate pip or conda install. '
+                'Ex: `python -m pip install asf-search[sbasnetwork_plot]`'
+            )
 
         def get_n_colors(n, colorscale="Rainbow", alpha=0.4):
             base_colors = sample_colorscale(colorscale, [i / max(n - 1, 1) for i in range(n)])
