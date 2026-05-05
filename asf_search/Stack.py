@@ -32,7 +32,8 @@ class Stack:
     def __init__(
         self,
         geo_reference: ASFProduct,
-        opts: Optional[ASFSearchOptions] = None
+        opts: Optional[ASFSearchOptions] = None,
+        allow_missing_state_vectors: Optional[bool] = False
     ):
         """
         Constructor that builds a Stack from a geo-reference ASFProduct
@@ -44,6 +45,7 @@ class Stack:
         if opts is None:
             opts = ASFSearchOptions()
         self.opts = opts
+        self.allow_missing_state_vectors = allow_missing_state_vectors
         self.full_stack = self._build_full_stack()
         self._remove_list = []
         self.subset_stack = self._get_subset_stack()
@@ -53,16 +55,19 @@ class Stack:
     def from_search_results(
         cls,
         stack_search_results: ASFSearchResults,
+        allow_missing_state_vectors: Optional[bool] = False
     ):
         """
         Alternate class method constructor using ASFSearchResults instead of a single geo_reference.
         """
         obj = cls.__new__(cls)
 
+        obj.allow_missing_state_vectors = allow_missing_state_vectors
         obj.full_stack = obj._build_full_stack(stack_search_results)
         obj._remove_list = []
         obj.subset_stack = obj._get_subset_stack()
         obj.connected_substacks = obj._find_connected_substacks()
+        obj.geo_reference = None
 
         return obj
 
@@ -140,11 +145,20 @@ class Stack:
         if stack_search_results is None: 
             stack_search_results = self.geo_reference.stack(opts=self.opts)
 
-        return [
-            Pair(p1, p2)
-            for i, p1 in enumerate(stack_search_results)
-            for p2 in stack_search_results[i+1:]
-        ]
+        if self.allow_missing_state_vectors:
+             full_stack = [
+                Pair(p1, p2)
+                for i, p1 in enumerate(stack_search_results)
+                for p2 in stack_search_results[i+1:]
+            ]
+        else:
+            full_stack = [
+                Pair(p1, p2)
+                for i, p1 in enumerate(stack_search_results)
+                for p2 in stack_search_results[i+1:]
+                if Pair(p1, p2).perpendicular_baseline is not None
+            ]
+        return full_stack
 
     def _get_subset_stack(self) -> List[Pair]:
         """

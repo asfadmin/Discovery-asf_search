@@ -19,12 +19,13 @@ class SBASNetwork(Stack):
     """
     def __init__(
         self,
-        geo_reference: Optional[ASFProduct] = None,
+        geo_reference: ASFProduct = None,
         perpendicular_baseline: Optional[int] = 400,
         inseason_temporal_baseline: Optional[int] = 36,
         bridge_year_threshold: Optional[int] = 1,
         bridge_target_date: Optional[str] = None,
-        opts: Optional[ASFSearchOptions] = None
+        opts: Optional[ASFSearchOptions] = None,
+        allow_missing_state_vectors: Optional[bool] = False
     ):
         """
         geo_reference: an ASFProduct used as a georeference scene for the network
@@ -47,12 +48,14 @@ class SBASNetwork(Stack):
         self.inseason_temporal_baseline = inseason_temporal_baseline
         self.bridge_year_threshold = bridge_year_threshold
         self.opts = opts
+        self.allow_missing_state_vectors = allow_missing_state_vectors
 
         self.temporal_baseline = (bridge_year_threshold * 365) + inseason_temporal_baseline
 
         super().__init__(
             geo_reference=geo_reference, 
-            opts=self.opts
+            opts=self.opts,
+            allow_missing_state_vectors = self.allow_missing_state_vectors
             )
 
         self._build_sbas_network()
@@ -71,6 +74,44 @@ class SBASNetwork(Stack):
             )
             warnings.warn(OptionalDependencyWarning(msg))
 
+    @classmethod
+    def from_search_results(
+        cls,
+        stack_search_results: ASFSearchResults,
+        perpendicular_baseline: Optional[int] = 400,
+        inseason_temporal_baseline: Optional[int] = 36,
+        bridge_year_threshold: Optional[int] = 1,
+        bridge_target_date: Optional[str] = None,
+        opts: Optional[ASFSearchOptions] = None,
+        allow_missing_state_vectors: Optional[bool] = False
+    ):
+        """
+        Alternate class method constructor using ASFSearchResults instead of a single geo_reference.
+        """
+        obj = cls.__new__(cls)
+
+        obj._season = opts.season if opts.season is not None else (1, 365)
+        if bridge_target_date:
+            obj.bridge_target_date = bridge_target_date
+        else:
+            obj.bridge_target_date = obj._season[0]
+        obj._start = getattr(opts, "start", None)
+        obj._end = getattr(opts, "end", None)
+        obj.perpendicular_baseline = perpendicular_baseline
+        obj.inseason_temporal_baseline = inseason_temporal_baseline
+        obj.bridge_year_threshold = bridge_year_threshold
+        obj.opts = opts
+        obj.allow_missing_state_vectors = allow_missing_state_vectors
+        obj.full_stack = obj._build_full_stack(stack_search_results)
+        obj._remove_list = []
+        obj.subset_stack = obj._get_subset_stack()
+        obj.connected_substacks = obj._find_connected_substacks()
+        obj.geo_reference = None
+
+        obj._build_sbas_network()
+
+        return obj
+
     def _build_full_stack(self, stack_search_results: Optional[ASFSearchResults]=None) -> List[Pair]:
         """
         Create self._full_stack, which involves performing a stack search
@@ -88,13 +129,25 @@ class SBASNetwork(Stack):
         if stack_search_results is None: 
             stack_search_results = self.geo_reference.stack(opts=self.opts)
 
-        return [
-            Pair(p1, p2)
-            for i, p1 in enumerate(stack_search_results)
-            for p2 in stack_search_results[i+1:]
-            if Pair(p1, p2).perpendicular_baseline <= self.perpendicular_baseline
-            and Pair(p1, p2).temporal_baseline.days <= self.inseason_temporal_baseline + (self.bridge_year_threshold * 365)
-        ]
+        if self.allow_missing_state_vectors:
+             full_stack = [
+                Pair(p1, p2)
+                for i, p1 in enumerate(stack_search_results)
+                for p2 in stack_search_results[i+1:]
+                if (Pair(p1, p2).perpendicular_baseline is None
+                or Pair(p1, p2).perpendicular_baseline <= self.perpendicular_baseline)
+                and Pair(p1, p2).temporal_baseline.days <= self.inseason_temporal_baseline + (self.bridge_year_threshold * 365)
+            ]
+        else:
+            full_stack = [
+                Pair(p1, p2)
+                for i, p1 in enumerate(stack_search_results)
+                for p2 in stack_search_results[i+1:]
+                if Pair(p1, p2).perpendicular_baseline is not None
+                and Pair(p1, p2).perpendicular_baseline <= self.perpendicular_baseline
+                and Pair(p1, p2).temporal_baseline.days <= self.inseason_temporal_baseline + (self.bridge_year_threshold * 365)
+            ]
+        return full_stack
 
     def _is_valid_bridge_pair(self, pair: Pair) -> bool:
         """
@@ -191,11 +244,13 @@ class SBASNetwork(Stack):
                         node_products[date_str] = product
 
         G = nx.DiGraph()
+
+        plot_geo_ref = self.geo_reference if self.geo_reference is not None else self.subset_stack[0].ref
+
         for date_str, product in node_products.items():
             G.add_node(date_str)
             G.nodes[date_str]["date"] = date_str
-            G.nodes[date_str]["perp_bs"] = Pair(self.geo_reference, product).perpendicular_baseline
-
+            G.nodes[date_str]["perp_bs"] = Pair(plot_geo_ref, product).perpendicular_baseline
         node_positions = {
             node: datetime.strptime(data["date"], "%Y-%m-%d").timestamp()
             for node, data in G.nodes(data=True)
@@ -360,7 +415,7 @@ class SBASNetwork(Stack):
         date_range_ts = [datetime.strptime(date, "%Y-%m").timestamp() for date in date_range]
 
         def julian_to_month_day(julian_tuple):
-            year = int(self.geo_reference.properties['stopTime'].split('-')[0])
+            year = int(plot_geo_ref.properties['stopTime'].split('-')[0])
             month_day = []
             for day in julian_tuple:
                 date = datetime(year, 1, 1) + timedelta(days=day - 1)
@@ -372,7 +427,7 @@ class SBASNetwork(Stack):
         if pair_list is self.full_stack:
             plot_header_text = (
                 "<b>SBAS Stack</b><br>"
-                f"Geographic Reference: {self.geo_reference.properties['sceneName']}<br>"
+                f"Geographic Reference: {plot_geo_ref.properties['sceneName']}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
                 f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
                 f"Full Stack Size: {len(largest_network)} pairs from {largest_network_slc_count} scenes<br>"
@@ -380,7 +435,7 @@ class SBASNetwork(Stack):
         else:
             plot_header_text = (
                 "<b>SBAS Stack</b><br>"
-                f"Geographic Reference: {self.geo_reference.properties['sceneName']}<br>"
+                f"Geographic Reference: {plot_geo_ref.properties['sceneName']}<br>"
                 f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
                 f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
                 f"Temporal Baseline: {self.inseason_temporal_baseline} days, "
