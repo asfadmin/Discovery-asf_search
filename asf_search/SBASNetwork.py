@@ -9,7 +9,6 @@ from .ASFProduct import ASFProduct
 from .Pair import Pair
 from .Stack import Stack
 from .ASFSearchOptions import ASFSearchOptions
-from .warnings import OptionalDependencyWarning
 from .ASFSearchResults import ASFSearchResults
 
 _SBASNETWORK_PLOT_OPT_DEPS = ['plotly', 'networkx']
@@ -73,20 +72,6 @@ class SBASNetwork(Stack):
             )
 
         self._build_sbas_network()
-
-        # warn user if they lack optional dependencies for plotting
-        missing_optional_deps = []
-        if importlib.util.find_spec("plotly") is None:
-            missing_optional_deps.append("plotly")
-        if importlib.util.find_spec("networkx") is None:
-            missing_optional_deps.append("networkx")
-        if missing_optional_deps:
-            msg = (
-                "Warning: SBASNetwork.plot() requires the dependencies plotly and networkx."
-                f"You are currently missing: {missing_optional_deps}."
-                "However, your SBASNetwork is still available without access to plotting."
-            )
-            warnings.warn(OptionalDependencyWarning(msg))
 
     @classmethod
     def from_search_results(
