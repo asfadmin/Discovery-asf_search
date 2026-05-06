@@ -69,9 +69,9 @@ def test_make_s1_SBASNetwork():
         bridge_target_date='3-1',
         bridge_year_threshold=2,
         opts=opts)
-    assert len(sbas_from_search_results.full_stack) == 549
-    assert len(sbas_from_search_results.subset_stack) == 78
-    assert len(max(sbas_from_search_results.connected_substacks, key=lambda s: len(s))) == 65
+    assert len(sbas_from_search_results.full_stack) == 1695
+    assert len(sbas_from_search_results.subset_stack) == 172
+    assert len(max(sbas_from_search_results.connected_substacks, key=lambda s: len(s))) == 159
 
     # Test the optional allow_missing_state_vectors argument
     stack_search_results[2].baseline["stateVectors"]["positions"]["prePositionTime"] = None
@@ -82,7 +82,7 @@ def test_make_s1_SBASNetwork():
         bridge_target_date='3-1',
         bridge_year_threshold=2,
         opts=opts)
-    assert len(missing_state_vectors_not_allowed_sbas.full_stack) == 562
+    assert len(missing_state_vectors_not_allowed_sbas.full_stack) == 1698
     assert len([p for p in missing_state_vectors_not_allowed_sbas.full_stack if p.perpendicular_baseline is None]) == 0
     missing_state_vectors_not_allowed_sbas = SBASNetwork.from_search_results(
         stack_search_results,
@@ -92,5 +92,5 @@ def test_make_s1_SBASNetwork():
         bridge_year_threshold=2,
         opts=opts,
         allow_missing_state_vectors=True)
-    assert len(missing_state_vectors_not_allowed_sbas.full_stack) == 594
+    assert len(missing_state_vectors_not_allowed_sbas.full_stack) == 1730
     assert len([p for p in missing_state_vectors_not_allowed_sbas.full_stack if p.perpendicular_baseline is None]) == 32
