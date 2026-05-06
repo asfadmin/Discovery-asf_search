@@ -2,8 +2,7 @@ from datetime import datetime, timedelta
 import importlib.util
 import numpy as np
 import pandas as pd
-from typing import Optional, List
-import warnings
+from typing import Optional, List, Dict, Tuple, Union
 
 from .ASFProduct import ASFProduct
 from .Pair import Pair
@@ -194,296 +193,18 @@ class SBASNetwork(Stack):
                 remove_list.append(pair)
         self.remove_list = remove_list
 
-    # def plot(self, pair_list: List[Pair] = None):
-    #     """
-    #     Plot the SBAS network(s). Accepts a pair_list or a list of pair_lists.
-    #     The largest network is plotted in blue; others are plotted in distinct colors.
-    #     Possible member networks to pass as pair_list are: 
-    #         - `self.full_stack`: an SBAS network filtered by baselines, and including every possible bridge pair within 
-    #            self.bridge_year_threshold
-    #         - `self.subset_stack`: a possibly disconnected SBAS network filtered by baselines, with additional 
-    #            bridge pair filtering applied
-    #         - `self.connected_substacks`: self.subset_stack, broken up into a list of connected sub-networks
-
-    #     pair_list (optional): One of the SBASNetwork's pair lists or lists of pair list (options listed above).
-    #                            Default: `self.connected_substacks`.
-    #     """
-
-    #     if go is None or nx is None or sample_colorscale is None:
-    #         raise ImportError(
-    #             'The `plot()` method requires the optional asf-search '
-    #             f'dependencies {_SBASNETWORK_PLOT_OPT_DEPS}, '
-    #             'but they could not be found in the current python environment. '
-    #             'Enable this method by including the appropriate pip or conda install. '
-    #             'Ex: `python -m pip install asf-search[sbasnetwork_plot]`'
-    #         )
-
-    #     def get_n_colors(n, colorscale="Rainbow", alpha=0.4):
-    #         base_colors = sample_colorscale(colorscale, [i / max(n - 1, 1) for i in range(n)])
-    #         rgba_colors = []
-    #         for color_str in base_colors:
-    #             if color_str.startswith("rgb"):
-    #                 nums = color_str.strip("rgb()").split(",")
-    #                 r, g, b = [int(x) for x in nums]
-    #                 rgba_colors.append(f"rgba({r}, {g}, {b}, {alpha})")
-    #             else:
-    #                 raise ValueError(f"Unexpected color format: {color_str}")
-    #         return rgba_colors
-
-    #     if not pair_list:
-    #         pair_lists = self.connected_substacks
-    #     else:
-    #         pair_lists = [pair_list]
-
-    #     # Identify the largest network
-    #     largest_network = max(pair_lists, key=lambda s: len(s))
-    #     other_networks = [s for s in pair_lists if s is not largest_network]
-
-    #     # Create a graph including all pairs from all networks
-    #     node_products = {}
-    #     for network in pair_lists:
-    #         for pair in network:
-    #             for date_obj, product in [(pair.ref_time, pair.ref), (pair.sec_time, pair.sec)]:
-    #                 date_str = datetime.strftime(date_obj, "%Y-%m-%d")
-    #                 if date_str not in node_products:
-    #                     node_products[date_str] = product
-
-    #     G = nx.DiGraph()
-
-    #     plot_geo_ref = self.geo_reference if self.geo_reference is not None else self.subset_stack[0].ref
-
-    #     for date_str, product in node_products.items():
-    #         G.add_node(date_str)
-    #         G.nodes[date_str]["date"] = date_str
-    #         G.nodes[date_str]["perp_bs"] = Pair(plot_geo_ref, product).perpendicular_baseline
-    #     node_x_positions = {
-    #         node: datetime.strptime(data["date"], "%Y-%m-%d").timestamp()
-    #         for node, data in G.nodes(data=True)
-    #     }
-    #     node_y_positions = {
-    #         node: (data["perp_bs"] if data.get("perp_bs") else 0)
-    #         for node, data in G.nodes(data=True)
-    #     }
-
-    #     # Add blue edges for the largest network
-    #     insar_node_pairs = [
-    #         (
-    #             datetime.strftime(pair.ref_time, "%Y-%m-%d"),
-    #             datetime.strftime(pair.sec_time, "%Y-%m-%d"),
-    #             {
-    #                 "perp_bs": pair.perpendicular_baseline,
-    #                 "temp_bs": pair.temporal_baseline.days
-    #             }
-    #         )
-    #         for pair in largest_network
-    #     ]
-    #     G.add_edges_from(insar_node_pairs, data=True)
-
-    #     edge_x = []
-    #     edge_y = []
-    #     edge_text = []
-    #     for edge in G.edges(data=True):
-    #         x0 = node_x_positions[edge[0]]
-    #         y0 = node_y_positions[edge[0]]
-    #         x1 = node_x_positions[edge[1]]
-    #         y1 = node_y_positions[edge[1]]
-    #         edge_x.extend([x0, x1, None])
-    #         edge_y.extend([y0, y1, None])
-    #         edge_text.append(
-    #             f"{edge[0]} - {edge[1]}, perp baseline: {edge[2]['perp_bs']}, temp baseline: {edge[2]['temp_bs']}"
-    #         )
-
-    #     edge_traces = [
-    #         go.Scatter(
-    #             x=edge_x,
-    #             y=edge_y,
-    #             line=dict(width=4, color="rgba(52, 114, 168, 0.7)"),  # blue
-    #             mode="lines",
-    #         ),
-    #         go.Scatter(
-    #             x=[
-    #                 (node_x_positions[edge[0]] + node_x_positions[edge[1]]) / 2
-    #                 for edge in G.edges()
-    #             ],
-    #             y=[
-    #                 (node_y_positions[edge[0]] + node_y_positions[edge[1]]) / 2
-    #                 for edge in G.edges()
-    #             ],
-    #             mode="markers",
-    #             marker=dict(size=20, color="rgba(255, 255, 255, 0)"),
-    #             hoverinfo="text",
-    #             text=edge_text,
-    #         )
-    #     ]
-
-    #     # Add additional sub-networks
-    #     colors = get_n_colors(len(other_networks))
-    #     for color, other_network in zip(colors, other_networks):
-    #         edge_x = []
-    #         edge_y = []
-    #         for pair in other_network:
-    #             ref = datetime.strftime(pair.ref_time, "%Y-%m-%d")
-    #             sec = datetime.strftime(pair.sec_time, "%Y-%m-%d")
-    #             if ref in node_x_positions and sec in node_x_positions:
-    #                 edge_x.extend([node_x_positions[ref], node_x_positions[sec], None])
-    #                 edge_y.extend([node_y_positions[ref], node_y_positions[sec], None])
-    #         edge_traces.append(go.Scatter(
-    #             x=edge_x,
-    #             y=edge_y,
-    #             line=dict(width=4, color=color),
-    #             mode="lines",
-    #         ))
-
-    #         edge_text = []
-    #         hover_x = []
-    #         hover_y = []
-    #         for pair in other_network:
-    #             ref = datetime.strftime(pair.ref_time, "%Y-%m-%d")
-    #             sec = datetime.strftime(pair.sec_time, "%Y-%m-%d")
-    #             if ref in node_x_positions and sec in node_x_positions:
-    #                 edge_text.append(
-    #                     f"{ref} - {sec}, perp baseline: {pair.perpendicular_baseline}, temp baseline: {pair.temporal_baseline.days}"
-    #                 )
-    #                 hover_x.append((node_x_positions[ref] + node_x_positions[sec]) / 2)
-    #                 hover_y.append((node_y_positions[ref] + node_y_positions[sec]) / 2)
-
-    #         edge_traces.append(go.Scatter(
-    #             x=hover_x,
-    #             y=hover_y,
-    #             mode="markers",
-    #             marker=dict(size=20, color="rgba(255, 255, 255, 0)"),
-    #             hoverinfo="text",
-    #             text=edge_text,
-    #         ))
-
-    #     # Add used scene nodes
-    #     node_x = [node_x_positions[node] for node in G.nodes()]
-    #     node_y = [node_y_positions[node] for node in G.nodes()]
-    #     node_text = [G.nodes[node]["date"] for node in G.nodes()]
-
-    #     node_trace = go.Scatter(
-    #         x=node_x,
-    #         y=node_y,
-    #         mode="markers+text",
-    #         textposition="top center",
-    #         marker=dict(size=15, color="rgba(32, 33, 32, 0.7)", line_width=0),
-    #         hoverinfo="text",
-    #         hovertext=node_text,
-    #     )
-
-    #     # Add unused scene nodes
-    #     all_slcs = set(scene for pair in self.full_stack for scene in (pair.ref, pair.sec))
-    #     used_slcs = set()
-    #     for sd in pair_lists:
-    #         used_slcs.update(scene for pair in sd for scene in (pair.ref, pair.sec))
-    #     unused_slcs = list(all_slcs - used_slcs)
-
-    #     unused_slc_dates_str = [i.properties["stopTime"].split("T")[0] for i in unused_slcs]
-    #     unused_slc_dates_x = [datetime.strptime(i, "%Y-%m-%d").timestamp() for i in unused_slc_dates_str]
-    #     unused_slc_perp_y = [Pair(self.geo_reference, i).perpendicular_baseline for i in unused_slcs]
-
-    #     unused_slcs_trace = go.Scatter(
-    #         x=unused_slc_dates_x, y=unused_slc_perp_y,
-    #         mode='markers',
-    #         hoverinfo='text',
-    #         text=unused_slc_dates_str,
-    #         marker=dict(
-    #             color='rgba(255,0,0,0.5)',
-    #             size=10,
-    #             line_width=2
-    #         )
-    #     )
-
-    #     def get_pair_lists_date_range(pair_lists):
-    #         start_dates, end_dates = [], []
-    #         for pair_list in pair_lists:
-    #             start_dates.append(min([pair.ref_time for pair in pair_list]))
-    #             end_dates.append(max([pair.sec_time for pair in pair_list]))
-
-    #         start_date = min(start_dates)
-    #         start_date_str = f"{start_date.year}-{start_date.month}"
-    #         end_date = max(end_dates)
-    #         end_date_str = f"{end_date.year}-{end_date.month}"
-
-    #         return start_date_str, end_date_str
-        
-    #     start_date, end_date = get_pair_lists_date_range(pair_lists)
-    #     date_range = (
-    #         pd.date_range(
-    #             start=start_date,
-    #             end=end_date,
-    #             freq="MS"
-    #         )
-    #         .strftime("%Y-%m")
-    #         .tolist()
-    #     )
-    #     date_range_ts = [datetime.strptime(date, "%Y-%m").timestamp() for date in date_range]
-
-    #     def julian_to_month_day(julian_tuple):
-    #         year = int(plot_geo_ref.properties['stopTime'].split('-')[0])
-    #         month_day = []
-    #         for day in julian_tuple:
-    #             date = datetime(year, 1, 1) + timedelta(days=day - 1)
-    #             month_day.append(date.strftime("%m-%d"))
-    #         return tuple(month_day)
-
-    #     largest_network_slc_count = len(set(scene for pair in largest_network for scene in (pair.ref, pair.sec)))
-
-    #     if pair_list is self.full_stack:
-    #         plot_header_text = (
-    #             "<b>SBAS Stack</b><br>"
-    #             f"Geographic Reference: {plot_geo_ref.properties['sceneName']}<br>"
-    #             f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
-    #             f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
-    #             f"Full Stack Size: {len(largest_network)} pairs from {largest_network_slc_count} scenes<br>"
-    #         )
-    #     else:
-    #         plot_header_text = (
-    #             "<b>SBAS Stack</b><br>"
-    #             f"Geographic Reference: {plot_geo_ref.properties['sceneName']}<br>"
-    #             f"Temporal Bounds: {self._start.split('T')[0]} - {self._end.split('T')[0]}, "
-    #             f"Seasonal Bounds: {julian_to_month_day(self._season)}<br>"
-    #             f"Temporal Baseline: {self.inseason_temporal_baseline} days, "
-    #             f"Perpendicular Baseline: {self.perpendicular_baseline}m<br>"
-    #             f"Bridge Target Date: {self.bridge_target_date}, "
-    #             f"Bridge Year Threshold: {self.bridge_year_threshold}, Largest Stack Size: "
-    #             f"{len(largest_network)} pairs from {largest_network_slc_count} scenes<br>"
-    #         )
-
-    #     fig = go.Figure(
-    #         data=edge_traces + [node_trace, unused_slcs_trace],
-    #         layout=go.Layout(
-    #             showlegend=False,
-    #             hovermode="closest",
-    #             height=800,
-    #             margin=dict(t=180),
-    #             xaxis=dict(
-    #                 title="Acquisition Date",
-    #                 tickvals=date_range_ts,
-    #                 ticktext=date_range,
-    #                 gridcolor="gray",
-    #                 zerolinecolor="gray",
-    #             ),
-    #             yaxis=dict(
-    #                 title="Perpendicular Baseline (m)",
-    #                 gridcolor="gray",
-    #                 zerolinecolor="gray",
-    #             ),
-    #             title=dict(
-    #                 text=plot_header_text,
-    #                 y=0.95,
-    #                 x=0.5,
-    #                 xanchor="center",
-    #                 yanchor="top",
-    #                 font=dict(family="Helvetica, monospace", size=22),
-    #             ),
-    #             plot_bgcolor="white",
-    #             paper_bgcolor="lightgrey",
-    #         ),
-    #     )
-    #     fig.show()
-
     def add_digraph_edge_traces(self, digraph, largest_network, pair_lists, node_positions):
+        """
+        Used for SBASNetwork plotting. Adds networkx traces to graph edges
+
+        digraph: networkx.DiGraph
+        largest_network: The largest (perhaps only) connected SBASNetwork pair list being plotted
+        pair_lists: list of all pair lists being plotted
+        node_positions: Tuple[Dict[networkx.DiGraph.node, datetime.timestamp], Dict[networkx.DiGraph.node, float]]
+                        representing the x and y positions for each node    
+
+        returns: A plotly.graph_objects.Scatter object for graph edges   
+        """
     
         insar_node_pairs = [
             (
@@ -578,6 +299,17 @@ class SBASNetwork(Stack):
         return edge_traces
 
     def add_digraph_node_traces(self, digraph, plot_geo_ref, pair_lists, node_positions):
+        """
+        Used for SBASNetwork plotting. Adds networkx traces to nodes of used and unused SLCs
+
+        digraph: networkx.DiGraph
+        plot_geo_ref: The ASFProduct being used as the geographic reference scene for the plot
+        pair_lists: list of all pair lists being plotted
+        node_positions: Tuple[Dict[networkx.DiGraph.node, datetime.timestamp], Dict[networkx.DiGraph.node, float]]
+                        representing the x and y positions for each node
+
+        returns: Tuple of plotly.graph_objects.Scatter objects for used and unused SLCs
+        """
         # Add used scene node locations
         node_x = [node_positions[0][node] for node in digraph.nodes()]
         node_y = [node_positions[1][node] for node in digraph.nodes()]
@@ -617,8 +349,16 @@ class SBASNetwork(Stack):
         )
         return node_traces, unused_slcs_traces
     
-    def build_plot_header_text(self, plot_geo_ref, largest_network, pair_list):
-        
+    def build_plot_header_text(self, plot_geo_ref: ASFProduct, largest_network: List[Pair], pair_list: Union[List[Pair], None]) -> str:
+        """
+        Used for SBASNetwork plotting. Creates the header text for a SBASNetwork plot
+
+        plot_geo_ref: The ASFProduct being used as the geographic reference scene for the plot
+        largest_network: The largest (perhaps only) connected SBASNetwork pair list being plotted
+        pair_list: The value of the optional pair_list arg passed to plot (could be None)
+
+        Returns: Header text string
+        """
         largest_network_slc_count = len(set(scene for pair in largest_network for scene in (pair.ref, pair.sec)))
 
         if pair_list is self.full_stack:
@@ -643,7 +383,7 @@ class SBASNetwork(Stack):
             )
         return plot_header_text
 
-    def plot(self, pair_list: List[Pair] = None):
+    def plot(self, pair_list: Optional[Union[List[Pair], None]] = None):
         """
         Plot the SBAS network(s). Accepts a pair_list or a list of pair_lists.
         The largest network is plotted in blue; others are plotted in distinct colors.
@@ -672,7 +412,8 @@ class SBASNetwork(Stack):
         node_products = build_node_products(pair_lists)
         G = nx.DiGraph()
         plot_geo_ref = self.geo_reference if self.geo_reference is not None else self.subset_stack[0].ref
-        node_x_positions, node_y_positions = add_digraph_nodes(G, plot_geo_ref, node_products)
+        add_digraph_nodes(G, plot_geo_ref, node_products)
+        node_x_positions, node_y_positions = get_node_positions(G, plot_geo_ref, node_products)
         edge_traces = self.add_digraph_edge_traces(G, largest_network, pair_lists, (node_x_positions, node_y_positions))
         node_traces, unused_slcs_traces = self.add_digraph_node_traces(G, plot_geo_ref, pair_lists, (node_x_positions, node_y_positions))
 
@@ -741,7 +482,16 @@ class SBASNetwork(Stack):
             if pair.ref_time.date() == ref_date and pair.sec_time.date() == sec_date:
                 return pair
 
-def get_n_colors(n, colorscale="Rainbow", alpha=0.4):
+def get_n_colors(n: int, colorscale: str="Rainbow", alpha: float=0.4) -> List[str]:
+    """
+    Used for SBASNetwork plotting. Creates an n-length list of rgba colors from a plotly colorscale
+
+    n: The length of the list of colors to return
+    colorscale: the plotly sample_colorscale to from which to extract rgba colors
+    alpha: The opacity to apply to the returned rgba colors
+
+    returns: An n-length list of rgba colors from the sample_coloscale
+    """
     base_colors = sample_colorscale(colorscale, [i / max(n - 1, 1) for i in range(n)])
     rgba_colors = []
     for color_str in base_colors:
@@ -753,8 +503,16 @@ def get_n_colors(n, colorscale="Rainbow", alpha=0.4):
             raise ValueError(f"Unexpected color format: {color_str}")
     return rgba_colors
 
-def build_node_products(pair_lists):
-    # Create a graph including all pairs from all networks
+def build_node_products(pair_lists: List[List[Pair]]) -> Dict[str, ASFProduct]:
+    """
+    Used for SBASNetwrok plotting. Builds a dictionary of all ASFProducts in
+    a list of lists of Pairs
+
+    pair_lists: A list of lists of Pairs
+
+    returns: A dictionary with date strings as keys and ASFProducts as values for
+             every product in the passed Pair lists
+    """
     node_products = {}
     for network in pair_lists:
         for pair in network:
@@ -765,6 +523,32 @@ def build_node_products(pair_lists):
     return node_products
 
 def add_digraph_nodes(digraph, plot_geo_ref, node_products):
+    """
+    Used for SBASNetwork plotting. Adds nodes to digraph.
+
+    digraph: networkx.DiGraph
+    plot_geo_ref: ASFProduct being used as a geographic reference for the network plot
+    node_products: Dict[str, ASFProduct] containing date strings as keys and ASFProducts as values
+
+    """
+    for date_str, product in node_products.items():
+        digraph.add_node(date_str)
+        digraph.nodes[date_str]["date"] = date_str
+        digraph.nodes[date_str]["perp_bs"] = Pair(plot_geo_ref, product).perpendicular_baseline
+
+def get_node_positions(digraph, plot_geo_ref, node_products):
+    """
+    Used for SBASNetwork plotting. Determines x/y node coordinates for digraph.
+
+    digraph: networkx.DiGraph
+    plot_geo_ref: ASFProduct being used as a geographic reference for the network plot
+    node_products: Dict[str, ASFProduct] containing date strings as keys and ASFProducts as values
+
+    returns: Tuple[Dict[networkx.DiGraph.node, datetime.timestamp], Dict[networkx.DiGraph.node, float]].
+             node_x_positions is a dictionary with nodes as values and and ASFProducts' datetime.timestamps as values.
+             node_y_positions is a dictionary with nodes as values and and ASFProducts's perpendicular baselines 
+             relative to plot_geo_ref as values.
+    """
     for date_str, product in node_products.items():
         digraph.add_node(date_str)
         digraph.nodes[date_str]["date"] = date_str
@@ -779,7 +563,15 @@ def add_digraph_nodes(digraph, plot_geo_ref, node_products):
     }
     return node_x_positions, node_y_positions
 
-def get_pair_lists_date_range(pair_lists):
+def get_pair_lists_date_range(pair_lists: List[List[Pair]]) -> Tuple[str, str]:
+    """
+    Used for SBASNetwork plotting. Finds the acquisition date range from a list
+    of lists of Pairs
+
+    pair_lists: A list of lists of Pairs
+
+    returns: The acquisition date range covered by the ASFProducts in pair_lists' Pairs
+    """
     start_dates, end_dates = [], []
     for pair_list in pair_lists:
         start_dates.append(min([pair.ref_time for pair in pair_list]))
@@ -792,7 +584,16 @@ def get_pair_lists_date_range(pair_lists):
 
     return start_date_str, end_date_str
 
-def julian_to_month_day(ref_product, julian_tuple):
+def julian_to_month_day(ref_product: ASFProduct, julian_tuple: Tuple[int, int]) -> Tuple[str, str]:
+    """
+    Used for SBASNetwork plotting. Converts a tuple of julian days to month-day strings
+
+    ref_product: an ASFProduct from which to extract a year when converting julian days
+    julian_tuple: a tuple of two julian days
+
+    returns: A tuple of month-day strings cooresponding to the passed julian days in the 
+             year of ref_product's acquisition
+    """
     year = int(ref_product.properties['stopTime'].split('-')[0])
     month_day = []
     for day in julian_tuple:
