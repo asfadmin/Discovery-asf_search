@@ -304,45 +304,6 @@ dataset_collections = {
             'C3653529349-ASF',
             'C1274178507-ASF',
         ],
-        # "NISAR_DEM": [
-        #     "C3803703055-ASF",
-        #     "C1274665933-ASF",
-        #     "C1276777683-ASFDEV"
-        # ],
-        # "NISAR_VWC": [
-        #     "C4066106685-ASF",
-        #     "C1280516250-ASF",
-        #     "C1280516237-ASFDEV"
-        # ],
-        # "NISAR_LIA": [
-        #     "C1274178361-ASF",
-        #     "C1274178360-ASFDEV"
-        # ],
-        # "NISAR_WATERMASK": [
-        #     "C3807638962-ASF",
-        #     "C1274177987-ASF",
-        #     "C1276991363-ASFDEV"
-        # ],
-        # "NISAR_L0B_CRSD_BETA_V1": [
-        #     "C2850225137-ASF",
-        #     "C1273831262-ASF",
-        #     "C1261815276-ASFDEV",
-        # ],
-        # "NISAR_L0B_CRSD_PROVISIONAL_V1": [
-        #     "C2853091612-ASF",
-        #     "C1261832671-ASF",
-        #     "C1261832632-ASFDEV",
-        # ],
-        # "NISAR_L0B_CRSD_V1": [
-        #     "C3622254588-ASF",
-        #     "C1257349114-ASF",
-        #     "C1256358463-ASFDEV",
-        # ],
-        # "NISAR_L2_STATIC_LAYERS": [
-        #     "C3852453107-ASF",
-        #     "C1274178365-ASF",
-        #     "C1274178363-ASFDEV"
-        # ],
         "NISAR_EA_L3": [
             "C1280063122-ASFDEV",
             "C1280063178-ASF",
