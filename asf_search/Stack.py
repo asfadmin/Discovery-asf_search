@@ -48,8 +48,7 @@ class Stack:
         self.allow_missing_state_vectors = allow_missing_state_vectors
         self.full_stack = self._build_full_stack()
         self._remove_list = []
-        self.subset_stack = self._get_subset_stack()
-        self.connected_substacks = self._find_connected_substacks()
+        self._update_stack()
 
     @classmethod
     def from_search_results(
@@ -145,20 +144,12 @@ class Stack:
         if stack_search_results is None: 
             stack_search_results = self.geo_reference.stack(opts=self.opts)
 
-        if self.allow_missing_state_vectors:
-             full_stack = [
-                Pair(p1, p2)
-                for i, p1 in enumerate(stack_search_results)
-                for p2 in stack_search_results[i+1:]
-            ]
-        else:
-            full_stack = [
-                Pair(p1, p2)
-                for i, p1 in enumerate(stack_search_results)
-                for p2 in stack_search_results[i+1:]
-                if Pair(p1, p2).perpendicular_baseline is not None
-            ]
-        return full_stack
+        return [
+            Pair(p1, p2)
+            for i, p1 in enumerate(stack_search_results)
+            for p2 in stack_search_results[i + 1:]
+            if self.allow_missing_state_vectors or Pair(p1, p2).perpendicular_baseline is not None
+        ]
 
     def _get_subset_stack(self) -> List[Pair]:
         """
