@@ -1,6 +1,5 @@
 import importlib.util
 import math
-from typing import Optional
 
 from .ASFProduct import ASFProduct
 from .baseline import calculate_perpendicular_baselines
