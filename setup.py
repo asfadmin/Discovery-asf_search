@@ -16,6 +16,7 @@ test_requirements = [
     'pytest==8.1.1',
     'pytest-automation==3.0.0',
     'pytest-cov',
+    'pytest-mock',
     'pytest-xdist',
     'coverage',
     'requests-mock==1.11.0',
