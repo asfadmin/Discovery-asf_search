@@ -26,6 +26,37 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.0...v13.0.0)
+### Changed
+- Breaking: `UAVSAR` umm metadata has been changed in CMR. All `UAVSAR`/`G-III` scenes have been consolidated into two collections `UAVSAR_POLSAR` and `UAVSAR_RPI` with updated metadata.
+    - To find urls for previously searchable product types use `find_urls()` method on search results lists and individual results.
+        - examples:
+            - Find gif urls for individual scene: `response[0].find_urls(extension='.gif')`
+            - Find urls for all `.slope` files from results: `response.find_url(extension='.slope')`
+            - Find urls for 1st amplitude kmz files from results: `response.find_urls(extension='.kmz', pattern=r'.*amp1.*')`
+
+
+### Removed
+- The following `UAVSAR` related constants in `PRODUCT_TYPE.py` have been removed:
+    - `AMPLITUDE`
+    - `STOKES`
+    - `AMPLITUDE_GRD`
+    - `PROJECTED`
+    - `PROJECTED_ML5X5`
+    - `PROJECTED_ML3X3`
+    - `INTERFEROMETRY_GRD`
+    - `INTERFEROMETRY`
+    - `COMPLEX`
+    - `INC`
+    - `SLOPE`
+    - `DEM_TIFF`
+    - `PAULI`
+    - `METADATA`
+
+### Added
+- `POLSAR` and `RPI` added to `PRODUCT_TYPE` constants
+
+------
 ## [v12.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.1.0)
 ### Added
 - Add `Stack` class, used to create stacks of `Pair` objects. This is a foundational class, which will be used by a near-future `SBASNetwork` class to automate the creation of connected, multi-annual seasonal SBAS stacks of interferograms.
