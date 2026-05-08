@@ -12,8 +12,7 @@ HH_5SCAN = 'HH 5SCAN'
 QUAD = 'quadrature'
 HH_VV = 'HH+VV'
 HH_HV_VH_VV = 'HH+HV+VH+VV'
-FULL = 'full'
 UNKNOWN = 'UNKNOWN'
 # NISAR
-LH_LV="LH+LV"
-RH_RV="RH+RV"
+LH_LV = 'LH+LV'
+RH_RV = 'RH+RV'
