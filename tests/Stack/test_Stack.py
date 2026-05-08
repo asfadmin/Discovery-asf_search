@@ -12,21 +12,24 @@ def reference():
     path = Path(__file__).parent / "data/reference_scene_0.pkl"
 
     with open(path, "rb") as f:
-        return pickle.load(f)
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
     
 @pytest.fixture
 def pair():
     path = Path(__file__).parent / "data/pair_0.pkl"
 
     with open(path, "rb") as f:
-        return pickle.load(f)
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
     
 @pytest.fixture
 def stack_results():
     path = Path(__file__).parent / "data/stack_search_0.pkl"
 
     with open(path, "rb") as f:
-        return pickle.load(f)
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
     
 @pytest.fixture
 def stack(stack_results):
