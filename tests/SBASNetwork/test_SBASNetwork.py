@@ -1,21 +1,64 @@
 from datetime import date
+import pickle
+from pathlib import Path
+
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.search import product_search
-from asf_search import Pair, SBASNetwork
+from asf_search import SBASNetwork
+
 import pytest
 
-def test_make_s1_SBASNetwork():
+@pytest.fixture
+def reference():
+    path = Path(__file__).parent / "data/reference_scene_0.pkl"
 
- 
-    results = product_search('S1A_IW_SLC__1SDV_20220215T225119_20220215T225146_041930_04FE2E_9252-SLC')
-    reference = results[0]
+    with open(path, "rb") as f:
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
+    
+@pytest.fixture
+def pair():
+    path = Path(__file__).parent / "data/pair_0.pkl"
 
-    opts = ASFSearchOptions(
+    with open(path, "rb") as f:
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
+    
+@pytest.fixture
+def stack_results():
+    path = Path(__file__).parent / "data/stack_search_0.pkl"
+
+    with open(path, "rb") as f:
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
+    
+@pytest.fixture
+def opts():
+    return ASFSearchOptions(
         **{
-            "start": '2020-01-01', 
-            "end": '2025-10-02', 
-            "season": (1, 176)
-            }
+            "start": "2020-01-01",
+            "end": "2025-10-02",
+            "season": (1, 176),
+        }
+    )
+    
+@pytest.fixture
+def sbas_network(stack_results, opts):
+    return SBASNetwork.from_search_results(
+        stack_results,
+        perpendicular_baseline=100, 
+        inseason_temporal_baseline=24,
+        bridge_target_date='3-1',
+        bridge_year_threshold=2,
+        opts=opts)
+    
+def test_sbas_network_from_ref_scene(mocker, reference, stack_results, opts):
+    """
+    Create an SBASNetwork from a geographic reference scene
+    """
+    mock_stack = mocker.patch.object(
+        reference,
+        "stack",
+        return_value=stack_results,
     )
 
     # Create an SBASNetwork and confrm expected size of its full_stack and subset_stack
@@ -26,57 +69,30 @@ def test_make_s1_SBASNetwork():
         bridge_target_date='3-1',
         bridge_year_threshold=2,
         opts=opts)
+    
+    mock_stack.assert_called_once_with(opts=opts)
+
     assert len(sbas.full_stack) == 1730
     assert len(sbas.subset_stack) == 176
     assert len(sbas.connected_substacks) == 3
     assert len(max(sbas.connected_substacks, key=lambda s: len(s))) == 161
 
-    # Use get_pair_from_dates() to retreive a Pair remove_list and add it to subset_stack
-    removed_pair_to_return_to_network = sbas.get_pair_from_dates(sbas.remove_list,
-                                                                 date(2023,1,17), 
-                                                                 date(2024,6,16))
-    sbas.add_pairs(removed_pair_to_return_to_network)
-    assert len(sbas.subset_stack) == 177
-    assert len(sbas.connected_substacks) == 2
-    assert len(max(sbas.connected_substacks, key=lambda s: len(s))) == 165
+def test_sbasnetwork_from_search_results(sbas_network):
+    """
+    Create an SBASNetwork from ASFProduct.stack search results with the 
+    SBASNetwork.from_search_results alternate class method constructor
+    """
+    assert len(sbas_network.full_stack) == 1730
+    assert len(sbas_network.subset_stack) == 176
+    assert len(max(sbas_network.connected_substacks, key=lambda s: len(s))) == 161
 
-    # Remove Pairs from subset_stack
-    pair1_to_remove = sbas.get_pair_from_dates(sbas.subset_stack, date(2025,1,6), date(2025,1,18))
-    pair2_to_remove = sbas.get_pair_from_dates(sbas.subset_stack, date(2025,1,6), date(2025,1,30))
-    sbas.remove_pairs([pair1_to_remove, pair2_to_remove])
-    assert len(sbas.subset_stack) == 175
-    assert len(max(sbas.connected_substacks, key=lambda s: len(s))) == 163
-    assert len(sbas.remove_list) == 1555
-
-    # Add a Pair that does not exist in full_stack
-    existing_pair = sbas.get_pair_from_dates(sbas.subset_stack, date(2025,3,7), date(2025,3,19))
-    existing_ref_scene = existing_pair.ref
-    results = product_search('S1A_IW_SLC__1SDV_20260401T105744_20260401T105802_063885_0808EC_7B1B-SLC')
-    new_sec_scene = results[0]
-    new_pair = Pair(existing_ref_scene, new_sec_scene)
-    sbas.add_pairs(new_pair)
-    assert len(sbas.full_stack) == 1731
-    assert len(sbas.subset_stack) == 176
-    assert len(max(sbas.connected_substacks, key=lambda s: len(s))) == 164
-
-    # Create a SBASNetwork from ASFProduct.stack search results with the SBASNetwork.from_search_results alternate class method constructor
-    stack_search_results = reference.stack(opts=opts)
-    altered_stack_search_results = stack_search_results[1:-1] # remove some products from the search results
-    sbas_from_search_results = SBASNetwork.from_search_results(
-        altered_stack_search_results,
-        perpendicular_baseline=100, 
-        inseason_temporal_baseline=24,
-        bridge_target_date='3-1',
-        bridge_year_threshold=2,
-        opts=opts)
-    assert len(sbas_from_search_results.full_stack) == 1695
-    assert len(sbas_from_search_results.subset_stack) == 172
-    assert len(max(sbas_from_search_results.connected_substacks, key=lambda s: len(s))) == 159
-
-    # Test the optional allow_missing_state_vectors argument
-    stack_search_results[2].baseline["stateVectors"]["positions"]["prePositionTime"] = None
+def test_disallow_missing_state_vectors(stack_results, opts):
+    """
+    Test the optional allow_missing_state_vectors argument set to False (default). 
+    """
+    stack_results[2].baseline["stateVectors"]["positions"]["prePositionTime"] = None
     missing_state_vectors_not_allowed_sbas = SBASNetwork.from_search_results(
-        stack_search_results,
+        stack_results,
         perpendicular_baseline=100, 
         inseason_temporal_baseline=24,
         bridge_target_date='3-1',
@@ -84,13 +100,48 @@ def test_make_s1_SBASNetwork():
         opts=opts)
     assert len(missing_state_vectors_not_allowed_sbas.full_stack) == 1698
     assert len([p for p in missing_state_vectors_not_allowed_sbas.full_stack if p.perpendicular_baseline is None]) == 0
-    missing_state_vectors_not_allowed_sbas = SBASNetwork.from_search_results(
-        stack_search_results,
+
+def test_disallow_missing_state_vectors(stack_results, opts):
+    """
+    Test the optional allow_missing_state_vectors argument set to True. 
+    """
+    stack_results[2].baseline["stateVectors"]["positions"]["prePositionTime"] = None
+    missing_state_vectors_allowed_sbas = SBASNetwork.from_search_results(
+        stack_results,
         perpendicular_baseline=100, 
         inseason_temporal_baseline=24,
         bridge_target_date='3-1',
         bridge_year_threshold=2,
         opts=opts,
         allow_missing_state_vectors=True)
-    assert len(missing_state_vectors_not_allowed_sbas.full_stack) == 1730
-    assert len([p for p in missing_state_vectors_not_allowed_sbas.full_stack if p.perpendicular_baseline is None]) == 32
+    assert len(missing_state_vectors_allowed_sbas.full_stack) == 1730
+    assert len([p for p in missing_state_vectors_allowed_sbas.full_stack if p.perpendicular_baseline is None]) == 32
+
+def test_add_pair(sbas_network):
+    removed_pair_0 = sbas_network.get_pair_from_dates(sbas_network.remove_list, date(2023,1,17), date(2024,6,16))
+    sbas_network.add_pairs(removed_pair_0)
+    assert len(sbas_network.subset_stack) == 177
+    assert len(sbas_network.connected_substacks) == 2
+    assert len(max(sbas_network.connected_substacks, key=lambda s: len(s))) == 165
+
+def test_add_pairs(sbas_network):
+    removed_pair_0 = sbas_network.get_pair_from_dates(sbas_network.remove_list, date(2023,1,17), date(2024,6,16))
+    removed_pair_1 = sbas_network.get_pair_from_dates(sbas_network.remove_list, date(2023,1,5), date(2024,2,5))
+    sbas_network.add_pairs([removed_pair_0, removed_pair_1])
+    assert len(sbas_network.subset_stack) == 178
+    assert len(sbas_network.connected_substacks) == 2
+    assert len(max(sbas_network.connected_substacks, key=lambda s: len(s))) == 166
+
+def test_remove_pairs(sbas_network):
+    pair1_to_remove = sbas_network.get_pair_from_dates(sbas_network.subset_stack, date(2025,1,6), date(2025,1,18))
+    pair2_to_remove = sbas_network.get_pair_from_dates(sbas_network.subset_stack, date(2025,1,6), date(2025,1,30))
+    sbas_network.remove_pairs([pair1_to_remove, pair2_to_remove])
+    assert len(sbas_network.subset_stack) == 174
+    assert len(max(sbas_network.connected_substacks, key=lambda s: len(s))) == 159
+    assert len(sbas_network.remove_list) == 1556
+
+def add_new_pair(sbas_network, pair):
+    sbas_network.add_pairs(pair)
+    assert len(sbas_network.full_stack) == 1731
+    assert len(sbas_network.subset_stack) == 176
+    assert len(max(sbas_network.connected_substacks, key=lambda s: len(s))) == 164

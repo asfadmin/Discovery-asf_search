@@ -56,12 +56,10 @@ def test_stack_from_ref_scene(mocker, reference, stack_results):
     assert len(stack.full_stack) == 21
     assert stack.subset_stack == stack.full_stack
 
-def test_stack_from_search_results(stack_results):
+def test_stack_from_search_results(stack):
     """
     Create a Stack from ASFProduct.stack search results with the Stack.from_search_results alternate class method constructor
     """
-    stack = Stack.from_search_results(stack_results)
-
     assert len(stack.full_stack) == 21
     assert stack.subset_stack == stack.full_stack
 
