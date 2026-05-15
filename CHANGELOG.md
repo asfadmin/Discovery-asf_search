@@ -10,7 +10,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!--
 ## Example template!!
 
-## [version](https://github.com/asfadmin/Discovery-PytestAutomation/compare/vOLD...vNEW)
+## [version](https://github.com/asfadmin/Discovery-asf_search/compare/vOLD...vNEW)
 
 ### Added:
 -
@@ -19,12 +19,17 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 ### Fixed:
-- 
+-
 
 ### Removed:
 -
 
 -->
+------
+## [v12.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.0...v12.1.1)
+### Added
+- For Opera proudcts, add file size information to `jsonlite2` output
+
 ------
 ## [v12.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.1.0)
 ### Added
