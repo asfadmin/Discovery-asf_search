@@ -45,3 +45,6 @@ class UAVSARProduct(ASFProduct):
         center = self.centroid()
         self.properties['centerLat'] = center.y
         self.properties['centerLon'] = center.x
+
+        # TODO: Drop this if/when UMM metadata updated with platform
+        self.properties['platform'] = 'UAVSAR'

@@ -261,7 +261,7 @@ class JSONLiteStreamArray(list):
             }
             result["collectionName"] = p.get("collectionName")
             result["conceptID"] = p.get("conceptID")
-        elif p.get('platform') == 'SEASAT 1':
+        elif p.get('platform') in ['SEASAT 1', 'UAVSAR']:
             result['additionalUrls'] = p.get('additionalUrls', [])
             result['s3Urls'] = p.get('s3Urls', [])
             result['sizeMB'] = p.get('bytes', {})
