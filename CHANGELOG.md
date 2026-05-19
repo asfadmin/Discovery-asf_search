@@ -26,6 +26,17 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v12.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.1...v12.2.0)
+### Added
+- Added `SBASNetwork` class to automate the creation of connected, multi-annual seasonal SBAS stacks of interferograms.
+    - Build SBAS stacks from a geographic reference scene or from the results of an `ASFProduct.stack()` search
+    - Seasonal gaps are connected with bridge pairs spanning one or more years
+    - User can set a target bridge date
+    - Add custom Pairs
+    - Remove Pairs
+    - For usage examples, see `examples/SBASNetwork.ipynb`
+
+------
 ## [v12.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.0...v12.1.1)
 ### Added
 - For Opera proudcts, add file size information to `jsonlite2` output

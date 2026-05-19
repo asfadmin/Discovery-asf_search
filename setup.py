@@ -16,6 +16,7 @@ test_requirements = [
     'pytest==8.1.1',
     'pytest-automation==3.0.0',
     'pytest-cov',
+    'pytest-mock',
     'pytest-xdist',
     'coverage',
     'requests-mock==1.11.0',
@@ -42,6 +43,12 @@ coherence = [
     'rioxarray',
 ]
 
+# Required for optional SBASNetwork plotting
+sbasnetwork_plot = [
+    'plotly',
+    'networkx'
+]
+
 with open('README.md', 'r') as readme_file:
     readme = readme_file.read()
 
@@ -60,7 +67,12 @@ setup(
     include_package_data=True,
     python_requires='>=3.10',
     install_requires=requirements,
-    extras_require={'test': test_requirements, 'extras': extra_requirements, 'asf-enumeration': asf_enumeration, 'coherence': coherence},
+    extras_require={'test': test_requirements, 
+                    'extras': extra_requirements, 
+                    'asf-enumeration': asf_enumeration, 
+                    'coherence': coherence,
+                    'sbasnetwork_plot': sbasnetwork_plot
+                    },
     license='BSD',
     license_files=('LICENSE',),
     classifiers=[
