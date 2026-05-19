@@ -34,11 +34,22 @@ class UAVSARProduct(ASFProduct):
         self.properties['bytes'] = bytes_mapping
         self.properties['md5sum'] = md5sum_mapping
 
-        self.properties['additionalUrls'] = self._get_additional_urls()
+        self.properties['additionalUrls'] = [
+            url for url in self._get_additional_urls() if not url.endswith('-END')
+        ]
+
+        # TODO: Drop this when -END extension droppped from CMR metadata
+        if self.properties['url'].endswith('-END'):
+            self.properties['url'] = self.properties['additionalUrls'][0]
+            self.properties['additionalUrls'] = self.properties['additionalUrls'][1:]
+
         self.properties['browse'] = [
             url
             for url in self._get_urls()
-            if url.endswith('.png') or url.endswith('.jpg') or url.endswith('.jpeg')
+            if url.endswith('.png')
+            or url.endswith('.jpg')
+            or url.endswith('.jpeg')
+            or url.endswith('.gif')
         ]
         self.properties['s3Urls'] = self._get_s3_uris()
 
@@ -46,5 +57,8 @@ class UAVSARProduct(ASFProduct):
         self.properties['centerLat'] = center.y
         self.properties['centerLon'] = center.x
 
-        # TODO: Drop this if/when UMM metadata updated with platform
         self.properties['platform'] = 'UAVSAR'
+
+        # TODO: Drop after PR-7468 completed
+        if self.properties['groupID'] != self.properties['fileID']:
+            self.properties['groupID'] = self.properties['fileID']
