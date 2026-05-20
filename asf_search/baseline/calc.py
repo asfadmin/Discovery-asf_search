@@ -23,7 +23,6 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
         for product in stack:
             baselineProperties = product.baseline
             positionProperties = baselineProperties["stateVectors"]["positions"]
-
             if len(positionProperties.keys()) == 0:
                 baselineProperties["noStateVectors"] = True
                 continue
@@ -63,7 +62,7 @@ def calculate_perpendicular_baselines(reference: str, stack: List[ASFProduct]):
             break
 
     for secondary in stack:
-        if secondary.baseline.get("noStateVectors"):
+        if reference.baseline.get("noStateVectors") or secondary.baseline.get("noStateVectors"):
             secondary.properties["perpendicularBaseline"] = None
             continue
 
