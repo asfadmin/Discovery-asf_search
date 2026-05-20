@@ -1,6 +1,6 @@
 from collections import defaultdict, deque
 from copy import copy
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Union
 import warnings
 
 from .ASFProduct import ASFProduct
@@ -32,7 +32,8 @@ class Stack:
     def __init__(
         self,
         geo_reference: ASFProduct,
-        opts: Optional[ASFSearchOptions] = None
+        opts: Optional[ASFSearchOptions] = None,
+        allow_missing_state_vectors: Optional[bool] = False
     ):
         """
         Constructor that builds a Stack from a geo-reference ASFProduct
@@ -44,25 +45,28 @@ class Stack:
         if opts is None:
             opts = ASFSearchOptions()
         self.opts = opts
+        self.allow_missing_state_vectors = allow_missing_state_vectors
         self.full_stack = self._build_full_stack()
         self._remove_list = []
-        self.subset_stack = self._get_subset_stack()
-        self.connected_substacks = self._find_connected_substacks()
+        self._update_stack()
 
     @classmethod
     def from_search_results(
         cls,
         stack_search_results: ASFSearchResults,
+        allow_missing_state_vectors: Optional[bool] = False
     ):
         """
         Alternate class method constructor using ASFSearchResults instead of a single geo_reference.
         """
         obj = cls.__new__(cls)
 
+        obj.allow_missing_state_vectors = allow_missing_state_vectors
         obj.full_stack = obj._build_full_stack(stack_search_results)
         obj._remove_list = []
         obj.subset_stack = obj._get_subset_stack()
         obj.connected_substacks = obj._find_connected_substacks()
+        obj.geo_reference = None
 
         return obj
 
@@ -91,13 +95,16 @@ class Stack:
         self._remove_list = list(set(pairs))
         self._update_stack()
 
-    def remove_pairs(self, pairs: List[Pair]):
+    def remove_pairs(self, pairs: Union[List[Pair], Pair]):
         """
         Remove pairs from self.subset_stack, 
         i.e., add them to self._remove_list
 
-        pairs: A list of Pairs to remove from self.subset_stack
+        pairs: A Pair or list of Pairs to remove from self.subset_stack
         """
+        if isinstance(pairs, Pair):
+            pairs = [pairs]
+
         for pair in pairs:
             if pair not in self._remove_list:
                 if pair in self.full_stack:
@@ -107,7 +114,7 @@ class Stack:
                     warnings.warn(PairNotInFullStackWarning(msg))
         self._update_stack()
 
-    def add_pairs(self, pairs: List[Pair]):
+    def add_pairs(self, pairs: Union[List[Pair], Pair]):
         """
         Add pairs to self.subset_stack and, if necessary, to self.full_stack 
         i.e., remove them from self._remove_list if present or else add them to self.full_stack 
@@ -115,8 +122,11 @@ class Stack:
         This allows for the addition of custom pairs that were not originally present
         in self.full_stack
 
-        pairs: A list of Pairs to add to self.subset_stack
+        pairs: A Pair or list of Pairs to add to self.subset_stack
         """
+        if isinstance(pairs, Pair):
+            pairs = [pairs]
+
         for pair in pairs:
             if pair in self._remove_list:
                 self._remove_list.remove(pair)
@@ -137,7 +147,8 @@ class Stack:
         return [
             Pair(p1, p2)
             for i, p1 in enumerate(stack_search_results)
-            for p2 in stack_search_results[i+1:]
+            for p2 in stack_search_results[i + 1:]
+            if self.allow_missing_state_vectors or Pair(p1, p2).perpendicular_baseline is not None
         ]
 
     def _get_subset_stack(self) -> List[Pair]:

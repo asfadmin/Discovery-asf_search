@@ -1,62 +1,129 @@
-from datetime import datetime, timedelta, timezone
+import pickle
+from pathlib import Path
+
 from asf_search.ASFSearchOptions import ASFSearchOptions
-from asf_search.search import product_search
-from asf_search import Pair, Stack
+from asf_search import Stack
 from asf_search.warnings import PairNotInFullStackWarning
-import numpy as np
+
 import pytest
 
-def test_make_s1_stack():
+@pytest.fixture
+def reference():
+    path = Path(__file__).parent / "data/reference_scene_0.pkl"
 
+    with open(path, "rb") as f:
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
+    
+@pytest.fixture
+def pair():
+    path = Path(__file__).parent / "data/pair_0.pkl"
+
+    with open(path, "rb") as f:
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
+    
+@pytest.fixture
+def stack_results():
+    path = Path(__file__).parent / "data/stack_search_0.pkl"
+
+    with open(path, "rb") as f:
+        # trusted local test fixture
+        return pickle.load(f) # nosec B301
+    
+@pytest.fixture
+def stack(stack_results):
+    return Stack.from_search_results(stack_results)
+    
+def test_stack_from_ref_scene(mocker, reference, stack_results):
+    """
+    Create a Stack from a geographic reference scene and confrm expected size of its full_stack and subset_stack
+    """
     args = ASFSearchOptions(
-        **{"start": '2022-01-01', "end": '2022-04-02'}
+        **{"start": "2022-01-01", "end": "2022-04-02"}
     )
 
-    # Create a Stack and confrm expected size of its full_stack and subset_stack
-    results = product_search('S1A_IW_SLC__1SDV_20220215T225119_20220215T225146_041930_04FE2E_9252-SLC')
-    reference = results[0]
+    mock_stack = mocker.patch.object(
+        reference,
+        "stack",
+        return_value=stack_results,
+    )
+
     stack = Stack(reference, opts=args)
+
+    mock_stack.assert_called_once_with(opts=args)
+
     assert len(stack.full_stack) == 21
     assert stack.subset_stack == stack.full_stack
 
-    # Create a Stack from ASFProduct.stack search results with the Stack.from_search_results alternate class method constructor
-    stack_search_results = reference.stack(opts=args)
-    stack_from_search_results = Stack.from_search_results(stack_search_results)
-    assert len(stack_from_search_results.full_stack) == 21
-    assert stack_from_search_results.subset_stack == stack_from_search_results.full_stack
+def test_stack_from_search_results(stack):
+    """
+    Create a Stack from ASFProduct.stack search results with the Stack.from_search_results alternate class method constructor
+    """
+    assert len(stack.full_stack) == 21
+    assert stack.subset_stack == stack.full_stack
 
-    # Remove Pairs from the Stack, confirm expected Pair list lengths
+def test_remove_pair(stack):
+    stack.remove_pairs(stack.full_stack[0])
+    assert len(stack.subset_stack) == 20
+    assert len(stack.remove_list) == 1
+    assert len(stack.connected_substacks) == 1 
+
+def test_remove_pairs(stack):
     stack.remove_pairs(stack.full_stack[1:11])
     assert len(stack.subset_stack) == 11
     assert len(stack.remove_list) == 10
     assert len(stack.connected_substacks) == 2
 
-    # Add one Pair back and confirm expexted Pair list lengths
-    stack.add_pairs([stack.remove_list[0]])
-    assert len(stack.subset_stack) == 12
-    assert len(stack.remove_list) == 9
+def test_attempt_remove_invalid_pair(stack, pair):
+    with pytest.warns(PairNotInFullStackWarning):
+        stack.remove_pairs(pair)
+
+def test_add_pair(stack):
+    stack.remove_pairs(stack.full_stack[0])
+    stack.add_pairs(stack.remove_list[0])
+    assert len(stack.subset_stack) == 21
+    assert len(stack.remove_list) == 0
+    assert len(stack.connected_substacks) == 1 
+
+def test_add_pairs(stack):
+    stack.remove_pairs(stack.full_stack[1:11])
+    stack.add_pairs(stack.remove_list)
+    assert len(stack.subset_stack) == 21
+    assert len(stack.remove_list) == 0
     assert len(stack.connected_substacks) == 1
 
-    # Create a Pair not present in the stack and confirm that it cannot be removed
-    results_1 = product_search('S1A_IW_SLC__1SDV_20250903T225120_20250903T225147_060830_0792D3_868A-SLC')
-    results_2 = product_search('S1A_IW_SLC__1SDV_20250822T225120_20250822T225147_060655_078BEA_2065-SLC')
-    my_pair = Pair(results_1[0], results_2[0])
-    with pytest.warns(PairNotInFullStackWarning):
-        stack.remove_pairs([my_pair])
+def test_add_new_pair(stack, pair):
+    stack.add_pairs(pair)
+    assert len(stack.subset_stack) == 22
+    assert len(stack.remove_list) == 0
+    assert len(stack.connected_substacks) == 2 
 
-    # Add the new Pair to the stack and confirm expected Pair list lengths
-    stack.add_pairs([my_pair])
-    assert len(stack.full_stack) == 22
-    assert len(stack.subset_stack) == 13
-    assert len(stack.connected_substacks) == 2
-
-    # Test Stack.get_scene_ids()
+def test_get_scene_ids(stack):
+    stack.remove_pairs(stack.full_stack[1:11])
     largest_fully_connected_subset_stack_ids = stack.get_scene_ids()
     remove_list_scene_ids = stack.get_scene_ids(stack.remove_list)
     full_stack_scene_ids = stack.get_scene_ids(stack.full_stack)
     subset_stack_scene_ids = stack.get_scene_ids(stack.subset_stack)
-    assert len(largest_fully_connected_subset_stack_ids) == 12
-    assert len(remove_list_scene_ids) == 9
-    assert len(full_stack_scene_ids) == 22
-    assert len(subset_stack_scene_ids) == 13
+    assert len(largest_fully_connected_subset_stack_ids) == 10
+    assert len(remove_list_scene_ids) == 10
+    assert len(full_stack_scene_ids) == 21
+    assert len(subset_stack_scene_ids) == 11
 
+def test_stack_disallow_missing_state_vectors(stack_results):
+    """
+    Test the optional allow_missing_state_vectors argument set to False (default). 
+    """
+    stack_results[2].baseline["stateVectors"]["positions"]["prePositionTime"] = None
+    missing_state_vectors_not_allowed_stack = Stack.from_search_results(stack_results)
+    assert len(missing_state_vectors_not_allowed_stack.full_stack) == 15
+    assert len([p for p in missing_state_vectors_not_allowed_stack.full_stack if p.perpendicular_baseline is None]) == 0
+
+def test_stack_allow_missing_state_vectors(stack_results):
+    """
+    Test the optional allow_missing_state_vectors argument set to False (default). 
+    """
+    stack_results[2].baseline["stateVectors"]["positions"]["prePositionTime"] = None
+    missing_state_vectors_allowed_stack = Stack.from_search_results(stack_results, allow_missing_state_vectors=True)
+    assert len(missing_state_vectors_allowed_stack.full_stack) == 21
+    assert len([p for p in missing_state_vectors_allowed_stack.full_stack if p.perpendicular_baseline is None]) == 6

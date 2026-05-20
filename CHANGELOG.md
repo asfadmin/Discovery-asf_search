@@ -10,7 +10,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!--
 ## Example template!!
 
-## [version](https://github.com/asfadmin/Discovery-PytestAutomation/compare/vOLD...vNEW)
+## [version](https://github.com/asfadmin/Discovery-asf_search/compare/vOLD...vNEW)
 
 ### Added:
 -
@@ -19,14 +19,14 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 ### Fixed:
-- 
+-
 
 ### Removed:
 -
 
 -->
 ------
-## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.0...v13.0.0)
+## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.0...v13.0.0)
 ### Changed
 - Breaking: `UAVSAR` umm metadata has been changed in CMR. All `UAVSAR`/`G-III` scenes have been consolidated into two collections `UAVSAR_POLSAR` and `UAVSAR_RPI` with updated metadata.
     - To find urls for previously searchable product types use `find_urls()` method on search results lists and individual results.
@@ -55,6 +55,22 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 - `POLSAR` and `RPI` added to `PRODUCT_TYPE` constants
+
+------
+## [v12.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.1...v12.2.0)
+### Added
+- Added `SBASNetwork` class to automate the creation of connected, multi-annual seasonal SBAS stacks of interferograms.
+    - Build SBAS stacks from a geographic reference scene or from the results of an `ASFProduct.stack()` search
+    - Seasonal gaps are connected with bridge pairs spanning one or more years
+    - User can set a target bridge date
+    - Add custom Pairs
+    - Remove Pairs
+    - For usage examples, see `examples/SBASNetwork.ipynb`
+
+------
+## [v12.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.0...v12.1.1)
+### Added
+- For Opera proudcts, add file size information to `jsonlite2` output
 
 ------
 ## [v12.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.1.0)
