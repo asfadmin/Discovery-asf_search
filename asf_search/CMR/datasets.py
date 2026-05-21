@@ -378,20 +378,20 @@ dataset_collections = {
     'SENTINEL-1': {
         'SENTINEL-1A_SLC': ['C1214470488-ASF', 'C1205428742-ASF', 'C1234413245-ASFDEV'],
         'SENTINEL-1B_SLC': ['C1327985661-ASF', 'C1216244348-ASF', 'C1234413263-ASFDEV'],
-        'SENTINEL-1D_OCN': ['C1281540904-ASF'],
-        'SENTINEL-1D_DP_GRD_HIGH': ['C1281540913-ASF'],
-        'SENTINEL-1D_DP_GRD_MEDIUM': ['C1281644436-ASF'],
-        'SENTINEL-1D_SLC': ['C1281496226-ASF'],
-        'SENTINEL-1D_SP_GRD_HIGH': ['C1281643926-ASF'],
-        'SENTINEL-1D_SP_GRD_MEDIUM': ['C1281657114-ASF'],
-        'SENTINEL-1D_RAW': ['C1281496248-ASF'],
-        'SENTINEL-1D_DP_META_GRD_HIGH': ['C1281643927-ASF'],
-        'SENTINEL-1D_DP_META_GRD_MEDIUM': ['C1281657235-ASF'],
-        'SENTINEL-1D_META_OCN': ['C1281540906-ASF'],
-        'SENTINEL-1D_META_RAW': ['C1281496301-ASF'],
-        'SENTINEL-1D_META_SLC': ['C1281496163-ASF'],
-        'SENTINEL-1D_SP_META_GRD_HIGH': ['C1281563948-ASF'],
-        'SENTINEL-1D_SP_META_GRD_MEDIUM': ['C1281644435-ASF'],
+        'SENTINEL-1D_OCN': ['C1281540904-ASF', 'C4162942865-ASF'],
+        'SENTINEL-1D_DP_GRD_HIGH': ['C1281540913-ASF', 'C4163054563-ASF'],
+        'SENTINEL-1D_DP_GRD_MEDIUM': ['C1281644436-ASF', 'C4174076966-ASF'],
+        'SENTINEL-1D_SLC': ['C1281496226-ASF', 'C4175278193-ASF'],
+        'SENTINEL-1D_SP_GRD_HIGH': ['C1281643926-ASF', 'C4174044457-ASF'],
+        'SENTINEL-1D_SP_GRD_MEDIUM': ['C1281657114-ASF', 'C4175200051-ASF'],
+        'SENTINEL-1D_RAW': ['C1281496248-ASF', 'C4175250274-ASF'],
+        'SENTINEL-1D_DP_META_GRD_HIGH': ['C1281643927-ASF', 'C4171102786-ASF'],
+        'SENTINEL-1D_DP_META_GRD_MEDIUM': ['C1281657235-ASF', 'C4174076945-ASF'],
+        'SENTINEL-1D_META_OCN': ['C1281540906-ASF', 'C4162996551-ASF'],
+        'SENTINEL-1D_META_RAW': ['C1281496301-ASF', 'C4175250286-ASF'],
+        'SENTINEL-1D_META_SLC': ['C1281496163-ASF', 'C4175278190-ASF'],
+        'SENTINEL-1D_SP_META_GRD_HIGH': ['C1281563948-ASF', 'C4174044493-ASF'],
+        'SENTINEL-1D_SP_META_GRD_MEDIUM': ['C1281644435-ASF', 'C4175200042-ASF'],
         'SENTINEL-1C_SLC': [
             'C3470873558-ASF',
             'C1273088271-ASF',
@@ -1018,7 +1018,7 @@ collections_per_platform = {
         'C1273088860-ASF',
     ],
     'SENTINEL-1D': [
-        'C1281540904-ASF',
+        'C1281540904-ASF', # UAT ASF
         'C1281540913-ASF',
         'C1281644436-ASF',
         'C1281496226-ASF',
@@ -1032,6 +1032,20 @@ collections_per_platform = {
         'C1281496163-ASF',
         'C1281563948-ASF',
         'C1281644435-ASF',
+        'C4163054563-ASF', # PROD
+        'C4174076966-ASF',
+        'C4171102786-ASF',
+        'C4174076945-ASF',
+        'C4162996551-ASF',
+        'C4175250286-ASF',
+        'C4175278190-ASF',
+        'C4162942865-ASF',
+        'C4175250274-ASF',
+        'C4175278193-ASF',
+        'C4174044457-ASF',
+        'C4175200051-ASF',
+        'C4174044493-ASF',
+        'C4175200042-ASF',
     ],
     'STS-59': [
         'C1661710578-ASF',
@@ -1464,6 +1478,7 @@ collections_by_processing_level = {
         'C3470873558-ASF',  # S1C
         'C1273088271-ASF',
         'C1281496226-ASF',  # S1D
+        'C4175278193-ASF',
     ],
     'GRD_HD': [
         'C1214470533-ASF',
@@ -1474,6 +1489,7 @@ collections_by_processing_level = {
         'C3486566209-ASF',  # S1C
         'C1273088720-ASF',
         'C1281540913-ASF',  # S1D
+        'C4163054563-ASF',
     ],
     'METADATA_GRD_HD': [
         'C1214470576-ASF',
@@ -1484,6 +1500,7 @@ collections_by_processing_level = {
         'C3486580531-ASF',  # S1C
         'C1273088738-ASF',
         'C1281643927-ASF',  # S1D
+        'C4171102786-ASF',
     ],
     'GUNW_STD': [
         'C1595422627-ASF',
@@ -1501,6 +1518,7 @@ collections_by_processing_level = {
         'C3484561061-ASF',  # S1C
         'C1273088273-ASF',
         'C1281496163-ASF',  # S1D
+        'C4175278190-ASF',
     ],
     'METADATA_RAW': [
         'C1214470532-ASF',
@@ -1511,6 +1529,7 @@ collections_by_processing_level = {
         'C3486527075-ASF',  # S1C
         'C1273090821-ASF',
         'C1281496301-ASF',  # S1D
+        'C4175250286-ASF',
     ],
     'OCN': [
         'C1214472977-ASF',
@@ -1522,6 +1541,7 @@ collections_by_processing_level = {
         'C3484661603-ASF',  # S1C
         'C1273090807-ASF',
         'C1281540904-ASF',  # S1D
+        'C4162942865-ASF',
     ],
     'METADATA_GRD_MD': [
         'C1214472336-ASF',
@@ -1532,6 +1552,7 @@ collections_by_processing_level = {
         'C3486616327-ASF',  # S1C
         'C1273088779-ASF',
         'C1281657235-ASF',  # S1D
+        'C4174076945-ASF',
     ],
     'METADATA_OCN': [
         'C1266376001-ASF',
@@ -1543,6 +1564,7 @@ collections_by_processing_level = {
         'C3484670556-ASF',  # S1C
         'C1273090814-ASF',
         'C1281540906-ASF',  # S1D
+        'C4162996551-ASF',
     ],
     'GRD_MS': [
         'C1214472994-ASF',
@@ -1552,6 +1574,7 @@ collections_by_processing_level = {
         'C3488414315-ASF',  # S1C
         'C1273090772-ASF',
         'C1281657114-ASF',  # S1D
+        'C4175200051-ASF',
     ],
     'METADATA_GRD_HS': [
         'C1214470732-ASF',
@@ -1562,6 +1585,7 @@ collections_by_processing_level = {
         'C3488406939-ASF',  # S1C
         'C1273088884-ASF',
         'C1281563948-ASF',  # S1D
+        'C4174044493-ASF',
     ],
     'METADATA_GRD_MS': [
         'C1214473170-ASF',
@@ -1571,6 +1595,7 @@ collections_by_processing_level = {
         'C3488417229-ASF',  # S1C
         'C1273090777-ASF',
         'C1281644435-ASF',  # S1D
+        'C4175200042-ASF',
     ],
     'RAW': [
         'C1214470561-ASF',
@@ -1582,6 +1607,7 @@ collections_by_processing_level = {
         'C3486496642-ASF',  # S1C
         'C1273090818-ASF',
         'C1281496248-ASF',  # S1D
+        'C4175250274-ASF',
     ],
     'GRD_MD': [
         'C1214471521-ASF',
@@ -1592,6 +1618,7 @@ collections_by_processing_level = {
         'C3486605959-ASF',  # S1C
         'C1273088761-ASF',
         'C1281644436-ASF',  # S1D
+        'C4174076966-ASF',
     ],
     'GRD_HS': [
         'C1214470682-ASF',
@@ -1602,6 +1629,7 @@ collections_by_processing_level = {
         'C3488402208-ASF',  # S1C
         'C1273088882-ASF',
         'C1281643926-ASF',  # S1D
+        'C4174044457-ASF',
     ],
     'CSLC': [
         'C2777443834-ASF',
