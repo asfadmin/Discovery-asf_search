@@ -26,9 +26,14 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
-## [v12.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.0...v12.2.1)
+## [v12.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.1...v12.2.2)
 ### Added
 - `Sentinel-1D` constants and search support
+
+------
+## [v12.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.0...v12.2.1)
+### Fixed
+- Fixes optinal dependency `pandas` causing import error in `SBASNetwork` class
 
 ------
 ## [v12.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.1...v12.2.0)
