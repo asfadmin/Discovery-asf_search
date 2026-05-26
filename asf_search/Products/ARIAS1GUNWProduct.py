@@ -85,7 +85,7 @@ class ARIAS1GUNWProduct(S1Product):
         
         # pulled from asf-enumeration package implementation
         stack_opts.dataset = DATASET.SENTINEL1
-        stack_opts.platform = ['SA', 'SB', 'SC']
+        stack_opts.platform = ['SA', 'SB', 'SC', 'SD']
         stack_opts.processingLevel = PRODUCT_TYPE.SLC
         stack_opts.beamMode = BEAMMODE.IW
         stack_opts.polarization = [POLARIZATION.VV, POLARIZATION.VV_VH]
@@ -123,7 +123,12 @@ class ARIAS1GUNWProduct(S1Product):
     @staticmethod
     def _is_subclass(item: Dict) -> bool:
         platform = ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
-        if platform in ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C']:
+        if platform in [
+            'SENTINEL-1A',
+            'SENTINEL-1B',
+            'SENTINEL-1C',
+            'SENTINEL-1D',
+        ]:
             asf_platform = ASFProduct.umm_get(
                 item['umm'],
                 'AdditionalAttributes',

@@ -154,6 +154,7 @@ def should_use_asf_frame(cmr_opts):
         'SENTINEL-1A',
         'SENTINEL-1B',
         'SENTINEL-1C',
+        'SENTINEL-1D',
         'ALOS',
         'ALOS-2',
         'NISAR',
