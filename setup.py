@@ -50,6 +50,11 @@ sbasnetwork_plot = [
     'pandas',
 ]
 
+# Required for optional Sentinel-1 multi-burst SBASNetwork creation
+sbasnetwork_s1_multiburst = [
+    'burst2safe'
+]
+
 with open('README.md', 'r') as readme_file:
     readme = readme_file.read()
 
