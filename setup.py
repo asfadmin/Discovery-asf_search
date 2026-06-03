@@ -23,7 +23,8 @@ test_requirements = [
     'nbformat',
     'nbconvert',
     'ipykernel',
-    'burst2safe'
+    'burst2safe',
+    'gdal'
 ]
 
 extra_requirements = [
@@ -53,7 +54,8 @@ sbasnetwork_plot = [
 
 # Required for optional Sentinel-1 multi-burst SBASNetwork creation
 sbasnetwork_s1_multiburst = [
-    'burst2safe'
+    'burst2safe',
+    'gdal'
 ]
 
 with open('README.md', 'r') as readme_file:
