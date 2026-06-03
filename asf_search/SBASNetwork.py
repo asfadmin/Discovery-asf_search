@@ -13,7 +13,6 @@ from .ASFSearchOptions import ASFSearchOptions
 from .ASFSearchResults import ASFSearchResults
 from .search import geo_search
 
-
 try:
     from ciso8601 import parse_datetime
 except ImportError:
@@ -99,8 +98,9 @@ class SBASNetwork(Stack):
             opts=self.opts,
             allow_missing_state_vectors = self.allow_missing_state_vectors
             )
-
+        self.full_stack = self._build_full_stack()
         self._build_sbas_network()
+        self.geo_reference = self.subset_stack[0].ref # must reset here because ref object is replaced with a duplicate when building full stack
 
 
     @classmethod
@@ -199,15 +199,27 @@ class SBASNetwork(Stack):
             opts=obj.opts,
             allow_missing_state_vectors=obj.allow_missing_state_vectors
             ) for geo_reference in obj.s1_multiburst_georeferences]
-        
-        
+        obj.s1_multiburst_georeferences = [network.geo_reference for network in obj.s1_multiburst_sbas_networks]
+
         removed_pairs = obj.reconcile_s1_multiburst_sbasnetworks()
         if len(removed_pairs) > 0:
-            print("Removed Pairs with the following dates due to a lack of coverage accross all S1 multiburst SBASNetworks:")
+            print("Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks:")
             for  pair in removed_pairs:
                 print(pair)
 
+        obj.s1_multiburst_georeferences = [network.subset_stack[0].ref for network in obj.s1_multiburst_sbas_networks]
+        obj.geo_reference = obj.s1_multiburst_georeferences[0]
+
+        obj.update_s1_multiburst_stacks()
+
         return obj
+    
+    def update_s1_multiburst_stacks(self):
+        self.full_stack = self.s1_multiburst_sbas_networks[0].full_stack
+        self.remove_list = self.s1_multiburst_sbas_networks[0].remove_list
+        self.subset_stack = self.s1_multiburst_sbas_networks[0].subset_stack
+        self.connected_substacks = self.s1_multiburst_sbas_networks[0].connected_substacks
+
     
 
     def s1_multiburst_remove_pairs(self, geo_reference_dict):
@@ -221,15 +233,13 @@ class SBASNetwork(Stack):
         for sbas in self.s1_multiburst_sbas_networks:
             if 'all' in geo_reference_dict.keys():
                 for pair in geo_reference_dict['all']:
-                    print(pair)
-                    print((pair.ref_time, pair.sec_time))
-                    print(sbas.subset_stack)
                     pair_to_remove = sbas.get_pair_from_dates(sbas.subset_stack, pair.ref_time.date(), pair.sec_time.date())
-                    print(pair_to_remove)
                     sbas.remove_pairs(pair_to_remove)
             else:
                 for pair in geo_reference_dict[sbas.geo_reference]:
                     sbas.remove_pairs(pair)
+
+        self.update_s1_multiburst_stacks()
         
 
     def s1_multiburst_add_pairs(self, geo_reference_dict):
@@ -252,6 +262,8 @@ class SBASNetwork(Stack):
 
         for sbas in self.s1_multiburst_sbas_networks:
             sbas.add_pairs(geo_reference_dict[sbas.geo_reference])
+        
+        self.update_s1_multiburst_stacks()
 
     def get_s1_multiburst_scene_ids(self):
         if not hasattr(self, "s1_multiburst_sbas_networks"):
@@ -353,7 +365,7 @@ class SBASNetwork(Stack):
 
         Overrides Stack._build_full_stack() to naively exclude pairs based on self.perpendicular_baseline,
         self.inseason_temporal_baseline, and self.bridge_year_threshold. This is done for efficiency, to
-        avoid build massive full_stacks. More targeted occures in self._build_sbas_network()
+        avoid build massive full_stacks. More targeted filtering occures in self._build_sbas_network()
 
         stack_search_results: (Optional) ASFSearchResults from an ASFProduct.stack search
 
@@ -381,6 +393,7 @@ class SBASNetwork(Stack):
                 and Pair(p1, p2).perpendicular_baseline <= self.perpendicular_baseline
                 and Pair(p1, p2).temporal_baseline.days <= self.inseason_temporal_baseline + (self.bridge_year_threshold * 365)
             ]
+        
         return full_stack
 
     def _is_valid_bridge_pair(self, pair: Pair) -> bool:
@@ -653,7 +666,7 @@ class SBASNetwork(Stack):
         edge_traces = self.add_digraph_edge_traces(G, largest_network, pair_lists, (node_x_positions, node_y_positions))
         node_traces, unused_slcs_traces = self.add_digraph_node_traces(G, plot_geo_ref, pair_lists, (node_x_positions, node_y_positions))
 
-        start_date, end_date = get_pair_lists_date_range(pair_lists)
+        start_date, end_date = get_pair_lists_date_range([self.full_stack])
         date_range = (
             pd.date_range(
                 start=start_date,
@@ -836,34 +849,3 @@ def julian_to_month_day(ref_product: ASFProduct, julian_tuple: Tuple[int, int]) 
         date = datetime(year, 1, 1) + timedelta(days=day - 1)
         month_day.append(date.strftime("%m-%d"))
     return tuple(month_day)
-
-
-# from pathlib import Path
-
-# from burst2safe.safe import Safe
-# from burst2safe.utils import BurstInfo
-
-# multiburst_dict = {
-#     "173_370305": ("IW1", "IW2", "IW3"),
-#     "173_370306": ("IW1", "IW2", "IW3"),
-#     "173_370307": ("IW1", "IW2", "IW3")
-# }
-
-# burst_infos = [
-#     BurstInfo(
-#         granule=f"{k}_{swath}",
-#         slc_granule=None,
-#         swath=swath,
-#         polarization="",
-#         burst_id=int(k.split('_')[1]),
-#         burst_index=0,
-#         direction="",
-#         absolute_orbit=0,
-#         relative_orbit=int(k.split('_')[0]),
-#         date=None,
-#         data_url="",
-#         data_path=None,
-#         metadata_url=None,
-#         metadata_path=None,
-#     )
-#     for k, swaths in multiburst_dict.items()
