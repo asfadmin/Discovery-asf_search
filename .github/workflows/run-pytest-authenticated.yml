@@ -24,11 +24,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y swig gdal-bin libgdal-dev
-          echo "GDAL_VERSION=$(gdal-config --version)" >> "$GITHUB_ENV"
       - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install "gdal==$GDAL_VERSION"
           python3 -m pip install ".[extras,test,asf-enumeration,coherence]"
 
       - name: Run Tests
