@@ -3,9 +3,6 @@ import importlib.util
 import numpy as np
 from typing import Optional, List, Dict, Tuple, Union
 
-from burst2safe.safe import Safe
-from burst2safe.utils import BurstInfo
-
 from .ASFProduct import ASFProduct
 from .Pair import Pair
 from .Stack import Stack
