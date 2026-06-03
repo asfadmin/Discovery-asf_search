@@ -23,6 +23,7 @@ test_requirements = [
     'nbformat',
     'nbconvert',
     'ipykernel',
+    'burst2safe'
 ]
 
 extra_requirements = [
