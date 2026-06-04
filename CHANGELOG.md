@@ -25,11 +25,16 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
-------
-## [v12.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.1...v12.2.2)
+=======
+## [v12.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.2...v12.2.3)
 ### Added
 - Sentinel-1 multi-burst support to `SBASNetwork` class
 - For usage examples, see `examples/SBASNetwork_S1-Multiburst.ipynb`
+
+------
+## [v12.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.1...v12.2.2)
+### Added
+- `Sentinel-1D` constants and search support
 
 ------
 ## [v12.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.0...v12.2.1)
