@@ -201,7 +201,7 @@ class SBASNetwork(Stack):
         removed_pairs = obj.reconcile_s1_multiburst_sbasnetworks()
         if len(removed_pairs) > 0:
             print("Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks:")
-            for  pair in removed_pairs:
+            for pair in removed_pairs:
                 print(pair)
 
         obj.s1_multiburst_georeferences = [network.subset_stack[0].ref for network in obj.s1_multiburst_sbas_networks]
