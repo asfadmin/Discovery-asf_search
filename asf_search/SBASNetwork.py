@@ -3,6 +3,7 @@ import importlib.util
 import numpy as np
 from typing import Optional, List, Dict, Tuple, Union
 
+from asf_search import ASF_LOGGER
 from .ASFProduct import ASFProduct
 from .Pair import Pair
 from .Stack import Stack
@@ -200,9 +201,7 @@ class SBASNetwork(Stack):
 
         removed_pairs = obj.reconcile_s1_multiburst_sbasnetworks()
         if len(removed_pairs) > 0:
-            print("Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks:")
-            for pair in removed_pairs:
-                print(pair)
+            ASF_LOGGER.info(f"Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks: {removed_pairs}")
 
         obj.s1_multiburst_georeferences = [network.subset_stack[0].ref for network in obj.s1_multiburst_sbas_networks]
         obj.geo_reference = obj.s1_multiburst_georeferences[0]
