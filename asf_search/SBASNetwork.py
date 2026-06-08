@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import importlib.util
 import numpy as np
-import pandas as pd
 from typing import Optional, List, Dict, Tuple, Union
 
 from .ASFProduct import ASFProduct
@@ -15,7 +14,7 @@ try:
 except ImportError:
     from dateutil.parser import parse as parse_datetime
 
-_SBASNETWORK_PLOT_OPT_DEPS = ['plotly', 'networkx']
+_SBASNETWORK_PLOT_OPT_DEPS = ['plotly', 'networkx', 'pandas']
 try:
     for spec in _SBASNETWORK_PLOT_OPT_DEPS:
         if importlib.util.find_spec(spec) is None:
@@ -24,10 +23,12 @@ try:
     import plotly.graph_objects as go
     import networkx as nx
     from plotly.colors import sample_colorscale
+    import pandas as pd
 except ImportError:
     go = None
     nx = None
     sample_colorscale = None
+    pd = None
 
 class SBASNetwork(Stack):
     """
@@ -411,7 +412,7 @@ class SBASNetwork(Stack):
                                Default: `self.connected_substacks`.
         """
 
-        if go is None or nx is None or sample_colorscale is None:
+        if go is None or nx is None or sample_colorscale is None or pd is None:
             raise ImportError(
                 'The `plot()` method requires the optional asf-search '
                 f'dependencies {_SBASNETWORK_PLOT_OPT_DEPS}, '

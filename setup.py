@@ -46,7 +46,8 @@ coherence = [
 # Required for optional SBASNetwork plotting
 sbasnetwork_plot = [
     'plotly',
-    'networkx'
+    'networkx',
+    'pandas',
 ]
 
 with open('README.md', 'r') as readme_file:
