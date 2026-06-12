@@ -1,3 +1,5 @@
+# TODO:
+# Replace with https://github.com/ASFHyP3/actions#reusable-labeled-pr-checkyml
 name: Check for required labels
 
 on:

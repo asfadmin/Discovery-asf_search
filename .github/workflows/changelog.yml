@@ -1,4 +1,5 @@
 name: Update changelog on Releases
+
 on:
   pull_request:
     types:
@@ -13,12 +14,10 @@ jobs:
   changelog-updated:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-
       - name: Changelog check
-        uses: Zomzog/changelog-checker@v1.3.0
+        uses: dangoslen/changelog-enforcer@v3.6.1
         with:
-          fileName: CHANGELOG.md
-          noChangelogLabel: bumpless
+          changeLogPath: CHANGELOG.md
+          skipLabels: bumpless
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
