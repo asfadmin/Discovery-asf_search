@@ -1,7 +1,8 @@
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 import importlib.util
 import numpy as np
-from typing import Optional, List, Dict, Tuple, Union
+from typing import Optional, List, Dict, Tuple, Union, Literal
 
 from asf_search import ASF_LOGGER
 from .ASFProduct import ASFProduct
@@ -42,6 +43,54 @@ try:
 except ImportError:
     Safe = None
     BurstInfo = None
+
+
+Swath = Literal["IW1", "IW2", "IW3"]
+RelativeBurstID = str
+
+@dataclass(frozen=True)
+class S1MultiBurstGroup:
+    """
+    Represents a group of Sentinel-1 bursts and swaths to be processed together.
+
+    Example:
+    S1MultiBurstGroup(
+        bursts={
+        "173_370305": ("IW1", "IW2", "IW3"),
+        "173_370306": ("IW1", "IW2", "IW3"),
+        "173_370307": ("IW1", "IW2", "IW3")
+        }
+    )   
+    """
+    bursts: dict[RelativeBurstID, tuple[Swath, ...]]
+
+    def __post_init__(self):
+        self._check_validiity()
+
+    def _check_validiity(self):
+        burst_infos = [
+            BurstInfo(
+                granule=f"{k}_{swath}",
+                slc_granule=None,
+                swath=swath,
+                polarization="",
+                burst_id=int(k.split('_')[1]),
+                burst_index=0,
+                direction="",
+                absolute_orbit=0,
+                relative_orbit=int(k.split('_')[0]),
+                date=None,
+                data_url="",
+                data_path=None,
+                metadata_url=None,
+                metadata_path=None,
+            )
+            for k, swaths in self.bursts.items()
+            for swath in swaths
+        ]
+
+        Safe.check_group_validity(burst_infos)
+
 
 class SBASNetwork(Stack):
     """
@@ -143,7 +192,7 @@ class SBASNetwork(Stack):
     @classmethod
     def s1_multiburst(
         cls,
-        geo_reference_multiburst_dict: Dict[str,str],
+        multiburst_group: S1MultiBurstGroup,
         start_date: str = None,
         end_date: str = None,
         season: Tuple[int] = (1, 365),
@@ -157,20 +206,9 @@ class SBASNetwork(Stack):
         """
         Alternate class method constructor to create an SBASNetwork from
         a geo_reference_multiburst_dict.
-
-        A geo_reference_mltiburst_dict has relative Sentinel-1 burst IDs as keys
-        and a tuple of swaths as values.
-
-        Example:
-        geo_reference_multiburst_dict = {
-            "173_370305": ("IW1", "IW2", "IW3"),
-            "173_370306": ("IW1", "IW2", "IW3"),
-            "173_370307": ("IW1", "IW2", "IW3")
-        }
         """
         obj = cls.__new__(cls)
-        obj.geo_reference_multiburst_dict = geo_reference_multiburst_dict
-        obj.check_s1_multiburst_group_validiity()
+        obj.multiburst_group = multiburst_group
         obj.season = season
         if bridge_target_date:
             obj.bridge_target_date = bridge_target_date
@@ -290,31 +328,6 @@ class SBASNetwork(Stack):
                 sec_full_burst_id = pair.sec.properties["burst"]["fullBurstID"]
                 if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
                     raise Exception(f"Pair {pair}'s reference or secondary full burst ID does not match burst SBASNetwork's geo_reference scene's full burst ID ({geo_ref_full_burst_id}).")
-                
-
-    def check_s1_multiburst_group_validiity(self):
-        burst_infos = [
-            BurstInfo(
-                granule=f"{k}_{swath}",
-                slc_granule=None,
-                swath=swath,
-                polarization="",
-                burst_id=int(k.split('_')[1]),
-                burst_index=0,
-                direction="",
-                absolute_orbit=0,
-                relative_orbit=int(k.split('_')[0]),
-                date=None,
-                data_url="",
-                data_path=None,
-                metadata_url=None,
-                metadata_path=None,
-            )
-            for k, swaths in self.geo_reference_multiburst_dict.items()
-            for swath in swaths
-        ]
-
-        Safe.check_group_validity(burst_infos)
 
 
     def reconcile_s1_multiburst_sbasnetworks(self):
@@ -343,7 +356,7 @@ class SBASNetwork(Stack):
 
     
     def get_s1_burst_geo_references(self):
-        relative_burst_ids = [f"{k}_{swath}" for k, v in self.geo_reference_multiburst_dict.items() for swath in v]
+        relative_burst_ids = [f"{k}_{swath}" for k, v in self.multiburst_group.bursts.items() for swath in v]
         results = geo_search(
             fullBurstID=relative_burst_ids, 
             start=self.start_date, 
