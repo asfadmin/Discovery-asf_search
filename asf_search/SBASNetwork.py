@@ -91,6 +91,20 @@ class S1MultiBurstGroup:
 
         Safe.check_group_validity(burst_infos)
 
+# @dataclass(frozen=True)
+# class GeoReferenceBurstDict:
+#     """
+#     A dictionary of 
+#     {
+#         geo_reference_burst_1: [Pair_1, Pair_2],
+#         geo_reference_burst_2: [Pair_3, Pair_4],
+#         geo_reference_burst_3: [Pair_5, Pair_6],
+#     }
+
+#     `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
+#     to the pairs that should be added or restored to that specific network.
+#     """
+
 
 class SBASNetwork(Stack):
     """
@@ -187,184 +201,6 @@ class SBASNetwork(Stack):
         obj._build_sbas_network()
 
         return obj
-    
-
-    @classmethod
-    def s1_multiburst(
-        cls,
-        multiburst_group: S1MultiBurstGroup,
-        start_date: str = None,
-        end_date: str = None,
-        season: Tuple[int] = (1, 365),
-        perpendicular_baseline: Optional[int] = 400,
-        inseason_temporal_baseline: Optional[int] = 36,
-        bridge_year_threshold: Optional[int] = 1,
-        bridge_target_date: Optional[str] = None,
-        opts: Optional[ASFSearchOptions] = ASFSearchOptions(),
-        allow_missing_state_vectors: Optional[bool] = False
-    ):
-        """
-        Alternate class method constructor to create an SBASNetwork from
-        a geo_reference_multiburst_dict.
-        """
-        obj = cls.__new__(cls)
-        obj.multiburst_group = multiburst_group
-        obj.season = season
-        if bridge_target_date:
-            obj.bridge_target_date = bridge_target_date
-        else:
-            obj.bridge_target_date = obj.season[0]
-        obj.start_date = start_date
-        obj.end_date = end_date
-        obj.opts = opts
-        obj.s1_multiburst_georeferences = obj.get_s1_burst_geo_references()
-        obj.geo_reference = obj.s1_multiburst_georeferences[0]
-        obj.perpendicular_baseline = perpendicular_baseline
-        obj.inseason_temporal_baseline = inseason_temporal_baseline
-        obj.bridge_year_threshold = bridge_year_threshold
-        obj.allow_missing_state_vectors = allow_missing_state_vectors
-        obj.s1_multiburst_sbas_networks = [SBASNetwork(
-            geo_reference, 
-            start_date=obj.start_date,
-            end_date=obj.end_date,
-            season=obj.season,
-            perpendicular_baseline=obj.perpendicular_baseline,
-            inseason_temporal_baseline=obj.inseason_temporal_baseline,
-            bridge_year_threshold=obj.bridge_year_threshold,
-            bridge_target_date=obj.bridge_target_date,
-            opts=obj.opts,
-            allow_missing_state_vectors=obj.allow_missing_state_vectors
-            ) for geo_reference in obj.s1_multiburst_georeferences]
-        obj.s1_multiburst_georeferences = [network.geo_reference for network in obj.s1_multiburst_sbas_networks]
-
-        removed_pairs = obj.reconcile_s1_multiburst_sbasnetworks()
-        if len(removed_pairs) > 0:
-            ASF_LOGGER.info(f"Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks: {removed_pairs}")
-
-        obj.s1_multiburst_georeferences = [network.subset_stack[0].ref for network in obj.s1_multiburst_sbas_networks]
-        obj.geo_reference = obj.s1_multiburst_georeferences[0]
-
-        obj.update_s1_multiburst_stacks()
-
-        return obj
-    
-    def update_s1_multiburst_stacks(self):
-        self.full_stack = self.s1_multiburst_sbas_networks[0].full_stack
-        self.remove_list = self.s1_multiburst_sbas_networks[0].remove_list
-        self.subset_stack = self.s1_multiburst_sbas_networks[0].subset_stack
-        self.connected_substacks = self.s1_multiburst_sbas_networks[0].connected_substacks
-
-    
-
-    def s1_multiburst_remove_pairs(self, geo_reference_dict):
-        """
-        Remove pairs with matching ref/sec dates from all burst SBASNetworks.
-        A pair from any burst may be provided.
-        """
-        if not hasattr(self, "s1_multiburst_sbas_networks"):
-            raise Exception("s1_multiburst_remove called on a non-multiburst SBASNetwork")
-
-        for sbas in self.s1_multiburst_sbas_networks:
-            if 'all' in geo_reference_dict.keys():
-                for pair in geo_reference_dict['all']:
-                    pair_to_remove = sbas.get_pair_from_dates(sbas.subset_stack, pair.ref_time.date(), pair.sec_time.date())
-                    sbas.remove_pairs(pair_to_remove)
-            else:
-                for pair in geo_reference_dict[sbas.geo_reference]:
-                    sbas.remove_pairs(pair)
-
-        self.update_s1_multiburst_stacks()
-        
-
-    def s1_multiburst_add_pairs(self, geo_reference_dict):
-        """
-        Add explicit pairs to each burst SBASNetwork.
-
-        {
-            geo_reference_burst_1: [Pair_1, Pair_2],
-            geo_reference_burst_2: [Pair_3, Pair_4],
-            geo_reference_burst_3: [Pair_5, Pair_6],
-        }
-
-        `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
-        to the pairs that should be added or restored to that specific network.
-        """
-        if not hasattr(self, "s1_multiburst_sbas_networks"):
-            raise Exception("s1_multiburst_add called on a non-multiburst SBASNetwork")
-        
-        self.validate_pairs_by_network_list(geo_reference_dict)
-
-        for sbas in self.s1_multiburst_sbas_networks:
-            sbas.add_pairs(geo_reference_dict[sbas.geo_reference])
-        
-        self.update_s1_multiburst_stacks()
-
-    def get_s1_multiburst_scene_ids(self):
-        if not hasattr(self, "s1_multiburst_sbas_networks"):
-            raise Exception("get_s1_multiburst_scene_ids called on a non-multiburst SBASNetwork")
-        
-        pair_ids = [s.get_scene_ids() for s in self.s1_multiburst_sbas_networks]
-        multiburst_job_pair_ids = [list(x) for x in zip(*pair_ids)]
-        return [list(zip(*pairs)) for pairs in multiburst_job_pair_ids]
-
-
-    def validate_pairs_by_network_list(self, geo_reference_dict):
-
-        geo_reference_list = [sbas.geo_reference for sbas in self.s1_multiburst_sbas_networks]
-        if geo_reference_list != list(geo_reference_dict.keys()):
-            raise Exception(
-                "geo_reference_dict must have keys corresponding to each multiburst SBASNetwork geo_reference product\n"
-                f"geo_reference_dict.keys(): {geo_reference_dict.keys()}\n"
-                f"self.s1_multiburst_sbas_networks geo_reference scenes: {geo_reference_list}"
-                )
-        
-        if len(set([len(i) for i in list(geo_reference_dict.values())])) > 1:
-            raise Exception("All pair lists in geo_reference_dict must be of equal length")
-
-        for geo_ref, pair_list in geo_reference_dict.items():
-            geo_ref_full_burst_id = geo_ref.properties["burst"]["fullBurstID"]
-            for pair in pair_list:
-                ref_full_burst_id = pair.ref.properties["burst"]["fullBurstID"]
-                sec_full_burst_id = pair.sec.properties["burst"]["fullBurstID"]
-                if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
-                    raise Exception(f"Pair {pair}'s reference or secondary full burst ID does not match burst SBASNetwork's geo_reference scene's full burst ID ({geo_ref_full_burst_id}).")
-
-
-    def reconcile_s1_multiburst_sbasnetworks(self):
-        network_date_pairs = [
-            {
-                (pair.ref_time.date(), pair.sec_time.date())
-                for pair in network.subset_stack
-            }
-            for network in self.s1_multiburst_sbas_networks
-        ]
-
-        common_date_pairs = set.intersection(*network_date_pairs)
-
-        pairs_to_remove_list = []
-        for network in self.s1_multiburst_sbas_networks:
-            pairs_to_remove = [
-                pair
-                for pair in network.subset_stack
-                if (pair.ref_time.date(), pair.sec_time.date()) not in common_date_pairs
-            ]
-            if len(pairs_to_remove) > 0:
-                network.remove_pairs(pairs_to_remove)
-                pairs_to_remove_list.append(pairs_to_remove)
-
-        return pairs_to_remove_list
-
-    
-    def get_s1_burst_geo_references(self):
-        relative_burst_ids = [f"{k}_{swath}" for k, v in self.multiburst_group.bursts.items() for swath in v]
-        results = geo_search(
-            fullBurstID=relative_burst_ids, 
-            start=self.start_date, 
-            end=str((parse_datetime(self.start_date) + timedelta(days=48)).date()),
-            season=self.season, 
-            opts=self.opts
-            )
-        return [min([r for r in results if r.properties['burst']['fullBurstID'] == b], key=lambda obj: obj.properties['startTime']) for b in relative_burst_ids]
         
 
     def _build_full_stack(self, stack_search_results: Optional[ASFSearchResults]=None) -> List[Pair]:
@@ -720,25 +556,25 @@ class SBASNetwork(Stack):
         )
         fig.show()
 
-    def get_pair_from_dates(self, pair_list: List[Pair],
-                                ref_date: datetime.date, sec_date: datetime.date) -> Pair:
-        """
-        This convenience method allows for the retrieval of a Pair object from a list
-        of Pairs by reference and secondary date. This is usefull when identifying a 
-        Pair object for removal or addition to an SBASNetwork.subset_stack
+def get_pair_from_dates(pair_list: List[Pair],
+                            ref_date: datetime.date, sec_date: datetime.date) -> Pair:
+    """
+    This convenience method allows for the retrieval of a Pair object from a list
+    of Pairs by reference and secondary date. This is usefull when identifying a 
+    Pair object for removal or addition to an SBASNetwork.subset_stack
 
-        This method is included in SBASNetwork and not Stack because we only care about
-        dates in SBASNetwork and Stack is aware of datetimes.
+    This method is included in SBASNetwork and not Stack because we only care about
+    dates in SBASNetwork and Stack is aware of datetimes.
 
-        pair_list: a list of Pairs from which to find a Pair object
-        ref_date: a datetime.date of a target Pair's reference scene
-        sec_date: a datetime.date of a target Pair's secondary scene
+    pair_list: a list of Pairs from which to find a Pair object
+    ref_date: a datetime.date of a target Pair's reference scene
+    sec_date: a datetime.date of a target Pair's secondary scene
 
-        Returns: A Pair with a corresponding ref_date and sec_date
-        """
-        for pair in pair_list:
-            if pair.ref_time.date() == ref_date and pair.sec_time.date() == sec_date:
-                return pair
+    Returns: A Pair with a corresponding ref_date and sec_date
+    """
+    for pair in pair_list:
+        if pair.ref_time.date() == ref_date and pair.sec_time.date() == sec_date:
+            return pair
 
 def get_n_colors(n: int, colorscale: str="Rainbow", alpha: float=0.4) -> List[str]:
     """
@@ -858,3 +694,153 @@ def julian_to_month_day(ref_product: ASFProduct, julian_tuple: Tuple[int, int]) 
         date = datetime(year, 1, 1) + timedelta(days=day - 1)
         month_day.append(date.strftime("%m-%d"))
     return tuple(month_day)
+
+
+class S1MultiBurstSBASNetwork():
+    def __init__( 
+        self,
+        multiburst_group: S1MultiBurstGroup,
+        start_date: str = None,
+        end_date: str = None,
+        season: Tuple[int] = (1, 365),
+        perpendicular_baseline: Optional[int] = 400,
+        inseason_temporal_baseline: Optional[int] = 36,
+        bridge_year_threshold: Optional[int] = 1,
+        bridge_target_date: Optional[str] = None,
+        opts: Optional[ASFSearchOptions] = ASFSearchOptions(),
+        allow_missing_state_vectors: Optional[bool] = False
+    ):
+
+        self.start_date=start_date
+        self.end_date=end_date
+        self.season=season
+        self.bridge_target_date=bridge_target_date
+        self.perpendicular_baseline=perpendicular_baseline
+        self.inseason_temporal_baseline=inseason_temporal_baseline
+        self.bridge_year_threshold=bridge_year_threshold
+        self.opts=opts
+        self.allow_missing_state_vectors=allow_missing_state_vectors
+        
+        self.multiburst_group = multiburst_group
+        self.georeferences = self.define_geo_references()
+
+        self.sbas_networks = [SBASNetwork(
+            geo_reference, 
+            start_date=self.start_date,
+            end_date=self.end_date,
+            season=self.season,
+            perpendicular_baseline=self.perpendicular_baseline,
+            inseason_temporal_baseline=self.inseason_temporal_baseline,
+            bridge_year_threshold=self.bridge_year_threshold,
+            bridge_target_date=self.bridge_target_date,
+            opts=self.opts,
+            allow_missing_state_vectors=self.allow_missing_state_vectors
+            ) for geo_reference in self.georeferences]
+        self.georeferences = [network.geo_reference for network in self.sbas_networks]
+
+        removed_pairs = self.reconcile_sbasnetworks()
+        if len(removed_pairs) > 0:
+            ASF_LOGGER.info(f"Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks: {removed_pairs}")
+
+        # self.georeferences = [network.subset_stack[0].ref for network in self.sbas_networks]
+
+
+
+    def remove_pairs(self, geo_reference_dict):
+        """
+        Remove pairs with matching ref/sec dates from all burst SBASNetworks.
+        A pair from any burst may be provided.
+        """
+        for sbas in self.sbas_networks:
+            if 'all' in geo_reference_dict.keys():
+                for pair in geo_reference_dict['all']:
+                    pair_to_remove = get_pair_from_dates(sbas.subset_stack, pair.ref_time.date(), pair.sec_time.date())
+                    sbas.remove_pairs(pair_to_remove)
+            else:
+                for pair in geo_reference_dict[sbas.geo_reference]:
+                    sbas.remove_pairs(pair)
+        
+
+    def add_pairs(self, geo_reference_dict):
+        """
+        Add explicit pairs to each burst SBASNetwork.
+
+        {
+            geo_reference_burst_1: [Pair_1, Pair_2],
+            geo_reference_burst_2: [Pair_3, Pair_4],
+            geo_reference_burst_3: [Pair_5, Pair_6],
+        }
+
+        `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
+        to the pairs that should be added or restored to that specific network.
+        """
+        self.validate_pairs_by_network_list(geo_reference_dict)
+
+        for sbas in self.sbas_networks:
+            sbas.add_pairs(geo_reference_dict[sbas.geo_reference])
+
+
+    def validate_pairs_by_network_list(self, geo_reference_dict):
+
+        geo_reference_list = [sbas.geo_reference for sbas in self.sbas_networks]
+        if geo_reference_list != list(geo_reference_dict.keys()):
+            raise Exception(
+                "geo_reference_dict must have keys corresponding to each multiburst SBASNetwork geo_reference product\n"
+                f"geo_reference_dict.keys(): {geo_reference_dict.keys()}\n"
+                f"self.sbas_networks geo_reference scenes: {geo_reference_list}"
+                )
+        
+        if len(set([len(i) for i in list(geo_reference_dict.values())])) > 1:
+            raise Exception("All pair lists in geo_reference_dict must be of equal length")
+
+        for geo_ref, pair_list in geo_reference_dict.items():
+            geo_ref_full_burst_id = geo_ref.properties["burst"]["fullBurstID"]
+            for pair in pair_list:
+                ref_full_burst_id = pair.ref.properties["burst"]["fullBurstID"]
+                sec_full_burst_id = pair.sec.properties["burst"]["fullBurstID"]
+                if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
+                    raise Exception(f"Pair {pair}'s reference or secondary full burst ID does not match burst SBASNetwork's geo_reference scene's full burst ID ({geo_ref_full_burst_id}).")
+
+
+    def reconcile_sbasnetworks(self):
+        network_date_pairs = [
+            {
+                (pair.ref_time.date(), pair.sec_time.date())
+                for pair in network.subset_stack
+            }
+            for network in self.sbas_networks
+        ]
+
+        common_date_pairs = set.intersection(*network_date_pairs)
+
+        pairs_to_remove_list = []
+        for network in self.sbas_networks:
+            pairs_to_remove = [
+                pair
+                for pair in network.subset_stack
+                if (pair.ref_time.date(), pair.sec_time.date()) not in common_date_pairs
+            ]
+            if len(pairs_to_remove) > 0:
+                network.remove_pairs(pairs_to_remove)
+                pairs_to_remove_list.append(pairs_to_remove)
+
+        return pairs_to_remove_list
+
+
+    def define_geo_references(self):
+        relative_burst_ids = [f"{k}_{swath}" for k, v in self.multiburst_group.bursts.items() for swath in v]
+        results = geo_search(
+            fullBurstID=relative_burst_ids, 
+            start=self.start_date, 
+            end=str((parse_datetime(self.start_date) + timedelta(days=48)).date()),
+            season=self.season, 
+            opts=self.opts
+            )
+        return [min([r for r in results if r.properties['burst']['fullBurstID'] == b], key=lambda obj: obj.properties['startTime']) for b in relative_burst_ids]
+    
+
+    def get_scene_ids(self):      
+        pair_ids = [s.get_scene_ids() for s in self.sbas_networks]
+        multiburst_job_pair_ids = [list(x) for x in zip(*pair_ids)]
+        return [list(zip(*pairs)) for pairs in multiburst_job_pair_ids]
+        
