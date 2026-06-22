@@ -91,20 +91,6 @@ class S1MultiBurstGroup:
 
         Safe.check_group_validity(burst_infos)
 
-# @dataclass(frozen=True)
-# class GeoReferenceBurstDict:
-#     """
-#     A dictionary of 
-#     {
-#         geo_reference_burst_1: [Pair_1, Pair_2],
-#         geo_reference_burst_2: [Pair_3, Pair_4],
-#         geo_reference_burst_3: [Pair_5, Pair_6],
-#     }
-
-#     `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
-#     to the pairs that should be added or restored to that specific network.
-#     """
-
 
 class SBASNetwork(Stack):
     """
@@ -696,6 +682,48 @@ def julian_to_month_day(ref_product: ASFProduct, julian_tuple: Tuple[int, int]) 
     return tuple(month_day)
 
 
+@dataclass(frozen=True)
+class S1MultiBurstSBASPairMap:
+    """
+    A dictionary of 
+    {
+        geo_reference_burst_1: [Pair_1, Pair_2],
+        geo_reference_burst_2: [Pair_3, Pair_4],
+        geo_reference_burst_3: [Pair_5, Pair_6],
+    }
+
+    or 
+
+    `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
+    to the pairs that should be added or restored to that specific network.
+    """
+    pairs_by_geo_reference: dict[str, list[Pair]]
+    sbas_networks: list[SBASNetwork]
+
+    def __post_init__(self):
+        self._check_validiity()
+
+    def _check_validiity(self):
+        geo_reference_list = [sbas.geo_reference for sbas in self.sbas_networks]
+        if geo_reference_list != list(self.pairs_by_geo_reference.keys()):
+            raise Exception(
+                "geo_reference_dict must have keys corresponding to each multiburst SBASNetwork geo_reference product\n"
+                f"geo_reference_dict.keys(): {self.pairs_by_geo_reference.keys()}\n"
+                f"self.sbas_networks geo_reference scenes: {geo_reference_list}"
+                )
+        
+        if len(set([len(i) for i in list(self.pairs_by_geo_reference.values())])) > 1:
+            raise Exception("All pair lists in geo_reference_dict must be of equal length")
+
+        for geo_ref, pair_list in self.pairs_by_geo_reference.items():
+            geo_ref_full_burst_id = geo_ref.properties["burst"]["fullBurstID"]
+            for pair in pair_list:
+                ref_full_burst_id = pair.ref.properties["burst"]["fullBurstID"]
+                sec_full_burst_id = pair.sec.properties["burst"]["fullBurstID"]
+                if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
+                    raise Exception(f"Pair {pair}'s reference or secondary full burst ID does not match burst SBASNetwork's geo_reference scene's full burst ID ({geo_ref_full_burst_id}).")
+
+
 class S1MultiBurstSBASNetwork():
     def __init__( 
         self,
@@ -736,32 +764,23 @@ class S1MultiBurstSBASNetwork():
             opts=self.opts,
             allow_missing_state_vectors=self.allow_missing_state_vectors
             ) for geo_reference in self.georeferences]
+        
+        # update georeferences from results of stack searches performed when creating self.sbas_networks
         self.georeferences = [network.geo_reference for network in self.sbas_networks]
 
         removed_pairs = self.reconcile_sbasnetworks()
         if len(removed_pairs) > 0:
             ASF_LOGGER.info(f"Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks: {removed_pairs}")
 
-        # self.georeferences = [network.subset_stack[0].ref for network in self.sbas_networks]
-
-
-
-    def remove_pairs(self, geo_reference_dict):
+    def remove_pairs(self, geo_reference_dict: S1MultiBurstSBASPairMap):
         """
         Remove pairs with matching ref/sec dates from all burst SBASNetworks.
-        A pair from any burst may be provided.
         """
         for sbas in self.sbas_networks:
-            if 'all' in geo_reference_dict.keys():
-                for pair in geo_reference_dict['all']:
-                    pair_to_remove = get_pair_from_dates(sbas.subset_stack, pair.ref_time.date(), pair.sec_time.date())
-                    sbas.remove_pairs(pair_to_remove)
-            else:
-                for pair in geo_reference_dict[sbas.geo_reference]:
-                    sbas.remove_pairs(pair)
+            sbas.remove_pairs(geo_reference_dict.pairs_by_geo_reference[sbas.geo_reference])
         
 
-    def add_pairs(self, geo_reference_dict):
+    def add_pairs(self, geo_reference_dict: S1MultiBurstSBASPairMap):
         """
         Add explicit pairs to each burst SBASNetwork.
 
@@ -774,32 +793,9 @@ class S1MultiBurstSBASNetwork():
         `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
         to the pairs that should be added or restored to that specific network.
         """
-        self.validate_pairs_by_network_list(geo_reference_dict)
 
         for sbas in self.sbas_networks:
-            sbas.add_pairs(geo_reference_dict[sbas.geo_reference])
-
-
-    def validate_pairs_by_network_list(self, geo_reference_dict):
-
-        geo_reference_list = [sbas.geo_reference for sbas in self.sbas_networks]
-        if geo_reference_list != list(geo_reference_dict.keys()):
-            raise Exception(
-                "geo_reference_dict must have keys corresponding to each multiburst SBASNetwork geo_reference product\n"
-                f"geo_reference_dict.keys(): {geo_reference_dict.keys()}\n"
-                f"self.sbas_networks geo_reference scenes: {geo_reference_list}"
-                )
-        
-        if len(set([len(i) for i in list(geo_reference_dict.values())])) > 1:
-            raise Exception("All pair lists in geo_reference_dict must be of equal length")
-
-        for geo_ref, pair_list in geo_reference_dict.items():
-            geo_ref_full_burst_id = geo_ref.properties["burst"]["fullBurstID"]
-            for pair in pair_list:
-                ref_full_burst_id = pair.ref.properties["burst"]["fullBurstID"]
-                sec_full_burst_id = pair.sec.properties["burst"]["fullBurstID"]
-                if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
-                    raise Exception(f"Pair {pair}'s reference or secondary full burst ID does not match burst SBASNetwork's geo_reference scene's full burst ID ({geo_ref_full_burst_id}).")
+            sbas.add_pairs(geo_reference_dict.pairs_by_geo_reference[sbas.geo_reference])
 
 
     def reconcile_sbasnetworks(self):
