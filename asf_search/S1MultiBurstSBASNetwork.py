@@ -2,12 +2,13 @@ import copy
 from dataclasses import dataclass
 from datetime import timedelta
 import importlib.util
-from typing import Optional, Tuple, Literal
+from typing import List, Optional, Tuple, Literal
 
 from asf_search import ASF_LOGGER
 from .Pair import Pair
 from .SBASNetwork import SBASNetwork
 from .ASFSearchOptions import ASFSearchOptions
+from .ASFProduct import ASFProduct
 from .search import geo_search
 
 try:
@@ -47,9 +48,17 @@ class S1MultiBurstGroup:
     bursts: dict[RelativeBurstID, tuple[Swath, ...]]
 
     def __post_init__(self):
-        self._check_validiity()
+        if BurstInfo is None or Safe is None:
+            raise ImportError(
+                'The `S1MultiBurstGroup` class requires the optional asf-search '
+                f'dependency {_SBASNETWORK_S1_MULTIBURST_OPT_DEPS}, '
+                'but it could not be found in the current python environment. '
+                'Enable this method by including the appropriate pip or conda install. '
+                'Ex: `python -m pip install asf-search[sbasnetwork_s1_multiburst]`'
+            )
+        self._check_validity()
 
-    def _check_validiity(self):
+    def _check_validity(self):
         burst_infos = [
             BurstInfo(
                 granule=f"{k}_{swath}",
@@ -93,9 +102,9 @@ class S1MultiBurstSBASPairMap:
     sbas_networks: list[SBASNetwork]
 
     def __post_init__(self):
-        self._check_validiity()
+        self._check_validity()
 
-    def _check_validiity(self):
+    def _check_validity(self):
         geo_reference_list = [sbas.geo_reference for sbas in self.sbas_networks]
         if geo_reference_list != list(self.pairs_by_geo_reference.keys()):
             raise Exception(
@@ -117,6 +126,16 @@ class S1MultiBurstSBASPairMap:
 
 
 class S1MultiBurstSBASNetwork():
+    """
+    The S1MultiBurstSBASNetwork is used for generating SBASNetworks for groups of Sentinel-1 bursts.
+
+    Burst groups are passed to the constructor as validated S1MultiBurstGroup objects. Geographic 
+    reference scenes are found for each burst in the group. An SBASNetwork is generated from each
+    geographic reference scene and stored in the sbas_networks member variable. 
+    
+    Cooresponding Pairs are guaranteed for every SBASNetwork in sbas_networks. If a Pair is not 
+    represented in every burst SBASNetwork, it is removed from them all.
+    """
     def __init__( 
         self,
         multiburst_group: S1MultiBurstGroup,
@@ -190,7 +209,14 @@ class S1MultiBurstSBASNetwork():
             sbas.add_pairs(geo_reference_dict.pairs_by_geo_reference[sbas.geo_reference])
 
 
-    def reconcile_sbasnetworks(self):
+    def reconcile_sbasnetworks(self) -> List[List[Pair]]:
+        """
+        Confirms that each SBASNetwork in sbas_networks contains corresponding date
+        Pairs. If a date pair is not represented in every SBASNetwork, it is
+        removed from them all.
+
+        Returns: A list of lists of all Pairs that were removed
+        """
         network_date_pairs = [
             {
                 (pair.ref_time.date(), pair.sec_time.date())
@@ -215,7 +241,13 @@ class S1MultiBurstSBASNetwork():
         return pairs_to_remove_list
 
 
-    def define_geo_references(self):
+    def define_geo_references(self) -> List[ASFProduct]:
+        """
+        Searches for a geographic reference scene for each burst. Provides
+        the earliest acquisition within the temporal bounds of the S1MultiBurstSBASNetwork.
+
+        Returns a list of ASFProducts as geographic reference scenes.
+        """
         relative_burst_ids = [f"{k}_{swath}" for k, v in self.multiburst_group.bursts.items() for swath in v]
         results = geo_search(
             fullBurstID=relative_burst_ids, 
@@ -227,7 +259,17 @@ class S1MultiBurstSBASNetwork():
         return [min([r for r in results if r.properties['burst']['fullBurstID'] == b], key=lambda obj: obj.properties['startTime']) for b in relative_burst_ids]
     
 
-    def get_scene_ids(self):      
+    def get_scene_ids(self) -> List[List[Tuple[str]]]: 
+        """
+        This is a convenience method to support ordering INSAR_ISCE_MULTI_BURST jobs from
+        HyP3.
+
+        Returns a list of lists of tuples of reference and secondary burst SLC IDs:
+        [
+            [(ref_burst_1_id, ref_burst_2_id), (sec_burst_1_id, sec_burst_2_id)],
+            [(ref_burst_3_id, ref_burst_4_id), (sec_burst_3_id, sec_burst_4_id)],
+        ]
+        """     
         pair_ids = [s.get_scene_ids() for s in self.sbas_networks]
         multiburst_job_pair_ids = [list(x) for x in zip(*pair_ids)]
         return [list(zip(*pairs)) for pairs in multiburst_job_pair_ids]
