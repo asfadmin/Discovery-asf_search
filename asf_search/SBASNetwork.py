@@ -489,9 +489,6 @@ def get_pair_from_dates(pair_list: List[Pair],
     of Pairs by reference and secondary date. This is usefull when identifying a 
     Pair object for removal or addition to an SBASNetwork.subset_stack
 
-    This method is included in SBASNetwork and not Stack because we only care about
-    dates in SBASNetwork and Stack is aware of datetimes.
-
     pair_list: a list of Pairs from which to find a Pair object
     ref_date: a datetime.date of a target Pair's reference scene
     sec_date: a datetime.date of a target Pair's secondary scene

@@ -29,23 +29,23 @@ except ImportError:
 
 
 Swath = Literal["IW1", "IW2", "IW3"]
-RelativeBurstID = str
+
+
+@dataclass(frozen=True)
+class S1MultiBurst:
+    """
+    Represents a Sentinel-1 burst and which swaths it should include.
+    """
+    relative_burst_id: str
+    swaths: tuple[Swath, ...]
+
 
 @dataclass(frozen=True)
 class S1MultiBurstGroup:
     """
-    Represents a group of Sentinel-1 bursts and swaths to be processed together.
-
-    Example:
-    S1MultiBurstGroup(
-        bursts={
-        "173_370305": ("IW1", "IW2", "IW3"),
-        "173_370306": ("IW1", "IW2", "IW3"),
-        "173_370307": ("IW1", "IW2", "IW3")
-        }
-    )   
+    Represents a group of S1MultiBursts to be processed together.
     """
-    bursts: dict[RelativeBurstID, tuple[Swath, ...]]
+    bursts: list[S1MultiBurst]
 
     def __post_init__(self):
         if BurstInfo is None or Safe is None:
@@ -61,69 +61,104 @@ class S1MultiBurstGroup:
     def _check_validity(self):
         burst_infos = [
             BurstInfo(
-                granule=f"{k}_{swath}",
+                granule=f"{burst.relative_burst_id}_{swath}",
                 slc_granule=None,
                 swath=swath,
                 polarization="",
-                burst_id=int(k.split('_')[1]),
+                burst_id=int(burst.relative_burst_id.split('_')[1]),
                 burst_index=0,
                 direction="",
                 absolute_orbit=0,
-                relative_orbit=int(k.split('_')[0]),
+                relative_orbit=int(burst.relative_burst_id.split('_')[0]),
                 date=None,
                 data_url="",
                 data_path=None,
                 metadata_url=None,
                 metadata_path=None,
             )
-            for k, swaths in self.bursts.items()
-            for swath in swaths
+            for burst in self.bursts
+            for swath in burst.swaths
         ]
 
         Safe.check_group_validity(burst_infos)
 
+@dataclass(frozen=True)
+class S1GeoReferenceBurstPairCollection:
+    """
+    Represents a Sentinel-1 geo_reference burst product for an
+    SBASNetwork and a list of Sentinel-1 burst Pairs.
+
+    A validity check is performed to ensure that all Pair scenes have a fullBurstID
+    matching the fullBurstID of the geo_reference_burst
+    """
+    geo_reference_burst: ASFProduct
+    pairs: tuple[Pair, ...]
+
+    def __post_init__(self):
+        self._check_validity()
+
+    def _check_validity(self):   
+        geo_ref_full_burst_id = self.geo_reference_burst.properties["burst"]["fullBurstID"]
+        for pair in self.pairs:
+            ref_full_burst_id = pair.ref.properties["burst"]["fullBurstID"]
+            sec_full_burst_id = pair.sec.properties["burst"]["fullBurstID"]
+            if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
+                raise Exception(f"Pair {pair}'s reference or secondary fullBurstID does not match burst SBASNetwork's geo_reference_burst's fullBurstID ({geo_ref_full_burst_id}).")
+
 
 @dataclass(frozen=True)
-class S1MultiBurstSBASPairMap:
+class S1MultiBurstSBASDelta:
     """
-    A dictionary of 
-    {
-        geo_reference_burst_1: [Pair_1, Pair_2],
-        geo_reference_burst_2: [Pair_3, Pair_4],
-        geo_reference_burst_3: [Pair_5, Pair_6],
-    }
+    Represents a change set to be applied to a collection of SBASNetworks (typically to S1MultiBurstSBASNetwork.sbas_networks).
+    It is used to define Pairs to be removed from or added to S1MultiBurstSBASNetwork.sbas_networks.subset_stack.
 
-    or 
+    The delta is composed of one S1GeoReferenceBurstPairCollection per
+    SBASNetwork. Each collection associates a geo-reference burst with the
+    Pairs that should be added to or removed from the corresponding
+    SBASNetwork's subset_stack.
 
-    `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
-    to the pairs that should be added or restored to that specific network.
+    A validity check is performed to ensure that:
+    - All S1GeoReferenceBurstPairCollection.geo_reference_bursts correspond to the geo_reference product of an
+     SBASNetwork in sbas_networks
+    - The ordering of pair_collections matches the ordering of `sbas_networks.
+    - All S1GeoReferenceBurstPairCollections contain the same number of Pairs
+
+    Internally, pair_collections are indexed by geo-reference burst to support efficient lookup when applying the delta to SBASNetworks.
     """
-    pairs_by_geo_reference: dict[str, list[Pair]]
+    pair_collections: tuple[S1GeoReferenceBurstPairCollection, ...]
     sbas_networks: list[SBASNetwork]
 
     def __post_init__(self):
         self._check_validity()
 
+        object.__setattr__(
+            self,
+            "_pair_collections",
+            {
+                collection.geo_reference_burst: collection.pairs
+                for collection in self.pair_collections
+            },
+        )
+
     def _check_validity(self):
-        geo_reference_list = [sbas.geo_reference for sbas in self.sbas_networks]
-        if geo_reference_list != list(self.pairs_by_geo_reference.keys()):
+        geo_references = [sbas.geo_reference for sbas in self.sbas_networks]
+        collection_geo_references = [
+            collection.geo_reference_burst
+            for collection in self.pair_collections
+        ]
+
+        if geo_references != collection_geo_references:
             raise Exception(
-                "geo_reference_dict must have keys corresponding to each multiburst SBASNetwork geo_reference product\n"
-                f"geo_reference_dict.keys(): {self.pairs_by_geo_reference.keys()}\n"
-                f"self.sbas_networks geo_reference scenes: {geo_reference_list}"
-                )
-        
-        if len(set([len(i) for i in list(self.pairs_by_geo_reference.values())])) > 1:
-            raise Exception("All pair lists in geo_reference_dict must be of equal length")
+                "pair collections must correspond to each multiburst SBASNetwork geo_reference product\n"
+                f"pair collection geo_references: {collection_geo_references}\n"
+                f"sbas_networks geo_references: {geo_references}"
+            )
 
-        for geo_ref, pair_list in self.pairs_by_geo_reference.items():
-            geo_ref_full_burst_id = geo_ref.properties["burst"]["fullBurstID"]
-            for pair in pair_list:
-                ref_full_burst_id = pair.ref.properties["burst"]["fullBurstID"]
-                sec_full_burst_id = pair.sec.properties["burst"]["fullBurstID"]
-                if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
-                    raise Exception(f"Pair {pair}'s reference or secondary full burst ID does not match burst SBASNetwork's geo_reference scene's full burst ID ({geo_ref_full_burst_id}).")
+        if len({len(collection.pairs) for collection in self.pair_collections}) > 1:
+            raise Exception("All pair collections must contain the same number of pairs")
 
+    def pairs_for(self, geo_reference: ASFProduct) -> tuple[Pair, ...]:
+        return self._pair_collections[geo_reference]
 
 class S1MultiBurstSBASNetwork():
     """
@@ -161,7 +196,7 @@ class S1MultiBurstSBASNetwork():
         self.allow_missing_state_vectors=allow_missing_state_vectors
         
         self.multiburst_group = multiburst_group
-        self.georeferences = self.define_geo_references()
+        self.geo_references = self.define_geo_references()
 
         self.sbas_networks = [SBASNetwork(
             geo_reference, 
@@ -174,39 +209,31 @@ class S1MultiBurstSBASNetwork():
             bridge_target_date=self.bridge_target_date,
             opts=copy.deepcopy(self.opts),
             allow_missing_state_vectors=self.allow_missing_state_vectors
-            ) for geo_reference in self.georeferences]
+            ) for geo_reference in self.geo_references]
         
-        # update georeferences from results of stack searches performed when creating self.sbas_networks
-        self.georeferences = [network.geo_reference for network in self.sbas_networks]
+        # update geo_references from results of stack searches performed when creating self.sbas_networks
+        self.geo_references = [network.geo_reference for network in self.sbas_networks]
 
         removed_pairs = self.reconcile_sbasnetworks()
         if len(removed_pairs) > 0:
             ASF_LOGGER.info(f"Removed Pairs with the following dates due to a lack of coverage across all S1 multiburst SBASNetworks: {removed_pairs}")
 
-    def remove_pairs(self, geo_reference_dict: S1MultiBurstSBASPairMap):
+
+    def remove_pairs(self, multiburst_delta: S1MultiBurstSBASDelta):
         """
-        Remove pairs with matching ref/sec dates from all burst SBASNetworks.
+        Remove pairs in multiburst_delta from all S1MultiBurstSBASNetwork.sbas_networks.
         """
         for sbas in self.sbas_networks:
-            sbas.remove_pairs(geo_reference_dict.pairs_by_geo_reference[sbas.geo_reference])
+            sbas.remove_pairs(multiburst_delta.pairs_for(sbas.geo_reference))
         
 
-    def add_pairs(self, geo_reference_dict: S1MultiBurstSBASPairMap):
+    def add_pairs(self, multiburst_delta: S1MultiBurstSBASDelta):
         """
-        Add explicit pairs to each burst SBASNetwork.
-
-        {
-            geo_reference_burst_1: [Pair_1, Pair_2],
-            geo_reference_burst_2: [Pair_3, Pair_4],
-            geo_reference_burst_3: [Pair_5, Pair_6],
-        }
-
-        `geo_reference_dict` must map each burst SBASNetwork's geo_reference scene 
-        to the pairs that should be added or restored to that specific network.
+        Add pairs in multiburst_delta to all S1MultiBurstSBASNetwork.sbas_networks.
         """
 
         for sbas in self.sbas_networks:
-            sbas.add_pairs(geo_reference_dict.pairs_by_geo_reference[sbas.geo_reference])
+            sbas.add_pairs(multiburst_delta.pairs_for(sbas.geo_reference))
 
 
     def reconcile_sbasnetworks(self) -> List[List[Pair]]:
@@ -248,7 +275,10 @@ class S1MultiBurstSBASNetwork():
 
         Returns a list of ASFProducts as geographic reference scenes.
         """
-        relative_burst_ids = [f"{k}_{swath}" for k, v in self.multiburst_group.bursts.items() for swath in v]
+        relative_burst_ids = [f"{burst.relative_burst_id}_{swath}" 
+                              for burst in self.multiburst_group.bursts
+                              for swath in burst.swaths]
+
         results = geo_search(
             fullBurstID=relative_burst_ids, 
             start=self.start_date, 
