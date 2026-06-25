@@ -29,6 +29,28 @@ class Stack:
     - Stack.get_scene_ids(): A convenience method that returns a given list of Pairs as a list of tuples of asf_search.ASFProduct
       product IDs, which is useful when ordering on-demand processing via ASF's HyP3 or HyP3+ services.
     """
+
+
+    @property
+    def scene_ids(self) -> List[Tuple[str, str]]:
+        """
+        Provides scene names for all asf_search.ASFProducts in the largest connected substack
+        Useful when ordering pair-based products from ASF HyP3 On-Demand Processing.
+
+        Use the get_scene_ids method to get the IDs for other pair lists (full_stack, subset_stack, 
+        any network in connected_substacks, or remove_list)
+        
+        Returns:
+            A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
+        """
+        pair_list = max(self.connected_substacks, key=len)
+
+        return [
+            (pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])
+            for pair in pair_list
+            ]
+    
+
     def __init__(
         self,
         geo_reference: ASFProduct,
@@ -210,6 +232,7 @@ class Stack:
 
         return components
 
+
     def get_scene_ids(self, pair_list: Optional[List[Pair]] = None) -> List[Tuple[str, str]]:
         """
         Provides scene names for all asf_search.ASFProducts in a list of Pairs.
@@ -223,10 +246,9 @@ class Stack:
             A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
         """
         if not pair_list:
-            pair_list = max(self.connected_substacks, key=len)
+            return self.scene_ids
 
         return [
             (pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])
             for pair in pair_list
             ]
-    

@@ -1,6 +1,7 @@
 import copy
 from dataclasses import dataclass
 from datetime import timedelta
+from enum import Enum
 import importlib.util
 from typing import List, Optional, Tuple, Literal
 
@@ -105,6 +106,12 @@ class S1GeoReferenceBurstPairCollection:
             if geo_ref_full_burst_id != ref_full_burst_id or geo_ref_full_burst_id != sec_full_burst_id:
                 raise Exception(f"Pair {pair}'s reference or secondary fullBurstID does not match burst SBASNetwork's geo_reference_burst's fullBurstID ({geo_ref_full_burst_id}).")
 
+class PairList(Enum):
+    FULL = "full_stack"
+    SUBSET = "subset_stack"
+    REMOVE = "remove_list"
+    CONNECTED = "connected_substacks"
+
 
 @dataclass(frozen=True)
 class S1MultiBurstSBASDelta:
@@ -171,6 +178,29 @@ class S1MultiBurstSBASNetwork():
     Cooresponding Pairs are guaranteed for every SBASNetwork in sbas_networks. If a Pair is not 
     represented in every burst SBASNetwork, it is removed from them all.
     """
+
+    @property
+    def scene_ids(self) -> List[List[Tuple[str, str]]]:
+        """
+        This is a convenience property to support ordering INSAR_ISCE_MULTI_BURST jobs from
+        HyP3.
+
+        Provides the scene IDs for the largest connected network for each SBASNetwork in sbas_networks
+
+        Use the get_scene_ids method to get the IDs for other pair lists (full_stack, subset_stack, 
+        any network in connected_substacks, or remove_list)
+
+        Returns a list of lists of tuples of reference and secondary burst SLC IDs:
+        [
+            [(ref_burst_1_id, ref_burst_2_id), (sec_burst_1_id, sec_burst_2_id)],
+            [(ref_burst_3_id, ref_burst_4_id), (sec_burst_3_id, sec_burst_4_id)],
+        ]
+        """     
+        pair_ids = [s.scene_ids for s in self.sbas_networks]
+        multiburst_job_pair_ids = zip(*pair_ids)
+        return [list(zip(*pairs)) for pairs in multiburst_job_pair_ids]
+    
+
     def __init__( 
         self,
         multiburst_group: S1MultiBurstGroup,
@@ -287,19 +317,37 @@ class S1MultiBurstSBASNetwork():
             opts=self.opts
             )
         return [min([r for r in results if r.properties['burst']['fullBurstID'] == b], key=lambda obj: obj.properties['startTime']) for b in relative_burst_ids]
-    
 
-    def get_scene_ids(self) -> List[List[Tuple[str]]]: 
+
+    def get_scene_ids(
+            self, 
+            pair_list: Optional[PairList] = None,
+            connected_substack_index: Optional[int] = None
+            ) -> List[List[Tuple[str, str]]]:
         """
-        This is a convenience method to support ordering INSAR_ISCE_MULTI_BURST jobs from
-        HyP3.
+        This is a convenience method to support ordering INSAR_ISCE_MULTI_BURST jobs from HyP3.
+
+        Defaults to providing the scene IDs for the largest connected network for each SBASNetwork in sbas_networks.
+
+        pair_list (optional): A PairList describing the pair_list in each SBASNetwork for which to retrieve scene IDs
+        connected_substack_index (optional): If PairList.CONNECTED is used, provides the index of the pair list in connected_substacks
 
         Returns a list of lists of tuples of reference and secondary burst SLC IDs:
         [
             [(ref_burst_1_id, ref_burst_2_id), (sec_burst_1_id, sec_burst_2_id)],
             [(ref_burst_3_id, ref_burst_4_id), (sec_burst_3_id, sec_burst_4_id)],
         ]
-        """     
-        pair_ids = [s.get_scene_ids() for s in self.sbas_networks]
-        multiburst_job_pair_ids = [list(x) for x in zip(*pair_ids)]
+        """
+        if not pair_list or (pair_list is PairList.CONNECTED and connected_substack_index is None):
+            return self.scene_ids
+        elif pair_list is PairList.SUBSET:
+            pair_ids = [s.get_scene_ids(s.subset_stack) for s in self.sbas_networks]
+        elif pair_list is PairList.FULL:
+            pair_ids = [s.get_scene_ids(s.full_stack) for s in self.sbas_networks]
+        elif pair_list is PairList.REMOVE:
+            pair_ids = [s.get_scene_ids(s.remove_list) for s in self.sbas_networks]
+        elif pair_list is PairList.CONNECTED:
+            pair_ids = [s.get_scene_ids(s.connected_substacks[connected_substack_index]) for s in self.sbas_networks]
+
+        multiburst_job_pair_ids = zip(*pair_ids)
         return [list(zip(*pairs)) for pairs in multiburst_job_pair_ids]
