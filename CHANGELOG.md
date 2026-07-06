@@ -26,6 +26,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 ------
+## [v12.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.2...v12.2.3)
+### Added
+- Drop old goemetry logic for `OPERAS1Product` dist-alert products
+
+------
 ## [v12.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.1...v12.2.2)
 ### Added
 - `Sentinel-1D` constants and search support
