@@ -1,3 +1,5 @@
+# TODO:
+# Switch to using https://github.com/ASFHyP3/actions#reusable-bump-versionyml
 name: Merged to Stable
 
 on:
