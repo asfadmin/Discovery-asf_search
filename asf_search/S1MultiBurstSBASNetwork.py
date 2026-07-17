@@ -7,7 +7,7 @@ from typing import List, Optional, Tuple, Literal
 
 from asf_search import ASF_LOGGER
 from .Pair import Pair
-from .SBASNetwork import SBASNetwork
+from .SBASNetwork import SBASNetwork, get_pair_from_dates
 from .ASFSearchOptions import ASFSearchOptions
 from .ASFProduct import ASFProduct
 from .search import geo_search
@@ -112,6 +112,8 @@ class PairList(Enum):
     REMOVE = "remove_list"
     CONNECTED = "connected_substacks"
 
+DatePair = Tuple[str, str]
+DatePairs = List[DatePair]
 
 @dataclass(frozen=True)
 class S1MultiBurstSBASDelta:
@@ -264,6 +266,14 @@ class S1MultiBurstSBASNetwork():
 
         for sbas in self.sbas_networks:
             sbas.add_pairs(multiburst_delta.pairs_for(sbas.geo_reference))
+
+    def remove_pairs_by_dates(self, date_pairs: DatePairs):
+        pair_list = [get_pair_from_dates(self.subset_stack, parse_datetime(date_pair[0]).date(), parse_datetime(date_pair[1]).date()) for date_pair in date_pairs]
+
+
+        burst_pair_collections = [S1GeoReferenceBurstPairCollection(
+            s.geo_reference, pair_list)
+            for s in self.sbas_networks]
 
 
     def reconcile_sbasnetworks(self) -> List[List[Pair]]:

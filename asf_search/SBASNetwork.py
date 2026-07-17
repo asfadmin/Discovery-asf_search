@@ -1,10 +1,12 @@
 from datetime import datetime, timedelta
+from itertools import combinations
 import importlib.util
 import numpy as np
 from typing import Optional, List, Dict, Tuple, Union
 
 from asf_search import ASF_LOGGER
 from .ASFProduct import ASFProduct
+from .S1MultiBurstProduct import S1MultiBurstProduct, S1MultiBurstGroup, S1MultiBurst
 from .Pair import Pair
 from .Stack import Stack
 from .ASFSearchOptions import ASFSearchOptions
@@ -39,7 +41,7 @@ class SBASNetwork(Stack):
     """
     def __init__(
         self,
-        geo_reference: ASFProduct = None,
+        geo_reference: Union[ASFProduct, S1MultiBurstProduct] = None,
         start_date: str = None,
         end_date: str = None,
         season: Tuple[int] = (1, 365),
@@ -89,6 +91,30 @@ class SBASNetwork(Stack):
         self._build_sbas_network()
         self.geo_reference = self.subset_stack[0].ref # must reset here because ref object is replaced with a duplicate when building full stack
 
+    @classmethod
+    def from_geo_reference(cls, geo_reference, **kwargs):
+        if isinstance(geo_reference, ASFProduct):
+            return cls.from_geo_reference_product(geo_reference, **kwargs)
+
+        if isinstance(geo_reference, S1MultiBurstProduct):
+            return cls.from_geo_reference_multiburst_product(geo_reference, **kwargs)
+
+        raise TypeError(f"Unsupported geo_reference type: {type(geo_reference)}")
+
+    @classmethod
+    def from_geo_reference_product(cls, geo_reference: ASFProduct, **kwargs):
+        return cls(geo_reference=geo_reference, **kwargs)
+
+    @classmethod
+    def from_geo_reference_multiburst_product(
+        cls,
+        geo_reference: S1MultiBurstProduct,
+        **kwargs,
+    ):
+        
+        return cls(geo_reference=geo_reference, **kwargs)
+        
+
 
     @classmethod
     def from_search_results(
@@ -127,8 +153,23 @@ class SBASNetwork(Stack):
         obj._build_sbas_network()
 
         return obj
-        
+    
+    def _full_stack_pair_is_valid(self, pair: Pair) -> bool:
+        perpendicular_baseline = pair.perpendicular_baseline
 
+        if perpendicular_baseline is None and not self.allow_missing_state_vectors:
+            return False
+
+        if perpendicular_baseline is not None and abs(perpendicular_baseline) > self.perpendicular_baseline:
+            return False
+
+        maximum_temporal_baseline = (
+            self.inseason_temporal_baseline
+            + self.bridge_year_threshold * 365
+        )
+
+        return pair.temporal_baseline.days <= maximum_temporal_baseline
+        
     def _build_full_stack(self, stack_search_results: Optional[ASFSearchResults]=None) -> List[Pair]:
         """
         Create self._full_stack, which involves performing a stack search
@@ -141,31 +182,44 @@ class SBASNetwork(Stack):
         stack_search_results: (Optional) ASFSearchResults from an ASFProduct.stack search
 
         Returns: A list of pairs filtered by baselines, and including every possible bridge pair within 
-                 self.bridge_year_threshold
+                    self.bridge_year_threshold
         """
-        if stack_search_results is None: 
-            stack_search_results = self.geo_reference.stack(opts=self.opts)
+        if stack_search_results is None:
+            if isinstance(self.geo_reference, S1MultiBurstProduct):
+                stack_search_results = [geo_reference.stack(opts=self.opts) for geo_reference in self.geo_reference.geo_reference_bursts]
 
-        if self.allow_missing_state_vectors:
-             full_stack = [
-                Pair(p1, p2)
-                for i, p1 in enumerate(stack_search_results)
-                for p2 in stack_search_results[i+1:]
-                if (Pair(p1, p2).perpendicular_baseline is None
-                or Pair(p1, p2).perpendicular_baseline <= self.perpendicular_baseline)
-                and Pair(p1, p2).temporal_baseline.days <= self.inseason_temporal_baseline + (self.bridge_year_threshold * 365)
-            ]
-        else:
-            full_stack = [
-                Pair(p1, p2)
-                for i, p1 in enumerate(stack_search_results)
-                for p2 in stack_search_results[i+1:]
-                if Pair(p1, p2).perpendicular_baseline is not None
-                and Pair(p1, p2).perpendicular_baseline <= self.perpendicular_baseline
-                and Pair(p1, p2).temporal_baseline.days <= self.inseason_temporal_baseline + (self.bridge_year_threshold * 365)
-            ]
-        
+                multiburst_dict = {}
+                for results in stack_search_results:
+                    for p1, p2 in combinations(results, 2):
+                        key = (parse_datetime(p1.properties["startTime"]).date(), parse_datetime(p2.properties["startTime"]).date())
+                        if self._full_stack_pair_is_valid(Pair(p1, p2)):
+                                multiburst_dict.setdefault(key, [[], []])
+                                multiburst_dict[key][0].append(p1)
+                                multiburst_dict[key][1].append(p2) 
+                
+                full_stack = []
+                for product_lists in multiburst_dict.values():
+                    # skip pairs that don't contain a product for every burst/subswath
+                    if len(product_lists[0]) == len(self.geo_reference):
+                        pair = Pair(
+                            S1MultiBurstProduct(geo_reference_bursts=product_lists[0]), 
+                            S1MultiBurstProduct(geo_reference_bursts=product_lists[1])
+                            )
+                        full_stack.append(pair)
+                return full_stack
+
+            else:
+                stack_search_results = self.geo_reference.stack(opts=self.opts)
+
+         
+        full_stack = [
+            Pair(p1, p2)
+            for p1, p2 in combinations(stack_search_results, 2)
+            if self._full_stack_pair_is_valid(Pair(p1, p2))
+        ]
+     
         return full_stack
+
 
     def _is_valid_bridge_pair(self, pair: Pair) -> bool:
         """
@@ -186,7 +240,6 @@ class SBASNetwork(Stack):
                 datetime.strptime(f"{self.bridge_target_date}-{pair.ref_time.year}", "%m-%d-%Y") 
                 - pair.ref_time.replace(tzinfo=None)).days
             )
-        
         half_inseason_temporal_baseline = self.inseason_temporal_baseline / 2
 
         # Create lists of valid secondary scene date ranges.

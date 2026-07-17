@@ -57,7 +57,8 @@ from .export import *  # noqa: F403 F401 E402
 from .Pair import Pair  # noqa:  F401 E402
 from .Stack import Stack  # noqa:  F401 E402
 from .SBASNetwork import * # noqa: F403 F401 E402
-from .S1MultiBurstSBASNetwork import * # noqa: F403 F401 E402
+# from .S1MultiBurstSBASNetwork import * # noqa: F403 F401 E402
+from .S1MultiBurstProduct import * # noqa: F403 F401 E402
 from . import utils # noqa: F401, E402
 
 REPORT_ERRORS = True
