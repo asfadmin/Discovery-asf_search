@@ -1,5 +1,6 @@
 from collections import defaultdict, deque
 from copy import copy
+from datetime import date
 from typing import Optional, List, Tuple, Union
 import warnings
 
@@ -8,6 +9,11 @@ from .Pair import Pair
 from .ASFSearchOptions import ASFSearchOptions
 from .ASFSearchResults import ASFSearchResults
 from .warnings import PairNotInFullStackWarning
+
+try:
+    from ciso8601 import parse_datetime
+except ImportError:
+    from dateutil.parser import parse as parse_datetime
 
 class Stack:
     """
@@ -117,15 +123,29 @@ class Stack:
         self._remove_list = list(set(pairs))
         self._update_stack()
 
-    def remove_pairs(self, pairs: Union[List[Pair], Pair]):
+    def remove_pairs(self, pairs: Union[List[Pair], Pair, Tuple[str], List[Tuple[str]]]):
         """
         Remove pairs from self.subset_stack, 
         i.e., add them to self._remove_list
 
+        Example calls:
+            my_stack.remove_pairs(my_pair)
+            my_stack.remove_pairs([my_pair_1, my_pair_2, ...])
+            my_stack.remove_pairs(("2024-10-20", "2024-11-02"))
+            my_stack.remove_pairs([("2024-10-20", "2024-11-02"), ("2024-10-26", "2024-11-02")])
+
         pairs: A Pair or list of Pairs to remove from self.subset_stack
+               or a Tuple of parsable date pair strings
         """
-        if isinstance(pairs, Pair):
+        if not isinstance(pairs, List):
             pairs = [pairs]
+        if not isinstance(pairs[0], Pair):
+            print(pairs[0][0])
+            pairs = [get_pair_from_dates(
+                self.subset_stack,
+                parse_datetime(date_pair[0]).date(),
+                parse_datetime(date_pair[1]).date()) for
+                date_pair in pairs]
 
         for pair in pairs:
             if pair not in self._remove_list:
@@ -252,3 +272,22 @@ class Stack:
             (pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])
             for pair in pair_list
             ]
+    
+def get_pair_from_dates(pair_list: List[Pair],
+                            ref_date: date, sec_date: date) -> Pair:
+    """
+    This convenience method allows for the retrieval of a Pair object from a list
+    of Pairs by reference and secondary date. This is usefull when identifying a 
+    Pair object for removal or addition to an SBASNetwork.subset_stack
+
+    pair_list: a list of Pairs from which to find a Pair object
+    ref_date: a datetime.date of a target Pair's reference scene
+    sec_date: a datetime.date of a target Pair's secondary scene
+
+    Returns: A Pair with a corresponding ref_date and sec_date
+    """
+    for pair in pair_list:
+        if pair.ref_time.date() == ref_date and pair.sec_time.date() == sec_date:
+            return pair
+    raise ValueError(f"No Pairs found corresponding to reference date: {ref_date}, secondary date: {sec_date}")
+            
