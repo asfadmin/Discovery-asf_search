@@ -34,10 +34,11 @@ class S1MultiBurstGroup:
     def __post_init__(self):
         self.check_group_validity()
 
-    # Temporarily borrowed (edited) from burst2safe, until validation logic moves to its own package.
-    # https://github.com/ASFHyP3/burst2safe/blob/develop/src/burst2safe/safe.py#L83
     def check_group_validity(self) -> None:
         """Check that the burst group is valid.
+
+        Temporarily borrowed (edited) from burst2safe, until validation logic moves to its own package.
+        https://github.com/ASFHyP3/burst2safe/blob/develop/src/burst2safe/safe.py#L83
 
         A valid burst group must:
         - Have the same acquisition mode
@@ -78,12 +79,12 @@ class S1MultiBurstGroup:
             max_diff = burst_range[swath1][1] - burst_range[swath2][1]
             if abs(max_diff) > 1:
                 raise ValueError(f'Products from swaths {swath1} and {swath2} do not overlap')
-            
-
-    # Temporarily borrowed (edited) from burst2safe, until validation logic moves to its own package.
-    # https://github.com/ASFHyP3/burst2safe/blob/develop/src/burst2safe/swath.py#L63            
+                     
     def check_burst_group_validity(self, burst_subset, swath):
         """Check that the burst group is valid.
+
+        Temporarily borrowed (edited) from burst2safe, until validation logic moves to its own package.
+        https://github.com/ASFHyP3/burst2safe/blob/develop/src/burst2safe/safe.py#L83
 
         The burst group must:
         - Not contain duplicate granules
@@ -118,8 +119,8 @@ class S1MultiBurstProduct():
     - geo_reference_bursts (list of ASFProducts): A list of geographic reference burst ASFProducts
 
     An S1MultiBurstProduct can be initialized from either a multiburst_group and start_date or a geo_reference_bursts list.
-    When creating a S!MultiBurstProduct from a S1MultiBurstGroup, a geographic search is performed to identify geographic
-    reference products. The closest results to 
+    When creating a S1MultiBurstProduct from a S1MultiBurstGroup, a geographic search is performed to identify geographic
+    reference products with acquisition dates as near as possible to the start_date. 
 
     ### multiburst_group example ###
 
@@ -181,10 +182,13 @@ class S1MultiBurstProduct():
     def __len__(self):
         return len(self.geo_reference_bursts)
     
-    def identify_geo_reference_bursts(self, multiburst_group) -> List[ASFProduct]:
+    def identify_geo_reference_bursts(self, multiburst_group: S1MultiBurstGroup) -> List[ASFProduct]:
         """
-        Returns one geographic reference product for each burst/subswath
+        Returns one geographic reference product for each burst/subswath in multiburst_group,
         from the earliest acquisition date with complete coverage.
+
+        There is no guarantee that the returned products will fall on self.start_date; they will
+        fall on the first available date on or after self.start_date.
         """
         relative_burst_ids = [
             f"{burst.relative_burst_id}_{subswath}"
@@ -223,6 +227,9 @@ class S1MultiBurstProduct():
         )
 
     def identify_multiburst_group(self, geo_reference_bursts):
+        """
+        Returns an S1MultiBurstGroup corresponding to the list of geo_reference_bursts
+        """
         relative_burst_ids = set([f'{p.properties["pathNumber"]}_{p.properties["burst"]["relativeBurstID"]}' for p in geo_reference_bursts])
         burst_group_dict = {burst_id: [] for burst_id in relative_burst_ids}
         for p in geo_reference_bursts:
