@@ -55,11 +55,7 @@ class Stack:
             A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
         """
         pair_list = max(self.connected_substacks, key=len)
-
-        return [
-            (pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])
-            for pair in pair_list
-            ]
+        return self.get_scene_ids(pair_list)
     
 
     def __init__(
@@ -379,8 +375,8 @@ class Stack:
         Returns:
             A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
         """
-        if not pair_list:
-            return self.scene_ids
+        if pair_list is None:
+            pair_list = max(self.connected_substacks, key=len)
 
         return [
             (pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])

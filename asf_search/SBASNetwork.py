@@ -38,19 +38,24 @@ class SBASNetwork(Stack):
     """
     SBASNetwork is a child class of Stack, used to create seasonal SBAS networks. It can be used
     to create multiannual networks connected with multiannual bridge pairs.
+
+    Construct using:
+    - SBASNetwork.from_geo_reference()
+    - SBASNetwork.from_search_results()
     """
     def __init__(
         self,
-        geo_reference: Union[ASFProduct, S1MultiBurstProduct] = None,
-        start_date: str = None,
-        end_date: str = None,
-        season: Tuple[int] = (1, 365),
-        perpendicular_baseline: Optional[int] = 400,
-        inseason_temporal_baseline: Optional[int] = 36,
-        bridge_year_threshold: Optional[int] = 1,
+        geo_reference: Union[ASFProduct, S1MultiBurstProduct],
+        *,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
+        season: Tuple[int, int] = (1, 365),
+        perpendicular_baseline: int = 400,
+        inseason_temporal_baseline: int = 36,
+        bridge_year_threshold: int = 1,
         bridge_target_date: Optional[str] = None,
-        opts: Optional[ASFSearchOptions] = ASFSearchOptions(),
-        allow_missing_state_vectors: Optional[bool] = False
+        opts: Optional[ASFSearchOptions] = None,
+        allow_missing_state_vectors: bool = False
     ):
         """
         geo_reference: an ASFProduct used as a georeference scene for the network
@@ -59,28 +64,33 @@ class SBASNetwork(Stack):
         bridge_year_threshold: the number of year for which to allow multiannual bridging
         bridge_target_date: %m-%d string of the inseason bridge date to target. 
                             Reference scenes for bridge pairs are valid within an inseason_temporal_baseline of this date.
-        opts: ASFSearchOptions to limit the size of your SBASNetwork and define seasons
-              Recommended to include: "start", "end", "season"
+        opts:  Additional ASFSearchOptions used for the stack search. Explicit start_date and end_date arguments 
+               override corresponding values in opts. The opts season value is always overriden by the season argument.
         """
-        self.season = season
-        if bridge_target_date:
-            self.bridge_target_date = bridge_target_date
-        else:
-            self.bridge_target_date = self.season[0]
         self.start_date = start_date
         self.end_date = end_date
-        self.perpendicular_baseline = perpendicular_baseline
-        self.inseason_temporal_baseline = inseason_temporal_baseline
-        self.bridge_year_threshold = bridge_year_threshold
-        opts.merge_args(
-            start=self.start_date,
-            end=self.end_date,
-            season=self.season,
-        )
-        self.opts = opts
-        self.allow_missing_state_vectors = allow_missing_state_vectors
+        self._set_network_parameters(
+            season=season, 
+            perpendicular_baseline=perpendicular_baseline, 
+            inseason_temporal_baseline=inseason_temporal_baseline, 
+            bridge_year_threshold=bridge_year_threshold,
+            bridge_target_date=bridge_target_date,
+            allow_missing_state_vectors=allow_missing_state_vectors
+            )
 
-        self.temporal_baseline = (bridge_year_threshold * 365) + inseason_temporal_baseline
+        if opts is None:
+            opts = ASFSearchOptions()
+
+        merge_kwargs = {"season": self.season}
+
+        if self.start_date is not None:
+            merge_kwargs["start"] = self.start_date
+
+        if self.end_date is not None:
+            merge_kwargs["end"] = self.end_date
+
+        opts.merge_args(**merge_kwargs)
+        self.opts = opts
 
         super().__init__(
             geo_reference=geo_reference, 
@@ -92,56 +102,55 @@ class SBASNetwork(Stack):
         self.geo_reference = self.subset_stack[0].ref # must reset here because ref object is replaced with a duplicate when building full stack
 
     @classmethod
-    def from_geo_reference(cls, geo_reference, **kwargs):
-        if isinstance(geo_reference, ASFProduct):
-            return cls.from_geo_reference_product(geo_reference, **kwargs)
-
-        if isinstance(geo_reference, S1MultiBurstProduct):
-            return cls.from_geo_reference_multiburst_product(geo_reference, **kwargs)
-
-        raise TypeError(f"Unsupported geo_reference type: {type(geo_reference)}")
-
-    @classmethod
-    def from_geo_reference_product(cls, geo_reference: ASFProduct, **kwargs):
-        return cls(geo_reference=geo_reference, **kwargs)
-
-    @classmethod
-    def from_geo_reference_multiburst_product(
+    def from_geo_reference(
         cls,
-        geo_reference: S1MultiBurstProduct,
+        geo_reference: Union[ASFProduct, S1MultiBurstProduct],
         **kwargs,
     ):
-        
+        """
+        Class constructor using a geo_reference ASFProduct or S1MultiBurstProduct
+        """
+        if not isinstance(geo_reference, (ASFProduct, S1MultiBurstProduct)):
+            raise TypeError(
+                f"Unsupported geo_reference type: {type(geo_reference).__name__}"
+            )
+
         return cls(geo_reference=geo_reference, **kwargs)
 
     @classmethod
     def from_search_results(
         cls,
         stack_search_results: ASFSearchResults,
-        season: Tuple[int] = (1, 365),
-        perpendicular_baseline: Optional[int] = 400,
-        inseason_temporal_baseline: Optional[int] = 36,
-        bridge_year_threshold: Optional[int] = 1,
+        season: Tuple[int, int] = (1, 365),
+        perpendicular_baseline: int = 400,
+        inseason_temporal_baseline: int = 36,
+        bridge_year_threshold: int = 1,
         bridge_target_date: Optional[str] = None,
-        allow_missing_state_vectors: Optional[bool] = False
+        allow_missing_state_vectors: bool = False
     ):
         """
-        Alternate class method constructor using ASFSearchResults instead of a single geo_reference.
+        Class constructor using ASFSearchResults instead of a single geo_reference.
         """
-        obj = cls.__new__(cls)
+        if not stack_search_results:
+            raise ValueError("stack_search_results cannot be empty")
 
-        obj.season = season
-        if bridge_target_date:
-            obj.bridge_target_date = bridge_target_date
-        else:
-            obj.bridge_target_date = obj.season[0]
+        # Intentionally bypass __init__ and Stack.__init__:
+        # search results are already available, so no stack search
+        # or ASFSearchOptions are needed
+        obj = cls.__new__(cls)
         dates = [parse_datetime(product.properties["startTime"]).date() for product in stack_search_results]
         obj.start_date = str(min(dates))
         obj.end_date = str(max(dates))
-        obj.perpendicular_baseline = perpendicular_baseline
-        obj.inseason_temporal_baseline = inseason_temporal_baseline
-        obj.bridge_year_threshold = bridge_year_threshold
-        obj.allow_missing_state_vectors = allow_missing_state_vectors
+
+        obj._set_network_parameters(
+            season=season, 
+            perpendicular_baseline=perpendicular_baseline, 
+            inseason_temporal_baseline=inseason_temporal_baseline, 
+            bridge_year_threshold=bridge_year_threshold,
+            bridge_target_date=bridge_target_date,
+            allow_missing_state_vectors=allow_missing_state_vectors
+            )
+        
         obj.full_stack = obj._build_full_stack(stack_search_results)
         obj._remove_list = []
         obj.subset_stack = obj._get_subset_stack()
@@ -151,6 +160,38 @@ class SBASNetwork(Stack):
         obj._build_sbas_network()
 
         return obj
+    
+    def _set_network_parameters(
+        self,
+        season: Tuple[int, int],
+        perpendicular_baseline: int,
+        inseason_temporal_baseline: int,
+        bridge_year_threshold: int,
+        bridge_target_date: Optional[str],
+        allow_missing_state_vectors: bool,
+    ) -> None:
+        self.season = season
+        if bridge_target_date is not None:
+            self.bridge_target_date = bridge_target_date
+        elif self.start_date is not None:
+            year = parse_datetime(self.start_date).year
+            self.bridge_target_date = datetime.strptime(
+                f"{year}-{season[0]}",
+                "%Y-%j",
+            ).strftime("%m-%d")
+        else:
+            raise ValueError(
+                "start_date is required when bridge_target_date is not provided"
+    )
+
+        self.perpendicular_baseline = perpendicular_baseline
+        self.inseason_temporal_baseline = inseason_temporal_baseline
+        self.bridge_year_threshold = bridge_year_threshold
+        self.allow_missing_state_vectors = allow_missing_state_vectors
+        self.temporal_baseline = (
+            bridge_year_threshold * 365
+            + inseason_temporal_baseline
+        )
     
     def _full_stack_pair_is_valid(self, pair: Pair) -> bool:
         perpendicular_baseline = pair.perpendicular_baseline
@@ -206,13 +247,13 @@ class SBASNetwork(Stack):
             else:
                 stack_search_results = self.geo_reference.stack(opts=self.opts)
 
-         
-        full_stack = [
-            Pair(p1, p2)
-            for p1, p2 in combinations(stack_search_results, 2)
-            if self._full_stack_pair_is_valid(Pair(p1, p2))
-        ]
-     
+    
+        full_stack = []
+        for p1, p2 in combinations(stack_search_results, 2):
+            pair = Pair(p1, p2)
+            if self._full_stack_pair_is_valid(pair):
+                full_stack.append(pair)
+
         return full_stack
 
 
@@ -261,35 +302,34 @@ class SBASNetwork(Stack):
                 remove_list.append(pair)
         self.remove_list = remove_list
 
-    @property
-    def scene_ids(self) -> List[Tuple[str, str]]:
+    def get_scene_ids(
+            self,
+            pair_list: Optional[List[Pair]] = None
+            ) -> Union[List[Tuple[List[str], List[str]]], List[Tuple[str, str]]]:
         """
-        Provides scene names for all asf_search.ASFProducts in the largest connected substack
+        Overrides Stack.get_scene_ids
+
+        Provides scene names for all asf_search.ASFProducts in a list of Pairs.
         Useful when ordering pair-based products from ASF HyP3 On-Demand Processing.
 
-        Use the get_scene_ids method to get the IDs for other pair lists (full_stack, subset_stack, 
-        any network in connected_substacks, or remove_list)
+        If no pair_list is passed, defaults to the largest connected substack
+
+        pair_list: (Optional) A list of `Pair`s for which to retrieve scene IDs.
         
-        Returns:
-            A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
+        Returns: If the SBASNetwork is comprised of S1MultiBurstProducts, returns a list of tuples of lists. 
+                 Each tuple contains a list of reference scene IDs and a list of secondary scene IDs for a 
+                 Pair of S1MultiBurstProducts. If not an S1MultiBurstProducts SBASNetwork, defaults 
+                 to using Stack.get_scene_ids
         """
-        if isinstance(self.full_stack[0].ref, S1MultiBurstProduct):
+        if pair_list is None:
             pair_list = max(self.connected_substacks, key=len)
-            return [([p.properties["sceneName"] for p in pair.ref.geo_reference_bursts],
-                        [p.properties["sceneName"] for p in pair.sec.geo_reference_bursts])
-                        for pair in pair_list]
-        return super().process()
 
-    def get_scene_ids(self, pair_list: Optional[List[Pair]] = None) -> List[Tuple[str, str]]:
-        if not pair_list:
-            return self.scene_ids
-
-        if isinstance(self.full_stack[0].ref, S1MultiBurstProduct):
+        if pair_list and isinstance(pair_list[0].ref, S1MultiBurstProduct):
             return [([p.properties["sceneName"] for p in pair.ref.geo_reference_bursts],
                      [p.properties["sceneName"] for p in pair.sec.geo_reference_bursts])
                      for pair in pair_list]
 
-        return super().process(pair_list)
+        return super().get_scene_ids(pair_list)
 
     def add_digraph_edge_traces(self, digraph, largest_network, pair_lists, node_positions):
         """
@@ -481,7 +521,7 @@ class SBASNetwork(Stack):
             )
         return plot_header_text
 
-    def plot(self, pair_list: Optional[Union[List[Pair], None]] = None):
+    def plot(self, pair_list: Optional[List[Pair]] = None):
         """
         Plot the SBAS network(s). Accepts a pair_list or a list of pair_lists.
         The largest network is plotted in blue; others are plotted in distinct colors.
