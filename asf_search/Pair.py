@@ -29,8 +29,7 @@ except ImportError:
 
 class Pair:
     """
-    A Pair is comprised of a reference scene and a secondary scene. These scenes typically intersect geographically,
-    but that is not a requirement. When a pair is created, its perpendicular and temporal baselines are calculated
+    A Pair is comprised of a reference scene and a secondary scene. When a pair is created, its perpendicular and temporal baselines are calculated
     and stored in the self.perpendicular_baseline and self.temporal_baseline member variables.
 
     Two pairs are equivalent if they have matching reference and secondary dates
@@ -41,6 +40,7 @@ class Pair:
     def __init__(self, 
             ref: Union[ASFProduct, S1MultiBurstProduct], 
             sec: Union[ASFProduct, S1MultiBurstProduct]):
+        
 
         self.ref = ref
         self.sec = sec          
@@ -54,6 +54,7 @@ class Pair:
         elif isinstance(ref, S1MultiBurstProduct) and isinstance(sec, S1MultiBurstProduct):
             perpendicular_baselines = [calculate_perpendicular_baselines(ref.properties['sceneName'], [sec, ref])[0].properties['perpendicularBaseline'] 
                                        for ref, sec in zip(self.ref.geo_reference_bursts, self.sec.geo_reference_bursts)]
+            # Use the largest burst perpendicular baseline to represent the S1MultiBurstProduct
             self.perpendicular_baseline = max(perpendicular_baselines)
 
         self.ref_time = parse_datetime(self.ref.properties["startTime"])

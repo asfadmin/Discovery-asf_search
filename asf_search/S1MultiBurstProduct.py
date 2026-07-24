@@ -12,17 +12,6 @@ try:
 except ImportError:
     from dateutil.parser import parse as parse_datetime
 
-_SBASNETWORK_S1_MULTIBURST_OPT_DEPS = ['burst2safe']
-try:
-    for spec in _SBASNETWORK_S1_MULTIBURST_OPT_DEPS:
-        if importlib.util.find_spec(spec) is None:
-            raise ImportError
-    from burst2safe.safe import Safe
-    from burst2safe.utils import BurstInfo
-except ImportError:
-    Safe = None
-    BurstInfo = None
-
 Subswath = Literal["IW1", "IW2", "IW3"]
 
 
@@ -58,6 +47,9 @@ class S1MultiBurstGroup:
         Args:
             burst_infos: A list of BurstInfo objects
         """
+        group_size = sum(len(burst.subswaths) for burst in self.bursts)
+        if group_size > 15:
+            raise ValueError("An S1MultiBurstGroup may include no more than 15 burst/subswath combinations")
 
         swaths = sorted(list(set([int(subswath[2]) for burst in self.bursts for subswath in burst.subswaths])))
 
@@ -118,7 +110,34 @@ class S1MultiBurstGroup:
 
 
 class S1MultiBurstProduct():
+    """
+    Represents a group of Sentinel-1 bursts. 
+     
+    member variables:
+    - multiburst_group (S1MultiBurstGroup): Represents the geographical area with burst and subswath IDs
+    - geo_reference_bursts (list of ASFProducts): A list of geographic reference burst ASFProducts
 
+    An S1MultiBurstProduct can be initialized from either a multiburst_group and start_date or a geo_reference_bursts list.
+    When creating a S!MultiBurstProduct from a S1MultiBurstGroup, a geographic search is performed to identify geographic
+    reference products. The closest results to 
+
+    ### multiburst_group example ###
+
+    multiburst_group = asf.S1MultiBurstGroup(
+        bursts=[
+        S1MultiBurst("173_370305", ("IW1", "IW2", "IW3")),
+        S1MultiBurst("173_370306", ("IW1", "IW2", "IW3")),
+        S1MultiBurst("173_370307", ("IW1", "IW2", "IW3"))
+        ])
+
+    start_date = '2023-01-01'
+    multiburst = asf.S1MultiBurstProduct(multiburst_group, start_date)
+
+    ### geo_reference_bursts example ###
+
+    multiburst = asf.S1MultiBurstProduct([burst_product_1, burst_product_2, burst_product_3, ...])
+    
+    """
     def __init__(
         self,
         multiburst_group: S1MultiBurstGroup = None,
@@ -161,24 +180,47 @@ class S1MultiBurstProduct():
 
     def __len__(self):
         return len(self.geo_reference_bursts)
-
+    
     def identify_geo_reference_bursts(self, multiburst_group) -> List[ASFProduct]:
         """
-        Searches for a geographic reference scene for each burst. Provides
-        the earliest acquisition within the temporal bounds of the S1MultiBurstSBASNetwork.
-
-        Returns a list of ASFProducts as geographic reference scenes.
+        Returns one geographic reference product for each burst/subswath
+        from the earliest acquisition date with complete coverage.
         """
-        relative_burst_ids = [f"{burst.relative_burst_id}_{swath}" 
-                              for burst in multiburst_group.bursts
-                              for swath in burst.subswaths]
+        relative_burst_ids = [
+            f"{burst.relative_burst_id}_{subswath}"
+            for burst in multiburst_group.bursts
+            for subswath in burst.subswaths
+        ]
 
         results = geo_search(
-            fullBurstID=relative_burst_ids, 
-            start=self.start_date, 
-            end=str((parse_datetime(self.start_date) + timedelta(days=48)).date()),
-            )
-        return [min([r for r in results if r.properties['burst']['fullBurstID'] == b], key=lambda obj: obj.properties['startTime']) for b in relative_burst_ids]
+            fullBurstID=relative_burst_ids,
+            start=self.start_date,
+            end=str(
+                (parse_datetime(self.start_date) + timedelta(days=48)).date()
+            ),
+        )
+
+        products_by_date = {}
+
+        for result in results:
+            acquisition_date = parse_datetime(
+                result.properties["startTime"]
+            ).date()
+
+            full_burst_id = result.properties["burst"]["fullBurstID"]
+
+            products_by_date.setdefault(acquisition_date, {})[full_burst_id] = result
+
+        for acquisition_date in sorted(products_by_date):
+            products = products_by_date[acquisition_date]
+
+            if set(relative_burst_ids) <= products.keys():
+                return [products[burst_id] for burst_id in relative_burst_ids]
+
+        raise ValueError(
+            "No acquisition date contains all requested burst/subswath "
+            f"combinations: {relative_burst_ids}"
+        )
 
     def identify_multiburst_group(self, geo_reference_bursts):
         relative_burst_ids = set([f'{p.properties["pathNumber"]}_{p.properties["burst"]["relativeBurstID"]}' for p in geo_reference_bursts])
