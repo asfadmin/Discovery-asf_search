@@ -113,8 +113,6 @@ class SBASNetwork(Stack):
     ):
         
         return cls(geo_reference=geo_reference, **kwargs)
-        
-
 
     @classmethod
     def from_search_results(
@@ -163,10 +161,7 @@ class SBASNetwork(Stack):
         if perpendicular_baseline is not None and abs(perpendicular_baseline) > self.perpendicular_baseline:
             return False
 
-        maximum_temporal_baseline = (
-            self.inseason_temporal_baseline
-            + self.bridge_year_threshold * 365
-        )
+        maximum_temporal_baseline = self.inseason_temporal_baseline + self.bridge_year_threshold * 365
 
         return pair.temporal_baseline.days <= maximum_temporal_baseline
         
@@ -265,6 +260,36 @@ class SBASNetwork(Stack):
             if not self._is_valid_bridge_pair(pair):
                 remove_list.append(pair)
         self.remove_list = remove_list
+
+    @property
+    def scene_ids(self) -> List[Tuple[str, str]]:
+        """
+        Provides scene names for all asf_search.ASFProducts in the largest connected substack
+        Useful when ordering pair-based products from ASF HyP3 On-Demand Processing.
+
+        Use the get_scene_ids method to get the IDs for other pair lists (full_stack, subset_stack, 
+        any network in connected_substacks, or remove_list)
+        
+        Returns:
+            A list tuples containing the reference and secondary scene names for each `Pair` in a `Pair` list
+        """
+        if isinstance(self.full_stack[0].ref, S1MultiBurstProduct):
+            pair_list = max(self.connected_substacks, key=len)
+            return [([p.properties["sceneName"] for p in pair.ref.geo_reference_bursts],
+                        [p.properties["sceneName"] for p in pair.sec.geo_reference_bursts])
+                        for pair in pair_list]
+        return super().process()
+
+    def get_scene_ids(self, pair_list: Optional[List[Pair]] = None) -> List[Tuple[str, str]]:
+        if not pair_list:
+            return self.scene_ids
+
+        if isinstance(self.full_stack[0].ref, S1MultiBurstProduct):
+            return [([p.properties["sceneName"] for p in pair.ref.geo_reference_bursts],
+                     [p.properties["sceneName"] for p in pair.sec.geo_reference_bursts])
+                     for pair in pair_list]
+
+        return super().process(pair_list)
 
     def add_digraph_edge_traces(self, digraph, largest_network, pair_lists, node_positions):
         """
@@ -534,23 +559,6 @@ class SBASNetwork(Stack):
             ),
         )
         fig.show()
-
-def get_pair_from_dates(pair_list: List[Pair],
-                            ref_date: datetime.date, sec_date: datetime.date) -> Pair:
-    """
-    This convenience method allows for the retrieval of a Pair object from a list
-    of Pairs by reference and secondary date. This is usefull when identifying a 
-    Pair object for removal or addition to an SBASNetwork.subset_stack
-
-    pair_list: a list of Pairs from which to find a Pair object
-    ref_date: a datetime.date of a target Pair's reference scene
-    sec_date: a datetime.date of a target Pair's secondary scene
-
-    Returns: A Pair with a corresponding ref_date and sec_date
-    """
-    for pair in pair_list:
-        if pair.ref_time.date() == ref_date and pair.sec_time.date() == sec_date:
-            return pair
 
 def get_n_colors(n: int, colorscale: str="Rainbow", alpha: float=0.4) -> List[str]:
     """

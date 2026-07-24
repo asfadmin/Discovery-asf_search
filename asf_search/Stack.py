@@ -1,10 +1,12 @@
 from collections import defaultdict, deque
-from copy import copy
-from datetime import date
+from copy import copy, deepcopy
+from datetime import date, timedelta
 from typing import Optional, List, Tuple, Union
 import warnings
 
+from .search import geo_search
 from .ASFProduct import ASFProduct
+from .S1MultiBurstProduct import S1MultiBurstProduct
 from .Pair import Pair
 from .ASFSearchOptions import ASFSearchOptions
 from .ASFSearchResults import ASFSearchResults
@@ -14,6 +16,9 @@ try:
     from ciso8601 import parse_datetime
 except ImportError:
     from dateutil.parser import parse as parse_datetime
+
+DatePair = Tuple[str, str]
+PairInput = Union[Pair, DatePair]
 
 class Stack:
     """
@@ -139,9 +144,13 @@ class Stack:
         """
         if not isinstance(pairs, List):
             pairs = [pairs]
-        if not isinstance(pairs[0], Pair):
-            print(pairs[0][0])
-            pairs = [get_pair_from_dates(
+        if isinstance(pairs[0], Pair):
+            if type(pairs[0].ref) != type(self.full_stack[0].ref):
+                raise ValueError(
+                    (f"Can't remove Pairs of type {type(pairs[0].ref)} from a Stack"
+                     f"of Pairs of type {type(self.full_stack[0].ref)}"))
+        else:
+            pairs = [get_existing_pair_from_dates(
                 self.subset_stack,
                 parse_datetime(date_pair[0]).date(),
                 parse_datetime(date_pair[1]).date()) for
@@ -156,24 +165,129 @@ class Stack:
                     warnings.warn(PairNotInFullStackWarning(msg))
         self._update_stack()
 
-    def add_pairs(self, pairs: Union[List[Pair], Pair]):
-        """
-        Add pairs to self.subset_stack and, if necessary, to self.full_stack 
-        i.e., remove them from self._remove_list if present or else add them to self.full_stack 
+    def safe_pair_append(self, pair: Pair) -> None:
+        products_by_time = {
+            product_time: product
+            for existing_pair in self.full_stack
+            for product_time, product in (
+                (existing_pair.ref_time, existing_pair.ref),
+                (existing_pair.sec_time, existing_pair.sec),
+            )
+        }
 
-        This allows for the addition of custom pairs that were not originally present
-        in self.full_stack
+        ref = products_by_time.get(pair.ref_time, pair.ref)
+        sec = products_by_time.get(pair.sec_time, pair.sec)
 
-        pairs: A Pair or list of Pairs to add to self.subset_stack
+        self.full_stack.append(Pair(ref, sec))
+
+    def _validate_pair_type(self, pair: Pair) -> None:
+        expected_type = type(self.full_stack[0].ref)
+        actual_type = type(pair.ref)
+
+        if actual_type is not expected_type:
+            raise ValueError(
+                f"Can't add Pairs of type {actual_type} to a Stack "
+                f"of Pairs of type {expected_type}"
+            )
+        
+    def _pair_from_dates(self, date_pair: DatePair) -> Pair:
+        ref_date_string, sec_date_string = date_pair
+
+        ref_date = parse_datetime(ref_date_string).date()
+        sec_date = parse_datetime(sec_date_string).date()
+
+        try:
+            return get_existing_pair_from_dates(
+                self.remove_list,
+                ref_date,
+                sec_date,
+            )
+        except ValueError:
+            pass
+
+        stack_product = self.full_stack[0].ref
+
+        if isinstance(stack_product, S1MultiBurstProduct):
+            group = stack_product.multiburst_group
+
+            return Pair(
+                S1MultiBurstProduct(group, ref_date_string),
+                S1MultiBurstProduct(group, sec_date_string),
+            )
+
+        return Pair(
+            self._search_product_by_date(ref_date_string),
+            self._search_product_by_date(sec_date_string),
+        )
+    
+    def _search_product_by_date(self, date_string: str):
+        stack_product = self.full_stack[0].ref
+
+        end_date = str(
+            (parse_datetime(date_string) + timedelta(days=12)).date()
+        )
+
+        if stack_product.properties["processingLevel"] == "BURST":
+            results = geo_search(
+                fullBurstID=stack_product.properties["fullBurstID"],
+                start=date_string,
+                end=end_date,
+                processingLevel="BURST",
+            )
+        else:
+            results = geo_search(
+                asfFrame=stack_product.properties["frameNumber"],
+                relativeOrbit=stack_product.properties["pathNumber"],
+                start=date_string,
+                end=end_date,
+                processingLevel="SLC",
+            )
+
+        try:
+            return min(
+                results,
+                key=lambda product: product.properties["startTime"],
+            )
+        except ValueError:
+            raise ValueError(
+                f"No matching product found for {date_string}"
+            ) from None
+
+    def add_pairs(
+        self,
+        pairs: Union[PairInput, List[PairInput]],
+    ) -> None:
         """
-        if isinstance(pairs, Pair):
+        Add pairs to subset_stack and, when necessary, to full_stack.
+
+        Date pairs are resolved from remove_list when possible. Otherwise,
+        the corresponding products are constructed or searched for.
+        """
+        if not isinstance(pairs, list):
             pairs = [pairs]
 
-        for pair in pairs:
+        if not pairs:
+            return
+        
+        contains_pairs = any(isinstance(item, Pair) for item in pairs)
+        if contains_pairs and not all(isinstance(item, Pair) for item in pairs):
+            raise TypeError("pairs must not mix Pair objects and date tuples")
+
+        resolved_pairs = []
+
+        for item in pairs:
+            if isinstance(item, Pair):
+                self._validate_pair_type(item)
+                resolved_pairs.append(item)
+            else:
+                resolved_pairs.append(self._pair_from_dates(item))
+
+        for pair in resolved_pairs:
             if pair in self._remove_list:
                 self._remove_list.remove(pair)
             else:
-                self.full_stack.append(pair)
+                self.safe_pair_append(pair)
+
         self._update_stack()
 
     def _build_full_stack(self, stack_search_results: Optional[ASFSearchResults]=None) -> List[Pair]:
@@ -273,7 +387,7 @@ class Stack:
             for pair in pair_list
             ]
     
-def get_pair_from_dates(pair_list: List[Pair],
+def get_existing_pair_from_dates(pair_list: List[Pair],
                             ref_date: date, sec_date: date) -> Pair:
     """
     This convenience method allows for the retrieval of a Pair object from a list
