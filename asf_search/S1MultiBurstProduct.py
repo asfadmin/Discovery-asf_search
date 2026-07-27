@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import timedelta
-import importlib.util
 from typing import List, Literal
 
 from asf_search import ASF_LOGGER
@@ -230,7 +229,7 @@ class S1MultiBurstProduct():
         """
         Returns an S1MultiBurstGroup corresponding to the list of geo_reference_bursts
         """
-        relative_burst_ids = set([f'{p.properties["pathNumber"]}_{p.properties["burst"]["relativeBurstID"]}' for p in geo_reference_bursts])
+        relative_burst_ids = sorted(set([f'{p.properties["pathNumber"]}_{p.properties["burst"]["relativeBurstID"]}' for p in geo_reference_bursts]))
         burst_group_dict = {burst_id: [] for burst_id in relative_burst_ids}
         for p in geo_reference_bursts:
             burst_id = f'{p.properties["pathNumber"]}_{p.properties["burst"]["relativeBurstID"]}'
