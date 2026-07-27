@@ -141,7 +141,7 @@ class Stack:
         if not isinstance(pairs, List):
             pairs = [pairs]
         if isinstance(pairs[0], Pair):
-            if type(pairs[0].ref) != type(self.full_stack[0].ref):
+            if type(pairs[0].ref) is not type(self.full_stack[0].ref):
                 raise ValueError(
                     (f"Can't remove Pairs of type {type(pairs[0].ref)} from a Stack"
                      f"of Pairs of type {type(self.full_stack[0].ref)}"))
