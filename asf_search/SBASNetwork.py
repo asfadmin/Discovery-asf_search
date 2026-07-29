@@ -6,7 +6,7 @@ from typing import Optional, List, Dict, Tuple, Union
 
 from asf_search import ASF_LOGGER
 from .ASFProduct import ASFProduct
-from .S1MultiBurstProduct import S1MultiBurstProduct, S1MultiBurstGroup, S1MultiBurst
+from .S1MultiBurstProduct import S1MultiBurstProduct
 from .Pair import Pair
 from .Stack import Stack
 from .ASFSearchOptions import ASFSearchOptions
@@ -97,7 +97,6 @@ class SBASNetwork(Stack):
             opts=self.opts,
             allow_missing_state_vectors = self.allow_missing_state_vectors
             )
-        self.full_stack = self._build_full_stack()
         self._build_sbas_network()
         self.geo_reference = self.subset_stack[0].ref # must reset here because ref object is replaced with a duplicate when building full stack
 
@@ -205,7 +204,7 @@ class SBASNetwork(Stack):
         maximum_temporal_baseline = self.inseason_temporal_baseline + self.bridge_year_threshold * 365
 
         return pair.temporal_baseline.days <= maximum_temporal_baseline
-        
+       
     def _build_full_stack(self, stack_search_results: Optional[ASFSearchResults]=None) -> List[Pair]:
         """
         Create self._full_stack, which involves performing a stack search
@@ -221,9 +220,9 @@ class SBASNetwork(Stack):
                     self.bridge_year_threshold
         """
         if stack_search_results is None:
-            if isinstance(self.geo_reference, S1MultiBurstProduct):
-                stack_search_results = [geo_reference.stack(opts=self.opts) for geo_reference in self.geo_reference.geo_reference_bursts]
+            stack_search_results = self.geo_reference.stack(opts=self.opts)
 
+            if isinstance(self.geo_reference, S1MultiBurstProduct):
                 multiburst_dict = {}
                 for results in stack_search_results:
                     for p1, p2 in combinations(results, 2):
@@ -243,10 +242,6 @@ class SBASNetwork(Stack):
                             )
                         full_stack.append(pair)
                 return full_stack
-
-            else:
-                stack_search_results = self.geo_reference.stack(opts=self.opts)
-
     
         full_stack = []
         for p1, p2 in combinations(stack_search_results, 2):

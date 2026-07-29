@@ -1,10 +1,14 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import List, Literal
+from typing import List, Literal, Optional
 
 from asf_search import ASF_LOGGER
 from .ASFProduct import ASFProduct
-from .search import geo_search
+from asf_search.ASFSearchOptions import ASFSearchOptions
+from .search import geo_search, search
+from .ASFSearchResults import ASFSearchResults
+from .baseline import get_baseline_from_stack
 
 try:
     from ciso8601 import parse_datetime
@@ -246,3 +250,44 @@ class S1MultiBurstProduct():
             for subswath in multiburst.subswaths:
                 id = f"{id}{subswath[2]}"
         return f"{id[1:]}_{start_time}"
+
+    def stack(self, opts: Optional[ASFSearchOptions] = None) -> List[ASFSearchResults]:
+        """
+        Builds a baseline stack for each burst product in self.geo_reference_bursts.
+
+        opts: An ASFSearchOptions object describing the search parameters to be used.
+
+        Returns: A list of asf_search.ASFSearchResults, each containing the stack for 
+                 a burst ASFProduct in self.geo_reference_bursts, with the addition of baseline 
+                 values (temporal, perpendicular) attached to each burst ASFProduct.
+        """
+        full_burst_id_list = [burst.properties["burst"]["fullBurstID"] for burst in self.geo_reference_bursts]
+
+        stack_opts = self.geo_reference_bursts[0].get_stack_opts()
+        stack_opts.fullBurstID = full_burst_id_list
+
+        opts.merge_args(**dict(stack_opts))
+
+        combined_results = search(opts=opts)
+
+        grouped = defaultdict(list)
+
+        for product in combined_results:
+            full_burst_id = product.properties["burst"]["fullBurstID"]
+            grouped[full_burst_id].append(product)
+
+        split_results = {
+            burst_id: ASFSearchResults(products)
+            for burst_id, products in grouped.items()
+        }
+
+        stack_search_results = []
+
+        for p in self.geo_reference_bursts:
+            full_burst_id = p.properties["burst"]["fullBurstID"]
+            stack, _ = get_baseline_from_stack(reference=p, stack=split_results[full_burst_id])
+            stack.sort(key=lambda product: product.properties['temporalBaseline'])
+            stack_search_results.append(stack)
+
+        return stack_search_results
+    
