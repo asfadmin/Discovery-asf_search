@@ -201,6 +201,7 @@ class S1MultiBurstProduct():
 
         results = geo_search(
             fullBurstID=relative_burst_ids,
+            polarization="VV",
             start=self.start_date,
             end=str(
                 (parse_datetime(self.start_date) + timedelta(days=48)).date()
