@@ -12,7 +12,6 @@ jobs:
       - name: Install Dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install gdal==3.8.4
           python3 -m pip install .[extras,test,asf-enumeration,coherence]
 
       - name: Run Tests
