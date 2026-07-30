@@ -1,7 +1,7 @@
 from collections import defaultdict, deque
-from copy import copy, deepcopy
+from copy import copy
 from datetime import date, timedelta
-from typing import Optional, List, Tuple, Union
+from typing import Optional, List, Tuple, Union, NamedTuple
 import warnings
 
 from .search import geo_search
@@ -19,6 +19,16 @@ except ImportError:
 
 DatePair = Tuple[str, str]
 PairInput = Union[Pair, DatePair]
+
+class SceneIDPair(NamedTuple):
+    """
+    Defines a named tuple of reference and secondary ASFProducts ID strings
+    for Pairs of ASFProducts
+
+    This is useful when ordering interferograms from HyP3
+    """
+    reference: str
+    secondary: str
 
 class Stack:
     """
@@ -121,7 +131,7 @@ class Stack:
         pairs: A list of Pairs to remove from self.subset_stack
         """
         # remove duplicates
-        self._remove_list = list(set(pairs))
+        self._remove_list = self._sort_pair_list(list(set(pairs)))
         self._update_stack()
 
     def remove_pairs(self, pairs: Union[List[Pair], Pair, Tuple[str], List[Tuple[str]]]):
@@ -286,6 +296,11 @@ class Stack:
 
         self._update_stack()
 
+    def _sort_pair_list(self, pair_list: List[Pair]) -> List[Pair]:
+        return sorted(
+            pair_list,
+            key=lambda item: item.id)
+
     def _build_full_stack(self, stack_search_results: Optional[ASFSearchResults]=None) -> List[Pair]:
         """
         Create self._full_stack, which involves performing a stack search
@@ -315,7 +330,9 @@ class Stack:
         Recalculate self.subset_stack and find its connected substacks.
         These two things should always happen together.
         """
-        self.subset_stack = self._get_subset_stack()
+        self.full_stack = self._sort_pair_list(self.full_stack)
+        self._remove_list = self._sort_pair_list(self._remove_list)
+        self.subset_stack = self._sort_pair_list(self._get_subset_stack())
         self.connected_substacks = self._find_connected_substacks()
 
     def _find_connected_substacks(self) -> List[List[Pair]]:
@@ -359,7 +376,7 @@ class Stack:
                             queue.append(neighbor)
                 component_pairs = [v for v in component_pairs.values()]
                 components.append(component_pairs)
-
+        components = [self._sort_pair_list(component) for component in components]
         return components
 
 
@@ -379,7 +396,7 @@ class Stack:
             pair_list = max(self.connected_substacks, key=len)
 
         return [
-            (pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])
+            SceneIDPair(pair.ref.properties["sceneName"], pair.sec.properties["sceneName"])
             for pair in pair_list
             ]
     

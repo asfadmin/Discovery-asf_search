@@ -188,6 +188,7 @@ def test_add_pair_objects(sbas_network):
     """
     Tests adding a multiple pairs using Pair objects
     """
+
     pair_to_add_1 = sbas_network.remove_list[10]
     pair_to_add_2 = sbas_network.remove_list[-1]
     removed_list_size = len(sbas_network.remove_list)
@@ -195,7 +196,7 @@ def test_add_pair_objects(sbas_network):
     assert len(sbas_network.subset_stack) == 161
     assert len(sbas_network.remove_list) == removed_list_size - 2
     assert len(sbas_network.connected_substacks) == 4
-    assert len(max(sbas_network.connected_substacks, key=lambda s: len(s))) == 147
+    assert len(max(sbas_network.connected_substacks, key=lambda s: len(s))) == 146
 
 def test_add_multiburst_pair_objects(multiburst_sbas_network):
     """

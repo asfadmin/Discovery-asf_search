@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from itertools import combinations
 import importlib.util
 import numpy as np
-from typing import Optional, List, Dict, Tuple, Union
+from typing import Optional, List, Dict, Tuple, Union, NamedTuple
 
 from asf_search import ASF_LOGGER
 from .ASFProduct import ASFProduct
@@ -33,7 +33,15 @@ except ImportError:
     sample_colorscale = None
     pd = None
 
+class S1MultiBurstSceneIDPair(NamedTuple):
+    """
+    Defines a named tuple of lists of reference and secondary ASFProducts ID strings
+    for Pairs of S1MultiBurstProducts
 
+    This is useful when ordering S1 multi-burst interferograms from HyP3
+    """
+    reference: List[str]
+    secondary: List[str]
 class SBASNetwork(Stack):
     """
     SBASNetwork is a child class of Stack, used to create seasonal SBAS networks. It can be used
@@ -241,7 +249,7 @@ class SBASNetwork(Stack):
                             S1MultiBurstProduct(geo_reference_bursts=product_lists[1])
                             )
                         full_stack.append(pair)
-                return full_stack
+                return self._sort_pair_list(full_stack)
     
         full_stack = []
         for p1, p2 in combinations(stack_search_results, 2):
@@ -249,7 +257,7 @@ class SBASNetwork(Stack):
             if self._full_stack_pair_is_valid(pair):
                 full_stack.append(pair)
 
-        return full_stack
+        return self._sort_pair_list(full_stack)
 
 
     def _is_valid_bridge_pair(self, pair: Pair) -> bool:
@@ -320,7 +328,7 @@ class SBASNetwork(Stack):
             pair_list = max(self.connected_substacks, key=len)
 
         if pair_list and isinstance(pair_list[0].ref, S1MultiBurstProduct):
-            return [([p.properties["sceneName"] for p in pair.ref.geo_reference_bursts],
+            return [S1MultiBurstSceneIDPair([p.properties["sceneName"] for p in pair.ref.geo_reference_bursts],
                      [p.properties["sceneName"] for p in pair.sec.geo_reference_bursts])
                      for pair in pair_list]
 
