@@ -60,7 +60,7 @@ class SBASNetwork(Stack):
         season: Tuple[int, int] = (1, 365),
         perpendicular_baseline: int = 400,
         inseason_temporal_baseline: int = 36,
-        bridge_year_threshold: int = 1,
+        bridge_year_threshold: int = 0,
         bridge_target_date: Optional[str] = None,
         opts: Optional[ASFSearchOptions] = None,
         allow_missing_state_vectors: bool = False
