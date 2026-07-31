@@ -55,7 +55,7 @@ class Pair:
             perpendicular_baselines = [calculate_perpendicular_baselines(ref.properties['sceneName'], [sec, ref])[0].properties['perpendicularBaseline'] 
                                        for ref, sec in zip(self.ref.geo_reference_bursts, self.sec.geo_reference_bursts)]
             # Use the largest burst perpendicular baseline to represent the S1MultiBurstProduct
-            self.perpendicular_baseline = max(perpendicular_baselines)
+            self.perpendicular_baseline =  max((x for x in perpendicular_baselines if x is not None), default=None)
 
         self.ref_time = parse_datetime(self.ref.properties["startTime"])
         if self.ref_time.tzinfo is None:
