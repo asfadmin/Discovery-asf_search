@@ -23,7 +23,6 @@ test_requirements = [
     'nbformat',
     'nbconvert',
     'ipykernel',
-    'burst2safe'
 ]
 
 extra_requirements = [
@@ -51,11 +50,6 @@ sbasnetwork_plot = [
     'pandas',
 ]
 
-# Required for optional Sentinel-1 multi-burst SBASNetwork creation
-sbasnetwork_s1_multiburst = [
-    'burst2safe'
-]
-
 with open('README.md', 'r') as readme_file:
     readme = readme_file.read()
 
@@ -79,7 +73,6 @@ setup(
                     'asf-enumeration': asf_enumeration, 
                     'coherence': coherence,
                     'sbasnetwork_plot': sbasnetwork_plot,
-                    'sbasnetwork_s1_multiburst': sbasnetwork_s1_multiburst
                     },
     license='BSD',
     license_files=('LICENSE',),
