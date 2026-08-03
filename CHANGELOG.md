@@ -26,10 +26,16 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 =======
-## [v12.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.2...v12.2.3)
+## [v12.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.2.4)
 ### Added
-- Sentinel-1 multi-burst support to `SBASNetwork` class
-- For usage examples, see `examples/SBASNetwork_S1-Multiburst.ipynb`
+- Adds Sentinel-1 multi-burst support to `SBASNetwork` class
+  - Adds multi-burst supporting classes:
+    - S1MultiBurstSceneIDPair
+    - S1MultiBurst
+    - S1MultiBurstGroup
+    - S1MultiBurstProduct
+  - For usage examples, see `examples/SBASNetwork_S1-Multiburst.ipynb`
+- Updates `SBASNetwork.add_pairs()` and `SABANetork.remove_pairs()` to take either Pair objects or tuples of date pair strings.
 
 ------
 ## [v12.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.2...v12.2.3)
