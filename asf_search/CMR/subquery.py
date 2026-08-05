@@ -10,6 +10,7 @@ from asf_search.CMR.datasets import (
     collections_per_platform,
     get_concept_id_alias,
     get_dataset_concept_ids,
+    get_nisar_collection_by_maturity
 )
 from numpy import intersect1d, union1d
 
@@ -128,12 +129,13 @@ def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True, inc
         if alias_processing_levels and alias_platforms and not len(collections):
             # processingLevel isn't part of the given platform. Drop aliased keywords so we don't search on zero collections
             aliased_keywords = []
-            
+
     if 'dataset' in params.keys():
         aliased_keywords.append('dataset')
         dataset_concept_ids = get_dataset_concept_ids(params.get('dataset'))
         collections = _get_intersection(dataset_concept_ids, collections)
-
+    if 'dataMaturity' in params.keys():
+        collections = _get_intersection(get_nisar_collection_by_maturity(params.get('dataMaturity')), collections)
     return collections, aliased_keywords
 
 

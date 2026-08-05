@@ -1994,6 +1994,22 @@ collections_by_processing_level = {
 
 # Helper Methods
 
+def get_nisar_collection_by_maturity(maturities):
+    collections = {
+        'BETA': [],
+        'PROVISIONAL': [],
+        'VALIDATED': []
+    }
+
+    for short_name, maturity_collection in dataset_collections['NISAR'].items():
+        if 'BETA' in short_name:
+            collections['BETA'].extend(maturity_collection)
+        elif 'PROVISIONAL' in short_name:
+            collections['PROVISIONAL'].extend(maturity_collection)
+        else:
+            collections['VALIDATED'].extend(maturity_collection)
+
+    return sum([collections[maturity] for maturity in maturities],[])
 
 def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[str]:
     """
