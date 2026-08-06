@@ -2006,7 +2006,7 @@ def get_nisar_collection_by_maturity(maturities: List[str]):
             collections['BETA'].extend(maturity_collection)
         elif 'PROVISIONAL' in short_name:
             collections['PROVISIONAL'].extend(maturity_collection)
-        else:
+        elif short_name.endswith('V1'):
             collections['VALIDATED'].extend(maturity_collection)
     try:
         return sum([collections[maturity.upper()] for maturity in maturities],[])
