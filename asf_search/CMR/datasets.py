@@ -2011,7 +2011,7 @@ def get_nisar_collection_by_maturity(maturities: List[str]):
     try:
         return sum([collections[maturity.upper()] for maturity in maturities],[])
     except KeyError:
-        raise ValueError('Invalid maturity option provided')
+        raise ValueError(f'Invalid maturity option provided valid options are: {", ".join(collections.keys())}' )
 
 def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[str]:
     """
