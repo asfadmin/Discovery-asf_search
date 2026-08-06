@@ -25,6 +25,18 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+=======
+## [v12.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.2.4)
+### Added
+- Adds Sentinel-1 multi-burst support to `SBASNetwork` class
+  - Adds multi-burst supporting classes:
+    - S1MultiBurstSceneIDPair
+    - S1MultiBurst
+    - S1MultiBurstGroup
+    - S1MultiBurstProduct
+  - For usage examples, see `examples/SBASNetwork_S1-Multiburst.ipynb`
+- Updates `SBASNetwork.add_pairs()` and `SABANetork.remove_pairs()` to take either Pair objects or tuples of date pair strings.
+
 ------
 ## [v12.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.2.4)
 ### Added
@@ -46,7 +58,7 @@ asf.search_count(dataMaturity=asf.constants.MATURITIES.BETA, dataset=asf.constan
 ------
 ## [v12.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.0...v12.2.1)
 ### Fixed
-- Fixes optinal dependency `pandas` causing import error in `SBASNetwork` class
+- Fixes optional dependency `pandas` causing import error in `SBASNetwork` class
 
 ------
 ## [v12.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.1...v12.2.0)
@@ -71,6 +83,11 @@ asf.search_count(dataMaturity=asf.constants.MATURITIES.BETA, dataset=asf.constan
     - For usage examples, see `examples/Stack.ipynb`
 - `OPERA_L3_DIST-ALERT-S1_V1` shortname/collections added
 - Add `NISAR_EA` shortname/collections to NISAR dataset (available to authorized users)
+
+------
+## [v12.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.0.8)
+### Added
+- `Sentinel-1D` constants and search support
 
 ------
 ## [v12.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.6...v12.0.7)
