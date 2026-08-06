@@ -36,10 +36,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
     - S1MultiBurstProduct
   - For usage examples, see `examples/SBASNetwork_S1-Multiburst.ipynb`
 - Updates `SBASNetwork.add_pairs()` and `SABANetork.remove_pairs()` to take either Pair objects or tuples of date pair strings.
-
-------
-## [v12.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.2.4)
-### Added
 - Parameter for filtering NISAR products based off of data maturity.
 ```python
 asf.search_count(dataMaturity=asf.constants.MATURITIES.BETA, dataset=asf.constants.DATASET.NISAR)
