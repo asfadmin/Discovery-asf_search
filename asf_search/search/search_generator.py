@@ -44,6 +44,7 @@ def search_generator(
     beamMode: Union[str, Sequence[str]] = None,
     beamSwath: Union[str, Sequence[str]] = None,
     campaign: Union[str, Sequence[str]] = None,
+    dataMaturity: Union[Literal['BETA', 'PROVISIONAL', 'VALIDATED'], Sequence[Literal['BETA', 'PROVISIONAL', 'VALIDATED']]] = None,
     maxDoppler: float = None,
     minDoppler: float = None,
     end: Union[datetime.datetime, str] = None,
@@ -117,6 +118,8 @@ def search_generator(
     campaign:
         For UAVSAR and AIRSAR data collections only. Search by general location,
         site description, or data grouping as supplied by flight agency or project.
+    dataMaturity:
+        For NISAR data collections only. Determined by when products were processed
     maxDoppler:
         Doppler provides an indication of how much the look direction deviates
         from the ideal perpendicular flight direction acquisition.
