@@ -1994,7 +1994,7 @@ collections_by_processing_level = {
 
 # Helper Methods
 
-def get_nisar_collection_by_maturity(maturities):
+def get_nisar_collection_by_maturity(maturities: List[str]):
     collections = {
         'BETA': [],
         'PROVISIONAL': [],
@@ -2008,8 +2008,10 @@ def get_nisar_collection_by_maturity(maturities):
             collections['PROVISIONAL'].extend(maturity_collection)
         else:
             collections['VALIDATED'].extend(maturity_collection)
-
-    return sum([collections[maturity] for maturity in maturities],[])
+    try:
+        return sum([collections[maturity.upper()] for maturity in maturities],[])
+    except KeyError:
+        raise ValueError('Invalid maturity option provided')
 
 def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[str]:
     """
