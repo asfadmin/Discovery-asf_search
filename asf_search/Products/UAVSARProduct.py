@@ -11,8 +11,54 @@ class UAVSARProduct(ASFProduct):
         **ASFProduct._base_properties,
         'groupID': {'path': ['AdditionalAttributes', ('Name', 'GROUP_ID'), 'Values', 0]},
         'insarStackId': {'path': ['AdditionalAttributes', ('Name', 'INSAR_STACK_ID'), 'Values', 0]},
-        'md5sum': {'path': ['AdditionalAttributes', ('Name', 'MD5SUM'), 'Values', 0]},
+        'processingLevel': {
+            'path': ['AdditionalAttributes', ('Name', 'PRODUCT_TYPE'), 'Values', 0]
+        },
+        'polarization': {
+            'path': ['AdditionalAttributes', ('Name', 'POLARIZATION'), 'Values']
+        },  # for consolidated collection
+        'bytes': {'path': ['DataGranule', 'ArchiveAndDistributionInformation']},
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
+
+        bytes_mapping = {
+            entry['Name']: {'bytes': entry['SizeInBytes'], 'format': entry['Format']}
+            for entry in self.properties['bytes']
+        }
+        md5sum_mapping = {
+            entry['Name']: entry['Checksum']['Value'] for entry in self.properties['bytes']
+        }
+
+        self.properties['bytes'] = bytes_mapping
+        self.properties['md5sum'] = md5sum_mapping
+
+        self.properties['additionalUrls'] = [
+            url for url in self._get_additional_urls() if not url.endswith('-END')
+        ]
+
+        # TODO: Drop this when -END extension droppped from CMR metadata
+        if self.properties['url'].endswith('-END'):
+            self.properties['url'] = self.properties['additionalUrls'][0]
+            self.properties['additionalUrls'] = self.properties['additionalUrls'][1:]
+
+        self.properties['browse'] = [
+            url
+            for url in self._get_urls()
+            if url.endswith('.png')
+            or url.endswith('.jpg')
+            or url.endswith('.jpeg')
+            or url.endswith('.gif')
+        ]
+        self.properties['s3Urls'] = self._get_s3_uris()
+
+        center = self.centroid()
+        self.properties['centerLat'] = center.y
+        self.properties['centerLon'] = center.x
+
+        self.properties['platform'] = 'UAVSAR'
+
+        # TODO: Drop after PR-7468 completed
+        if self.properties['groupID'] != self.properties['fileID']:
+            self.properties['groupID'] = self.properties['fileID']

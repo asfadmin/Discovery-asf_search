@@ -52,21 +52,9 @@ L1B_S0_LOW_RES_ISO_XML = 'L1B_S0_LoRes_ISO_XML'
 L1C_S0_HIGH_RES_ISO_XML = 'L1C_S0_HiRes_ISO_XML'
 
 # UAVSAR
-AMPLITUDE = 'AMPLITUDE'
-STOKES = 'STOKES'
-AMPLITUDE_GRD = 'AMPLITUDE_GRD'
-PROJECTED = 'PROJECTED'
-PROJECTED_ML5X5 = 'PROJECTED_ML5X5'
-PROJECTED_ML3X3 = 'PROJECTED_ML3X3'
-INTERFEROMETRY_GRD = 'INTERFEROMETRY_GRD'
-INTERFEROMETRY = 'INTERFEROMETRY'
-COMPLEX = 'COMPLEX'
-# KMZ provided by ALOS PALSAR
-INC = 'INC'
-SLOPE = 'SLOPE'
-DEM_TIFF = 'DEM_TIFF'
-PAULI = 'PAULI'
-METADATA = 'METADATA'
+POLSAR = 'POLSAR'
+RPI = 'RPI'
+
 
 # RADARSAT
 L0 = 'L0'
@@ -144,72 +132,72 @@ DCOP = 'DCOP'
 OROST = 'OROST'
 """NISAR Radar Observation Sequence Table"""
 # NISAR_STUF
-STUF = "STUF"
+STUF = 'STUF'
 """	STUF - 1 week plan of orbit boundaries, convert UTC to Orbit"""
 
 # NISAR Total Electron Content (NISAR_TEC)
-TEC = "TEC"
-"NISAR Total Electron Content"
+TEC = 'TEC'
+'NISAR Total Electron Content'
 
 # NISAR L-SAR Radar Clock to UTC Conversion File (NISAR_LRCLK_UTC)
-LRCLK_UTC = "LRCLK_UTC"
+LRCLK_UTC = 'LRCLK_UTC'
 """L-SAR Radar clock to UTC Spacecraft Clock Spacecraft Event Time (SCLKSCET) conversion file"""
 
 
 # NISAR Orbit Ephemeris (NISAR_OE)
-# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Orbit Ephemeris collection contains 
+# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Orbit Ephemeris collection contains
 # the state vector files for the NISAR mission"
-FOE = "FOE"
+FOE = 'FOE'
 """Forecast Orbit Ephemeris"""
-MOE = "MOE"
+MOE = 'MOE'
 """	Medium Orbit Ephemeris"""
-NOE = "NOE"
+NOE = 'NOE'
 """	Near-Realtime Orbit Ephemeris"""
-POE = "POE"
+POE = 'POE'
 """	Precise Orbit Ephemeris"""
 
 # NISAR Ancillary and Auxiliary Data (NISAR_ANC_AUX)
-# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Ancilliary and Auxiallry collection contains products 
+# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Ancilliary and Auxiallry collection contains products
 # that are supplementary information for the NISAR mission and are created a limited number of times.""
-TSR_STATIC = "TSR_STATIC"
+TSR_STATIC = 'TSR_STATIC'
 """Time Series Ratio (TSR_STATIC)"""
-PMI_STATIC = "PMI_STATIC"
+PMI_STATIC = 'PMI_STATIC'
 """Physical Model Inversion (PMI_STATIC)"""
-CORNER_REFL = "CORNER_REFL"
+CORNER_REFL = 'CORNER_REFL'
 """Corner Reflector locations (CORNER_REFL)"""
-LSAR_INT_CAL = "LSAR_INT_CAL"
+LSAR_INT_CAL = 'LSAR_INT_CAL'
 """Combined ADT Flight Table (INT_CAL)"""
-LSAR_EXT_CAL = "LSAR_EXT_CAL"
+LSAR_EXT_CAL = 'LSAR_EXT_CAL'
 """LSAR Calibration File (EXT_CAL)"""
-FT_WAVEFORM = "FT_WAVEFORM"
+FT_WAVEFORM = 'FT_WAVEFORM'
 """Flight Table Waveform (FT_WAVEFORM)"""
-FT_PARAM = "FT_PARAM"
+FT_PARAM = 'FT_PARAM'
 """Flight Table Parameters (FT_PARAM)"""
-ANTPAT = "ANTPAT"
+ANTPAT = 'ANTPAT'
 """Antenna Pattern (ANTPAT)"""
-BFPQ = "BFPQ"
+BFPQ = 'BFPQ'
 """Block Floating Point Quantization Look-up Table (BFPQ)"""
-TFDB = "TFDB"
+TFDB = 'TFDB'
 """Track Frame Database (TFDB)"""
-L_CHAN_DATA = "L_CHAN_DATA"
+L_CHAN_DATA = 'L_CHAN_DATA'
 """L-SAR Channel Data (L_CHAN_DATA)"""
-SM_STATIC = "SM_STATIC"
+SM_STATIC = 'SM_STATIC'
 """Soil Moisture Static File (SM_STATIC)"""
-DSG_STATIC = "DSG_STATIC"
+DSG_STATIC = 'DSG_STATIC'
 """Disaggregation File (DSG_STATIC)"""
 
 # NISAR Pointing: (NISAR_RP)
 # "The NASA-ISRO Synthetic Aperture Radar (NISAR) Radar Pointing collection contains the radar pointing files for the NISAR mission.
 # The collection includes multiple accuracy levels"
-FRP = "FRP"
+FRP = 'FRP'
 """	Forecast Radar Pointing"""
-PRP = "PRP"
+PRP = 'PRP'
 """	Precise Radar Pointing"""
-NRP = "NRP"
+NRP = 'NRP'
 """	Near-Realtime Radar Pointing"""
 
 # ECMWF SMST Data (ASF_ECMWF_SMST)
-ECMWF_SMST = "ECMWF_SMST"
+ECMWF_SMST = 'ECMWF_SMST'
 """	European Centre for Medium-Range Weather Forecasts (models)"""
 
 # TODO: Verify/Add/Remove these product types as necessary
@@ -218,7 +206,7 @@ ECMWF_SMST = "ECMWF_SMST"
 # DEM = "DEM"
 # """	Digital Elevation Model"""
 
-# LOCAL_INC_ANG = "LOCAL_INC_ANG" 
+# LOCAL_INC_ANG = "LOCAL_INC_ANG"
 # """	Local Incidence Angles"""
 # VWC = "VWC"
 # """	Vegetation water content"""
