@@ -25,6 +25,15 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+
+---
+
+## [v12.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.0...v12.3.1)
+
+### Fixed
+
+- `dataMaturity` no longer duplicates searches with multiple options selected.
+
 =======
 ## [v12.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.3.0)
 ### Added
