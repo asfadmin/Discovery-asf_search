@@ -26,7 +26,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 =======
-## [v12.2.4](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.2.4)
+## [v12.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.3.0)
 ### Added
 - Adds Sentinel-1 multi-burst support to `SBASNetwork` class
   - Adds multi-burst supporting classes:
