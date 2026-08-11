@@ -41,7 +41,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
         'linestring',
         'point',
         'bbox',
-        'dataMaturity'
+        'dataMaturity',
     ]  # these parameters will dodge the subquery system
     skip_param_names = [
         'maxResults',
