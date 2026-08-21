@@ -651,57 +651,57 @@ collections_by_processing_level = {
 # Helper Methods
 
 
-def get_nisar_collection_by_maturity(maturities: List[str]):
-    collections = {"BETA": [], "PROVISIONAL": [], "VALIDATED": []}
+def get_nisar_collection_by_maturity(maturities: list[str]):
+    short_names = {"BETA": [], "PROVISIONAL": [], "VALIDATED": []}
 
-    for short_name, maturity_collection in dataset_collections["NISAR"].items():
+    for short_name in dataset_collections["NISAR"]:
         if "BETA" in short_name:
-            collections["BETA"].extend(maturity_collection)
+            short_names["BETA"].extend(short_name)
         elif "PROVISIONAL" in short_name:
-            collections["PROVISIONAL"].extend(maturity_collection)
+            short_names["PROVISIONAL"].extend(short_name)
         elif short_name.endswith("V1"):
-            collections["VALIDATED"].extend(maturity_collection)
+            short_names["VALIDATED"].extend(short_name)
     try:
-        return sum([collections[maturity.upper()] for maturity in maturities], [])
+        return sum([short_names[maturity.upper()] for maturity in maturities], [])
     except KeyError:
         raise ValueError(
-            f"Invalid maturity option provided valid options are: {', '.join(collections.keys())}"
+            f"Invalid maturity option provided valid options are: {', '.join(short_names.keys())}"
         )
 
 
-def get_concept_id_alias(param_list: List[str], collections_dict: dict) -> List[str]:
+def get_short_name_alias(param_list: list[str], collections_dict: dict) -> list[str]:
     """
-    param: param_list (List[str]): list of search values to alias
+    param: param_list (list[str]): list of search values to alias
     param: collections_dict (dict): The search value to concept-id dictionary to read from
 
-    returns List[str]: Returns a list of concept-ids
+    returns list[str]: Returns a list of concept-ids
     that correspond to the given list of search values
     If any of the search values are not keys in the collections_dict,
     this will instead returns an empty list.
     """
-    concept_id_aliases = []
+    shortname_id_aliases = []
     for param in param_list:
         if alias := collections_dict.get(param):
-            concept_id_aliases.extend(alias)
+            shortname_id_aliases.extend(alias)
         else:
             return []
 
-    return concept_id_aliases
+    return shortname_id_aliases
 
 
-def get_dataset_concept_ids(datasets: List[str]) -> List[str]:
+def get_dataset_short_names(datasets: list[str]) -> list[str]:
     """
     Returns concept-ids for provided dataset(s)
     If an invalid datset is provided a ValueError is raised
 
-    :param `datasets` (`List[str]`): a list of datasets to grab concept-ids for
-    :returns `List[str]`: the list of concept-ids associated with the given datasets
+    :param `datasets` (`list[str]`): a list of datasets to grab concept-ids for
+    :returns `list[str]`: the list of concept-ids associated with the given datasets
     """
     output = []
     for dataset in datasets:
-        if collections_by_short_name := dataset_collections.get(dataset):
-            for concept_ids in collections_by_short_name.values():
-                output.extend(concept_ids)
+        if short_names := dataset_collections.get(dataset):
+            for short_name in short_names:
+                output.extend(short_name)
         else:
             raise ValueError(
                 f'Could not find dataset named "{dataset}" provided for dataset keyword.'
