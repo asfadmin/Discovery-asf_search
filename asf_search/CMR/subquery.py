@@ -8,11 +8,12 @@ from asf_search.CMR.datasets import (
     NISAR_PRODUCT_TYPES,
     collections_by_processing_level,
     collections_per_platform,
-    get_concept_id_alias,
-    get_dataset_concept_ids,
-    get_nisar_collection_by_maturity
+    get_short_name_alias,
+    get_dataset_short_names,
+    get_nisar_collection_by_maturity,
 )
 from numpy import intersect1d, union1d
+
 
 def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     """
@@ -25,36 +26,38 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     params = dict(opts)
 
     # Break out two big list offenders into manageable chunks
-    for chunked_key in ['granule_list', 'product_list']:
+    for chunked_key in ["granule_list", "product_list"]:
         if params.get(chunked_key) is not None:
             params[chunked_key] = chunk_list(params[chunked_key], CMR_PAGE_SIZE)
 
     list_param_names = [
-        'platform',
-        'season',
-        'collections',
-        'dataset',
-        'instrument',
-        'cmr_keywords',
-        'shortName',
-        'circle',
-        'linestring',
-        'point',
-        'bbox',
-        'dataMaturity',
+        "platform",
+        "season",
+        "collections",
+        "dataset",
+        "instrument",
+        "cmr_keywords",
+        "shortName",
+        "circle",
+        "linestring",
+        "point",
+        "bbox",
+        "dataMaturity",
     ]  # these parameters will dodge the subquery system
     skip_param_names = [
-        'maxResults',
+        "maxResults",
     ]  # these params exist in opts, but shouldn't be passed on to subqueries at ALL
 
     includes_nisar_products = False
-    if params.get('processingLevel') is not None:
-        for product in params.get('processingLevel', []):
+    if params.get("processingLevel") is not None:
+        for product in params.get("processingLevel", []):
             if product in NISAR_PRODUCT_TYPES:
                 includes_nisar_products = True
                 break
-    collections, aliased_keywords = get_keyword_concept_ids(params, opts.collectionAlias, includes_nisar_products)
-    params['collections'] = list(union1d(collections, params.get('collections', [])))
+    collections, aliased_keywords = get_keyword_concept_ids(
+        params, opts.collectionAlias, includes_nisar_products
+    )
+    params["collections"] = list(union1d(collections, params.get("collections", [])))
 
     for keyword in [*skip_param_names, *aliased_keywords]:
         params.pop(keyword, None)
@@ -84,14 +87,16 @@ def _build_subquery(
     for p in query:
         q.update(p)
 
-    q['provider'] = opts.provider
-    q['host'] = opts.host
-    q['session'] = copy(opts.session)
+    q["provider"] = opts.provider
+    q["host"] = opts.host
+    q["session"] = copy(opts.session)
 
     return ASFSearchOptions(**q, **list_params)
 
 
-def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True, includes_nisar_products: bool = False) -> dict:
+def get_keyword_concept_ids(
+    params: dict, use_collection_alias: bool = True, includes_nisar_products: bool = False
+) -> dict:
     """
     Gets concept-ids for dataset, platform, processingLevel keywords
     processingLevel is scoped by dataset or platform concept-ids when available
@@ -110,33 +115,35 @@ def get_keyword_concept_ids(params: dict, use_collection_alias: bool = True, inc
     aliased_keywords = []
 
     if use_collection_alias:
-        alias_processing_levels = 'processingLevel' in params.keys() and not includes_nisar_products
+        alias_processing_levels = "processingLevel" in params.keys() and not includes_nisar_products
         if alias_processing_levels:
-            collections = get_concept_id_alias(
-                params.get('processingLevel'), collections_by_processing_level
+            collections = get_short_name_alias(
+                params.get("processingLevel"), collections_by_processing_level
             )
             if len(collections):
-                aliased_keywords.append('processingLevel')
+                aliased_keywords.append("processingLevel")
 
-        alias_platforms = 'platform' in params.keys()
+        alias_platforms = "platform" in params.keys()
         if alias_platforms:
-            platform_concept_ids = get_concept_id_alias(
-                [platform.upper() for platform in params.get('platform')],
+            platform_concept_ids = get_short_name_alias(
+                [platform.upper() for platform in params.get("platform")],
                 collections_per_platform,
             )
             if len(platform_concept_ids):
-                aliased_keywords.append('platform')
+                aliased_keywords.append("platform")
                 collections = _get_intersection(platform_concept_ids, collections)
         if alias_processing_levels and alias_platforms and not len(collections):
             # processingLevel isn't part of the given platform. Drop aliased keywords so we don't search on zero collections
             aliased_keywords = []
 
-    if 'dataset' in params.keys():
-        aliased_keywords.append('dataset')
-        dataset_concept_ids = get_dataset_concept_ids(params.get('dataset'))
+    if "dataset" in params.keys():
+        aliased_keywords.append("dataset")
+        dataset_concept_ids = get_dataset_short_names(params.get("dataset"))
         collections = _get_intersection(dataset_concept_ids, collections)
-    if 'dataMaturity' in params.keys():
-        collections = _get_intersection(get_nisar_collection_by_maturity(params.get('dataMaturity')), collections)
+    if "dataMaturity" in params.keys():
+        collections = _get_intersection(
+            get_nisar_collection_by_maturity(params.get("dataMaturity")), collections
+        )
     return collections, aliased_keywords
 
 
@@ -189,7 +196,7 @@ def translate_param(param_name, param_val) -> List[dict]:
         formatted_val = unformatted_val
 
         if isinstance(unformatted_val, list):
-            formatted_val = ','.join([f'{t}' for t in unformatted_val])
+            formatted_val = ",".join([f"{t}" for t in unformatted_val])
 
         param_list.append({param_name: formatted_val})
 
