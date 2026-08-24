@@ -700,8 +700,7 @@ def get_dataset_short_names(datasets: list[str]) -> list[str]:
     output = []
     for dataset in datasets:
         if short_names := dataset_collections.get(dataset):
-            for short_name in short_names:
-                output.extend(short_name)
+            output.extend(list(short_names))
         else:
             raise ValueError(
                 f'Could not find dataset named "{dataset}" provided for dataset keyword.'

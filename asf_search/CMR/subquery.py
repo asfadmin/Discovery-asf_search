@@ -57,7 +57,7 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
     collections, aliased_keywords = get_keyword_concept_ids(
         params, opts.collectionAlias, includes_nisar_products
     )
-    params["collections"] = list(union1d(collections, params.get("collections", [])))
+    params["shortName"] = list(union1d(collections, params.get("shortName", [])))
 
     for keyword in [*skip_param_names, *aliased_keywords]:
         params.pop(keyword, None)
