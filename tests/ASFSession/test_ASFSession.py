@@ -18,7 +18,7 @@ def run_auth_with_creds(username: str, password: str):
 def run_auth_with_token(token: str):
     session = ASFSession()
 
-    with patch("asf_search.ASFSession.ASFSession.post") as mock_token_session:
+    with patch("asf_search.ASFSession.post") as mock_token_session:
         if not token.startswith("Bearer EDL"):
             mock_token_session.return_value.status_code = 400
             session.auth_with_token(token)
@@ -51,7 +51,7 @@ def run_test_asf_session_rebuild_auth(
 
     session = ASFSession()
 
-    with patch("asf_search.ASFSession.ASFSession.post") as mock_token_session:
+    with patch("asf_search.ASFSession.post") as mock_token_session:
         mock_token_session.return_value.status_code = 200
         session.auth_with_token("bad_token")
 
@@ -65,7 +65,7 @@ def run_test_asf_session_rebuild_auth(
         response.request.url = response_domain
         response.headers.update({"Authorization": "Bearer fakeToken"})
 
-        with patch("asf_search.ASFSession.ASFSession._get_domain") as hostname_patch:
+        with patch("asf_search.ASFSession._get_domain") as hostname_patch:
             hostname_patch.side_effect = [original_domain, response_domain]
 
             session.rebuild_auth(req, response)
