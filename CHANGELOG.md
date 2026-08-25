@@ -27,6 +27,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ---
+## [v12.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.0...v12.3.1)
+
+### Fixed
+
+- `NISAR` dataset `geojson` export no longer fails when serializing coordinates for multipolygons
 
 ## [v12.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.0...v12.3.1)
 
