@@ -103,7 +103,7 @@ class NISARProduct(ASFStackableProduct):
                 if isinstance(geom, MultiPolygon):
                     geom = geom.convex_hull
                 geom, _warn = _counter_clockwise_reorientation(geom)
-                return {'coordinates': [", ".join(f"{x} {y}" for x, y in geom.exterior.coords)], 'type': 'Polygon'}
+                return {'coordinates': [[[x, y] for x, y in geom.exterior.coords]], 'type': 'Polygon'}
             else:
                 coordinates = polygons[0]['Boundary']['Points']
                 coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]
