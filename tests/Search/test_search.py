@@ -177,13 +177,16 @@ def run_test_keyword_aliasing_results(params: ASFSearchOptions):
 
     api_results = api_response["results"]
 
-    api_dict = {product["granuleName"]: True for product in api_results}
+    api_set = {product["granuleName"] for product in api_results}
+    module_set = {product.properties["sceneName"] for product in module_response}
 
-    for product in module_response:
-        sceneName = product.properties["sceneName"]
-        assert api_dict.get(sceneName, False), (
-            f"Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}"
-        )
+    difference = api_set.symmetric_difference(module_set)
+    assert len(difference) == 0
+    # for product in module_response:
+    #     sceneName = product.properties["sceneName"]
+    #     assert api_dict.get(sceneName, False), (
+    #         f"Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}"
+    #     )
 
 
 def _convert_nested_lists_to_ranges(param_value):

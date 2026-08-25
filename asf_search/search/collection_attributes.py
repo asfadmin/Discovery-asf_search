@@ -37,39 +37,41 @@ def get_searchable_attributes(
     method = None
 
     if shortName is not None:
-        method = {'type': 'shortName', 'value': shortName}
-        query_data = [('shortName', shortName)]
+        method = {"type": "shortName", "value": shortName}
+        query_data = [("shortName", shortName)]
     elif conceptID is not None:
-        query_data = [('concept-id', conceptID)]
-        method = {'type': 'conceptID', 'value': conceptID}
+        query_data = [("concept-id", conceptID)]
+        method = {"type": "conceptID", "value": conceptID}
     elif processingLevel is not None:
-        method = {'type': 'processingLevel', 'value': processingLevel}
+        method = {"type": "processingLevel", "value": processingLevel}
         query_data = _get_concept_ids_for_processing_level(processingLevel)
     else:
         raise ValueError(
-            'Error: `get_collection_searchable_attributes()` expects `shortName`, `conceptID`, or `processingLevel`'
+            "Error: `get_collection_searchable_attributes()` expects `shortName`, `conceptID`, or `processingLevel`"
         )
 
     cmr_response = _query_cmr(session=session, query_data=query_data, method=method)
 
-    if 'errors' in cmr_response:
-        raise ValueError(f"CMR responded with an error. Original error(s): {' '.join(cmr_response['errors'])}")
-    if len(cmr_response['items']) == 0:
+    if "errors" in cmr_response:
+        raise ValueError(
+            f"CMR responded with an error. Original error(s): {' '.join(cmr_response['errors'])}"
+        )
+    if len(cmr_response["items"]) == 0:
         raise ValueError(
             f'Error: no collections found in CMR for given parameter `{method["type"]}`: "{method["value"]}" '
         )
 
     additionalAttributes = {}
 
-    for entry in cmr_response['items']:
-        umm = entry['umm']
-        attributes = umm.get('AdditionalAttributes')
+    for entry in cmr_response["items"]:
+        umm = entry["umm"]
+        attributes = umm.get("AdditionalAttributes")
         if attributes is not None:
             for attribute in attributes:
-                additionalAttributes[attribute.get('Name')] = AdditionalAttribute(
-                    name=attribute.get('Name'),
-                    description=attribute.get('Description'),
-                    data_type=attribute.get('DataType'),
+                additionalAttributes[attribute.get("Name")] = AdditionalAttribute(
+                    name=attribute.get("Name"),
+                    description=attribute.get("Description"),
+                    data_type=attribute.get("DataType"),
                 )
 
     return additionalAttributes
@@ -78,12 +80,14 @@ def get_searchable_attributes(
 def _get_concept_ids_for_processing_level(processing_level: str):
     collections = collections_by_processing_level.get(processing_level)
     if collections is None:
-        raise ValueError(f'asf-search is missing concept-id aliases for processing level "{processing_level}". Please use `shortName` or `conceptID')
-    return [('concept-id[]', collection) for collection in collections]
+        raise ValueError(
+            f'asf-search is missing concept-id aliases for processing level "{processing_level}". Please use `shortName` or `conceptID'
+        )
+    return [("shortName[]", collection) for collection in collections]
 
 
 def _query_cmr(session: ASFSession, query_data: list[tuple[str, str]], method: dict) -> dict:
-    url = 'https://cmr.earthdata.nasa.gov/search/collections.umm_json'
+    url = "https://cmr.earthdata.nasa.gov/search/collections.umm_json"
 
     response = session.post(url=url, data=query_data)
 
