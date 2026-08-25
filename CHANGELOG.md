@@ -27,7 +27,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ---
-## [v12.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.0...v12.3.1)
+## [v12.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.1...v12.3.2)
 
 ### Fixed
 
