@@ -44,7 +44,7 @@ def get_searchable_attributes(
         method = {"type": "conceptID", "value": conceptID}
     elif processingLevel is not None:
         method = {"type": "processingLevel", "value": processingLevel}
-        query_data = _get_concept_ids_for_processing_level(processingLevel)
+        query_data = _get_short_names_for_processing_level(processingLevel)
     else:
         raise ValueError(
             "Error: `get_collection_searchable_attributes()` expects `shortName`, `conceptID`, or `processingLevel`"
@@ -77,11 +77,11 @@ def get_searchable_attributes(
     return additionalAttributes
 
 
-def _get_concept_ids_for_processing_level(processing_level: str):
+def _get_short_names_for_processing_level(processing_level: str):
     collections = collections_by_processing_level.get(processing_level)
     if collections is None:
         raise ValueError(
-            f'asf-search is missing concept-id aliases for processing level "{processing_level}". Please use `shortName` or `conceptID'
+            f'asf-search is missing short name aliases for processing level "{processing_level}". Please use `shortName` or `conceptID'
         )
     return [("shortName[]", collection) for collection in collections]
 

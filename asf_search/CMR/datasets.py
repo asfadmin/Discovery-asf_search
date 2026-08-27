@@ -698,7 +698,7 @@ def get_short_name_alias(param_list: list[str], collections_dict: dict) -> list[
 
 def get_dataset_short_names(datasets: list[str]) -> list[str]:
     """
-    Returns cshort names for provided dataset(s)
+    Returns short names for provided dataset(s)
     If an invalid datset is provided a ValueError is raised
 
     :param `datasets` (`list[str]`): a list of datasets to grab short names for
