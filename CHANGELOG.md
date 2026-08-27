@@ -27,12 +27,20 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ---
+## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.1...v13.0.0)
+
+### Changed
+
+- `asf-search` now aliases `processingLevel` and `platform` keywords with corresponding collection shortName and not collection concept-id for improved maintainability and debugging. `dataset` keyword also uses shortName.
+
+=======
 ## [v12.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.1...v12.3.2)
 
 ### Fixed
 
 - `NISAR` dataset `geojson` export no longer fails when serializing coordinates for multipolygons
 
+=======
 ## [v12.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.0...v12.3.1)
 
 ### Fixed
