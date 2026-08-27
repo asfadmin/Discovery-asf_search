@@ -679,30 +679,30 @@ def get_nisar_collection_by_maturity(maturities: list[str]):
 def get_short_name_alias(param_list: list[str], collections_dict: dict) -> list[str]:
     """
     param: param_list (list[str]): list of search values to alias
-    param: collections_dict (dict): The search value to concept-id dictionary to read from
+    param: collections_dict (dict): The search value to short name dictionary to read from
 
-    returns list[str]: Returns a list of concept-ids
+    returns list[str]: Returns a list of collection short names
     that correspond to the given list of search values
     If any of the search values are not keys in the collections_dict,
     this will instead returns an empty list.
     """
-    shortname_id_aliases = []
+    short_name_aliases = []
     for param in param_list:
         if alias := collections_dict.get(param):
-            shortname_id_aliases.extend(alias)
+            short_name_aliases.extend(alias)
         else:
             return []
 
-    return shortname_id_aliases
+    return short_name_aliases
 
 
 def get_dataset_short_names(datasets: list[str]) -> list[str]:
     """
-    Returns concept-ids for provided dataset(s)
+    Returns cshort names for provided dataset(s)
     If an invalid datset is provided a ValueError is raised
 
-    :param `datasets` (`list[str]`): a list of datasets to grab concept-ids for
-    :returns `list[str]`: the list of concept-ids associated with the given datasets
+    :param `datasets` (`list[str]`): a list of datasets to grab short names for
+    :returns `list[str]`: the list of short names associated with the given datasets
     """
     output = []
     for dataset in datasets:

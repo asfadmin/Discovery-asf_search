@@ -54,10 +54,10 @@ def build_subqueries(opts: ASFSearchOptions) -> List[ASFSearchOptions]:
             if product in NISAR_PRODUCT_TYPES:
                 includes_nisar_products = True
                 break
-    collections, aliased_keywords = get_keyword_concept_ids(
+    short_names, aliased_keywords = get_keyword_short_names(
         params, opts.collectionAlias, includes_nisar_products
     )
-    params["shortName"] = list(union1d(collections, params.get("shortName", [])))
+    params["shortName"] = list(union1d(short_names, params.get("shortName", [])))
 
     for keyword in [*skip_param_names, *aliased_keywords]:
         params.pop(keyword, None)
@@ -94,21 +94,21 @@ def _build_subquery(
     return ASFSearchOptions(**q, **list_params)
 
 
-def get_keyword_concept_ids(
+def get_keyword_short_names(
     params: dict, use_collection_alias: bool = True, includes_nisar_products: bool = False
 ) -> dict:
     """
-    Gets concept-ids for dataset, platform, processingLevel keywords
-    processingLevel is scoped by dataset or platform concept-ids when available
+    Gets short names for dataset, platform, processingLevel keywords
+    processingLevel is scoped by dataset or platform short names when available
 
     : param params:
         search parameter dictionary pre-CMR translation
     : param use_collection_alias:
-        whether or not to alias platform and processingLevel with concept-ids
+        whether or not to alias platform and processingLevel with short names
     : includes_nisar_products:
-        Flag to skip the processing level aliasing (urgent response products are grouped by product level and not product type)
+        Flag to skip the processing level aliasing (NISAR urgent response products are grouped by product level and not product type)
     : returns two lists:
-        - list of concept-ids for dataset, platform, and processingLevel
+        - list of short names for dataset, platform, and processingLevel
         - list of aliased keywords to remove from final parameters
     """
     collections = []
