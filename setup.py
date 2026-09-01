@@ -72,7 +72,7 @@ setup(
                     'extras': extra_requirements, 
                     'asf-enumeration': asf_enumeration, 
                     'coherence': coherence,
-                    'sbasnetwork_plot': sbasnetwork_plot
+                    'sbasnetwork_plot': sbasnetwork_plot,
                     },
     license='BSD',
     license_files=('LICENSE',),

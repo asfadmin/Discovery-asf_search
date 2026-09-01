@@ -44,6 +44,10 @@ def search_generator(
     beamMode: Union[str, Sequence[str]] = None,
     beamSwath: Union[str, Sequence[str]] = None,
     campaign: Union[str, Sequence[str]] = None,
+    dataMaturity: Union[
+        Literal["BETA", "PROVISIONAL", "VALIDATED"],
+        Sequence[Literal["BETA", "PROVISIONAL", "VALIDATED"]],
+    ] = None,
     maxDoppler: float = None,
     minDoppler: float = None,
     end: Union[datetime.datetime, str] = None,
@@ -77,12 +81,12 @@ def search_generator(
     fullBurstID: Union[str, Sequence[str]] = None,
     temporalBaselineDays: Union[str, Sequence[str]] = None,
     operaBurstID: Union[str, Sequence[str]] = None,
-    frameCoverage: Literal['FULL', 'PARTIAL'] = None,
+    frameCoverage: Literal["FULL", "PARTIAL"] = None,
     mainBandPolarization: Union[str, Sequence[str]] = None,
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
     jointObservation: bool = None,
-    productionConfiguration: Union[Literal['PR', 'UR'], Sequence[Literal['PR', 'UR']]] = None,
+    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
@@ -117,6 +121,8 @@ def search_generator(
     campaign:
         For UAVSAR and AIRSAR data collections only. Search by general location,
         site description, or data grouping as supplied by flight agency or project.
+    dataMaturity:
+        For NISAR data collections only. Determined by when products were processed
     maxDoppler:
         Doppler provides an indication of how much the look direction deviates
         from the ideal perpendicular flight direction acquisition.
@@ -202,8 +208,8 @@ def search_generator(
 
     # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:
     kwargs = locals()
-    opts = ASFSearchOptions() if kwargs['opts'] is None else copy(opts)
-    del kwargs['opts']
+    opts = ASFSearchOptions() if kwargs["opts"] is None else copy(opts)
+    del kwargs["opts"]
 
     kwargs = dict((k, v) for k, v in kwargs.items() if v is not None)
     kw_opts = ASFSearchOptions(**kwargs)
@@ -211,44 +217,44 @@ def search_generator(
     # Anything passed in as kwargs has priority over anything in opts:
     opts.merge_args(**dict(kw_opts))
 
-    maxResults = opts.pop('maxResults', None)
+    maxResults = opts.pop("maxResults", None)
 
     if maxResults is not None and (
-        getattr(opts, 'granule_list', False) or getattr(opts, 'product_list', False)
+        getattr(opts, "granule_list", False) or getattr(opts, "product_list", False)
     ):
         names = [] if opts.granule_list is None else opts.granule_list
-        if not any('*' in name or '?' in name for name in names):
+        if not any("*" in name or "?" in name for name in names):
             raise ValueError(
-                'Cannot use maxResults with product_list or non-wildcard granule_list.'
+                "Cannot use maxResults with product_list or non-wildcard granule_list."
             )
 
-    ASF_LOGGER.debug(f'SEARCH: preprocessing opts: {opts}')
+    ASF_LOGGER.debug(f"SEARCH: preprocessing opts: {opts}")
     preprocess_opts(opts)
-    ASF_LOGGER.debug(f'SEARCH: preprocessed opts: {opts}')
+    ASF_LOGGER.debug(f"SEARCH: preprocessed opts: {opts}")
 
-    ASF_LOGGER.info(f'SEARCH: Using search opts {opts}')
+    ASF_LOGGER.info(f"SEARCH: Using search opts {opts}")
 
-    url = '/'.join(s.strip('/') for s in [f'https://{opts.host}', f'{INTERNAL.CMR_GRANULE_PATH}'])
+    url = "/".join(s.strip("/") for s in [f"https://{opts.host}", f"{INTERNAL.CMR_GRANULE_PATH}"])
     total = 0
 
     queries = build_subqueries(opts)
 
     ASF_LOGGER.info(f'SEARCH: Using cmr endpoint: "{url}"')
-    ASF_LOGGER.debug(f'SEARCH: Built {len(queries)} subqueries')
+    ASF_LOGGER.debug(f"SEARCH: Built {len(queries)} subqueries")
 
     for subquery_idx, query in enumerate(queries):
-        ASF_LOGGER.info(f'SUBQUERY {subquery_idx + 1}: Beginning subquery with opts: {query}')
+        ASF_LOGGER.info(f"SUBQUERY {subquery_idx + 1}: Beginning subquery with opts: {query}")
 
-        ASF_LOGGER.debug(f'TRANSLATION: Translating subquery:\n{query}')
+        ASF_LOGGER.debug(f"TRANSLATION: Translating subquery:\n{query}")
         translated_opts = translate_opts(query)
-        ASF_LOGGER.debug(f'TRANSLATION: Subquery translated to cmr keywords:\n{translated_opts}')
-        cmr_search_after_header = ''
+        ASF_LOGGER.debug(f"TRANSLATION: Subquery translated to cmr keywords:\n{translated_opts}")
+        cmr_search_after_header = ""
         subquery_count = 0
 
         page_number = 1
         while cmr_search_after_header is not None:
             try:
-                ASF_LOGGER.debug(f'SUBQUERY {subquery_idx + 1}: Fetching page {page_number}')
+                ASF_LOGGER.debug(f"SUBQUERY {subquery_idx + 1}: Fetching page {page_number}")
                 items, subquery_max_results, cmr_search_after_header = query_cmr(
                     opts.session, url, translated_opts, subquery_count
                 )
@@ -256,11 +262,11 @@ def search_generator(
                 message = str(exc)
                 ASF_LOGGER.error(message)
                 report_search_error(query, message)
-                opts.session.headers.pop('CMR-Search-After', None)
+                opts.session.headers.pop("CMR-Search-After", None)
                 raise
 
             ASF_LOGGER.debug(
-                f'SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items.'
+                f"SUBQUERY {subquery_idx + 1}: Page {page_number} fetched, returned {len(items)} items."
             )
 
             if (
@@ -268,19 +274,19 @@ def search_generator(
                 and len(items) + subquery_count < subquery_max_results
             ):
                 message = (
-                    'CMR returned page of incomplete results.'
-                    f'Expected {min(INTERNAL.CMR_PAGE_SIZE, subquery_max_results - subquery_count)} results,'
-                    f'got {len(items)}'
+                    "CMR returned page of incomplete results."
+                    f"Expected {min(INTERNAL.CMR_PAGE_SIZE, subquery_max_results - subquery_count)} results,"
+                    f"got {len(items)}"
                 )
                 ASF_LOGGER.warning(message)
                 report_search_error(query, message)
 
-            opts.session.headers.update({'CMR-Search-After': cmr_search_after_header})
+            opts.session.headers.update({"CMR-Search-After": cmr_search_after_header})
             perf = time.time()
             last_page = process_page(
                 items, maxResults, subquery_max_results, total, subquery_count, opts
             )
-            ASF_LOGGER.info(f'Page Processing Time {time.time() - perf}')
+            ASF_LOGGER.info(f"Page Processing Time {time.time() - perf}")
             subquery_count += len(last_page)
             total += len(last_page)
             last_page.searchComplete = subquery_count == subquery_max_results or total == maxResults
@@ -288,20 +294,20 @@ def search_generator(
 
             if last_page.searchComplete:
                 if total == maxResults:  # the user has as many results as they wanted
-                    ASF_LOGGER.info(f'SEARCH COMPLETE: MaxResults ({maxResults}) reached')
-                    opts.session.headers.pop('CMR-Search-After', None)
+                    ASF_LOGGER.info(f"SEARCH COMPLETE: MaxResults ({maxResults}) reached")
+                    opts.session.headers.pop("CMR-Search-After", None)
                     return
                 else:  # or we've gotten all possible results for this subquery
                     ASF_LOGGER.info(
-                        f'SUBQUERY {subquery_idx + 1} COMPLETE: results exhausted for subquery'
+                        f"SUBQUERY {subquery_idx + 1} COMPLETE: results exhausted for subquery"
                     )
                     cmr_search_after_header = None
 
             page_number += 1
 
-        opts.session.headers.pop('CMR-Search-After', None)
+        opts.session.headers.pop("CMR-Search-After", None)
 
-    ASF_LOGGER.info(f'SEARCH COMPLETE: results exhausted for search opts {opts}')
+    ASF_LOGGER.info(f"SEARCH COMPLETE: results exhausted for search opts {opts}")
 
 
 @retry(
@@ -319,9 +325,9 @@ def query_cmr(
     response = get_page(session=session, url=url, translated_opts=translated_opts)
 
     perf = time.time()
-    items = [as_ASFProduct(f, session=session) for f in response.json()['items']]
-    ASF_LOGGER.debug(f'Product Subclassing Time {time.time() - perf}')
-    hits: int = response.json()['hits']  # total count of products given search opts
+    items = [as_ASFProduct(f, session=session) for f in response.json()["items"]]
+    ASF_LOGGER.debug(f"Product Subclassing Time {time.time() - perf}")
+    hits: int = response.json()["hits"]  # total count of products given search opts
     # 9-10 per process
     # 3.9-5 per process
     # sometimes CMR returns results with the wrong page size
@@ -332,7 +338,7 @@ def query_cmr(
     #         f'got {len(items)}'
     #     )
 
-    return items, hits, response.headers.get('CMR-Search-After', None)
+    return items, hits, response.headers.get("CMR-Search-After", None)
 
 
 def process_page(
@@ -368,7 +374,7 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
         response = session.post(url=url, data=translated_opts, timeout=CMR_TIMEOUT)
         response.raise_for_status()
     except HTTPError as exc:
-        error_message = f'HTTP {response.status_code}: {response.json()["errors"]}'
+        error_message = f"HTTP {response.status_code}: {response.json()['errors']}"
         if 400 <= response.status_code <= 499:
             raise ASFSearch4xxError(error_message) from exc
         if 500 <= response.status_code <= 599:
@@ -378,7 +384,7 @@ def get_page(session: ASFSession, url: str, translated_opts: List) -> Response:
             f'Connection Error (Timeout): CMR took too long to respond. Set asf constant "asf_search.constants.INTERNAL.CMR_TIMEOUT" to increase. ({url=}, timeout={CMR_TIMEOUT})'
         ) from exc
 
-    ASF_LOGGER.info(f'Query Time Elapsed {time.time() - perf}')
+    ASF_LOGGER.info(f"Query Time Elapsed {time.time() - perf}")
     return response
 
 
@@ -401,29 +407,29 @@ def wrap_wkt(opts: ASFSearchOptions):
         opts.intersectsWith = wrapped.wkt
         if len(repairs):
             ASF_LOGGER.warning(
-                'WKT REPAIR/VALIDATION: The following repairs were performed '
-                f'on the provided AOI:\n{[str(repair) for repair in repairs]}'
+                "WKT REPAIR/VALIDATION: The following repairs were performed "
+                f"on the provided AOI:\n{[str(repair) for repair in repairs]}"
             )
 
 
 def set_default_dates(opts: ASFSearchOptions):
     if opts.start is not None and isinstance(opts.start, str):
-        opts.start = dateparser.parse(opts.start, settings={'RETURN_AS_TIMEZONE_AWARE': True})
+        opts.start = dateparser.parse(opts.start, settings={"RETURN_AS_TIMEZONE_AWARE": True})
     if opts.end is not None and isinstance(opts.end, str):
-        opts.end = dateparser.parse(opts.end, settings={'RETURN_AS_TIMEZONE_AWARE': True})
+        opts.end = dateparser.parse(opts.end, settings={"RETURN_AS_TIMEZONE_AWARE": True})
     # If both are used, make sure they're in the right order:
     if opts.start is not None and opts.end is not None:
         if opts.start > opts.end:
             ASF_LOGGER.warning(
-                f'Start date ({opts.start}) is after end date ({opts.end}). Switching the two.'
+                f"Start date ({opts.start}) is after end date ({opts.end}). Switching the two."
             )
             opts.start, opts.end = opts.end, opts.start
     # Can't do this sooner, since you need to compare start vs end:
     # TODO python 3.13 deprecation warning, ambiguous date when month specified but not year
     if opts.start is not None:
-        opts.start = opts.start.strftime('%Y-%m-%dT%H:%M:%SZ')
+        opts.start = opts.start.strftime("%Y-%m-%dT%H:%M:%SZ")
     if opts.end is not None:
-        opts.end = opts.end.strftime('%Y-%m-%dT%H:%M:%SZ')
+        opts.end = opts.end.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def set_platform_alias(opts: ASFSearchOptions):
@@ -431,28 +437,28 @@ def set_platform_alias(opts: ASFSearchOptions):
     if opts.platform is not None:
         plat_aliases = {
             # Groups:
-            'S1': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'SENTINEL-1D'],
-            'SENTINEL-1': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'SENTINEL-1D'],
-            'SENTINEL': ['SENTINEL-1A', 'SENTINEL-1B', 'SENTINEL-1C', 'SENTINEL-1D'],
-            'ERS': ['ERS-1', 'ERS-2'],
-            'SIR-C': ['STS-59', 'STS-68'],
+            "S1": ["SENTINEL-1A", "SENTINEL-1B", "SENTINEL-1C", "SENTINEL-1D"],
+            "SENTINEL-1": ["SENTINEL-1A", "SENTINEL-1B", "SENTINEL-1C", "SENTINEL-1D"],
+            "SENTINEL": ["SENTINEL-1A", "SENTINEL-1B", "SENTINEL-1C", "SENTINEL-1D"],
+            "ERS": ["ERS-1", "ERS-2"],
+            "SIR-C": ["STS-59", "STS-68"],
             # Singles / Aliases:
-            'R1': ['RADARSAT-1'],
-            'E1': ['ERS-1'],
-            'E2': ['ERS-2'],
-            'J1': ['JERS-1'],
-            'A3': ['ALOS'],
-            'AS': ['DC-8'],
-            'AIRSAR': ['DC-8'],
-            'SS': ['SEASAT 1'],
-            'SEASAT': ['SEASAT 1'],
-            'SA': ['SENTINEL-1A'],
-            'SB': ['SENTINEL-1B'],
-            'SC': ['SENTINEL-1C'],
-            'SD': ['SENTINEL-1D'],
-            'SP': ['SMAP'],
-            'UA': ['G-III'],
-            'UAVSAR': ['G-III'],
+            "R1": ["RADARSAT-1"],
+            "E1": ["ERS-1"],
+            "E2": ["ERS-2"],
+            "J1": ["JERS-1"],
+            "A3": ["ALOS"],
+            "AS": ["DC-8"],
+            "AIRSAR": ["DC-8"],
+            "SS": ["SEASAT 1"],
+            "SEASAT": ["SEASAT 1"],
+            "SA": ["SENTINEL-1A"],
+            "SB": ["SENTINEL-1B"],
+            "SC": ["SENTINEL-1C"],
+            "SD": ["SENTINEL-1D"],
+            "SP": ["SMAP"],
+            "UA": ["G-III"],
+            "UAVSAR": ["G-III"],
         }
         platform_list = []
         for plat in opts.platform:
@@ -471,7 +477,7 @@ _dataset_collection_items = dataset_collections.items()
 def set_science_product_alias(opts: ASFSearchOptions):
     """Alias certain product types (primarily NISAR L0B)"""
     if opts.processingLevel is not None:
-        processingLevelAliases = {'L0B': ['RRSD']}
+        processingLevelAliases = {"L0B": ["RRSD"]}
 
         processing_levels = []
         for processing_level in opts.processingLevel:
@@ -507,7 +513,7 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
 
     # if the key matches one of the shortnames in any of our datasets
     for dataset, collections in _dataset_collection_items:
-        if collections.get(product_type_key) is not None:
+        if product_type_key in collections:
             subclass = dataset_to_product_types.get(dataset)
             if subclass is not None:
                 # ASF_LOGGER.warning(f'subclass selection time {time.time() - perf}')
@@ -517,15 +523,15 @@ def as_ASFProduct(item: Dict, session: ASFSession) -> ASFProduct:
     # If the platform exists, try to match it
     platform = _get_platform(item=item)
     if ASFProductType.ARIAS1GUNWProduct._is_subclass(item=item):
-        return dataset_to_product_types.get('ARIA S1 GUNW')(item, session=session)
+        return dataset_to_product_types.get("ARIA S1 GUNW")(item, session=session)
     elif (subclass := dataset_to_product_types.get(platform)) is not None:
         return subclass(item, session=session)
 
     output = ASFProduct(item, session=session)
 
-    granule_concept_id = output.meta.get('concept-id', 'Missing Granule Concept ID')
+    granule_concept_id = output.meta.get("concept-id", "Missing Granule Concept ID")
     fileID = output.properties.get(
-        'fileID', output.properties.get('sceneName', 'fileID and sceneName Missing')
+        "fileID", output.properties.get("sceneName", "fileID and sceneName Missing")
     )
 
     ASF_LOGGER.warning(
@@ -542,11 +548,11 @@ def _get_product_type_key(item: Dict) -> str:
     2. platform_shortName (Fallback)
         - special case: Aria S1 GUNW
     """
-    collection_shortName = ASFProduct.umm_get(item['umm'], 'CollectionReference', 'ShortName')
+    collection_shortName = ASFProduct.umm_get(item["umm"], "CollectionReference", "ShortName")
 
     if collection_shortName is None:
         if ASFProductType.ARIAS1GUNWProduct._is_subclass(item=item):
-            return 'ARIA S1 GUNW'
+            return "ARIA S1 GUNW"
 
         platform = _get_platform(item=item)
         return platform
@@ -555,33 +561,33 @@ def _get_product_type_key(item: Dict) -> str:
 
 
 def _get_platform(item: Dict):
-    return ASFProduct.umm_get(item['umm'], 'Platforms', 0, 'ShortName')
+    return ASFProduct.umm_get(item["umm"], "Platforms", 0, "ShortName")
 
 
 # Maps datasets from DATASET.py and collection/platform shortnames to ASFProduct subclasses
 dataset_to_product_types = {
-    'SENTINEL-1': ASFProductType.S1Product,
-    'OPERA-S1': ASFProductType.OPERAS1Product,
-    'OPERA-S1-CALVAL': ASFProductType.OPERAS1Product,
-    'SLC-BURST': ASFProductType.S1BurstProduct,
-    'ALOS': ASFProductType.ALOSProduct,
-    'SIR-C': ASFProductType.SIRCProduct,
-    'STS-59': ASFProductType.SIRCProduct,
-    'STS-68': ASFProductType.SIRCProduct,
-    'ARIA S1 GUNW': ASFProductType.ARIAS1GUNWProduct,
-    'SMAP': ASFProductType.SMAPProduct,
-    'UAVSAR': ASFProductType.UAVSARProduct,
-    'G-III': ASFProductType.UAVSARProduct,
-    'RADARSAT-1': ASFProductType.RADARSATProduct,
-    'ERS': ASFProductType.ERSProduct,
-    'ERS-1': ASFProductType.ERSProduct,
-    'ERS-2': ASFProductType.ERSProduct,
-    'JERS-1': ASFProductType.JERSProduct,
-    'AIRSAR': ASFProductType.AIRSARProduct,
-    'DC-8': ASFProductType.AIRSARProduct,
-    'SEASAT': ASFProductType.SEASATProduct,
-    'SEASAT 1': ASFProductType.SEASATProduct,
-    'NISAR': ASFProductType.NISARProduct,
-    'ALOS-2': ASFProductType.ALOS2Product,
-    'TROPO': ASFProductType.TROPOProduct,
+    "SENTINEL-1": ASFProductType.S1Product,
+    "OPERA-S1": ASFProductType.OPERAS1Product,
+    "OPERA-S1-CALVAL": ASFProductType.OPERAS1Product,
+    "SLC-BURST": ASFProductType.S1BurstProduct,
+    "ALOS": ASFProductType.ALOSProduct,
+    "SIR-C": ASFProductType.SIRCProduct,
+    "STS-59": ASFProductType.SIRCProduct,
+    "STS-68": ASFProductType.SIRCProduct,
+    "ARIA S1 GUNW": ASFProductType.ARIAS1GUNWProduct,
+    "SMAP": ASFProductType.SMAPProduct,
+    "UAVSAR": ASFProductType.UAVSARProduct,
+    "G-III": ASFProductType.UAVSARProduct,
+    "RADARSAT-1": ASFProductType.RADARSATProduct,
+    "ERS": ASFProductType.ERSProduct,
+    "ERS-1": ASFProductType.ERSProduct,
+    "ERS-2": ASFProductType.ERSProduct,
+    "JERS-1": ASFProductType.JERSProduct,
+    "AIRSAR": ASFProductType.AIRSARProduct,
+    "DC-8": ASFProductType.AIRSARProduct,
+    "SEASAT": ASFProductType.SEASATProduct,
+    "SEASAT 1": ASFProductType.SEASATProduct,
+    "NISAR": ASFProductType.NISARProduct,
+    "ALOS-2": ASFProductType.ALOS2Product,
+    "TROPO": ASFProductType.TROPOProduct,
 }

@@ -2,6 +2,7 @@ from shapely import unary_union, multipolygons
 from typing import Dict, Tuple, Union
 from asf_search import ASFSearchOptions, ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_frame_coverage, try_parse_bool, try_parse_int
+from asf_search.WKT.validate_wkt import _counter_clockwise_reorientation
 from shapely.geometry import shape, MultiPolygon
 from shapely.geometry.base import BaseGeometry
 from shapely.ops import transform
@@ -87,7 +88,7 @@ class NISARProduct(ASFStackableProduct):
             polygons = item['umm']['SpatialExtent']['HorizontalSpatialDomain']['Geometry'][
                 'GPolygons'
             ]
-            # dateline spanning scenes are stored as multiple polygons in CMR, 
+            # dateline spanning scenes are stored as multiple polygons in CMR,
             # we need to unwrap and merge them
             if len(polygons) > 1:
                 polygon_shapes = []
@@ -96,14 +97,13 @@ class NISARProduct(ASFStackableProduct):
                     geometry = self._get_unwrapped({'coordinates': [coordinates], 'type': 'Polygon'})
 
                     polygon_shapes.append(geometry)
-                
-                geom = unary_union(multipolygons(polygon_shapes))
 
+                geom = unary_union(multipolygons(polygon_shapes))
                 # sometimes the dateline spanning polygons don't overlap properly
                 if isinstance(geom, MultiPolygon):
                     geom = geom.convex_hull
-
-                return {'coordinates': [geom.exterior.coords], 'type': 'Polygon'}
+                geom, _warn = _counter_clockwise_reorientation(geom)
+                return {'coordinates': [[[x, y] for x, y in geom.exterior.coords]], 'type': 'Polygon'}
             else:
                 coordinates = polygons[0]['Boundary']['Points']
                 coordinates = [[c['Longitude'], c['Latitude']] for c in coordinates]

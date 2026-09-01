@@ -20,8 +20,8 @@ import requests_mock
 
 from asf_search.search.search_generator import as_ASFProduct, preprocess_opts
 
-SEARCHAPI_URL = 'https://api.daac.asf.alaska.edu'
-SEARCHAPI_ENDPOINT = '/services/search/param?'
+SEARCHAPI_URL = "https://api.daac.asf.alaska.edu"
+SEARCHAPI_ENDPOINT = "/services/search/param?"
 
 
 def run_test_ASFSearchResults(search_resp):
@@ -30,36 +30,36 @@ def run_test_ASFSearchResults(search_resp):
     )
 
     assert len(search_results) == len(search_resp)
-    assert search_results.geojson()['type'] == 'FeatureCollection'
+    assert search_results.geojson()["type"] == "FeatureCollection"
 
     for idx, feature in enumerate(search_results):
         # temporal and perpendicular baseline values are calculated post-search,
         # so there's no instance where they'll be returned in a CMR search
-        search_resp[idx]['properties'].pop('temporalBaseline', None)
-        search_resp[idx]['properties'].pop('perpendicularBaseline', None)
+        search_resp[idx]["properties"].pop("temporalBaseline", None)
+        search_resp[idx]["properties"].pop("perpendicularBaseline", None)
 
-        assert feature.geojson()['geometry'] == search_resp[idx]['geometry']
-        for key, item in feature.geojson()['properties'].items():
-            if key == 'esaFrame':
-                assert search_resp[idx]['properties']['frameNumber'] == item
-            elif 'esaFrame' in feature.geojson()['properties'].keys() and key == 'frameNumber':
+        assert feature.geojson()["geometry"] == search_resp[idx]["geometry"]
+        for key, item in feature.geojson()["properties"].items():
+            if key == "esaFrame":
+                assert search_resp[idx]["properties"]["frameNumber"] == item
+            elif "esaFrame" in feature.geojson()["properties"].keys() and key == "frameNumber":
                 continue
-            elif key in ['stopTime', 'startTime', 'processingDate']:
-                assert try_parse_date(item) == try_parse_date(search_resp[idx]['properties'][key])
-            elif search_resp[idx]['properties'].get(key) is not None and item is not None:
-                assert item == search_resp[idx]['properties'][key]
+            elif key in ["stopTime", "startTime", "processingDate"]:
+                assert try_parse_date(item) == try_parse_date(search_resp[idx]["properties"][key])
+            elif search_resp[idx]["properties"].get(key) is not None and item is not None:
+                assert item == search_resp[idx]["properties"][key]
 
 
 def run_test_search(search_parameters, answer):
     with requests_mock.Mocker() as m:
         m.post(
-            f'https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}',
-            json={'items': answer, 'hits': len(answer)},
+            f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}",
+            json={"items": answer, "hits": len(answer)},
         )
         response = search(**search_parameters)
 
-        if search_parameters.get('maxResults', False):
-            assert len(response) == search_parameters['maxResults']
+        if search_parameters.get("maxResults", False):
+            assert len(response) == search_parameters["maxResults"]
 
         assert len(response) == len(answer)
         # assert(response.geojson()["features"] == answer)
@@ -69,12 +69,12 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
     if not len(search_parameters.keys()):
         with requests_mock.Mocker() as m:
             m.register_uri(
-                'POST',
-                f'https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}',
+                "POST",
+                f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}",
                 status_code=status_code,
-                json={'errors': {'report': report}},
+                json={"errors": {"report": report}},
             )
-            m.register_uri('POST', 'https://search-error-report.asf.alaska.edu/', real_http=True)
+            m.register_uri("POST", "https://search-error-report.asf.alaska.edu/", real_http=True)
             searchOptions = ASFSearchOptions(**search_parameters)
             with raises(ASFSearchError):
                 search(opts=searchOptions)
@@ -83,7 +83,7 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
     # If we're not doing an empty search we want to fire off one real query to CMR, then interrupt it with an error
     # We can tell a search isn't the first one by checking if 'CMR-Search-After' has been set
     def custom_matcher(request: requests.Request):
-        if 'CMR-Search-After' in request.headers.keys():
+        if "CMR-Search-After" in request.headers.keys():
             resp = requests.Response()
             resp.status_code = 200
             return resp
@@ -91,20 +91,20 @@ def run_test_search_http_error(search_parameters, status_code: Number, report: s
 
     with requests_mock.Mocker() as m:
         m.register_uri(
-            'POST',
-            f'https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}',
+            "POST",
+            f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}",
             real_http=True,
         )
         m.register_uri(
-            'POST',
-            f'https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}',
+            "POST",
+            f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}",
             additional_matcher=custom_matcher,
             status_code=status_code,
-            json={'errors': {'report': report}},
+            json={"errors": {"report": report}},
         )
-        m.register_uri('POST', 'https://search-error-report.asf.alaska.edu/', real_http=True)
+        m.register_uri("POST", "https://search-error-report.asf.alaska.edu/", real_http=True)
 
-        search_parameters['maxResults'] = INTERNAL.CMR_PAGE_SIZE + 1
+        search_parameters["maxResults"] = INTERNAL.CMR_PAGE_SIZE + 1
         searchOptions = ASFSearchOptions(**search_parameters)
 
         with raises(ASFSearchError):
@@ -117,7 +117,7 @@ def run_test_dataset_search(datasets: List):
             search(dataset=datasets, maxResults=1)
     else:
         for dataset in datasets:
-            valid_shortnames = list(dataset_collections.get(dataset))
+            valid_short_names = list(dataset_collections.get(dataset))
 
             response = search(dataset=dataset, maxResults=250)
 
@@ -129,7 +129,7 @@ def run_test_dataset_search(datasets: List):
                         for product in response
                         if (
                             shortName := ASFProduct.umm_get(
-                                product.umm, 'CollectionReference', 'ShortName'
+                                product.umm, "CollectionReference", "ShortName"
                             )
                         )
                         is not None
@@ -139,7 +139,7 @@ def run_test_dataset_search(datasets: List):
 
             # and check that results are limited to the expected datasets by their shortname
             for shortName in shortNames:
-                assert shortName in valid_shortnames
+                assert shortName in valid_short_names
 
 
 def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
@@ -150,7 +150,7 @@ def run_test_build_subqueries(params: ASFSearchOptions, expected: List):
         for key, actual_val in a:
             expected_val = getattr(b, key)
             if isinstance(actual_val, list):
-                if key == 'cmr_keywords':
+                if key == "cmr_keywords":
                     for idx, key_value_pair in enumerate(actual_val):
                         assert key_value_pair == expected_val[idx]
                 else:
@@ -172,18 +172,21 @@ def run_test_keyword_aliasing_results(params: ASFSearchOptions):
     try:
         api_response = query_endpoint(dict(params))
     except requests.ReadTimeout:
-        ASF_LOGGER.warn(f'SearchAPI timed out, skipping test for params {str(params)}')
+        ASF_LOGGER.warn(f"SearchAPI timed out, skipping test for params {str(params)}")
         return
 
-    api_results = api_response['results']
+    api_results = api_response["results"]
 
-    api_dict = {product['granuleName']: True for product in api_results}
+    api_set = {product["granuleName"] for product in api_results}
+    module_set = {product.properties["sceneName"] for product in module_response}
 
-    for product in module_response:
-        sceneName = product.properties['sceneName']
-        assert api_dict.get(sceneName, False), (
-            f'Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}'
-        )
+    difference = api_set.symmetric_difference(module_set)
+    assert len(difference) == 0
+    # for product in module_response:
+    #     sceneName = product.properties["sceneName"]
+    #     assert api_dict.get(sceneName, False), (
+    #         f"Found unexpected scene in asf-search module results, {sceneName}\{dict(params)}"
+    #     )
 
 
 def _convert_nested_lists_to_ranges(param_value):
@@ -198,16 +201,16 @@ def run_test_granule_search_patterns(params: dict, output: dict):
     for param_key, param_value in params.items():
         validator_method = validator_map.get(param_key)
         # Convert any nested lists into ranges since yaml doesn't support ()
-        if callable(validator_method) and validator_method.__name__.endswith('_range_list'):
+        if callable(validator_method) and validator_method.__name__.endswith("_range_list"):
             if isinstance(param_value, list):
                 params[param_key] = _convert_nested_lists_to_ranges(param_value)
 
     opts = ASFSearchOptions(**params)
     response = search(opts=opts)
-    if not output['expect_results']:
+    if not output["expect_results"]:
         assert len(response) == 0
     else:
-        expected_properties: dict = output['expected_properties']
+        expected_properties: dict = output["expected_properties"]
         for property, value in expected_properties.items():
             if isinstance(value, list):
                 expanded_list = []
@@ -238,7 +241,7 @@ def run_test_granule_search_patterns(params: dict, output: dict):
 )
 def query_endpoint(params):
     response = requests.post(
-        url=SEARCHAPI_URL + SEARCHAPI_ENDPOINT, data={**params, 'output': 'jsonlite'}
+        url=SEARCHAPI_URL + SEARCHAPI_ENDPOINT, data={**params, "output": "jsonlite"}
     )
     response.raise_for_status()
 

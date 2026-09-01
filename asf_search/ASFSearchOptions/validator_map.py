@@ -44,6 +44,7 @@ validator_map = {
     'bbox': parse_bbox,
     'beamMode': parse_string_list,
     'beamSwath': parse_string_list,
+    'dataMaturity': parse_string_list,
     'campaign': parse_string,
     'circle': parse_circle,
     'linestring': parse_linestring,
