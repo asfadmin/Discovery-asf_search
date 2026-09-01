@@ -38,11 +38,6 @@ class UAVSARProduct(ASFProduct):
             url for url in self._get_additional_urls() if not url.endswith('-END')
         ]
 
-        # TODO: Drop this when -END extension droppped from CMR metadata
-        if self.properties['url'].endswith('-END'):
-            self.properties['url'] = self.properties['additionalUrls'][0]
-            self.properties['additionalUrls'] = self.properties['additionalUrls'][1:]
-
         self.properties['browse'] = [
             url
             for url in self._get_urls()
@@ -58,7 +53,3 @@ class UAVSARProduct(ASFProduct):
         self.properties['centerLon'] = center.x
 
         self.properties['platform'] = 'UAVSAR'
-
-        # TODO: Drop after PR-7468 completed
-        if self.properties['groupID'] != self.properties['fileID']:
-            self.properties['groupID'] = self.properties['fileID']
