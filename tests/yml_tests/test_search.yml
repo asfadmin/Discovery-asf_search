@@ -207,17 +207,17 @@ tests:
             - "SENTINEL-1B_SLC"
             - "SENTINEL-1C_SLC"
             - "SENTINEL-1D_SLC"
-  - test-search-build_subquery INTERFEROMETRY:
+  - test-search-build_subquery UAVSAR POLSAR:
       params:
         processingLevel:
-          - INTERFEROMETRY
+          - POLSAR
       expected:
         - shortName:
-            - UAVSAR_INSAR_INT
-  - test-search-build_subquery INTERFEROMETRY & SLC Collection:
+            - UAVSAR_POLSAR
+  - test-search-build_subquery POLSAR & SLC Collection:
       params:
         processingLevel:
-          - INTERFEROMETRY
+          - POLSAR
         collections:
           - C1214470488-ASF
           - C1205428742-ASF
@@ -228,7 +228,7 @@ tests:
       expected:
         [
           {
-            shortName: UAVSAR_INSAR_INT,
+            shortName: UAVSAR_POLSAR,
             collections:
               [
                 C1214470488-ASF,
@@ -240,10 +240,10 @@ tests:
               ],
           },
         ]
-  - test-search-build_subquery INTERFEROMETRY & SLC Collection with duplicate INTERFEROMETRY collection:
+  - test-search-build_subquery POLSAR & SLC Collection with duplicate INTERFEROMETRY collection:
       params:
         processingLevel:
-          - INTERFEROMETRY
+          - POLSAR
         collections:
           - C1214470488-ASF
           - C1205428742-ASF
@@ -255,7 +255,7 @@ tests:
       expected:
         [
           {
-            shortName: UAVSAR_INSAR_INT,
+            shortName: UAVSAR_POLSAR,
             collections:
               [
                 C1212001698-ASF,
@@ -303,14 +303,14 @@ tests:
         ]
   - test-search-build_subquery mismatched processingLevel for platform:
       params:
-        processingLevel: METADATA
+        processingLevel: POLSAR
         platform: NISAR
-      expected: [{ processingLevel: [METADATA], platform: [NISAR] }]
+      expected: [{ processingLevel: [POLSAR], platform: [NISAR] }]
   - test-search-build_subquery mismatched processingLevel for platform CSLC and S1A:
       params:
-        processingLevel: METADATA
+        processingLevel: POLSAR
         platform: SENTINEL-1A
-      expected: [{ processingLevel: [METADATA], platform: [SENTINEL-1A] }]
+      expected: [{ processingLevel: [POLSAR], platform: [SENTINEL-1A] }]
   - test-search-build_subquery UNKNOWN_PROCESSING_TYPE with platform, SLC, & collection (skip set difference with unknown processing level):
       params:
         platform:
@@ -354,24 +354,8 @@ tests:
                 "SENTINEL-1B_META_RAW",
                 "SENTINEL-1B_META_SLC",
                 "SENTINEL-1B_SLC",
-                "UAVSAR_POL_META",
-                "UAVSAR_INSAR_META",
-                "UAVSAR_INSAR_INT",
-                "UAVSAR_POL_ML_CMPLX_GRD",
-                "UAVSAR_POL_ML_CMPLX_SLANT",
-                "UAVSAR_POL_INC",
-                "UAVSAR_POL_KMZ",
-                "UAVSAR_POL_DEM",
-                "UAVSAR_POL_SLOPE",
-                "UAVSAR_POL_ML_CMPLX_GRD_3X3",
-                "UAVSAR_POL_STOKES",
-                "UAVSAR_INSAR_INT_GRD",
-                "UAVSAR_POL_PAULI",
-                "UAVSAR_POL_ML_CMPLX_GRD_5X5",
-                "UAVSAR_INSAR_KMZ",
-                "UAVSAR_INSAR_AMP_GRD",
-                "UAVSAR_INSAR_AMP",
-                "UAVSAR_INSAR_DEM",
+                "UAVSAR_POLSAR",
+                "UAVSAR_RPI",
               ],
           },
         ]
@@ -559,7 +543,7 @@ tests:
       params:
         platform: UAVSAR
 
-  - test-aliasing-search-against-api UAVSAR AMPLITUDE:
+  - test-aliasing-search-against-api UAVSAR RPI:
       params:
         platform: UAVSAR
-        processingLevel: AMPLITUDE
+        processingLevel: UAVSAR_RPI
