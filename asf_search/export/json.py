@@ -25,7 +25,7 @@ extra_json_fields = [
     ),
     ('sizeMB', ['DataGranule', 'ArchiveAndDistributionInformation', 0, 'Size']),
     ('flightLine', ['AdditionalAttributes', ('Name', 'FLIGHT_LINE'), 'Values', 0]),
-    ('missionName', ['AdditionalAttributes', ('Name', 'MISSION_NAME'), 'Values', 0]),
+    ('missionName', ['AdditionalAttributes', ('Name', 'SITE_DESCRIPTION'), 'Values', 0]),
     ('centerLat', ['AdditionalAttributes', ('Name', 'CENTER_LAT'), 'Values', 0]),
     ('centerLon', ['AdditionalAttributes', ('Name', 'CENTER_LON'), 'Values', 0]),
     ('configurationName', ['AdditionalAttributes', ('Name', 'BEAM_MODE_DESC'), 'Values', 0]),

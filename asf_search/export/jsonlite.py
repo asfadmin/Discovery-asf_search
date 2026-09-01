@@ -23,7 +23,7 @@ extra_jsonlite_fields = [
     ),
     ("sizeMB", ["DataGranule", "ArchiveAndDistributionInformation", 0, "Size"]),
     ("flightLine", ["AdditionalAttributes", ("Name", "FLIGHT_LINE"), "Values", 0]),
-    ("missionName", ["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0]),
+    ("missionName", ["AdditionalAttributes", ("Name", "SITE_DESCRIPTION"), "Values", 0]),
 ]
 
 def results_to_jsonlite(results):
@@ -275,11 +275,11 @@ class JSONLiteStreamArray(list):
             else:
                 result['ariaVersion'] = p.get('ariaVersion')
                 result['productTypeDisplay'] = 'Standard Product, NetCDF'
-            
+
             if result['sizeMB'] is None:
                 result["sizeMB"] = float(p["bytes"]) / _MB
                 pass
-        
+
         return result
 
     def getOutputType(self) -> str:
