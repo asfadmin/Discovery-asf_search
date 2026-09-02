@@ -440,7 +440,7 @@ collections_per_platform = {
         "SPL1A_RO_METADATA_003",
         "SPL1A_RO_QA_001",
         "SPL1A_RO_QA_002",
-        # "SPL1A_RO_QA_003",
+        "SPL1A_RO_QA_003",
         "SMAP_L1A_RO_V3",
         "SMAP_L1A_V2",
         "SMAP_L1B_S0_V3",
