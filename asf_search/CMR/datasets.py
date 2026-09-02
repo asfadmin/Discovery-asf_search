@@ -440,7 +440,7 @@ collections_per_platform = {
         "SPL1A_RO_METADATA_003",
         "SPL1A_RO_QA_001",
         "SPL1A_RO_QA_002",
-        "SPL1A_RO_QA_003",
+        # "SPL1A_RO_QA_003",
         "SMAP_L1A_RO_V3",
         "SMAP_L1A_V2",
         "SMAP_L1B_S0_V3",
@@ -668,6 +668,10 @@ collections_by_processing_level = {
     "GSLC": {"NISAR_L2_GSLC_BETA_V1", "NISAR_L2_GSLC_PROVISIONAL_V1", "NISAR_L2_GSLC_V1"},
     "GUNW": {"NISAR_L2_GUNW_BETA_V1", "NISAR_L2_GUNW_PROVISIONAL_V1", "NISAR_L2_GUNW_V1"},
     "SME2": {"NISAR_L3_SME2_BETA_V1", "NISAR_L3_SME2_PROVISIONAL_V1", "NISAR_L3_SME2_V1"},
+    "L1A_RADAR_RO": {"L1A_RADAR_RO"},
+    "L1C_S0_HIRES": {"L1C_S0_HIRES"},
+    "L1B_S0_LORES": {"L1B_S0_LORES"},
+    "L1A_RADAR": {"L1A_RADAR"},
 }
 
 

@@ -1,29 +1,33 @@
 # Sentinel-1
-GRD_HD = 'GRD_HD'
-GRD_MD = 'GRD_MD'
-GRD_MS = 'GRD_MS'
-GRD_HS = 'GRD_HS'
-GRD_FD = 'GRD_FD'
-SLC = 'SLC'
-OCN = 'OCN'
-RAW = 'RAW'
-METADATA_GRD_HD = 'METADATA_GRD_HD'
-METADATA_GRD_MD = 'METADATA_GRD_MD'
-METADATA_GRD_MS = 'METADATA_GRD_MS'
-METADATA_GRD_HS = 'METADATA_GRD_HS'
-METADATA_SLC = 'METADATA_SLC'
-METADATA_OCN = 'METADATA_OCN'
-METADATA_RAW = 'METADATA_RAW'
-BURST = 'BURST'
+GRD_HD = "GRD_HD"
+GRD_MD = "GRD_MD"
+GRD_MS = "GRD_MS"
+GRD_HS = "GRD_HS"
+GRD_FD = "GRD_FD"
+SLC = "SLC"
+OCN = "OCN"
+RAW = "RAW"
+METADATA_GRD_HD = "METADATA_GRD_HD"
+METADATA_GRD_MD = "METADATA_GRD_MD"
+METADATA_GRD_MS = "METADATA_GRD_MS"
+METADATA_GRD_HS = "METADATA_GRD_HS"
+METADATA_SLC = "METADATA_SLC"
+METADATA_OCN = "METADATA_OCN"
+METADATA_RAW = "METADATA_RAW"
+BURST = "BURST"
 
 # ALOS PALSAR
-L1_0 = 'L1.0'
-L1_1 = 'L1.1'
-L1_5 = 'L1.5'
-L2_2 = 'L2.2'
-RTC_LOW_RES = 'RTC_LOW_RES'
-RTC_HIGH_RES = 'RTC_HI_RES'
-KMZ = 'KMZ'
+L1_0 = "L1.0"
+L1_1 = "L1.1"
+L1_5 = "L1.5"
+L2_2 = "L2.2"
+RTC_LOW_RES = "RTC_LOW_RES"
+RTC_HIGH_RES = "RTC_HI_RES"
+KMZ = "KMZ"
+L1A_RADAR_RO = "L1A_RADAR_RO"
+L1C_S0_HIRES = "L1C_S0_HIRES"
+L1B_S0_LORES = "L1B_S0_LORES"
+L1A_RADAR = "L1A_RADAR"
 
 # ALOS AVNIR
 # No PROCESSING_TYPE attribute in CMR
@@ -32,45 +36,45 @@ KMZ = 'KMZ'
 # SLC and SLC metadata are both 'SLC', provided by Sentinel-1 constants
 
 # Sentinel-1 InSAR
-GUNW_STD = 'GUNW_STD'
-GUNW_AMP = 'GUNW_AMP'
-GUNW_CON = 'GUNW_CON'
-GUN_COH = 'GUNW_COH'
-GUNW_UNW = 'GUNW_UNW'
+GUNW_STD = "GUNW_STD"
+GUNW_AMP = "GUNW_AMP"
+GUNW_CON = "GUNW_CON"
+GUN_COH = "GUNW_COH"
+GUNW_UNW = "GUNW_UNW"
 
 # SMAP
-L1A_RADAR_RO_HDF5 = 'L1A_Radar_RO_HDF5'
-L1A_RADAR_HDF5 = 'L1A_Radar_HDF5'
-L1B_S0_LOW_RES_HDF5 = 'L1B_S0_LoRes_HDF5'
-L1C_S0_HIGH_RES_HDF5 = 'L1C_S0_HiRes_HDF5'
-L1A_RADAR_RO_QA = 'L1A_Radar_RO_QA'
-L1A_RADAR_QA = 'L1A_Radar_QA'
-L1B_S0_LOW_RES_QA = 'L1B_S0_LoRes_QA'
-L1C_S0_HIGH_RES_QA = 'L1C_S0_HiRes_QA'
-L1A_RADAR_RO_ISO_XML = 'L1A_Radar_RO_ISO_XML'
-L1B_S0_LOW_RES_ISO_XML = 'L1B_S0_LoRes_ISO_XML'
-L1C_S0_HIGH_RES_ISO_XML = 'L1C_S0_HiRes_ISO_XML'
+L1A_RADAR_RO_HDF5 = "L1A_Radar_RO_HDF5"
+L1A_RADAR_HDF5 = "L1A_Radar_HDF5"
+L1B_S0_LOW_RES_HDF5 = "L1B_S0_LoRes_HDF5"
+L1C_S0_HIGH_RES_HDF5 = "L1C_S0_HiRes_HDF5"
+L1A_RADAR_RO_QA = "L1A_Radar_RO_QA"
+L1A_RADAR_QA = "L1A_Radar_QA"
+L1B_S0_LOW_RES_QA = "L1B_S0_LoRes_QA"
+L1C_S0_HIGH_RES_QA = "L1C_S0_HiRes_QA"
+L1A_RADAR_RO_ISO_XML = "L1A_Radar_RO_ISO_XML"
+L1B_S0_LOW_RES_ISO_XML = "L1B_S0_LoRes_ISO_XML"
+L1C_S0_HIGH_RES_ISO_XML = "L1C_S0_HiRes_ISO_XML"
 
 # UAVSAR
-AMPLITUDE = 'AMPLITUDE'
-STOKES = 'STOKES'
-AMPLITUDE_GRD = 'AMPLITUDE_GRD'
-PROJECTED = 'PROJECTED'
-PROJECTED_ML5X5 = 'PROJECTED_ML5X5'
-PROJECTED_ML3X3 = 'PROJECTED_ML3X3'
-INTERFEROMETRY_GRD = 'INTERFEROMETRY_GRD'
-INTERFEROMETRY = 'INTERFEROMETRY'
-COMPLEX = 'COMPLEX'
+AMPLITUDE = "AMPLITUDE"
+STOKES = "STOKES"
+AMPLITUDE_GRD = "AMPLITUDE_GRD"
+PROJECTED = "PROJECTED"
+PROJECTED_ML5X5 = "PROJECTED_ML5X5"
+PROJECTED_ML3X3 = "PROJECTED_ML3X3"
+INTERFEROMETRY_GRD = "INTERFEROMETRY_GRD"
+INTERFEROMETRY = "INTERFEROMETRY"
+COMPLEX = "COMPLEX"
 # KMZ provided by ALOS PALSAR
-INC = 'INC'
-SLOPE = 'SLOPE'
-DEM_TIFF = 'DEM_TIFF'
-PAULI = 'PAULI'
-METADATA = 'METADATA'
+INC = "INC"
+SLOPE = "SLOPE"
+DEM_TIFF = "DEM_TIFF"
+PAULI = "PAULI"
+METADATA = "METADATA"
 
 # RADARSAT
-L0 = 'L0'
-L1 = 'L1'
+L0 = "L0"
+L1 = "L1"
 
 # ERS
 # L0 provided by RADARSAT
@@ -81,67 +85,67 @@ L1 = 'L1'
 # L1 provided by RADARSAT
 
 # AIRSAR
-CTIF = 'CTIF'
-PTIF = 'PTIF'
-LTIF = 'LTIF'
-JPG = 'JPG'
-LSTOKES = 'LSTOKES'
-PSTOKES = 'PSTOKES'
-CSTOKES = 'CSTOKES'
-DEM = 'DEM'
-THREEFP = '3FP'
+CTIF = "CTIF"
+PTIF = "PTIF"
+LTIF = "LTIF"
+JPG = "JPG"
+LSTOKES = "LSTOKES"
+PSTOKES = "PSTOKES"
+CSTOKES = "CSTOKES"
+DEM = "DEM"
+THREEFP = "3FP"
 
 # OPERA-S1
-RTC = 'RTC'
-CSLC = 'CSLC'
-RTC_STATIC = 'RTC-STATIC'
-CSLC_STATIC = 'CSLC-STATIC'
-DISP_S1 = 'DISP-S1'
-DISP_S1_STATIC = 'DISP-S1-STATIC'
-DIST_ALERT_S1 = 'DIST-ALERT-S1'
+RTC = "RTC"
+CSLC = "CSLC"
+RTC_STATIC = "RTC-STATIC"
+CSLC_STATIC = "CSLC-STATIC"
+DISP_S1 = "DISP-S1"
+DISP_S1_STATIC = "DISP-S1-STATIC"
+DIST_ALERT_S1 = "DIST-ALERT-S1"
 
 # TROPO
-TROPO_ZENITH = 'TROPO-ZENITH'
-ECMWF_TROPO = 'ECMWF_TROPO'
+TROPO_ZENITH = "TROPO-ZENITH"
+ECMWF_TROPO = "ECMWF_TROPO"
 
 ### NISAR
 
 ### NISAR Science Products ###
-L0B = 'L0B'
+L0B = "L0B"
 """alias for RRSD Level 0B product types"""
 
-RRSD = 'RRSD'
+RRSD = "RRSD"
 """Level 0B Radar Raw Signal Data"""
 
-RSLC = 'RSLC'
+RSLC = "RSLC"
 """Level 1 Range-Doppler Single Look Complex"""
-RIFG = 'RIFG'
+RIFG = "RIFG"
 """Level 1 Range-Doppler Wrapped Interferrogram"""
-RUNW = 'RUNW'
+RUNW = "RUNW"
 """Level 1 Range-Doppler Unwrapped Interferrogram"""
-ROFF = 'ROFF'
+ROFF = "ROFF"
 """Level 1 Range-Doppler Pixel Offsets"""
-GSLC = 'GSLC'
+GSLC = "GSLC"
 """Level 2 Geocoded Single Look Complex"""
-GCOV = 'GCOV'
+GCOV = "GCOV"
 """Level 2 Geocoded Polarimetric Covariance"""
-GUNW = 'GUNW'
+GUNW = "GUNW"
 """"Level 2 Geocoded Unwrapped Inteferrogram"""
-GOFF = 'GOFF'
+GOFF = "GOFF"
 """Level 2 Geocoded Pixel Offsets"""
-SME2 = 'SME2'
+SME2 = "SME2"
 """Level 3 Soil Moisture EASE-Grid 2.0"""
 
 ### NISAR ANCILLARY PRODUCTS ###
 
-CRSD = 'CRSD'
+CRSD = "CRSD"
 """NISAR Radar Raw Signal Calibration Data"""
 
 # NISAR Coordinated Observation Plan (NISAR_COP)
-DCOP = 'DCOP'
+DCOP = "DCOP"
 """NISAR Coordinates Observation Plan"""
 # NISAR_OROST
-OROST = 'OROST'
+OROST = "OROST"
 """NISAR Radar Observation Sequence Table"""
 # NISAR_STUF
 STUF = "STUF"
@@ -157,7 +161,7 @@ LRCLK_UTC = "LRCLK_UTC"
 
 
 # NISAR Orbit Ephemeris (NISAR_OE)
-# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Orbit Ephemeris collection contains 
+# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Orbit Ephemeris collection contains
 # the state vector files for the NISAR mission"
 FOE = "FOE"
 """Forecast Orbit Ephemeris"""
@@ -169,7 +173,7 @@ POE = "POE"
 """	Precise Orbit Ephemeris"""
 
 # NISAR Ancillary and Auxiliary Data (NISAR_ANC_AUX)
-# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Ancilliary and Auxiallry collection contains products 
+# "The NASA-ISRO Synthetic Aperture Radar (NISAR) Ancilliary and Auxiallry collection contains products
 # that are supplementary information for the NISAR mission and are created a limited number of times.""
 TSR_STATIC = "TSR_STATIC"
 """Time Series Ratio (TSR_STATIC)"""
@@ -218,7 +222,7 @@ ECMWF_SMST = "ECMWF_SMST"
 # DEM = "DEM"
 # """	Digital Elevation Model"""
 
-# LOCAL_INC_ANG = "LOCAL_INC_ANG" 
+# LOCAL_INC_ANG = "LOCAL_INC_ANG"
 # """	Local Incidence Angles"""
 # VWC = "VWC"
 # """	Vegetation water content"""
