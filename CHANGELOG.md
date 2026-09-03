@@ -77,6 +77,37 @@ asf.search_count(dataMaturity=asf.constants.MATURITIES.BETA, dataset=asf.constan
 - Drop old goemetry logic for `OPERAS1Product` dist-alert products
 
 ------
+## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.0...v13.0.0)
+### Changed
+- Breaking: `UAVSAR` umm metadata has been changed in CMR. All `UAVSAR`/`G-III` scenes have been consolidated into two collections `UAVSAR_POLSAR` and `UAVSAR_RPI` with updated metadata.
+    - To find urls for previously searchable product types use `find_urls()` method on search results lists and individual results.
+        - examples:
+            - Find gif urls for individual scene: `response[0].find_urls(extension='.gif')`
+            - Find urls for all `.slope` files from results: `response.find_url(extension='.slope')`
+            - Find urls for 1st amplitude kmz files from results: `response.find_urls(extension='.kmz', pattern=r'.*amp1.*')`
+
+
+### Removed
+- The following `UAVSAR` related constants in `PRODUCT_TYPE.py` have been removed:
+    - `AMPLITUDE`
+    - `STOKES`
+    - `AMPLITUDE_GRD`
+    - `PROJECTED`
+    - `PROJECTED_ML5X5`
+    - `PROJECTED_ML3X3`
+    - `INTERFEROMETRY_GRD`
+    - `INTERFEROMETRY`
+    - `COMPLEX`
+    - `INC`
+    - `SLOPE`
+    - `DEM_TIFF`
+    - `PAULI`
+    - `METADATA`
+
+### Added
+- `POLSAR` and `RPI` added to `PRODUCT_TYPE` constants
+
+------
 ## [v12.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.1...v12.2.2)
 ### Added
 - `Sentinel-1D` constants and search support
