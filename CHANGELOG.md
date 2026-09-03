@@ -27,6 +27,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ---
+## [v13.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v13.0.0...v13.0.1)
+
+### Fixed
+
+- Fixes frame based searches for dataets using `FRAME_NUMBER` additional attribute
+
+=======
 ## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.1...v13.0.0)
 
 ### Changed
