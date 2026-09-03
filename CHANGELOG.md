@@ -31,7 +31,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Fixes frame based searches for dataets using `FRAME_NUMBER` additional attribute
+- Fixed frame based searches for dataets using `FRAME_NUMBER` additional attribute
+- Fixed NISAR `dataMaturity` filter regression
 
 =======
 ## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.1...v13.0.0)
