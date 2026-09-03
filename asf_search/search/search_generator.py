@@ -1,3 +1,4 @@
+import warnings
 import time
 from typing import Dict, Generator, Literal, Union, Sequence, Tuple, List
 from copy import copy
@@ -19,7 +20,7 @@ from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
 from asf_search.CMR import build_subqueries, translate_opts
 from asf_search.CMR.datasets import dataset_collections
-
+from asf_search.constants import DATASET, PLATFORM
 from asf_search.ASFSession import ASFSession
 from asf_search.ASFProduct import ASFProduct
 from asf_search.exceptions import (
@@ -32,6 +33,9 @@ from asf_search.constants import INTERNAL
 from asf_search.WKT.validate_wkt import validate_wkt
 from asf_search.search.error_reporting import report_search_error
 import asf_search.Products as ASFProductType
+
+_deprecated_datasets = {DATASET.AIRSAR, DATASET.ERS, DATASET.JERS_1, DATASET.RADARSAT_1}
+_deprecated_platforms = {PLATFORM.AIRSAR, PLATFORM.ERS, PLATFORM.JERS, PLATFORM.RADARSAT}
 
 
 def search_generator(
@@ -216,6 +220,20 @@ def search_generator(
 
     # Anything passed in as kwargs has priority over anything in opts:
     opts.merge_args(**dict(kw_opts))
+
+    if opts.platform is not None:
+        if len(_deprecated_platforms.intersection(opts.platform)):
+            warnings.warn(
+                f"The following platforms are deprecated and will no longer be searchable {_deprecated_platforms}. For more information contact uso@alaska.edu",
+                DeprecationWarning,
+            )
+
+    if opts.dataset is not None:
+        if len(_deprecated_datasets.intersection(opts.dataset)):
+            warnings.warn(
+                f"The following datasets are deprecated and will no longer be searchable {_deprecated_datasets}. For more information contact uso@alaska.edu",
+                DeprecationWarning,
+            )
 
     maxResults = opts.pop("maxResults", None)
 

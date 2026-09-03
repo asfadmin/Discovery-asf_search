@@ -1,17 +1,23 @@
-SENTINEL1 = 'SENTINEL-1'
-SENTINEL1A = 'Sentinel-1A'
-SENTINEL1B = 'Sentinel-1B'
-SENTINEL1C = 'Sentinel-1C'
-SENTINEL1D = 'Sentinel-1D'
-SIRC = 'SIR-C'
-ALOS = 'ALOS'
-ERS = 'ERS'
-ERS1 = 'ERS-1'
-ERS2 = 'ERS-2'
-JERS = 'JERS-1'
-RADARSAT = 'RADARSAT-1'
-AIRSAR = 'AIRSAR'
-SEASAT = 'SEASAT 1'
-SMAP = 'SMAP'
-UAVSAR = 'UAVSAR'
-NISAR = 'NISAR'
+SENTINEL1 = "SENTINEL-1"
+SENTINEL1A = "Sentinel-1A"
+SENTINEL1B = "Sentinel-1B"
+SENTINEL1C = "Sentinel-1C"
+SENTINEL1D = "Sentinel-1D"
+SIRC = "SIR-C"
+ALOS = "ALOS"
+ERS = "ERS"
+"""ERS dataset is scheduled to be removed and will no longer be available from CMR."""
+ERS1 = "ERS-1"
+"""ERS dataset is scheduled to be removed and will no longer be available from CMR."""
+ERS2 = "ERS-2"
+"""ERS dataset is scheduled to be removed and will no longer be available from CMR."""
+JERS = "JERS-1"
+"""JERS-1 dataset is scheduled to be removed and will no longer be available from CMR."""
+RADARSAT = "RADARSAT-1"
+"""RADARSAT-1 dataset is scheduled to be removed and will no longer be available from CMR."""
+AIRSAR = "AIRSAR"
+"""AIRSAR dataset is scheduled to be removed and will no longer be available from CMR."""
+SEASAT = "SEASAT 1"
+SMAP = "SMAP"
+UAVSAR = "UAVSAR"
+NISAR = "NISAR"

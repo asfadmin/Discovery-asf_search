@@ -1,21 +1,25 @@
-SENTINEL1 = 'SENTINEL-1'
-OPERA_S1 = 'OPERA-S1'
-OPERA_S1_CALVAL = 'OPERA-S1-CALVAL'
-SLC_BURST = 'SLC-BURST'
-ALOS_PALSAR = 'ALOS PALSAR'
-ALOS_AVNIR_2 = 'ALOS AVNIR-2'
-ALOS_2 = 'ALOS-2'
-SIRC = 'SIR-C'
-ARIA_S1_GUNW = 'ARIA S1 GUNW'
-SMAP = 'SMAP'
-UAVSAR = 'UAVSAR'
-RADARSAT_1 = 'RADARSAT-1'
-ERS = 'ERS'
-JERS_1 = 'JERS-1'
-AIRSAR = 'AIRSAR'
-SEASAT = 'SEASAT'
-NISAR = 'NISAR'
+SENTINEL1 = "SENTINEL-1"
+OPERA_S1 = "OPERA-S1"
+OPERA_S1_CALVAL = "OPERA-S1-CALVAL"
+SLC_BURST = "SLC-BURST"
+ALOS_PALSAR = "ALOS PALSAR"
+ALOS_AVNIR_2 = "ALOS AVNIR-2"
+ALOS_2 = "ALOS-2"
+SIRC = "SIR-C"
+ARIA_S1_GUNW = "ARIA S1 GUNW"
+SMAP = "SMAP"
+UAVSAR = "UAVSAR"
+RADARSAT_1 = "RADARSAT-1"
+"""RADARSAT dataset is scheduled to be removed and will no longer be available from CMR."""
+ERS = "ERS"
+"""ERS dataset is scheduled to be removed and will no longer be available from CMR."""
+JERS_1 = "JERS-1"
+"""JERS-1 dataset is scheduled to be removed and will no longer be available from CMR."""
+AIRSAR = "AIRSAR"
+"""AIRSAR dataset is scheduled to be removed and will no longer be available from CMR."""
+SEASAT = "SEASAT"
+NISAR = "NISAR"
 """NISAR provides L and S-band SAR data to measure Earth's changing ecosystems,
  dynamic surfaces, and ice masses with 12-day regularity
  on ascending and descending passes."""
-TROPO = 'TROPO'
+TROPO = "TROPO"
