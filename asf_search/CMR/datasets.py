@@ -663,11 +663,11 @@ def get_nisar_collection_by_maturity(maturities: list[str]):
 
     for short_name in dataset_collections["NISAR"]:
         if "BETA" in short_name:
-            short_names["BETA"].extend(short_name)
+            short_names["BETA"].append(short_name)
         elif "PROVISIONAL" in short_name:
-            short_names["PROVISIONAL"].extend(short_name)
+            short_names["PROVISIONAL"].append(short_name)
         elif short_name.endswith("V1"):
-            short_names["VALIDATED"].extend(short_name)
+            short_names["VALIDATED"].append(short_name)
     try:
         return sum([short_names[maturity.upper()] for maturity in maturities], [])
     except KeyError:
