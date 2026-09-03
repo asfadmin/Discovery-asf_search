@@ -83,7 +83,7 @@ def _get_short_names_for_processing_level(processing_level: str):
         raise ValueError(
             f'asf-search is missing short name aliases for processing level "{processing_level}". Please use `shortName` or `conceptID'
         )
-    return [("shortName[]", collection) for collection in collections]
+    return [("shortName", collection) for collection in collections]
 
 
 def _query_cmr(session: ASFSession, query_data: list[tuple[str, str]], method: dict) -> dict:
