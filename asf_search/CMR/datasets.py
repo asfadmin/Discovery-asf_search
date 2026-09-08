@@ -205,6 +205,10 @@ dataset_collections = {
         "ALOS_PSR_L2.2",
         "ALOS_PSR_RTC_HIGH",
         "ALOS_PSR_RTC_LOW",
+        "ALOS_L10_PSR",
+        "ALOS_L11_PSR",
+        "ALOS_L15_PSR",
+        "ALOS_RTC_PSR",
     },
     "ALOS AVNIR-2": {"ALOS_AVNIR_OBS_ORI", "ALOS_AVNIR_OBS_ORI_BROWSE"},
     "SIR-C": {
@@ -266,6 +270,10 @@ dataset_collections = {
         "SPL1C_S0_HiRes_QA_001",
         "SPL1C_S0_HiRes_QA_002",
         "SPL1C_S0_HiRes_QA_003",
+        "SMAP_L1A_RO_V3",
+        "SMAP_L1A_V2",
+        "SMAP_L1B_S0_V3",
+        "SMAP_L1C_S0_V3",
     },
     "UAVSAR": {
         "UAVSAR_POLSAR",
@@ -378,6 +386,10 @@ collections_per_platform = {
         "ALOS_PSR_L2.2",
         "ALOS_PSR_RTC_HIGH",
         "ALOS_PSR_RTC_LOW",
+        "ALOS_L10_PSR",
+        "ALOS_L11_PSR",
+        "ALOS_L15_PSR",
+        "ALOS_RTC_PSR",
     },
     "ALOS-2": {"ALOS2_L1_PSR2"},
     "ERS-1": {"ERS-1_L0", "ERS-1_L1"},
@@ -413,6 +425,10 @@ collections_per_platform = {
         "SPL1A_RO_QA_001",
         "SPL1A_RO_QA_002",
         "SPL1A_RO_QA_003",
+        "SMAP_L1A_RO_V3",
+        "SMAP_L1A_V2",
+        "SMAP_L1B_S0_V3",
+        "SMAP_L1C_S0_V3",
     },
     "G-III": {
         "UAVSAR_POLSAR",
@@ -617,53 +633,21 @@ collections_by_processing_level = {
         "NISAR_L0B_RRSD_V1",
         "NISAR_UR_L0B_RRSD",
     },
-    "RSLC": {
-        "NISAR_L1_RSLC_BETA_V1",
-        "NISAR_L1_RSLC_PROVISIONAL_V1",
-        "NISAR_L1_RSLC_V1",
-    },
-    "RIFG": {
-        "NISAR_L1_RIFG_BETA_V1",
-        "NISAR_L1_RIFG_PROVISIONAL_V1",
-        "NISAR_L1_RIFG_V1",
-    },
-    "RUNW": {
-        "NISAR_L1_RUNW_BETA_V1",
-        "NISAR_L1_RUNW_PROVISIONAL_V1",
-        "NISAR_L1_RUNW_V1",
-    },
-    "ROFF": {
-        "NISAR_L1_ROFF_BETA_V1",
-        "NISAR_L1_ROFF_PROVISIONAL_V1",
-        "NISAR_L1_ROFF_V1",
-    },
-    "GCOV": {
-        "NISAR_L2_GCOV_BETA_V1",
-        "NISAR_L2_GCOV_PROVISIONAL_V1",
-        "NISAR_L2_GCOV_V1",
-    },
-    "GOFF": {
-        "NISAR_L2_GOFF_BETA_V1",
-        "NISAR_L2_GOFF_PROVISIONAL_V1",
-        "NISAR_L2_GOFF_V1",
-    },
-    "GSLC": {
-        "NISAR_L2_GSLC_BETA_V1",
-        "NISAR_L2_GSLC_PROVISIONAL_V1",
-        "NISAR_L2_GSLC_V1",
-    },
-    "GUNW": {
-        "NISAR_L2_GUNW_BETA_V1",
-        "NISAR_L2_GUNW_PROVISIONAL_V1",
-        "NISAR_L2_GUNW_V1",
-    },
-    "SME2": {
-        "NISAR_L3_SME2_BETA_V1",
-        "NISAR_L3_SME2_PROVISIONAL_V1",
-        "NISAR_L3_SME2_V1",
-    },
-    "POLSAR": ["UAVSAR_POLSAR"],
-    "RPI": ["UAVSAR_RPI"],
+    "POLSAR": {"UAVSAR_POLSAR"},
+    "RPI": {"UAVSAR_RPI"},
+    "RSLC": {"NISAR_L1_RSLC_BETA_V1", "NISAR_L1_RSLC_PROVISIONAL_V1", "NISAR_L1_RSLC_V1"},
+    "RIFG": {"NISAR_L1_RIFG_BETA_V1", "NISAR_L1_RIFG_PROVISIONAL_V1", "NISAR_L1_RIFG_V1"},
+    "RUNW": {"NISAR_L1_RUNW_BETA_V1", "NISAR_L1_RUNW_PROVISIONAL_V1", "NISAR_L1_RUNW_V1"},
+    "ROFF": {"NISAR_L1_ROFF_BETA_V1", "NISAR_L1_ROFF_PROVISIONAL_V1", "NISAR_L1_ROFF_V1"},
+    "GCOV": {"NISAR_L2_GCOV_BETA_V1", "NISAR_L2_GCOV_PROVISIONAL_V1", "NISAR_L2_GCOV_V1"},
+    "GOFF": {"NISAR_L2_GOFF_BETA_V1", "NISAR_L2_GOFF_PROVISIONAL_V1", "NISAR_L2_GOFF_V1"},
+    "GSLC": {"NISAR_L2_GSLC_BETA_V1", "NISAR_L2_GSLC_PROVISIONAL_V1", "NISAR_L2_GSLC_V1"},
+    "GUNW": {"NISAR_L2_GUNW_BETA_V1", "NISAR_L2_GUNW_PROVISIONAL_V1", "NISAR_L2_GUNW_V1"},
+    "SME2": {"NISAR_L3_SME2_BETA_V1", "NISAR_L3_SME2_PROVISIONAL_V1", "NISAR_L3_SME2_V1"},
+    "L1A_RADAR_RO": {"L1A_RADAR_RO"},
+    "L1C_S0_HIRES": {"L1C_S0_HIRES"},
+    "L1B_S0_LORES": {"L1B_S0_LORES"},
+    "L1A_RADAR": {"L1A_RADAR"},
 }
 
 
@@ -675,11 +659,11 @@ def get_nisar_collection_by_maturity(maturities: list[str]):
 
     for short_name in dataset_collections["NISAR"]:
         if "BETA" in short_name:
-            short_names["BETA"].extend(short_name)
+            short_names["BETA"].append(short_name)
         elif "PROVISIONAL" in short_name:
-            short_names["PROVISIONAL"].extend(short_name)
+            short_names["PROVISIONAL"].append(short_name)
         elif short_name.endswith("V1"):
-            short_names["VALIDATED"].extend(short_name)
+            short_names["VALIDATED"].append(short_name)
     try:
         return sum([short_names[maturity.upper()] for maturity in maturities], [])
     except KeyError:

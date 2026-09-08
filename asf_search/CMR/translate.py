@@ -24,7 +24,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
     # so use a dict to avoid the validate_params logic:
     dict_opts = dict(opts)
 
-    should_use_track = not set(dict_opts.get("collections", [])).isdisjoint(nisar_collections_set)
+    should_use_track = not set(dict_opts.get("shortName", [])).isdisjoint(nisar_collections_set)
 
     if (
         dict_opts.get("processingLevel") is not None
@@ -167,7 +167,7 @@ def should_use_asf_frame(cmr_opts):
         [
             p[0] == "platform[]"
             and p[1].upper() in asf_frame_platforms
-            or p[0] == "shortName[]"
+            or p[0] == "shortName"
             and p[1] in asf_frame_collections
             for p in cmr_opts
         ]
