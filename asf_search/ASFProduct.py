@@ -19,6 +19,8 @@ FileSizeKeys = namedtuple(
     "FileSizeKeys", ["size_key", "size_format"], defaults=["SizeInBytes", "Format"]
 )
 
+FileSizeInfo = namedtuple("FileSizeInfo", ["file_sizes", "md5_sums"])
+
 
 class ASFProduct:
     """
@@ -443,17 +445,17 @@ class ASFProduct:
         return output
 
     def _get_file_sizes_and_sums(
-        self, fileSizeKeys: FileSizeKeys
-    ) -> tuple[dict, dict] | tuple[None, None]:
+        self, fileSizeKeys: FileSizeKeys = FileSizeKeys()
+    ) -> FileSizeInfo | None:
         """Helper method for returning file sizes and md5sums from `ArchiveAndDistributionInformation` if available.
         Returns None if `ArchiveAndDistributionInformation` isn't defined"""
         bytes_temp = self.umm_get(self.umm, "DataGranule", "ArchiveAndDistributionInformation")
         if bytes_temp is None:
-            return None, None
+            return None
         bytes_mapping = {
             entry["Name"]: {
-                "bytes": entry[fileSizeKeys.size_key],
-                "format": entry[fileSizeKeys.size_format],
+                "bytes": entry.get(fileSizeKeys.size_key),
+                "format": entry.get(fileSizeKeys.size_format),
             }
             for entry in bytes_temp
         }
@@ -462,13 +464,14 @@ class ASFProduct:
             entry["Name"]: entry.get("Checksum", {"Value": None})["Value"] for entry in bytes_temp
         }
 
-        return bytes_mapping, md5sum_mapping
+        return FileSizeInfo(bytes_mapping, md5sum_mapping)
 
     def _set_additional_metadata(self):
         """Helper method for data migrated off-prem"""
-        self.properties["bytes"], self.properties["md5sum"] = self._get_file_sizes_and_sums(
-            FileSizeKeys()
-        )
+        file_info = self._get_file_sizes_and_sums(FileSizeKeys())
+
+        if file_info is not None:
+            self.properties["bytes"], self.properties["md5sum"] = file_info
         self.properties["additionalUrls"] = self._get_additional_urls()
         self.properties["browse"] = [
             url for url in self._get_urls() if url.endswith(self._default_browse_extensions)

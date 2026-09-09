@@ -1,4 +1,4 @@
-from asf_search.ASFProduct import FileSizeKeys
+from asf_search.ASFProduct import FileSizeKeys, FileSizeInfo
 from typing import Dict, Union, Literal
 from asf_search import ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
@@ -51,7 +51,7 @@ class ALOSProduct(ASFStackableProduct):
 
     def _get_file_sizes_and_sums(
         self, fileSizeKeys: FileSizeKeys = FileSizeKeys()
-    ) -> tuple[dict, dict] | tuple[None, None]:
+    ) -> FileSizeInfo | None:
 
         legacy_size = False
         if self.umm.get("CollectionReference", {}).get("ShortName") not in [
@@ -63,14 +63,16 @@ class ALOSProduct(ASFStackableProduct):
             legacy_size = True
             fileSizeKeys = FileSizeKeys("Size", "SizeUnit")
 
-        bytes_mapping, md5sums = super()._get_file_sizes_and_sums(fileSizeKeys)
+        file_info = super()._get_file_sizes_and_sums(fileSizeKeys)
+        if file_info is not None:
+            bytes_mapping, md5sums = file_info
 
-        if bytes_mapping is not None and legacy_size:
-            for key, val in bytes_mapping.items():
-                if val.get("bytes") is not None:
-                    bytes_mapping[key]["bytes"] = val["bytes"] * 1**-6
+            if bytes_mapping is not None and legacy_size:
+                for key, val in bytes_mapping.items():
+                    if val.get("bytes") is not None:
+                        bytes_mapping[key]["bytes"] = val["bytes"] * 1**-6
 
-        return bytes_mapping, md5sums
+            return FileSizeInfo(bytes_mapping, md5sums)
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
