@@ -27,6 +27,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ---
+## [v13.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v13.0.1...v13.1.0)
+
+### Added
+
+- Added support for upcoming ALOS-1 and SMAP metadata changes, added `L1A_RADAR_RO`, `L1C_S0_HIRES`, `L1B_S0_LORES`, `L1A_RADAR` product type constants.
+
 ## [v13.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v13.0.0...v13.0.1)
 
 ### Fixed
