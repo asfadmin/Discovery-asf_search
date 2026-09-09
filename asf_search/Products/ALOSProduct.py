@@ -1,3 +1,4 @@
+from asf_search.ASFProduct import FileSizeKeys
 from typing import Dict, Union, Literal
 from asf_search import ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
@@ -34,9 +35,6 @@ class ALOSProduct(ASFStackableProduct):
         "polarization": {"path": ["AdditionalAttributes", ("Name", "POLARIZATION"), "Values"]},
     }
 
-    _file_info_size_key = "Size"
-    _file_info_size_format = "SizeUnit"
-
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
@@ -50,6 +48,17 @@ class ALOSProduct(ASFStackableProduct):
             self.properties["polarization"] = self.properties["polarization"].pop()
         if self.properties.get("groupID") is None:
             self.properties["groupID"] = self.properties["sceneName"]
+
+    def _get_file_sizes_and_sums(
+        self, fileSizeKeys: FileSizeKeys
+    ) -> tuple[dict, dict] | tuple[None, None]:
+        bytes_mapping, md5sums = super()._get_file_sizes_and_sums(FileSizeKeys("Size", "SizeUnit"))
+
+        if bytes_mapping is not None:
+            for key, val in bytes_mapping.items():
+                bytes_mapping[key]["bytes"] = val["bytes"] * 1**-6
+
+        return bytes_mapping, md5sums
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
