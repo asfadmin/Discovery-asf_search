@@ -444,7 +444,7 @@ class ASFProduct:
         """Helper method for returning file sizes and md5sums from `ArchiveAndDistributionInformation` if available.
         Returns None if `ArchiveAndDistributionInformation` isn't defined"""
         bytes_temp = self.umm_get(self.umm, "DataGranule", "ArchiveAndDistributionInformation")
-        if bytes_temp is None:
+        if bytes_temp is None or len(bytes_temp) == 0:
             return None
 
         if bytes_temp[0].get("SizeInBytes"):
