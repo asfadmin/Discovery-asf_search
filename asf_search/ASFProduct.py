@@ -1,3 +1,4 @@
+from collections import namedtuple
 import os
 from typing import Any, Dict, Tuple, Type, List, final, Literal
 import warnings
@@ -13,6 +14,11 @@ from asf_search.download import download_url
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
+
+FileSizeKeys = namedtuple(
+    "FileSizeKeys", ["size_key", "size_format"], defaults=["SizeInBytes", "Format"]
+)
+FileSizeFormat = namedtuple("FileSizeFormat", ["Format", "SizeUnit"])
 
 
 class ASFProduct:
@@ -136,6 +142,10 @@ class ASFProduct:
         "VIEW RELATED INFORMATION",
         "USE SERVICE API",
     ]
+
+    _file_info_size_key = "SizeInBytes"
+    _file_info_size_format = "Format"
+    _default_browse_extensions = (".png", ".jpg", ".jpeg")
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get("meta")
@@ -446,7 +456,10 @@ class ASFProduct:
         if bytes_temp is None:
             return None, None
         bytes_mapping = {
-            entry["Name"]: {"bytes": entry[size_key], "format": entry[size_format]}
+            entry["Name"]: {
+                "bytes": entry[self._file_info_size_key],
+                "format": entry[self._file_info_size_format],
+            }
             for entry in bytes_temp
         }
 
@@ -455,6 +468,21 @@ class ASFProduct:
         }
 
         return bytes_mapping, md5sum_mapping
+
+    def _set_additional_metadata(self):
+        """Helper method for data migrated off-prem"""
+        self.properties["bytes"], self.properties["md5sum"] = self._get_file_sizes_and_sums()
+        self.properties["additionalUrls"] = self._get_additional_urls()
+        self.properties["browse"] = [
+            url for url in self._get_urls() if url.endswith(self._default_browse_extensions)
+        ]
+        self.properties["s3Urls"] = self._get_s3_uris()
+
+        self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
+
+        center = self.centroid()
+        self.properties["centerLat"] = center.y
+        self.properties["centerLon"] = center.x
 
     @final
     @staticmethod
