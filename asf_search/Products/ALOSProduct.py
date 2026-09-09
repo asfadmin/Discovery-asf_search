@@ -49,6 +49,29 @@ class ALOSProduct(ASFStackableProduct):
         if self.properties.get("groupID") is None:
             self.properties["groupID"] = self.properties["sceneName"]
 
+    def _get_file_sizes_and_sums(
+        self, fileSizeKeys: FileSizeKeys = FileSizeKeys()
+    ) -> tuple[dict, dict] | tuple[None, None]:
+
+        legacy_size = False
+        if self.umm.get("CollectionReference", {}).get("ShortName") not in [
+            "ALOS_L10_PSR",
+            "ALOS_L11_PSR",
+            "ALOS_L15_PSR",
+            "ALOS_RTC_PSR",
+        ]:
+            legacy_size = True
+            fileSizeKeys = FileSizeKeys("Size", "SizeUnit")
+
+        bytes_mapping, md5sums = super()._get_file_sizes_and_sums(fileSizeKeys)
+
+        if bytes_mapping is not None and legacy_size:
+            for key, val in bytes_mapping.items():
+                if val.get("bytes") is not None:
+                    bytes_mapping[key]["bytes"] = val["bytes"] * 1**-6
+
+        return bytes_mapping, md5sums
+
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:
         """
