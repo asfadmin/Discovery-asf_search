@@ -1,15 +1,7 @@
-from asf_search.ASFProduct import FileSizeKeys, FileSizeInfo
-from typing import Dict, Union, Literal
+from typing import Dict, Union
 from asf_search import ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.constants import PRODUCT_TYPE
-
-_MIGRATED_COLLECTIONS = [
-    "ALOS_L10_PSR",
-    "ALOS_L11_PSR",
-    "ALOS_L15_PSR",
-    "ALOS_RTC_PSR",
-]
 
 
 class ALOSProduct(ASFStackableProduct):
@@ -55,26 +47,6 @@ class ALOSProduct(ASFStackableProduct):
             self.properties["polarization"] = self.properties["polarization"].pop()
         if self.properties.get("groupID") is None:
             self.properties["groupID"] = self.properties["sceneName"]
-
-    def _get_file_sizes_and_sums(
-        self, fileSizeKeys: FileSizeKeys = FileSizeKeys()
-    ) -> FileSizeInfo | None:
-
-        legacy_size = False
-        if self.umm.get("CollectionReference", {}).get("ShortName") not in _MIGRATED_COLLECTIONS:
-            legacy_size = True
-            fileSizeKeys = FileSizeKeys("Size", "SizeUnit")
-
-        file_info = super()._get_file_sizes_and_sums(fileSizeKeys)
-        if file_info is not None:
-            bytes_mapping, md5sums = file_info
-
-            if bytes_mapping is not None and legacy_size:
-                for key, val in bytes_mapping.items():
-                    if val.get("bytes") is not None:
-                        bytes_mapping[key]["bytes"] = val["bytes"] * 1**-6
-
-            return FileSizeInfo(bytes_mapping, md5sums)
 
     @staticmethod
     def get_default_baseline_product_type() -> Union[str, None]:

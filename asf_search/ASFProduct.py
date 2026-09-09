@@ -15,10 +15,6 @@ from asf_search.download.file_download_type import FileDownloadType
 from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 
-FileSizeKeys = namedtuple(
-    "FileSizeKeys", ["size_key", "size_format"], defaults=["SizeInBytes", "Format"]
-)
-
 FileSizeInfo = namedtuple("FileSizeInfo", ["file_sizes", "md5_sums"])
 
 
@@ -444,18 +440,24 @@ class ASFProduct:
 
         return output
 
-    def _get_file_sizes_and_sums(
-        self, fileSizeKeys: FileSizeKeys = FileSizeKeys()
-    ) -> FileSizeInfo | None:
+    def _get_file_sizes_and_sums(self) -> FileSizeInfo | None:
         """Helper method for returning file sizes and md5sums from `ArchiveAndDistributionInformation` if available.
         Returns None if `ArchiveAndDistributionInformation` isn't defined"""
         bytes_temp = self.umm_get(self.umm, "DataGranule", "ArchiveAndDistributionInformation")
         if bytes_temp is None:
             return None
+
+        if bytes_temp[0].get("SizeInBytes"):
+            size_key = "SizeInBytes"
+            size_format = "Format"
+        else:
+            size_key = "Size"
+            size_format = "SizeUnit"
+
         bytes_mapping = {
             entry["Name"]: {
-                "bytes": entry.get(fileSizeKeys.size_key),
-                "format": entry.get(fileSizeKeys.size_format),
+                "bytes": entry.get(size_key),
+                "format": entry.get(size_format),
             }
             for entry in bytes_temp
         }
@@ -468,7 +470,7 @@ class ASFProduct:
 
     def _set_additional_metadata(self):
         """Helper method for data migrated off-prem"""
-        file_info = self._get_file_sizes_and_sums(FileSizeKeys())
+        file_info = self._get_file_sizes_and_sums()
 
         if file_info is not None:
             self.properties["bytes"], self.properties["md5sum"] = file_info
