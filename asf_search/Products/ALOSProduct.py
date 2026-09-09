@@ -4,6 +4,13 @@ from asf_search import ASFSession, ASFStackableProduct
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
 from asf_search.constants import PRODUCT_TYPE
 
+_MIGRATED_COLLECTIONS = [
+    "ALOS_L10_PSR",
+    "ALOS_L11_PSR",
+    "ALOS_L15_PSR",
+    "ALOS_RTC_PSR",
+]
+
 
 class ALOSProduct(ASFStackableProduct):
     """
@@ -54,12 +61,7 @@ class ALOSProduct(ASFStackableProduct):
     ) -> FileSizeInfo | None:
 
         legacy_size = False
-        if self.umm.get("CollectionReference", {}).get("ShortName") not in [
-            "ALOS_L10_PSR",
-            "ALOS_L11_PSR",
-            "ALOS_L15_PSR",
-            "ALOS_RTC_PSR",
-        ]:
+        if self.umm.get("CollectionReference", {}).get("ShortName") not in _MIGRATED_COLLECTIONS:
             legacy_size = True
             fileSizeKeys = FileSizeKeys("Size", "SizeUnit")
 
