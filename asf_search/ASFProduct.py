@@ -18,7 +18,6 @@ from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_f
 FileSizeKeys = namedtuple(
     "FileSizeKeys", ["size_key", "size_format"], defaults=["SizeInBytes", "Format"]
 )
-FileSizeFormat = namedtuple("FileSizeFormat", ["Format", "SizeUnit"])
 
 
 class ASFProduct:
@@ -143,8 +142,6 @@ class ASFProduct:
         "USE SERVICE API",
     ]
 
-    _file_info_size_key = "SizeInBytes"
-    _file_info_size_format = "Format"
     _default_browse_extensions = (".png", ".jpg", ".jpeg")
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
@@ -446,9 +443,7 @@ class ASFProduct:
         return output
 
     def _get_file_sizes_and_sums(
-        self,
-        size_key: Literal["SizeInBytes", "Size"] = "SizeInBytes",
-        size_format: Literal["Format", "SizeUnit"] = "Format",
+        self, fileSizeKeys: FileSizeKeys
     ) -> tuple[dict, dict] | tuple[None, None]:
         """Helper method for returning file sizes and md5sums from `ArchiveAndDistributionInformation` if available.
         Returns None if `ArchiveAndDistributionInformation` isn't defined"""
@@ -457,8 +452,8 @@ class ASFProduct:
             return None, None
         bytes_mapping = {
             entry["Name"]: {
-                "bytes": entry[self._file_info_size_key],
-                "format": entry[self._file_info_size_format],
+                "bytes": entry[fileSizeKeys.size_key],
+                "format": entry[fileSizeKeys.size_format],
             }
             for entry in bytes_temp
         }
