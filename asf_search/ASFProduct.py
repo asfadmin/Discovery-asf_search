@@ -1,3 +1,4 @@
+from collections import namedtuple
 import os
 from typing import Any, Dict, Tuple, Type, List, final, Literal
 import warnings
@@ -13,6 +14,8 @@ from asf_search.download import download_url
 from asf_search.download.file_download_type import FileDownloadType
 from asf_search.CMR.translate import try_parse_date
 from asf_search.CMR.translate import try_parse_float, try_parse_int, try_round_float
+
+FileSizeInfo = namedtuple("FileSizeInfo", ["file_sizes", "md5_sums"])
 
 
 class ASFProduct:
@@ -136,6 +139,8 @@ class ASFProduct:
         "VIEW RELATED INFORMATION",
         "USE SERVICE API",
     ]
+
+    _default_browse_extensions = (".png", ".jpg", ".jpeg")
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         self.meta = args.get("meta")
@@ -435,18 +440,25 @@ class ASFProduct:
 
         return output
 
-    def _get_file_sizes_and_sums(
-        self,
-        size_key: Literal["SizeInBytes", "Size"] = "SizeInBytes",
-        size_format: Literal["Format", "SizeUnit"] = "Format",
-    ) -> tuple[dict, dict] | tuple[None, None]:
+    def _get_file_sizes_and_sums(self) -> FileSizeInfo | None:
         """Helper method for returning file sizes and md5sums from `ArchiveAndDistributionInformation` if available.
         Returns None if `ArchiveAndDistributionInformation` isn't defined"""
         bytes_temp = self.umm_get(self.umm, "DataGranule", "ArchiveAndDistributionInformation")
-        if bytes_temp is None:
-            return None, None
+        if bytes_temp is None or len(bytes_temp) == 0:
+            return None
+
+        if bytes_temp[0].get("SizeInBytes"):
+            size_key = "SizeInBytes"
+            size_format = "Format"
+        else:
+            size_key = "Size"
+            size_format = "SizeUnit"
+
         bytes_mapping = {
-            entry["Name"]: {"bytes": entry[size_key], "format": entry[size_format]}
+            entry["Name"]: {
+                "bytes": entry.get(size_key),
+                "format": entry.get(size_format),
+            }
             for entry in bytes_temp
         }
 
@@ -454,7 +466,25 @@ class ASFProduct:
             entry["Name"]: entry.get("Checksum", {"Value": None})["Value"] for entry in bytes_temp
         }
 
-        return bytes_mapping, md5sum_mapping
+        return FileSizeInfo(bytes_mapping, md5sum_mapping)
+
+    def _set_additional_metadata(self):
+        """Helper method for data migrated off-prem"""
+        file_info = self._get_file_sizes_and_sums()
+
+        if file_info is not None:
+            self.properties["bytes"], self.properties["md5sum"] = file_info
+        self.properties["additionalUrls"] = self._get_additional_urls()
+        self.properties["browse"] = [
+            url for url in self._get_urls() if url.endswith(self._default_browse_extensions)
+        ]
+        self.properties["s3Urls"] = self._get_s3_uris()
+
+        self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
+
+        center = self.centroid()
+        self.properties["centerLat"] = center.y
+        self.properties["centerLon"] = center.x
 
     @final
     @staticmethod
