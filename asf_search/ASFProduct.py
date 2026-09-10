@@ -593,7 +593,7 @@ class ASFProduct:
                     return None
             if item is None:
                 return None
-        if item in [None, "NA", "N/A", ""]:
+        if item in [None, "NA", "N/A", "", "NOT AVAILABLE"]:
             item = None
         return item
 

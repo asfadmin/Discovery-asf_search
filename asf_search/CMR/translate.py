@@ -237,7 +237,7 @@ def try_parse_int(value: str) -> Optional[int]:
 
 
 def try_parse_float(value: str) -> Optional[float]:
-    if value is None or value == "NOT AVAILABLE":
+    if value is None:
         return None
 
     return float(value)
