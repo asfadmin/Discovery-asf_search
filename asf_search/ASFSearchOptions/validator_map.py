@@ -46,6 +46,7 @@ validator_map = {
     'beamSwath': parse_string_list,
     'dataMaturity': parse_string_list,
     'campaign': parse_string,
+    'siteDescription': parse_string,
     'circle': parse_circle,
     'linestring': parse_linestring,
     'point': parse_point,

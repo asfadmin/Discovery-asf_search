@@ -19,6 +19,7 @@ def search(
     beamMode: Union[str, Sequence[str]] = None,
     beamSwath: Union[str, Sequence[str]] = None,
     campaign: Union[str, Sequence[str]] = None,
+    siteDescription: Union[str, Sequence[str]] = None,
     dataMaturity: Union[Literal['BETA', 'PROVISIONAL', 'VALIDATED'], Sequence[Literal['BETA', 'PROVISIONAL', 'VALIDATED']]] = None,
     maxDoppler: float = None,
     minDoppler: float = None,

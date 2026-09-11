@@ -23,7 +23,8 @@ extra_jsonlite_fields = [
     ),
     ("sizeMB", ["DataGranule", "ArchiveAndDistributionInformation", 0, "Size"]),
     ("flightLine", ["AdditionalAttributes", ("Name", "FLIGHT_LINE"), "Values", 0]),
-    ("missionName", ["AdditionalAttributes", ("Name", "SITE_DESCRIPTION"), "Values", 0]),
+    ("missionName", ["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0]),
+    ("siteDescription", ["AdditionalAttributes", ("Name", "SITE_DESCRIPTION"), "Values", 0]),
 ]
 
 def results_to_jsonlite(results):
