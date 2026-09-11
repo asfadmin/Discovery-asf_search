@@ -21,30 +21,11 @@ class UAVSARProduct(ASFProduct):
         "bytes": {"path": ["DataGranule", "ArchiveAndDistributionInformation"]},
     }
 
+    _default_browse_extensions = (".png", ".jpg", ".jpeg", ".gif")
+
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
 
         if self.properties["bytes"] is None:
-            self.properties["bytes"], self.properties["md5sum"] = self._get_file_sizes_and_sums()
-
-            self.properties["additionalUrls"] = [
-                url for url in self._get_additional_urls() if not url.endswith("-END")
-            ]
-            self.properties["browse"] = [
-                url
-                for url in self._get_urls()
-                if url.endswith(".png")
-                or url.endswith(".jpg")
-                or url.endswith(".jpeg")
-                or url.endswith(".gif")
-            ]
-
-            self.properties["s3Urls"] = self._get_s3_uris()
-
-            self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
-
-            center = self.centroid()
-            self.properties["centerLat"] = center.y
-            self.properties["centerLon"] = center.x
-
+            self._set_additional_metadata()
             self.properties["platform"] = "UAVSAR"
