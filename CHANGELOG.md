@@ -32,6 +32,8 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Handle "NOT AVAILABLE" when attempting to parse floats from UMM
+- SMAP additional metadata filled in
+- SMAP and ALOS export `additionalUrls` in jsonlite
 
 ## [v13.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v13.0.1...v13.1.0)
 
