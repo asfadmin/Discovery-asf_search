@@ -466,6 +466,11 @@ class ASFProduct:
             entry["Name"]: entry.get("Checksum", {"Value": None})["Value"] for entry in bytes_temp
         }
 
+        if size_format == "SizeUnit" and bytes_temp[0].get(size_format) == "MB":
+            for key, val in bytes_mapping.items():
+                if val.get("bytes") is not None:
+                    bytes_mapping[key]["bytes"] = val["bytes"] * 1**-6
+
         return FileSizeInfo(bytes_mapping, md5sum_mapping)
 
     def _set_additional_metadata(self):
