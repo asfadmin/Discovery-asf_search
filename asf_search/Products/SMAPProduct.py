@@ -20,7 +20,7 @@ class SMAPProduct(ASFProduct):
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):
         super().__init__(args, session)
-        if self.properties["md5sum"] is None:
+        if self.properties.get("md5sum") is None:
             self._set_additional_metadata()
 
         if self.properties.get("groupID") is None:

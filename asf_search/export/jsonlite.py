@@ -26,6 +26,9 @@ extra_jsonlite_fields = [
     ("missionName", ["AdditionalAttributes", ("Name", "MISSION_NAME"), "Values", 0]),
 ]
 
+_MIGRATED_DATASETS = ["SEASAT 1", "SMAP", "ALOS"]
+
+
 def results_to_jsonlite(results):
     ASF_LOGGER.info('started translating results to jsonlite format')
     if len(results) == 0:
@@ -262,10 +265,10 @@ class JSONLiteStreamArray(list):
             }
             result["collectionName"] = p.get("collectionName")
             result["conceptID"] = p.get("conceptID")
-        elif p.get('platform') == 'SEASAT 1':
-            result['additionalUrls'] = p.get('additionalUrls', [])
-            result['s3Urls'] = p.get('s3Urls', [])
-            result['sizeMB'] = p.get('bytes', {})
+        elif p.get("platform") in _MIGRATED_DATASETS:
+            result["additionalUrls"] = p.get("additionalUrls", [])
+            result["s3Urls"] = p.get("s3Urls", [])
+            result["sizeMB"] = p.get("bytes", {})
 
         elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
             result.pop("perpendicularBaseline", None)
