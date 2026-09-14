@@ -9,6 +9,7 @@ from shapely.ops import transform
 from asf_search import ASF_LOGGER
 from asf_search.export.export_translators import ASFSearchResults_to_properties_list
 from asf_search.constants import PRODUCT_TYPE
+
 _MB = 1048576
 
 extra_jsonlite_fields = [
@@ -27,10 +28,13 @@ extra_jsonlite_fields = [
     ("siteDescription", ["AdditionalAttributes", ("Name", "SITE_DESCRIPTION"), "Values", 0]),
 ]
 
+_MIGRATED_DATASETS = ["SEASAT 1", "SMAP", "ALOS", "UAVSAR"]
+
+
 def results_to_jsonlite(results):
-    ASF_LOGGER.info('started translating results to jsonlite format')
+    ASF_LOGGER.info("started translating results to jsonlite format")
     if len(results) == 0:
-        yield from json.JSONEncoder(indent=2, sort_keys=True).iterencode({'results': []})
+        yield from json.JSONEncoder(indent=2, sort_keys=True).iterencode({"results": []})
         return
 
     if not inspect.isgeneratorfunction(results) and not isinstance(results, GeneratorType):
@@ -170,7 +174,7 @@ class JSONLiteStreamArray(list):
             pass
 
         try:
-            p['frameNumber'] = int(p.get('frameNumber'))
+            p["frameNumber"] = int(p.get("frameNumber"))
         except TypeError:
             pass
 
@@ -206,9 +210,7 @@ class JSONLiteStreamArray(list):
             "productType": p.get("processingLevel"),
             "productTypeDisplay": p.get("processingTypeDisplay"),
             "sizeMB": p.get("sizeMB"),
-            "stackSize": p.get(
-                "insarStackSize"
-            ),  # Used for datasets with precalculated stacks
+            "stackSize": p.get("insarStackSize"),  # Used for datasets with precalculated stacks
             "startTime": p.get("startTime"),
             "stopTime": p.get("stopTime"),
             "thumb": p.get("thumb"),
@@ -230,54 +232,59 @@ class JSONLiteStreamArray(list):
             result["burst"] = p["burst"]
             result["sizeMB"] = float(p["bytes"]) / 1024000
 
-        elif result.get('productType', None) in [PRODUCT_TYPE.TROPO_ZENITH, PRODUCT_TYPE.ECMWF_TROPO]:
-            result['sizeMB'] = p.get('bytes', {})
-            result['s3Urls'] = p.get('s3Urls', [])
-            result['additionalUrls'] = p.get('additionalUrls')
+        elif result.get("productType", None) in [
+            PRODUCT_TYPE.TROPO_ZENITH,
+            PRODUCT_TYPE.ECMWF_TROPO,
+        ]:
+            result["sizeMB"] = p.get("bytes", {})
+            result["s3Urls"] = p.get("s3Urls", [])
+            result["additionalUrls"] = p.get("additionalUrls")
             result["collectionName"] = p.get("collectionName")
             result["conceptID"] = p.get("conceptID")
-        elif p.get('operaBurstID') is not None or result['productID'].startswith('OPERA'):
-            result['opera'] = {
-                'operaBurstID': p.get('operaBurstID'),
-                's3Urls': p.get('s3Urls', []),
-                'additionalUrls': p.get('additionalUrls'),
-                'tileID': p.get('tileID'),
-                'productVersion': p.get('productVersion'),
-                'bytes': p.get('bytes', {})
+        elif p.get("operaBurstID") is not None or result["productID"].startswith("OPERA"):
+            result["opera"] = {
+                "operaBurstID": p.get("operaBurstID"),
+                "s3Urls": p.get("s3Urls", []),
+                "additionalUrls": p.get("additionalUrls"),
+                "tileID": p.get("tileID"),
+                "productVersion": p.get("productVersion"),
+                "bytes": p.get("bytes", {}),
             }
-            if p.get('validityStartDate'):
-                result['opera']['validityStartDate'] = p.get('validityStartDate')
-        elif p.get('platform') == 'NISAR':
-            result['nisar'] = {
-                'additionalUrls': p.get('additionalUrls', []),
-                's3Urls': p.get('s3Urls', []),
-                'pgeVersion':  p.get('pgeVersion'),
-                'crid': p.get('crid'),
-                'mainBandPolarization':  p.get('mainBandPolarization'),
-                'sideBandPolarization':  p.get('sideBandPolarization'),
-                'frameCoverage':  p.get('frameCoverage'),
-                'jointObservation':  p.get('jointObservation'),
-                'rangeBandwidth':  p.get('rangeBandwidth'),
-                'sizeMB': p.get('bytes'),
-                'orbitType': p.get('orbitType'),
+            if p.get("validityStartDate"):
+                result["opera"]["validityStartDate"] = p.get("validityStartDate")
+        elif p.get("platform") == "NISAR":
+            result["nisar"] = {
+                "additionalUrls": p.get("additionalUrls", []),
+                "s3Urls": p.get("s3Urls", []),
+                "pgeVersion": p.get("pgeVersion"),
+                "crid": p.get("crid"),
+                "mainBandPolarization": p.get("mainBandPolarization"),
+                "sideBandPolarization": p.get("sideBandPolarization"),
+                "frameCoverage": p.get("frameCoverage"),
+                "jointObservation": p.get("jointObservation"),
+                "rangeBandwidth": p.get("rangeBandwidth"),
+                "sizeMB": p.get("bytes"),
+                "orbitType": p.get("orbitType"),
             }
             result["collectionName"] = p.get("collectionName")
             result["conceptID"] = p.get("conceptID")
-        elif p.get('platform') in ['SEASAT 1', 'UAVSAR']:
-            result['additionalUrls'] = p.get('additionalUrls', [])
-            result['s3Urls'] = p.get('s3Urls', [])
-            result['sizeMB'] = p.get('bytes', {})
+        elif p.get("platform") in _MIGRATED_DATASETS:
+            result["additionalUrls"] = p.get("additionalUrls", [])
+            result["s3Urls"] = p.get("s3Urls", [])
+            result["sizeMB"] = p.get("bytes", {})
 
-        elif result.get('productID', result.get('fileName', '')).startswith('S1-GUNW'):
+        elif result.get("productID", result.get("fileName", "")).startswith("S1-GUNW"):
             result.pop("perpendicularBaseline", None)
-            if p.get('ariaVersion') is None:
-                version_unformatted = result.get('productID').split('v')[-1]
-                result['ariaVersion'] = re.sub(r'[^0-9\.]', '', version_unformatted.replace("_", '.'))
+            if p.get("ariaVersion") is None:
+                version_unformatted = result.get("productID").split("v")[-1]
+                result["ariaVersion"] = re.sub(
+                    r"[^0-9\.]", "", version_unformatted.replace("_", ".")
+                )
             else:
-                result['ariaVersion'] = p.get('ariaVersion')
-                result['productTypeDisplay'] = 'Standard Product, NetCDF'
+                result["ariaVersion"] = p.get("ariaVersion")
+                result["productTypeDisplay"] = "Standard Product, NetCDF"
 
-            if result['sizeMB'] is None:
+            if result["sizeMB"] is None:
                 result["sizeMB"] = float(p["bytes"]) / _MB
                 pass
 
