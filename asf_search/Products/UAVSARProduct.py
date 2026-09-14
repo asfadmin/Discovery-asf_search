@@ -15,10 +15,7 @@ class UAVSARProduct(ASFProduct):
         "processingLevel": {
             "path": ["AdditionalAttributes", ("Name", "PRODUCT_TYPE"), "Values", 0]
         },
-        "polarization": {
-            "path": ["AdditionalAttributes", ("Name", "POLARIZATION"), "Values"]
-        },  # for consolidated collection
-        "bytes": {"path": ["DataGranule", "ArchiveAndDistributionInformation"]},
+        "polarization": {"path": ["AdditionalAttributes", ("Name", "POLARIZATION"), "Values"]},
     }
 
     _default_browse_extensions = (".png", ".jpg", ".jpeg", ".gif")
