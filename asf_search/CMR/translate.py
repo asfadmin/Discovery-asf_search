@@ -37,7 +37,7 @@ def translate_opts(opts: ASFSearchOptions) -> List:
 
     # Escape commas for each key in the list.
     # intersectsWith, temporal, and other keys you don't want to escape, so keep whitelist instead
-    for escape_commas in ["campaign"]:
+    for escape_commas in ["campaign", "siteDescription"]:
         if escape_commas in dict_opts:
             dict_opts[escape_commas] = dict_opts[escape_commas].replace(",", "\\,")
 
