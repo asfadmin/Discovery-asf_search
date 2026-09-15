@@ -52,6 +52,23 @@ def parse_int(value: int) -> int:
         raise ValueError(f'Invalid int: {value}') from exc
     return value
 
+
+def parse_bool(value: Union[bool, str]) -> bool:
+    """
+    Base bool validator. Accepts bools and the strings "true"/"false" (case insensitive),
+    so string values like "false" are not treated as truthy.
+    :param value: The bool or string to validate
+    :return: The validated bool
+    """
+    if isinstance(value, str):
+        if value.lower() == 'true':
+            return True
+        if value.lower() == 'false':
+            return False
+        raise ValueError(f'Invalid bool: {value}')
+    return bool(value)
+
+
 def parse_date(value: Union[str, datetime]) -> Union[datetime, str]:
     """
     Base date validator

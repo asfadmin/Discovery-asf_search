@@ -27,6 +27,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -->
 
 ---
+## [v13.1.2](https://github.com/asfadmin/Discovery-asf_search/compare/v13.1.1...v13.1.2)
+
+### Fixed
+
+- Fixed `jointObservation` and `collectionAlias` treating string `"false"` as `True`
+
 ## [v13.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v13.1.0...v13.1.1)
 
 ### Fixed

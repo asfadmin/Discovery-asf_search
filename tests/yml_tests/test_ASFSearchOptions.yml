@@ -27,6 +27,35 @@ tests:
     output: 123.0
     error: Float values must be finite
 
+- test-validator-map-validate parse-bool jointObservation:
+    key: jointObservation
+    value: 'false'
+    output: false
+
+- test-validators parse_bool from bool:
+    validator: parse_bool
+    input: true
+    output: true
+    error: null
+
+- test-validators parse_bool from string true:
+    validator: parse_bool
+    input: 'True'
+    output: true
+    error: null
+
+- test-validators parse_bool from string false:
+    validator: parse_bool
+    input: 'false'
+    output: false
+    error: null
+
+- test-validators parse_bool error invalid string:
+    validator: parse_bool
+    input: 'asf'
+    output: false
+    error: Invalid bool
+
 - test-validators parse_string from string:
     validator: parse_string
     input: 'inf'

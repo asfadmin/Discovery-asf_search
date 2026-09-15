@@ -4,6 +4,7 @@ from .validators import (
     parse_string,
     parse_float,
     parse_int,
+    parse_bool,
     parse_wkt,
     parse_date,
     parse_string_list,
@@ -92,7 +93,7 @@ validator_map = {
     'fullBurstID': parse_string_list,
     # nisar paramaters
     'frameCoverage': parse_string,
-    'jointObservation': bool,
+    'jointObservation': parse_bool,
     'mainBandPolarization': parse_string_list,
     'sideBandPolarization': parse_string_list,
     'rangeBandwidth': parse_string_list,
@@ -101,5 +102,5 @@ validator_map = {
     'session': parse_session,
     'host': parse_string,
     'provider': parse_string,
-    'collectionAlias': bool,
+    'collectionAlias': parse_bool,
 }
