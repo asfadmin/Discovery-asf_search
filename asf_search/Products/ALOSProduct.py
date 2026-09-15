@@ -32,6 +32,9 @@ class ALOSProduct(ASFStackableProduct):
         "insarStackId": {"path": ["AdditionalAttributes", ("Name", "INSAR_STACK_ID"), "Values", 0]},
         "beamModeType": {"path": ["AdditionalAttributes", ("Name", "BEAM_MODE"), "Values", 0]},
         "polarization": {"path": ["AdditionalAttributes", ("Name", "POLARIZATION"), "Values"]},
+        "siteDescription": {
+            "path": ["AdditionalAttributes", ("Name", "SITE_DESCRIPTION"), "Values", 0]
+        },
     }
 
     def __init__(self, args: Dict = {}, session: ASFSession = ASFSession()):

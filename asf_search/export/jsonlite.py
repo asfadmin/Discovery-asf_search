@@ -272,6 +272,8 @@ class JSONLiteStreamArray(list):
             result["additionalUrls"] = p.get("additionalUrls", [])
             result["s3Urls"] = p.get("s3Urls", [])
             result["sizeMB"] = p.get("bytes", {})
+            if p.get("platform") == "UAVSAR" and result.get("missionName") is None:
+                result["missionName"] = p.get("siteDescription", {})
 
         elif result.get("productID", result.get("fileName", "")).startswith("S1-GUNW"):
             result.pop("perpendicularBaseline", None)
