@@ -26,6 +26,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+
+## [v14.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.4.0...v12.4.1)
+
+### Added
+- `SMAP` dataset data migration product types. `L1A_R0_V3`, `L1A_V2`, `L1B_S0_V3`, `L1C_S0_V3`
+
 ---
 ## [v14.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v13.1.1...v14.0.0)
 ### Changed

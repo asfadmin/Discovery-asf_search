@@ -627,6 +627,10 @@ collections_by_processing_level = {
     "L1A_Radar_ISO_XML": {"SPL1A_METADATA_001", "SPL1A_METADATA_002"},
     "L1A_Radar_QA": {"SPL1A_QA_001", "SPL1A_QA_002"},
     "L1A_Radar_RO_HDF5": {"SPL1A_RO_001", "SPL1A_RO_002", "SPL1A_RO_003"},
+    "L1A_R0_V3" : {"SMAP_L1A_RO_V3"},
+    "L1A_V2": {"SMAP_L1A_V2"},
+    "L1B_S0_V3": {"SMAP_L1B_S0_V3"},
+    "L1C_S0_V3": {"SMAP_L1C_S0_V3"},
     "L1B_S0_LoRes_HDF5": {
         "SPL1B_SO_LoRes_001",
         "SPL1B_SO_LoRes_002",
