@@ -687,7 +687,7 @@ collections_by_processing_level = {
     "L1A_RADAR_RO": {"L1A_RADAR_RO"},
     "L1C_S0_HIRES": {"L1C_S0_HIRES"},
     "L1B_S0_LORES": {"L1B_S0_LORES"},
-    "L1A_RADAR": {"L1A_RADAR"},
+    "L1A_RADAR": {"L1A_RADAR", "SMAP_L1A_RO_V3"},
 }
 
 
