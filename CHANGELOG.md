@@ -32,6 +32,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - `SMAP` dataset data migration product types. `L1A_RADAR_RO`, `L1A_RADAR`, `L1B_S0_LORES`, `L1C_S0_HIRES`
+- Add `collectionName` and `conceptID` to `jsonlite1/2` output for all product types where it's relevant
 
 ### Removed
 
