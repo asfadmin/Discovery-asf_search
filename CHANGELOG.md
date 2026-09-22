@@ -33,6 +33,10 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - `SMAP` dataset data migration product types. `L1A_RADAR_RO`, `L1A_RADAR`, `L1B_S0_LORES`, `L1C_S0_HIRES`
 
+### Removed
+
+- Removed legacy `UAVSAR` platform and dataset shortname entries
+
 ---
 ## [v14.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v13.1.1...v14.0.0)
 ### Changed
