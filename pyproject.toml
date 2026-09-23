@@ -12,6 +12,7 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools_scm]
 
 [tool.ruff]
+required-version = "==0.15.22"
 line-length = 100
 fix = true
 

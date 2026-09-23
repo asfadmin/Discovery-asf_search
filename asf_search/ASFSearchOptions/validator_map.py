@@ -44,7 +44,9 @@ validator_map = {
     'bbox': parse_bbox,
     'beamMode': parse_string_list,
     'beamSwath': parse_string_list,
+    'dataMaturity': parse_string_list,
     'campaign': parse_string,
+    'siteDescription': parse_string,
     'circle': parse_circle,
     'linestring': parse_linestring,
     'point': parse_point,
@@ -80,6 +82,7 @@ validator_map = {
     'dataset': parse_string_list,
     'cmr_keywords': parse_cmr_keywords_list,
     'ariaVersion': parse_string,
+    'tileID': parse_string_list,
     # S1 Inteferrogram Filters
     'temporalBaselineDays': parse_string_list,
     # Opera Burst Filters

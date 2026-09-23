@@ -10,7 +10,7 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 <!--
 ## Example template!!
 
-## [version](https://github.com/asfadmin/Discovery-PytestAutomation/compare/vOLD...vNEW)
+## [version](https://github.com/asfadmin/Discovery-asf_search/compare/vOLD...vNEW)
 
 ### Added:
 -
@@ -19,12 +19,196 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 ### Fixed:
-- 
+-
 
 ### Removed:
 -
 
 -->
+
+## [v14.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.1...v14.0.2)
+
+### Fixed
+
+- `SMAP` dataset product type constants named after values in CMR
+
+---
+
+## [v14.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.0...v14.0.1)
+
+### Added
+
+- `SMAP` dataset data migration product types. `L1A_RADAR_RO`, `L1A_RADAR`, `L1B_S0_LORES`, `L1C_S0_HIRES`
+- Add `collectionName` and `conceptID` to `jsonlite1/2` output for all product types where it's relevant
+
+### Removed
+
+- Removed legacy `UAVSAR` platform and dataset shortname entries
+
+---
+## [v14.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v13.1.1...v14.0.0)
+### Changed
+- Breaking: `UAVSAR` umm metadata has been changed in CMR. All `UAVSAR`/`G-III` scenes have been consolidated into two collections `UAVSAR_POLSAR` and `UAVSAR_RPI` with updated metadata.
+    - To find urls for previously searchable product types use `find_urls()` method on search results lists and individual results.
+        - examples:
+            - Find gif urls for individual scene: `response[0].find_urls(extension='.gif')`
+            - Find urls for all `.slope` files from results: `response.find_url(extension='.slope')`
+            - Find urls for 1st amplitude kmz files from results: `response.find_urls(extension='.kmz', pattern=r'.*amp1.*')`
+    - `UAVSAR` no longer uses `campaign` keyword, use `siteDescription` instead
+
+
+### Removed
+- The following `UAVSAR` related constants in `PRODUCT_TYPE.py` have been removed:
+    - `AMPLITUDE`
+    - `STOKES`
+    - `AMPLITUDE_GRD`
+    - `PROJECTED`
+    - `PROJECTED_ML5X5`
+    - `PROJECTED_ML3X3`
+    - `INTERFEROMETRY_GRD`
+    - `INTERFEROMETRY`
+    - `COMPLEX`
+    - `INC`
+    - `SLOPE`
+    - `DEM_TIFF`
+    - `PAULI`
+    - `METADATA`
+
+### Added
+- `POLSAR` and `RPI` added to `PRODUCT_TYPE` constants
+
+------
+## [v13.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v13.1.0...v13.1.1)
+
+### Fixed
+
+- Handle "NOT AVAILABLE" when attempting to parse floats from UMM
+- SMAP additional metadata filled in
+- SMAP and ALOS export `additionalUrls` in jsonlite
+
+## [v13.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v13.0.1...v13.1.0)
+
+### Added
+
+- Added support for upcoming ALOS-1 and SMAP metadata changes, added `L1A_RADAR_RO`, `L1C_S0_HIRES`, `L1B_S0_LORES`, `L1A_RADAR` product type constants.
+
+## [v13.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v13.0.0...v13.0.1)
+
+### Fixed
+
+- Fixed frame based searches for dataets using `FRAME_NUMBER` additional attribute
+- Fixed NISAR `dataMaturity` filter regression
+
+=======
+## [v13.0.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.1...v13.0.0)
+
+### Changed
+
+- `asf-search` now aliases `processingLevel` and `platform` keywords with corresponding collection shortName and not collection concept-id for improved maintainability and debugging. `dataset` keyword also uses shortName.
+
+=======
+## [v12.3.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.1...v12.3.2)
+
+### Fixed
+
+- `NISAR` dataset `geojson` export no longer fails when serializing coordinates for multipolygons
+
+=======
+## [v12.3.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.3.0...v12.3.1)
+
+### Fixed
+
+- `dataMaturity` no longer duplicates searches with multiple options selected.
+
+=======
+## [v12.3.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.3...v12.3.0)
+### Added
+- Adds Sentinel-1 multi-burst support to `SBASNetwork` class
+  - Adds multi-burst supporting classes:
+    - S1MultiBurstSceneIDPair
+    - S1MultiBurst
+    - S1MultiBurstGroup
+    - S1MultiBurstProduct
+  - For usage examples, see `examples/SBASNetwork_S1-Multiburst.ipynb`
+- Updates `SBASNetwork.add_pairs()` and `SABANetork.remove_pairs()` to take either Pair objects or tuples of date pair strings.
+- Parameter for filtering NISAR products based off of data maturity.
+```python
+asf.search_count(dataMaturity=asf.constants.MATURITIES.BETA, dataset=asf.constants.DATASET.NISAR)
+```
+
+------
+## [v12.2.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.2...v12.2.3)
+### Added
+- Drop old goemetry logic for `OPERAS1Product` dist-alert products
+
+------
+## [v12.2.2](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.1...v12.2.2)
+### Added
+- `Sentinel-1D` constants and search support
+
+------
+## [v12.2.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.2.0...v12.2.1)
+### Fixed
+- Fixes optional dependency `pandas` causing import error in `SBASNetwork` class
+
+------
+## [v12.2.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.1...v12.2.0)
+### Added
+- Added `SBASNetwork` class to automate the creation of connected, multi-annual seasonal SBAS stacks of interferograms.
+    - Build SBAS stacks from a geographic reference scene or from the results of an `ASFProduct.stack()` search
+    - Seasonal gaps are connected with bridge pairs spanning one or more years
+    - User can set a target bridge date
+    - Add custom Pairs
+    - Remove Pairs
+    - For usage examples, see `examples/SBASNetwork.ipynb`
+
+------
+## [v12.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v12.1.0...v12.1.1)
+### Added
+- For Opera proudcts, add file size information to `jsonlite2` output
+
+------
+## [v12.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.1.0)
+### Added
+- Add `Stack` class, used to create stacks of `Pair` objects. This is a foundational class, which will be used by a near-future `SBASNetwork` class to automate the creation of connected, multi-annual seasonal SBAS stacks of interferograms.
+    - For usage examples, see `examples/Stack.ipynb`
+- `OPERA_L3_DIST-ALERT-S1_V1` shortname/collections added
+- Add `NISAR_EA` shortname/collections to NISAR dataset (available to authorized users)
+
+------
+## [v12.0.8](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.7...v12.0.8)
+### Added
+- `Sentinel-1D` constants and search support
+
+------
+## [v12.0.7](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.6...v12.0.7)
+### Added
+- `granule_list` supports wildcard ("*" and "?") searches
+    - For more information: https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html#parameter-options
+
+------
+## [v12.0.6](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.5...v12.0.6)
+### Added
+- `utils` module added as top level module
+    - `get_nisar_orbit_ephemeras()` method returns dictionary with latest `NISAR` `POE`, `MOE`, `NOE`, and `FOE` orbit ephemeras
+
+### Fixed
+- Fix track based searches when `processingLevel` specified on `NISAR` dataset searches
+
+------
+## [v12.0.5](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.4...v12.0.5)
+### Added
+- DIST-ALERT-S1 product type to OPERA dataset
+  - TileID searchable attribute
+  - productVersion attribute
+
+### Fixed
+- Fix edge-case with `platform` & `processingLevel` concept-id aliasing
+
+------
+## [v12.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.3...v12.0.4)
+### Fixed
+- Updated `NISAR` dataset/platform concept-ids
 
 ------
 ## [v12.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.2...v12.0.3)

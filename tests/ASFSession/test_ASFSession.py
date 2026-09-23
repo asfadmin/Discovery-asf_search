@@ -18,8 +18,8 @@ def run_auth_with_creds(username: str, password: str):
 def run_auth_with_token(token: str):
     session = ASFSession()
 
-    with patch('asf_search.ASFSession.post') as mock_token_session:
-        if not token.startswith('Bearer EDL'):
+    with patch("asf_search.ASFSession.post") as mock_token_session:
+        if not token.startswith("Bearer EDL"):
             mock_token_session.return_value.status_code = 400
             session.auth_with_token(token)
 
@@ -30,7 +30,7 @@ def run_auth_with_token(token: str):
 def run_auth_with_cookiejar(cookies: List):
     cookiejar = http.cookiejar.CookieJar()
     for cookie in cookies:
-        cookiejar.set_cookie(create_cookie(name=cookie.pop('name'), **cookie))
+        cookiejar.set_cookie(create_cookie(name=cookie.pop("name"), **cookie))
 
     # requests.cookies.RequestsCookieJar, which has slightly different behaviour
     session = ASFSession()
@@ -46,31 +46,31 @@ def run_test_asf_session_rebuild_auth(
     response_code: numbers.Number,
     final_token,
 ):
-    if final_token == 'None':
+    if final_token == "None":
         final_token = None
 
     session = ASFSession()
 
-    with patch('asf_search.ASFSession.post') as mock_token_session:
+    with patch("asf_search.ASFSession.post") as mock_token_session:
         mock_token_session.return_value.status_code = 200
-        session.auth_with_token('bad_token')
+        session.auth_with_token("bad_token")
 
         req = requests.Request(original_domain)
-        req.headers.update({'Authorization': 'Bearer fakeToken'})
+        req.headers.update({"Authorization": "Bearer fakeToken"})
 
         response = requests.Response()
         response.status_code = response_code
         response.location = response_domain
         response.request = requests.Request()
         response.request.url = response_domain
-        response.headers.update({'Authorization': 'Bearer fakeToken'})
+        response.headers.update({"Authorization": "Bearer fakeToken"})
 
-        with patch('asf_search.ASFSession._get_domain') as hostname_patch:
+        with patch("asf_search.ASFSession._get_domain") as hostname_patch:
             hostname_patch.side_effect = [original_domain, response_domain]
 
             session.rebuild_auth(req, response)
 
-            assert req.headers.get('Authorization') == final_token
+            assert req.headers.get("Authorization") == final_token
 
 
 def test_ASFSession_INTERNAL_mangling():
@@ -92,13 +92,13 @@ def test_ASFSession_INTERNAL_mangling():
     DEFAULT_AUTH_DOMAINS = asf_search.constants.INTERNAL.AUTH_DOMAINS
     DEFAULT_AUTH_COOKIES = asf_search.constants.INTERNAL.AUTH_COOKIES
 
-    uat_domain = 'cmr.uat.earthdata.nasa.gov'
-    edl_client_id = 'custom_client_id'
-    auth_host = 'custom_auth_host'
-    cmr_collection = '/search/granules'
-    auth_domains = ['custom_auth_domain']
-    uat_login_cookie = ['uat_urs_user_already_logged']
-    uat_login_domain = 'uat.urs.earthdata.nasa.gov'
+    uat_domain = "cmr.uat.earthdata.nasa.gov"
+    edl_client_id = "custom_client_id"
+    auth_host = "custom_auth_host"
+    cmr_collection = "/search/granules"
+    auth_domains = ["custom_auth_domain"]
+    uat_login_cookie = ["uat_urs_user_already_logged"]
+    uat_login_domain = "uat.urs.earthdata.nasa.gov"
 
     asf_search.constants.INTERNAL.CMR_HOST = uat_domain
     asf_search.constants.INTERNAL.EDL_HOST = uat_login_domain
@@ -147,13 +147,13 @@ def test_ASFSession_INTERNAL_mangling():
 
 
 def test_ASFSession_pooling():
-    uat_domain = 'cmr.uat.earthdata.nasa.gov'
-    edl_client_id = 'custom_client_id'
-    auth_host = 'custom_auth_host'
-    cmr_collection = '/search/granules'
-    auth_domains = ['custom_auth_domain']
-    uat_login_cookie = ['uat_urs_user_already_logged']
-    uat_login_domain = 'uat.urs.earthdata.nasa.gov'
+    uat_domain = "cmr.uat.earthdata.nasa.gov"
+    edl_client_id = "custom_client_id"
+    auth_host = "custom_auth_host"
+    cmr_collection = "/search/granules"
+    auth_domains = ["custom_auth_domain"]
+    uat_login_cookie = ["uat_urs_user_already_logged"]
+    uat_login_domain = "uat.urs.earthdata.nasa.gov"
 
     custom_session = asf_search.ASFSession(
         cmr_host=uat_domain,
@@ -172,13 +172,13 @@ def test_ASFSession_pooling():
 
 
 def _assert_pooled_instance_variables(session):
-    uat_domain = 'cmr.uat.earthdata.nasa.gov'
-    edl_client_id = 'custom_client_id'
-    auth_host = 'custom_auth_host'
-    cmr_collection = '/search/granules'
-    auth_domains = ['custom_auth_domain']
-    uat_login_cookie = ['uat_urs_user_already_logged']
-    uat_login_domain = 'uat.urs.earthdata.nasa.gov'
+    uat_domain = "cmr.uat.earthdata.nasa.gov"
+    edl_client_id = "custom_client_id"
+    auth_host = "custom_auth_host"
+    cmr_collection = "/search/granules"
+    auth_domains = ["custom_auth_domain"]
+    uat_login_cookie = ["uat_urs_user_already_logged"]
+    uat_login_domain = "uat.urs.earthdata.nasa.gov"
     assert session.cmr_host == uat_domain
     assert session.edl_host == uat_login_domain
     assert session.auth_cookie_names == uat_login_cookie

@@ -2,6 +2,7 @@ import argparse
 import pytest
 import os
 from asf_search.ASFSession import ASFSession
+from asf_search import S1MultiBurst, S1MultiBurstGroup, S1MultiBurstProduct
 from getpass import getpass
 
 def string_to_session(user_input: str) -> ASFSession:
@@ -61,3 +62,18 @@ def pytest_addoption(parser: pytest.Parser):
 
     parser.addoption("--auth_with_token", action="store", dest="authenticated_session", type=set_should_auth_session_with_token, default='FALSE',
                      help = "'auth_with_creds': Use EDL token to authenticate session for relevant tests")
+
+@pytest.fixture(scope="module")
+def three_by_three_multiburst_group():
+    return S1MultiBurstGroup(
+    bursts=[
+    S1MultiBurst("173_370305", ("IW1", "IW2", "IW3")),
+    S1MultiBurst("173_370306", ("IW1", "IW2", "IW3")),
+    S1MultiBurst("173_370307", ("IW1", "IW2", "IW3"))
+    ]
+)
+
+@pytest.fixture(scope="module")
+def three_by_three_multiburst_product(three_by_three_multiburst_group):
+    start_date = '2023-01-01'
+    return S1MultiBurstProduct(three_by_three_multiburst_group, start_date)

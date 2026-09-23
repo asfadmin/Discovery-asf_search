@@ -8,6 +8,7 @@ field_map = {
     'beamMode':                     {'key': 'attribute[]',              'fmt': 'string,BEAM_MODE,{0}'},
     'beamSwath':                    {'key': 'attribute[]',              'fmt': 'string,BEAM_MODE_TYPE,{0}'},
     'campaign':                     {'key': 'attribute[]',              'fmt': 'string,MISSION_NAME,{0}'},
+    'siteDescription':              {'key': 'attribute[]',              'fmt': 'string,SITE_DESCRIPTION,{0}'},
     'circle':                       {'key': 'circle',                   'fmt': '{0}'},
     'maxDoppler':                   {'key': 'attribute[]',              'fmt': 'float,DOPPLER,,{0}'},
     'minDoppler':                   {'key': 'attribute[]',              'fmt': 'float,DOPPLER,{0},'},
@@ -52,4 +53,5 @@ field_map = {
     'jointObservation':             {'key': 'attribute[]',             'fmt': 'string,JOINT_OBSERVATION,{0}'},
     'rangeBandwidth':               {'key': 'attribute[]',             'fmt': 'string,RANGE_BANDWIDTH_CONCAT,{0}'},
     'productionConfiguration':      {'key': 'attribute[]',             'fmt': 'string,PRODUCTION_PIPELINE,{0}'},
+    'tileID':                       {'key': 'attribute[]',             'fmt': 'string,MGRS_TILE_ID,{0}'},
 }

@@ -12,6 +12,7 @@ import pytest
 from asf_search.search.search_generator import as_ASFProduct
 from asf_enumeration import aria_s1_gunw
 
+
 def run_test_get_preprocessed_stack_params(product):
     reference = as_ASFProduct(product, ASFSession())
     params = reference.get_stack_opts()
@@ -34,7 +35,7 @@ def run_test_get_unprocessed_stack_params(product):
         assert [reference.properties['polarization']] == params.polarization
         assert [reference.properties['burst']['fullBurstID']] == params.fullBurstID
     elif reference.properties['sceneName'].startswith('S1-GUNW'):
-        assert params.platform == ['SA', 'SB', 'SC']
+        assert params.platform == ['SA', 'SB', 'SC', 'SD']
         assert DATASET.SENTINEL1 in params.dataset
         assert params.processingLevel == [PRODUCT_TYPE.SLC]
         assert params.beamMode == [BEAMMODE.IW]
@@ -108,7 +109,9 @@ def run_test_stack_from_id(stack_id: str, reference, stack, opts: ASFSearchOptio
 
                 returned_stack = stack_from_id(stack_id, opts=opts)
                 stack_files = set(x['properties']['fileID'] for x in stack)
-                filtered_stack = [x for x in returned_stack if x.properties['fileID'] in stack_files]
+                filtered_stack = [
+                    x for x in returned_stack if x.properties['fileID'] in stack_files
+                ]
                 for idx, secondary in enumerate(filtered_stack):
                     if idx > 0:
                         assert (

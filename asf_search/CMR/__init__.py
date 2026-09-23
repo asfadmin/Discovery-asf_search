@@ -6,6 +6,6 @@ from .datasets import (  # noqa: F401
     dataset_collections,  # noqa: F401
     collections_per_platform,  # noqa: F401
     collections_by_processing_level,  # noqa: F401
-    get_concept_id_alias,  # noqa: F401
-    get_dataset_concept_ids,  # noqa: F401
+    get_short_name_alias,  # noqa: F401
+    get_dataset_short_names,  # noqa: F401
 )

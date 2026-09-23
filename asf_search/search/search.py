@@ -19,6 +19,8 @@ def search(
     beamMode: Union[str, Sequence[str]] = None,
     beamSwath: Union[str, Sequence[str]] = None,
     campaign: Union[str, Sequence[str]] = None,
+    siteDescription: Union[str, Sequence[str]] = None,
+    dataMaturity: Union[Literal['BETA', 'PROVISIONAL', 'VALIDATED'], Sequence[Literal['BETA', 'PROVISIONAL', 'VALIDATED']]] = None,
     maxDoppler: float = None,
     minDoppler: float = None,
     end: Union[datetime.datetime, str] = None,
@@ -57,12 +59,13 @@ def search(
     sideBandPolarization: Union[str, Sequence[str]] = None,
     rangeBandwidth: Union[str, Sequence[str]] = None,
     jointObservation: bool = None,
-    productionConfiguration: Union[Literal["PR", "UR"], Sequence[Literal["PR", "UR"]]] = None,
+    productionConfiguration: Union[Literal['PR', 'UR'], Sequence[Literal['PR', 'UR']]] = None,
     dataset: Union[str, Sequence[str]] = None,
     collections: Union[str, Sequence[str]] = None,
     shortName: Union[str, Sequence[str]] = None,
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
+    tileID: Union[str, Sequence[str]] = None,
     opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
@@ -92,6 +95,8 @@ def search(
     campaign:
         For UAVSAR and AIRSAR data collections only. Search by general location,
         site description, or data grouping as supplied by flight agency or project.
+    dataMaturity:
+        For NISAR data collections only. Determined by when products were processed
     maxDoppler:
         Doppler provides an indication of how much the look direction deviates
         from the ideal perpendicular flight direction acquisition.
@@ -117,6 +122,7 @@ def search(
     granule_list:
         List of specific granules.
         Search results may include several products per granule name.
+        Supports wildcard queries (*/?)
     groupID:
         Identifier used to find products considered to
         be of the same scene but having different granule names
@@ -161,6 +167,8 @@ def search(
     temporalBaselineDays:
         List of temporal baselines,
         used for Sentinel-1 Interferogram (BETA)
+    tileID:
+        For DIST-ALERT-S1 product type products
     maxResults:
         The maximum number of results to be returned by the search
     opts:
@@ -188,7 +196,6 @@ def search(
         results.searchOptions = page.searchOptions
         perf = time.time()
 
-
     if not results.searchComplete:
         msg = (
             'Results may be incomplete due to a search error. '
@@ -196,7 +203,6 @@ def search(
         )
 
         ASF_LOGGER.error(msg)
-        
 
     try:
         results.sort(key=lambda p: p.get_sort_keys(), reverse=True)
