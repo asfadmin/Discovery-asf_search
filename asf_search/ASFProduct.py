@@ -486,7 +486,9 @@ class ASFProduct:
         self.properties["s3Urls"] = self._get_s3_uris()
 
         self.properties["conceptID"] = self.umm_get(self.meta, "collection-concept-id")
-
+        self.properties["collectionName"] = self.umm_get(
+            self.umm, "CollectionReference", "ShortName"
+        )
         center = self.centroid()
         self.properties["centerLat"] = center.y
         self.properties["centerLon"] = center.x
