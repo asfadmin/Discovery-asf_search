@@ -26,6 +26,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+## [v14.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.1...v14.0.2)
+
+### Fixed
+
+- `SMAP` dataset product type constants named after values in CMR
+
+---
 
 ## [v14.0.1](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.0...v14.0.1)
 
