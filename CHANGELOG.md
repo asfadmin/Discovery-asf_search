@@ -28,6 +28,9 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [v14.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.2...v14.0.3)
 
+### Added
+- Add `NISAR_SCIENCE_PRODUCTS` dataset, contains ONLY for NISAR Levl 0B, 1, 2, and 3 science products.
+
 ### Fixed
 
 - Add `L0B` collection aliases to NISAR platform alias list.
