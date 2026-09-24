@@ -26,6 +26,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+## [v14.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.2...v14.0.3)
+
+### Added
+- Add `NISAR_SCIENCE_PRODUCTS` dataset, contains ONLY for NISAR Levl 0B, 1, 2, and 3 science products.
+
+---
+
 ## [v14.0.2](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.1...v14.0.2)
 
 ### Fixed
@@ -214,7 +221,6 @@ asf.search_count(dataMaturity=asf.constants.MATURITIES.BETA, dataset=asf.constan
 ## [v12.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v12.0.2...v12.0.3)
 ### Added
 - Add `ariaVersion` as a searchable attribute
-- Add `NISAR_SCIENCE_PRODUCTS` dataset, contains ONLY for NISAR Levl 0B, 1, 2, and 3 science products.
 - Add `orbitType` to `NISARProduct` properties dictionary
 
 ------

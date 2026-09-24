@@ -88,13 +88,11 @@ NISAR_PRODUCT_TYPES = [*NISAR_SCIENCE_PRODUCT_TYPES, *NISAR_ANCILLARY_PRODUCT_TY
 dataset_collections = {
     "ALOS-2": {"ALOS2_L1_PSR2"},
     "NISAR": {
-        "NISAR_OE",
-        "NISAR_RP",
         "ASF_ECMWF_SMST",
         "NISAR_ANC_AUX",
         "NISAR_COP",
-        "NISAR_EA_L0B_CRSD",
         "NISAR_DC_RADAR",
+        "NISAR_EA_L0B_CRSD",
         "NISAR_L0A_RRST_BETA_V1",
         "NISAR_L0A_RRST_PROVISIONAL_V1",
         "NISAR_L0A_RRST_V1",
@@ -103,7 +101,9 @@ dataset_collections = {
         "NISAR_NEN_RRST_BETA_V1",
         "NISAR_NEN_RRST_PROVISIONAL_V1",
         "NISAR_NEN_RRST_V1",
+        "NISAR_OE",
         "NISAR_OROST",
+        "NISAR_RP",
         "NISAR_STUF",
         "NISAR_TEC",
         *NISAR_SCIENCE_PRODUCT_COLLECTIONS,
@@ -676,7 +676,7 @@ def get_nisar_collection_by_maturity(maturities: list[str]):
         )
 
 
-def get_short_name_alias(param_list: list[str], collections_dict: dict) -> list[str]:
+def get_short_name_alias(param_list: list[str], collections_dict: dict[str, set[str]]) -> list[str]:
     """
     param: param_list (list[str]): list of search values to alias
     param: collections_dict (dict): The search value to short name dictionary to read from
