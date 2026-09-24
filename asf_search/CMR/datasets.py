@@ -330,6 +330,7 @@ collections_per_platform = {
         "SENTINEL-1_INTERFEROGRAMS",
     },
     "SENTINEL-1B": {
+        "ARIA_S1_GUNW",
         "OPERA_L2_CSLC-S1-STATIC_V1",
         "OPERA_L2_CSLC-S1_CALVAL_V1",
         "OPERA_L2_CSLC-S1_V1",
@@ -347,6 +348,7 @@ collections_per_platform = {
         "SENTINEL-1_INTERFEROGRAMS",
     },
     "SENTINEL-1C": {
+        "ARIA_S1_GUNW",
         "SENTINEL-1C_DP_GRD_FULL",
         "SENTINEL-1C_DP_GRD_HIGH",
         "SENTINEL-1C_DP_GRD_MEDIUM",
@@ -364,6 +366,7 @@ collections_per_platform = {
         "SENTINEL-1C_SP_GRD_MEDIUM",
     },
     "SENTINEL-1D": {
+        "ARIA_S1_GUNW",
         "SENTINEL-1D_DP_GRD_HIGH",
         "SENTINEL-1D_DP_GRD_MEDIUM",
         "SENTINEL-1D_DP_META_GRD_HIGH",
@@ -466,6 +469,10 @@ collections_per_platform = {
         "NISAR_L2_GSLC_V1",
         "NISAR_L2_GUNW_V1",
         "NISAR_L3_SME2_V1",
+        "NISAR_L0B_RRSD_BETA_V1",
+        "NISAR_L0B_RRSD_PROVISIONAL_V1",
+        "NISAR_L0B_RRSD_V1",
+        "NISAR_UR_L0B_RRSD",
     },
 }
 
