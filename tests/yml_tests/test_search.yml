@@ -124,6 +124,11 @@ tests:
         platform: ALOS
         maxResults: 3
       answer: Alos_response_maxResults3.yml
+  - test-ASFSearch-search-session Alos:
+      parameters:
+        platform: ALOS
+        maxResults: 3
+      answer: Alos_response_maxResults3.yml
   - test-ASFSearch-search-error 400-Error:
       parameters: {}
       status_code: 400

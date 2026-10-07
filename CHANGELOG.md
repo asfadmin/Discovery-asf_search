@@ -26,6 +26,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 -->
 
+## [v14.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.3...v14.1.0)
+
+### Added
+- `search()`, `geo_search()`, `search_generator()` and `search_count()` now accept a `session` keyword argument, so an authenticated session can be passed directly (e.g. `asf.search(session=session, maxResults=250)`) instead of through `ASFSearchOptions`. Takes priority over `opts.session`.
+
+---
+
 ## [v14.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.2...v14.0.3)
 
 ### Added

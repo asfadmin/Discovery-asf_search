@@ -13,7 +13,7 @@ from asf_search.exceptions import ASFSearchError
 from asf_search.search import search
 from asf_search.ASFSearchResults import ASFSearchResults
 from asf_search.CMR import dataset_collections
-from pytest import raises
+from pytest import raises, warns
 from typing import List
 import requests
 import requests_mock
@@ -63,6 +63,44 @@ def run_test_search(search_parameters, answer):
 
         assert len(response) == len(answer)
         # assert(response.geojson()["features"] == answer)
+
+
+def run_test_search_with_session(search_parameters, answer):
+    session = ASFSession()
+    session.headers.update({"X-Test-Session": "search-session"})
+
+    with requests_mock.Mocker() as m:
+        m.post(
+            f"https://{INTERNAL.CMR_HOST}{INTERNAL.CMR_GRANULE_PATH}",
+            json={"items": answer, "hits": len(answer)},
+        )
+
+        # session passed directly as a keyword argument
+        response = search(session=session, **search_parameters)
+
+        assert m.called
+        for request in m.request_history:
+            assert request.headers.get("X-Test-Session") == "search-session"
+
+        assert len(response) == len(answer)
+        assert response.searchOptions.session is session
+        for product in response:
+            assert product.session is session
+
+        # session keyword argument takes priority over opts.session
+        opts_session = ASFSession()
+        opts_session.headers.update({"X-Test-Session": "opts-session"})
+        opts = ASFSearchOptions(session=opts_session)
+
+        m.reset_mock()
+        with warns(UserWarning):
+            response = search(session=session, opts=opts, **search_parameters)
+
+        for request in m.request_history:
+            assert request.headers.get("X-Test-Session") == "search-session"
+
+        assert response.searchOptions.session is session
+        assert opts.session is opts_session
 
 
 def run_test_search_http_error(search_parameters, status_code: Number, report: str):
