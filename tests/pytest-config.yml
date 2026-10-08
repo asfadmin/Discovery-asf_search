@@ -85,6 +85,11 @@ test_types:
       required_in_title: test-ASFSearch-search-valid
       method: test_ASFSearch_Search
 
+  - For ASFSearch search with session keyword tests:
+      required_keys: ["parameters", "answer"]
+      required_in_title: test-ASFSearch-search-session
+      method: test_ASFSearch_Search_Session
+
   - For ASFSearch search_generator with parameters tests:
       required_keys: parameters
       required_in_title: test-ASFSearch-search-valid

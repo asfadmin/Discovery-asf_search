@@ -94,6 +94,7 @@ def search_generator(
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     tileID: Union[str, Sequence[str]] = None,
     maxResults: int = None,
+    session: ASFSession = None,
     opts: ASFSearchOptions = None,
 ) -> Generator[ASFSearchResults, None, None]:
     """
@@ -198,6 +199,9 @@ def search_generator(
         used for Sentinel-1 Interferogram (BETA)
     maxResults:
         The maximum number of results to be returned by the search
+    session:
+        An ASFSession (or other requests.Session subclass) used to query CMR,
+        such as an authenticated session. Takes priority over `opts.session`
     opts:
         An ASFSearchOptions object describing the search parameters to be used.
         Search parameters specified outside this object will override in event of a conflict.

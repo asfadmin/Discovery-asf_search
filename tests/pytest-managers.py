@@ -35,6 +35,7 @@ from Search.test_search import (
     run_test_keyword_aliasing_results,
     run_test_search,
     run_test_search_http_error,
+    run_test_search_with_session,
 )
 from Search.test_search_generator import (
     run_test_search_generator,
@@ -301,6 +302,18 @@ def test_ASFSearch_Search(**args) -> None:
     answer = get_resource(test_info["answer"])
 
     run_test_search(parameters, answer)
+
+
+def test_ASFSearch_Search_Session(**args) -> None:
+    """
+    Test asf_search.search with a session passed directly as a keyword argument,
+    asserting the session is used for the CMR request and attached to the results
+    """
+    test_info = args["test_info"]
+    parameters = get_resource(test_info["parameters"])
+    answer = get_resource(test_info["answer"])
+
+    run_test_search_with_session(parameters, answer)
 
 
 def test_ASFSearch_Search_Generator(**args) -> None:

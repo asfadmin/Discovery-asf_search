@@ -84,6 +84,12 @@ asf_search.download_urls(urls=urls, path='/Users/SARGuru/data', session=ASFSessi
 
 Also note that `ASFSearchResults.download()` and the generic `download_urls()` function both accept a `processes` parameter which allows for parallel downloads.
 
+An authenticated session can also be passed directly to the search functions (`search()`, `geo_search()`, `search_generator()` and `search_count()`):
+```python
+session = asf_search.ASFSession().auth_with_token('EDL token')
+results = asf_search.search(session=session, maxResults=250)
+```
+
 Further examples of all of the above can be found in `examples/`
 
 
