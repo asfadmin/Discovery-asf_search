@@ -25,6 +25,12 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [v14.0.4](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.3...v14.0.4)
+
+### Added
+- Add new `ALOS` collections to processing levels
+
+---
 
 ## [v14.0.3](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.2...v14.0.3)
 
