@@ -2,6 +2,7 @@ import datetime
 from typing import Literal, Sequence, Tuple, Union
 from copy import copy
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSession import ASFSession
 from asf_search.CMR.subquery import build_subqueries
 from asf_search.CMR import translate_opts
 from asf_search.search.search_generator import get_page, preprocess_opts
@@ -64,6 +65,7 @@ def search_count(
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     tileID: Union[str, Sequence[str]] = None,
     maxResults: int = None,
+    session: ASFSession = None,
     opts: ASFSearchOptions = None,
 ) -> int:
     # Create a kwargs dict, that's all of the 'not None' items, and merge it with opts:

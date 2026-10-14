@@ -5,6 +5,7 @@ import datetime
 
 from asf_search import ASF_LOGGER, ASFSearchResults
 from asf_search.ASFSearchOptions import ASFSearchOptions
+from asf_search.ASFSession import ASFSession
 from asf_search.exceptions import ASFSearchError
 from asf_search.search.search_generator import search_generator
 
@@ -66,6 +67,7 @@ def search(
     cmr_keywords: Union[Tuple[str, str], Sequence[Tuple[str, str]]] = None,
     maxResults: int = None,
     tileID: Union[str, Sequence[str]] = None,
+    session: ASFSession = None,
     opts: ASFSearchOptions = None,
 ) -> ASFSearchResults:
     """
@@ -171,6 +173,9 @@ def search(
         For DIST-ALERT-S1 product type products
     maxResults:
         The maximum number of results to be returned by the search
+    session:
+        An ASFSession (or other requests.Session subclass) used to query CMR,
+        such as an authenticated session. Takes priority over `opts.session`
     opts:
         An ASFSearchOptions object describing the search parameters to be used.
         Search parameters specified outside this object will override in event of a conflict.
