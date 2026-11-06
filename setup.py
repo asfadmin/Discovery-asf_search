@@ -13,7 +13,7 @@ requirements = [
 ]
 
 test_requirements = [
-    'pytest==8.1.1',
+    'pytest==9.0.3',
     'pytest-automation==3.0.0',
     'pytest-cov',
     'pytest-mock',
