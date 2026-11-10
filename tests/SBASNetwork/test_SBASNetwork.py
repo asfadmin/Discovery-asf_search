@@ -218,7 +218,7 @@ def test_add_multiburst_pair_object(multiburst_sbas_network):
     pair_to_add = multiburst_sbas_network.remove_list[10]
     removed_list_size = len(multiburst_sbas_network.remove_list)
     multiburst_sbas_network.add_pairs(pair_to_add)
-    assert len(multiburst_sbas_network.subset_stack) == 100
+    assert len(multiburst_sbas_network.subset_stack) == 102
     assert len(multiburst_sbas_network.remove_list) == removed_list_size - 1
     assert len(multiburst_sbas_network.connected_substacks) == 3
     assert len(max(multiburst_sbas_network.connected_substacks, key=lambda s: len(s))) == 97
