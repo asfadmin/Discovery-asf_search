@@ -25,6 +25,11 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 -
 
 -->
+## [v14.1.1](https://github.com/asfadmin/Discovery-asf_search/compare/v14.1.0...v14.1.1)
+
+### Added
+- `get_slc_burst_ids()` utility method for querying frames from the `Sentinel-1_Burst_Map` collection
+
 ## [v14.1.0](https://github.com/asfadmin/Discovery-asf_search/compare/v14.0.4...v14.1.0)
 
 ### Added

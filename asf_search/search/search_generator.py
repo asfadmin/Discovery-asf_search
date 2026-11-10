@@ -574,6 +574,7 @@ dataset_to_product_types = {
     "SENTINEL-1": ASFProductType.S1Product,
     "OPERA-S1": ASFProductType.OPERAS1Product,
     "OPERA-S1-CALVAL": ASFProductType.OPERAS1Product,
+    "Sentinel-1_Burst_Map": ASFProductType.S1BurstProduct,
     "SLC-BURST": ASFProductType.S1BurstProduct,
     "ALOS": ASFProductType.ALOSProduct,
     "SIR-C": ASFProductType.SIRCProduct,
