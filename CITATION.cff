@@ -1,0 +1,75 @@
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+
+title: ASF Search
+doi: TODO
+contact:
+  - name: NASA Earthdata Forum
+    website: https://forum.earthdata.nasa.gov/viewforum.php?f=7&keywords=NISAR
+  - name: ASF User Services
+    email: uso@asf.alaska.edu
+type: software
+license: BSD 3-Clause 
+url: https://github.com/asfadmin/Discovery-asf_search
+repository-code: https://github.com/asfadmin/Discovery-asf_search
+keywords:
+  - NISAR
+  - SENTINEL-1
+  - ALOS
+  - ALOS-PALSAR
+  - OPERA
+  - OPERA Displacement
+  - ARIA GUNW
+  - SMAP
+  - UAVSAR
+  - Search
+  - NASA-ISRO Synthetic Aperture Radar
+  - Synthetic Aperture Radar
+  - SAR
+  - NASA
+  - Alaska Satellite Facility
+  - ASF
+  - Jet Propulsion Laboratory
+  - JPL
+  - data
+  - remote sensing
+  - earth science
+  - land surface
+  - geomorphic landforms
+  - geomorphic processes
+  - solid earth
+  - tectonics
+  - agriculture
+  - forest science
+  - cryosphere
+  - glaciers
+  - ice sheets
+  - frozen ground
+authors:
+  - given-names: Kim
+    family-names: Fairbanks
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    alias: SpicyGarlicAlbacoreRoll
+  - given-names: Tyler
+    family-names: Chase
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    alias: tylercchase
+  - given-names: Gregory
+    family-names: Short
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    alias: glshort
+  - given-names: Cameron
+    family-names: Showalter
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    alias: Cameronsplaze
+  - given-names: Alex
+    family-names: Lewandowski
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    alias: Alex-Lewandowski
+    orcid: https://orcid.org/0009-0006-9584-0687 
+  - given-names: Mario
+    family-names: Angarita Vargas
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    alias: mfangaritav
