@@ -7,7 +7,7 @@ title: ASF Search
 doi: TODO
 contact:
   - name: NASA Earthdata Forum
-    website: https://forum.earthdata.nasa.gov/viewforum.php?f=7&keywords=NISAR
+    website: https://forum.earthdata.nasa.gov
   - name: ASF User Services
     email: uso@asf.alaska.edu
 type: software
