@@ -48,14 +48,25 @@ keywords:
   - ice sheets
   - frozen ground
 authors:
-  - given-names: Kim
-    family-names: Fairbanks
-    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
-    alias: SpicyGarlicAlbacoreRoll
   - given-names: Tyler
     family-names: Chase
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
     alias: tylercchase
+  - given-names: Kim
+    family-names: Fairbanks
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    orcid: https://orcid.org/0009-0006-9026-8327
+    alias: SpicyGarlicAlbacoreRoll
+  - given-names: William
+    family-names: Horn
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    orcid: https://orcid.org/0009-0003-8206-5982
+    alias: williamh890
+  - given-names: Alex
+    family-names: Lewandowski
+    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    alias: Alex-Lewandowski
+    orcid: https://orcid.org/0009-0006-9584-0687
   - given-names: Gregory
     family-names: Short
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
@@ -64,11 +75,6 @@ authors:
     family-names: Showalter
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
     alias: Cameronsplaze
-  - given-names: Alex
-    family-names: Lewandowski
-    affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
-    alias: Alex-Lewandowski
-    orcid: https://orcid.org/0009-0006-9584-0687 
   - given-names: Mario
     family-names: Angarita Vargas
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
