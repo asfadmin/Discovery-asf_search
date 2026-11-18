@@ -4,7 +4,7 @@ message: >-
   metadata from this file.
 
 title: ASF Search
-doi: TODO
+doi: 10.5281/zenodo.24335986
 contact:
   - name: NASA Earthdata Forum
     website: https://forum.earthdata.nasa.gov
@@ -51,6 +51,7 @@ authors:
   - given-names: Tyler
     family-names: Chase
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    orcid: https://orcid.org/0009-0006-0799-0619
     alias: tylercchase
   - given-names: Kim
     family-names: Fairbanks
@@ -65,8 +66,8 @@ authors:
   - given-names: Alex
     family-names: Lewandowski
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
-    alias: Alex-Lewandowski
     orcid: https://orcid.org/0009-0006-9584-0687
+    alias: Alex-Lewandowski
   - given-names: Gregory
     family-names: Short
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
