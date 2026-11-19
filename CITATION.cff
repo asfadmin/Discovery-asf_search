@@ -71,6 +71,7 @@ authors:
   - given-names: Gregory
     family-names: Short
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    orcid: https://orcid.org/0009-0001-3599-5197
     alias: glshort
   - given-names: Cameron
     family-names: Showalter
@@ -79,4 +80,5 @@ authors:
   - given-names: Mario
     family-names: Angarita Vargas
     affiliation: Alaska Satellite Facility, Geophysical Institute, University of Alaska Fairbanks, Fairbanks, AK USA
+    orcid: https://orcid.org/0000-0001-7455-2455
     alias: mfangaritav

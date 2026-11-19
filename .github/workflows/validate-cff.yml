@@ -3,7 +3,8 @@ name: Validate CFF file
 on:
   pull_request:
     branches:
-      - main
+      - master
+      - stable
     paths:
       - CITATION.cff
 
