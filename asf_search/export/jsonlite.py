@@ -268,6 +268,8 @@ class JSONLiteStreamArray(list):
             result["additionalUrls"] = p.get("additionalUrls", [])
             result["s3Urls"] = p.get("s3Urls", [])
             result["sizeMB"] = p.get("bytes", {})
+            if isinstance(result["sizeMB"], int):
+                result["sizeMB"] = float(p["bytes"]) / _MB
             if p.get("platform") == "UAVSAR" and result.get("missionName") is None:
                 result["missionName"] = p.get("siteDescription", {})
 
