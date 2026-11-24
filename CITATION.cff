@@ -11,7 +11,7 @@ contact:
   - name: ASF User Services
     email: uso@asf.alaska.edu
 type: software
-license: BSD 3-Clause 
+license: BSD-3-Clause 
 url: https://github.com/asfadmin/Discovery-asf_search
 repository-code: https://github.com/asfadmin/Discovery-asf_search
 keywords:
